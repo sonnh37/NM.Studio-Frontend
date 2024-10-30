@@ -12,8 +12,9 @@ import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { AlbumGallery } from "../albums/album-gallery";
 
-export function AlbumComponent() {
+export function AlbumHome() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const pathName = usePathname();
   const serviceGetAllQuery: ServiceGetAllQuery = {
@@ -27,7 +28,7 @@ export function AlbumComponent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await albumService.getAll(serviceGetAllQuery);
+        const response = await albumService.fetchAll(serviceGetAllQuery);
         const albums = response.data?.results;
 
         setAlbums(albums!);
@@ -66,40 +67,7 @@ export function AlbumComponent() {
           </motion.div>
         </div>
       </div>
-      <div className="pt-10 w-full relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-        {albums.map((album) => {
-          const slug = toSlug(album.title || "");
-          const path = "/album/" + slug;
-          return (
-            <div
-              key={album.id}
-              className="relative bg-gray-50 rounded-none dark:bg-black overflow-hidden"
-            >
-              <Link href={path}>
-                {" "}
-                {/* Bọc motion.div trong Link */}
-                <motion.div
-                  className="w-full h-full"
-                  whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
-                  transition={{
-                    duration: 0.3,
-                    ease: "easeOut",
-                  }}
-                >
-                  <Image
-                    alt="image"
-                    src={album.background ?? ""} // Hình ảnh nền
-                    width={300}
-                    height={300}
-                    className="object-cover  w-full h-full"
-                  />
-                </motion.div>
-              </Link>
-            </div>
-          );
-        })}
-      </div>
-
+      <AlbumGallery/>
       <div className="flex pt-10 justify-center">
         <button className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200">
           Xem thêm

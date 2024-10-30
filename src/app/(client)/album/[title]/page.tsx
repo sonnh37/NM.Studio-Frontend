@@ -32,7 +32,7 @@ export default function Page({ params }: { params: { title: string } }) {
       }
       try {
         query.title = title;
-        const response = await albumService.getAll(query);
+        const response = await albumService.fetchAll(query);
         const album = response.data?.results![0];
         if (response && album) {
           setAlbum(album);

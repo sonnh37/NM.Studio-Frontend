@@ -1,7 +1,14 @@
 import { BaseEntity } from "./base";
-import { Outfit } from "./outfit";
+import { Product } from "./product";
 
 export interface Category extends BaseEntity {
     name?: string;
-    outfits: Outfit[];
+    products: Product[];
+    categories: SubCategory[];
+}
+
+export interface SubCategory extends BaseEntity {
+    name?: string;
+    categoryId?: string;
+    category: Category;
 }

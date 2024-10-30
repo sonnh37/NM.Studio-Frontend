@@ -1,9 +1,10 @@
 import { Photo } from "@/types/photo";
 import { PhotoGetAllQuery } from "@/types/queries/photo-query";
 import { BaseService } from "./base-service"; 
+import { Const } from "@/lib/const";
 class PhotoService extends BaseService<Photo> {
     constructor() {
-        super(`${process.env.NEXT_PUBLIC_API_BASE}/photos`);
+        super(`${Const.PHOTO}`);
     }
 
     

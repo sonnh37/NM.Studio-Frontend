@@ -1,9 +1,10 @@
 import { Category } from "@/types/category";
 import { BaseService } from "./base-service";
+import { Const } from "@/lib/const";
 
 class CategoryService extends BaseService<Category> {
     constructor() {
-        super(`${process.env.NEXT_PUBLIC_API_BASE}/categories`);
+        super(`${Const.CATEGORY}`);
     }
 }
 

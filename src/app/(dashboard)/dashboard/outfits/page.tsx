@@ -2,19 +2,19 @@
 
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/content-layout";
-import DataTableOutfits from "@/components/dashboard/tables/outfits";
+import DataTableProducts from "@/components/dashboard/tables/products";
 
 const breadcrumbItems = [
     {title: 'Dashboard', link: '/dashboard'},
-    {title: 'Outfit', link: '/dashboard/outfit'}
+    {title: 'Product', link: '/dashboard/product'}
 ];
 
 export default function Page() {
     return (
-        <ContentLayout title="Outfit">
+        <ContentLayout title="Product">
             <div className="space-y-6">
                 <Breadcrumbs items={breadcrumbItems}/>
-                <DataTableOutfits/>
+                <DataTableProducts/>
             </div>
         </ContentLayout>
     );

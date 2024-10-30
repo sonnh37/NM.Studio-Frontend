@@ -13,7 +13,7 @@ import {Album} from "@/types/album";
 import {Service} from "@/types/service";
 import {ServiceGetAllQuery} from "@/types/queries/service-query";
 import {AlbumGetAllQuery} from "@/types/queries/album-query";
-import {CategoryGetAllQuery} from "@/types/queries/outfit-query";
+import {CategoryGetAllQuery} from "@/types/queries/product-query";
 import {toSlug} from "@/lib/slug-helper";
 import { albumService } from "@/services/album-service";
 import { serviceService } from "@/services/service-service";
@@ -143,14 +143,14 @@ function Navbar({className}: { className?: string }) {
     useEffect(() => {
         const loadAlbumsAndServices = async () => {
             try {
-                const fetchedAlbums = await albumService.getAll(albumGetAllQuery);
+                const fetchedAlbums = await albumService.fetchAll(albumGetAllQuery);
                 const albums = fetchedAlbums.data?.results;
                 setAlbums(albums!);
 
-                const fetchedServices = await serviceService.getAll(serviceGetAllQuery);
+                const fetchedServices = await serviceService.fetchAll(serviceGetAllQuery);
                 setServices(fetchedServices.data?.results!);
 
-                const fetchedCategories = await categoryService.getAll(categoryGetAllQuery);
+                const fetchedCategories = await categoryService.fetchAll(categoryGetAllQuery);
                 setCategories(fetchedCategories.data?.results!);
 
             } catch (error) {
@@ -218,7 +218,7 @@ function Navbar({className}: { className?: string }) {
                         </h1>
                         {/*<img src={logoSrc} width={"200"} height={""} alt="logo"/>*/}
                     </Link>
-                    <MenuItem href="/album" setActive={setActive} active={active} item="Album">
+                    <MenuItem href="/albums" setActive={setActive} active={active} item="Album">
                         <div className="text-sm grid grid-cols-2 gap-10 p-4">
                             {albums.map((album, index) => {
                                 const slug = toSlug(album.title || '');
@@ -227,7 +227,7 @@ function Navbar({className}: { className?: string }) {
                                     <ProductItem
                                         key={index}
                                         title={album.title as string}
-                                        href={`/album/${path}`}
+                                        href={`/albums/${path}`}
                                         src={album.background as string}
                                         description={album.description as string}
                                     />
@@ -235,11 +235,10 @@ function Navbar({className}: { className?: string }) {
                             })}
                         </div>
                     </MenuItem>
-                    <MenuItem href="/outfit" setActive={setActive} active={active} item="Outfit">
+                    <MenuItem href="/products" setActive={setActive} active={active} item="Product">
                         <div className="flex flex-col space-y-4 text-sm">
                             {categories.map((category, index) => {
-                                const slug = toSlug(category.name || '');
-                                const path = `/outfit/${slug}`;
+                                const path = `/products?categoryName=${category.name}`;
                                 return (
                                     <HoveredLink key={index} href={path}>{category.name}</HoveredLink>
                                 );

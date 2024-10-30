@@ -1,9 +1,9 @@
 "use client";
-import { AlbumComponent } from "@/components/client/sections/album";
-import { Hero } from "@/components/client/sections/hero";
-import Features from "@/components/client/sections/feature";
-import { OutfitComponent } from "@/components/client/sections/outfits/outfit";
-import Contact from "@/components/client/sections/contact";
+import { AlbumHome } from "@/components/client/sections/home/album";
+import Contact from "@/components/client/sections/home/contact";
+import Features from "@/components/client/sections/home/feature";
+import { Hero } from "@/components/client/sections/home/hero";
+import ProductHome from "@/components/client/sections/home/product";
 
 export default function HomePage() {
   // Home page
@@ -17,8 +17,8 @@ export default function HomePage() {
         <div id="first-section">
           <Features />
         </div>
-        <AlbumComponent />
-        <OutfitComponent />
+        <AlbumHome />
+        <ProductHome />
         <Contact />
       </div>
     </main>

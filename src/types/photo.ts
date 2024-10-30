@@ -1,6 +1,6 @@
 import {AlbumXPhoto} from "./album";
 import {BaseEntity} from "./base";
-import {OutfitXPhoto} from "./outfit";
+import {ProductXPhoto} from "@/types/product-x-photo";
 
 export interface Photo extends BaseEntity {
     title?: string;
@@ -9,5 +9,5 @@ export interface Photo extends BaseEntity {
     href?: string;
     tag?: string;
     albumXPhotos?: AlbumXPhoto[];
-    outfitXPhotos?: OutfitXPhoto[];
+    productXPhotos?: ProductXPhoto[];
 }

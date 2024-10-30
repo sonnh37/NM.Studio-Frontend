@@ -5,7 +5,7 @@ import {ContentState, convertFromRaw, EditorState} from "draft-js";
 import {Editor} from "react-draft-wysiwyg";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {ServiceGetAllQuery} from "@/types/queries/service-query";
-import {fetchServices} from "@/services/service-service";
+import { serviceService } from "@/services/service-service";
 
 export default function Page({params}: { params: { name: string } }) {
     const [service, setService] = useState<Service | null>(null);
@@ -24,10 +24,10 @@ export default function Page({params}: { params: { name: string } }) {
             }
             try {
                 query.name = name;
-                const response = await fetchServices(query);
+                const response = await serviceService.fetchAll(query);
 
-                if (response && response.results && response.results.length > 0) {
-                    const fetchedService = response.results[0] as Service;
+                if (response && response.data && response.data.length > 0) {
+                    const fetchedService = response.data.results[0] as Service;
                     setService(fetchedService);
 
                     let contentState;

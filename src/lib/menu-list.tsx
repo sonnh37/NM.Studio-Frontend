@@ -2,7 +2,7 @@ import {LayoutGrid, Settings, Users} from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import {FcServices, FcStackOfPhotos} from "react-icons/fc";
-import {Constant} from "./const";
+import {Const} from "./const";
 
 type Submenu = {
     href: string;
@@ -43,7 +43,7 @@ export function getMenuList(pathname: string): Group[] {
                 {
                     href: "",
                     label: "Albums",
-                    active: pathname.includes(Constant.DASHBOARD_ALBUM_URL),
+                    active: pathname.includes(Const.DASHBOARD_ALBUM_URL),
                     icon: () => (
                         <Image
                             src="/gallery.png"
@@ -55,21 +55,21 @@ export function getMenuList(pathname: string): Group[] {
                     ),
                     submenus: [
                         {
-                            href: Constant.DASHBOARD_ALBUM_URL,
+                            href: Const.DASHBOARD_ALBUM_URL,
                             label: "All Albums",
-                            active: pathname === Constant.DASHBOARD_ALBUM_URL,
+                            active: pathname === Const.DASHBOARD_ALBUM_URL,
                         },
                         {
-                            href: Constant.DASHBOARD_ALBUM_NEW_URL,
+                            href: Const.DASHBOARD_ALBUM_NEW_URL,
                             label: "New Album",
-                            active: pathname === Constant.DASHBOARD_ALBUM_NEW_URL,
+                            active: pathname === Const.DASHBOARD_ALBUM_NEW_URL,
                         },
                     ],
                 },
                 {
                     href: "",
-                    label: "Outfits",
-                    active: pathname.includes(Constant.DASHBOARD_OUTFIT_URL),
+                    label: "Products",
+                    active: pathname.includes(Const.DASHBOARD_PRODUCT_URL),
                     icon: () => (
                         <Image
                             src="/fashion-design.png"
@@ -81,54 +81,54 @@ export function getMenuList(pathname: string): Group[] {
                     ),
                     submenus: [
                         {
-                            href: Constant.DASHBOARD_OUTFIT_URL,
-                            label: "All Outfits",
-                            active: pathname === Constant.DASHBOARD_OUTFIT_URL,
+                            href: Const.DASHBOARD_PRODUCT_URL,
+                            label: "All Products",
+                            active: pathname === Const.DASHBOARD_PRODUCT_URL,
                         },
                         {
-                            href: Constant.DASHBOARD_OUTFIT_NEW_URL,
-                            label: "New Outfit",
-                            active: pathname === Constant.DASHBOARD_OUTFIT_NEW_URL,
+                            href: Const.DASHBOARD_PRODUCT_NEW_URL,
+                            label: "New Product",
+                            active: pathname === Const.DASHBOARD_PRODUCT_NEW_URL,
                         },
                     ],
                 },
                 {
                     href: "",
                     label: "Photos",
-                    active: pathname.includes(Constant.DASHBOARD_PHOTO_URL),
+                    active: pathname.includes(Const.DASHBOARD_PHOTO_URL),
                     icon: () => (
                         <FcStackOfPhotos className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
                     ),
                     submenus: [
                         {
-                            href: Constant.DASHBOARD_PHOTO_URL,
+                            href: Const.DASHBOARD_PHOTO_URL,
                             label: "All Photos",
-                            active: pathname === Constant.DASHBOARD_PHOTO_URL,
+                            active: pathname === Const.DASHBOARD_PHOTO_URL,
                         },
                         {
-                            href: Constant.DASHBOARD_PHOTO_NEW_URL,
+                            href: Const.DASHBOARD_PHOTO_NEW_URL,
                             label: "New Photo",
-                            active: pathname === Constant.DASHBOARD_PHOTO_NEW_URL,
+                            active: pathname === Const.DASHBOARD_PHOTO_NEW_URL,
                         },
                     ],
                 },
                 {
                     href: "",
                     label: "Services",
-                    active: pathname.includes(Constant.DASHBOARD_SERVICE_URL),
+                    active: pathname.includes(Const.DASHBOARD_SERVICE_URL),
                     icon: () => (
                         <FcServices className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
                     ),
                     submenus: [
                         {
-                            href: Constant.DASHBOARD_SERVICE_URL,
+                            href: Const.DASHBOARD_SERVICE_URL,
                             label: "All Services",
-                            active: pathname === Constant.DASHBOARD_SERVICE_URL,
+                            active: pathname === Const.DASHBOARD_SERVICE_URL,
                         },
                         {
-                            href: Constant.DASHBOARD_SERVICE_NEW_URL,
+                            href: Const.DASHBOARD_SERVICE_NEW_URL,
                             label: "New Service",
-                            active: pathname === Constant.DASHBOARD_SERVICE_NEW_URL,
+                            active: pathname === Const.DASHBOARD_SERVICE_NEW_URL,
                         },
                     ],
                 },

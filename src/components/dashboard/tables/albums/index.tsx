@@ -45,7 +45,7 @@ export default function DataTableCourses() {
         <DataTable
             deleteData={albumService.delete}
             columns={columns}
-            fetchData={albumService.getAll}
+            fetchData={albumService.fetchAll}
             columnSearch="name"
             filterEnums={filterEnums}
             formSchema={formAlbumFilterAdvancedSchema}

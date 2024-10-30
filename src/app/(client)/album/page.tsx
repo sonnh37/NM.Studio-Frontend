@@ -1,5 +1,5 @@
-import {Metadata} from "next";
-import {AlbumComponent} from "@/components/client/sections/album";
+import { AlbumGallery } from "@/components/client/sections/albums/album-gallery";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Album | Play SaaS Starter Kit and Boilerplate for Next.js",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const AlbumPage = () => {
     return (
-        <AlbumComponent/>
+        <AlbumGallery/>
     );
 };
 

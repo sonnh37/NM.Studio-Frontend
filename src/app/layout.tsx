@@ -1,4 +1,5 @@
 "use client";
+import { NextUIProvider } from "@nextui-org/react";
 import "./globals.css";
 import { RefreshProvider } from "@/components/common/refresh-context";
 import {SessionProvider} from "next-auth/react";
@@ -18,6 +19,7 @@ export default function RootLayout({
             <title>Studio</title>
         </head>
         <body>
+        <NextUIProvider>
         <SessionProvider>
             <ThemeProvider
                 attribute="class"
@@ -27,6 +29,7 @@ export default function RootLayout({
                     <RefreshProvider>{children}</RefreshProvider>
             </ThemeProvider>
         </SessionProvider>
+        </NextUIProvider>
         </body>
 
         </html>

@@ -28,7 +28,7 @@ export default function Page({params}: { params: { albumId: string } }) {
         try {
             const [albumResponse, photosResponse] = await Promise.all([
                 albumService.getById(params.albumId),
-                photoService.getAll(queryParams),
+                photoService.fetchAll(queryParams),
             ]);
 
             setPhotos(photosResponse.results ?? []);

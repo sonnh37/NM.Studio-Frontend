@@ -1,7 +1,7 @@
 import { BaseEntity } from "./base";
-import { Outfit } from "./outfit";
+import { Product } from "./product";
 
 export interface Color extends BaseEntity {
     name?: string;
-    outfits: Outfit[];
+    products: Product[];
 }
