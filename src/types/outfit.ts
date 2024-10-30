@@ -1,5 +1,9 @@
 import {BaseEntity} from "./base";
+import { Category } from "./category";
+import { Color } from "./color";
+import { OutfitXPhoto } from "./outfit-x-photo";
 import {Photo} from "./photo";
+import { Size } from "./size";
 
 export interface Outfit extends BaseEntity {
     sku?: string;
@@ -16,27 +20,6 @@ export interface Outfit extends BaseEntity {
     outfitXPhotos: OutfitXPhoto[];
 }
 
-export interface Color extends BaseEntity {
-    name?: string;
-    outfits: Outfit[];
-}
-
-export interface Category extends BaseEntity {
-    name?: string;
-    outfits: Outfit[];
-}
-
-export interface Size extends BaseEntity {
-    name?: string;
-    outfits: Outfit[];
-}
-
-export interface OutfitXPhoto extends BaseEntity {
-    outfitId?: string;
-    photoId?: string;
-    outfit?: Outfit;
-    photo?: Photo;
-}
 
 enum OutfitStatus {
     Unspecified = 0,

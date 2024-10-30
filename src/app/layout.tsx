@@ -1,7 +1,8 @@
 "use client";
 import "./globals.css";
-import {ThemeProvider} from "@/app/(home)/provider";
+import { RefreshProvider } from "@/components/common/refresh-context";
 import {SessionProvider} from "next-auth/react";
+import { ThemeProvider } from "next-themes";
 import Script from 'next/script';
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
                 enableSystem={true}
                 defaultTheme="light"
             >
-                <main>{children}</main>
+                    <RefreshProvider>{children}</RefreshProvider>
             </ThemeProvider>
         </SessionProvider>
         </body>

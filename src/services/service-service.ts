@@ -1,29 +1,12 @@
-import {ServiceGetAllQuery} from "@/types/queries/service-query";
-import {Service} from "@/types/service";
-import axios from "axios";
+import { Service } from "@/types/service";
+import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { BaseService } from "./base-service";  
+class ServiceService extends BaseService<Service> {
+    constructor() {
+        super(`${process.env.NEXT_PUBLIC_API_BASE}/services`);
+    }
 
+    
+}
 
-export const fetchServices = (query: ServiceGetAllQuery): Promise<PagedResponse<Service>> => {
-    const params = new URLSearchParams(query as any).toString();
-
-    return axios.get(`https://localhost:7192/services?${params}`)
-        .then((response) => {
-            return response.data as PagedResponse<Service>;
-        })
-        .catch((error) => {
-            console.error('Failed to fetch services:', error);
-            throw error;
-        });
-};
-
-export const fetchService = (id: string): Promise<ItemResponse<Service>> => {
-
-    return axios.get(`https://localhost:7192/services/${id}`)
-        .then((response) => {
-            return response.data as ItemResponse<Service>;
-        })
-        .catch((error) => {
-            console.error('Failed to fetch services:', error);
-            throw error;
-        });
-};
+export const serviceService = new ServiceService();

@@ -6,7 +6,6 @@ class Constant {
     static readonly SERVICE = "service";
     static readonly PHOTO = "photo";
 
-    static readonly DASHBOARD_URL = `/${Constant.DASHBOARD}`;
     static readonly DASHBOARD_ALBUM_URL = `/${Constant.DASHBOARD}/${Constant.ALBUM}`;
     static readonly DASHBOARD_ALBUM_NEW_URL = `${Constant.DASHBOARD_ALBUM_URL}/${Constant.NEW}`;
 
@@ -18,6 +17,9 @@ class Constant {
 
     static readonly DASHBOARD_OUTFIT_URL = `/${Constant.DASHBOARD}/${Constant.OUTFIT}`;
     static readonly DASHBOARD_OUTFIT_NEW_URL = `${Constant.DASHBOARD_OUTFIT_URL}/${Constant.NEW}`;
+
+
+    static readonly API_BASE=process.env.NEXT_PUBLIC_API_BASE;
 }
 
 export {Constant};

@@ -86,31 +86,38 @@ export const columns: ColumnDef<Album>[] = [
     },
     {
         accessorKey: "isDeleted",
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title=""/>
-        ),
+        header: ({column}) => <DataTableColumnHeader column={column} title=""/>,
         cell: ({row}) => {
             const isDeleted = row.getValue("isDeleted") as boolean;
             if (!isDeleted) {
                 return (
-                    <Badge variant="secondary">Active</Badge>
+                    <Image
+                        src="/check.png"
+                        width={500}
+                        height={500}
+                        alt="Gallery Icon"
+                        className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+                    />
                 );
             }
             return (
-                <Badge variant="destructive">Deactivate</Badge>
+                <Image
+                    src="/uncheck.png"
+                    width={500}
+                    height={500}
+                    alt="Gallery Icon"
+                    className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+                />
             );
         },
         filterFn: (row, id, value) => {
-            const isDeletedValue = row.getValue(id) as boolean;
-            return value.includes(isDeletedValue.toString()); // Chuyển đổi boolean sang string để so sánh
+            return value.includes(row.getValue(id));
         },
-        enableGlobalFilter: false
     },
     {
         id: "actions",
         cell: ({row}) => {
-            const model = row.original;
-            return <Actions id={model.id}/>;
+            return <Actions row={row}/>;
         },
     },
 ]

@@ -46,7 +46,7 @@ export function getMenuList(pathname: string): Group[] {
                     active: pathname.includes(Constant.DASHBOARD_ALBUM_URL),
                     icon: () => (
                         <Image
-                            src="/images/gallery.png"
+                            src="/gallery.png"
                             width={500}
                             height={500}
                             alt="Gallery Icon"
@@ -72,7 +72,7 @@ export function getMenuList(pathname: string): Group[] {
                     active: pathname.includes(Constant.DASHBOARD_OUTFIT_URL),
                     icon: () => (
                         <Image
-                            src="/images/fashion-design.png"
+                            src="/fashion-design.png"
                             width={500}
                             height={500}
                             alt="Picture of the author"
