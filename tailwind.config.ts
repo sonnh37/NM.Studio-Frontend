@@ -23,6 +23,7 @@ const config = {
             fontFamily: {
                 montserrat: ["Montserrat", "sans-serif"],
                 greatvibes: ["Great Vibes", "cursive"],
+                waterfall: ['Waterfall', 'cursive'],
             },
             colors: {
                 border: "hsl(var(--border))",

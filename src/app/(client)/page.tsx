@@ -4,6 +4,7 @@ import Contact from "@/components/client/sections/home/contact";
 import Features from "@/components/client/sections/home/feature";
 import { Hero } from "@/components/client/sections/home/hero";
 import ProductHome from "@/components/client/sections/home/product";
+import { CardHoverEffectDemo } from "@/components/client/sections/test";
 
 export default function HomePage() {
   // Home page
