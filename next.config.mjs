@@ -5,7 +5,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: '**', // Cung cấp tất cả các tên miền HTTPS
+                hostname: '**', 
             },
         ],
     },
