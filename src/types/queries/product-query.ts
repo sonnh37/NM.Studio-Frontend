@@ -1,6 +1,6 @@
 import {BaseQueryableQuery} from "./base-query";
 
-export interface OutfitGetAllQuery extends BaseQueryableQuery {
+export interface ProductGetAllQuery extends BaseQueryableQuery {
     sku?: string;
     categoryId?: string; // Guid trong TypeScript thường được biểu diễn bằng string
     sizeId?: string;

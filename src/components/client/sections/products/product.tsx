@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/client/card";
-import { Outfit } from "@/types/outfit";
+import { Product } from "@/types/product";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -15,19 +15,19 @@ interface CardData {
   href: string; // Add href field
 }
 
-export function OutfitComponent() {
-  // Mảng dữ liệu cho các thẻ by outfit
-  const [outfits, setOutfits] = useState<Outfit[]>([]);
+export function ProductComponent() {
+  // Mảng dữ liệu cho các thẻ by product
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://localhost:7192/outfit-management/outfits"
+          "https://localhost:7192/product-management/products"
         );
-        const outfits: Outfit[] = response.data.results;
+        const products: Product[] = response.data.results;
 
-        setOutfits(outfits);
+        setProducts(products);
       } catch (error) {
         console.error("Failed to fetch images:", error);
       }
@@ -42,7 +42,7 @@ export function OutfitComponent() {
         "This card is for some special elements, like displaying background gifs on hover only.",
       imageUrl: "/64-anh-cuoi-nen-trang-2.jpg",
       hoverImageUrl: "/64-anh-cuoi-nen-trang-3.jpg",
-      href: "/outfit/vay-cuoi", // Example href
+      href: "/product/vay-cuoi", // Example href
     },
     {
       title: "Vest",
@@ -50,7 +50,7 @@ export function OutfitComponent() {
         "This card is for some special elements, like displaying background gifs on hover only.",
       imageUrl: "/ao-vest-cuoi-chu-re-mau-den-ve-nhon-phi-bong-1.jpeg",
       hoverImageUrl: "/64-anh-cuoi-nen-trang-3.jpg",
-      href: "/outfit/vest", // Example href
+      href: "/product/vest", // Example href
     },
     {
       title: "Áo dài",
@@ -58,7 +58,7 @@ export function OutfitComponent() {
         "This card is for some special elements, like displaying background gifs on hover only.",
       imageUrl: "/NICOLEBRIDAL_AO-DAI-CUOI-TRANG-DDTRF90-3-576x864.jpg",
       hoverImageUrl: "/64-anh-cuoi-nen-trang-3.jpg",
-      href: "/outfit/ao-dai", // Example href
+      href: "/product/ao-dai", // Example href
     },
   ];
 

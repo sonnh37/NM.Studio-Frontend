@@ -1,5 +1,5 @@
 import {columns} from "./columns";
-import {fetchOutfits} from "@/services/outfit-service";
+import {fetchProducts} from "@/services/product-service";
 import * as React from "react";
 import {useEffect, useRef} from "react";
 import {
@@ -18,7 +18,7 @@ import {DataTableToolbar} from "@/components/dashboard/data-table/data-table-too
 import {TableComponent} from "@/components/dashboard/data-table/table-component";
 import {DataTablePagination} from "@/components/dashboard/data-table/data-table-pagination";
 
-export default function DataTableOutfits() {
+export default function DataTableProducts() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -37,7 +37,7 @@ export default function DataTableOutfits() {
 
     const {data, isFetching, error} = useQuery({
         queryKey: ['data', getQueryParams()],
-        queryFn: () => fetchOutfits(getQueryParams()),
+        queryFn: () => fetchProducts(getQueryParams()),
         placeholderData: keepPreviousData,
     });
 
@@ -69,7 +69,7 @@ export default function DataTableOutfits() {
 
     return (
         <div ref={scrollRef} className="space-y-4">
-            <DataTableToolbar stringObject="Outfit" table={table}/>
+            <DataTableToolbar stringObject="Product" table={table}/>
             <TableComponent table={table}/>
             <DataTablePagination table={table}/>
         </div>

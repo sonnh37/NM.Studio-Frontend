@@ -1,4 +1,4 @@
-// OutfitActions.tsx
+// ProductActions.tsx
 "use client";
 
 import React from "react";
@@ -24,33 +24,33 @@ const Actions: React.FC<ActionsProps> = ({id}) => {
     const router = useRouter();
 
     const handleEditClick = () => {
-        router.push(`/dashboard/outfit/${id}`);
+        router.push(`/dashboard/product/${id}`);
     };
 
-    const handleOutfitsClick = () => {
-        router.push(`/dashboard/outfit/${id}/photos`);
+    const handleProductsClick = () => {
+        router.push(`/dashboard/product/${id}/photos`);
     };
 
     const handleDeleteClick = async () => {
         try {
-            const response = await axios.delete(`https://localhost:7192/outfits`, {
+            const response = await axios.delete(`https://localhost:7192/products`, {
                 params: {Id: id},
             });
 
             if (response.status === 200) {
                 Swal.fire({
                     title: "Success!",
-                    text: "Outfit deleted successfully.",
+                    text: "Product deleted successfully.",
                     icon: "success",
                     confirmButtonText: "OK",
                 });
             }
         } catch (error) {
-            console.error(`Failed to delete outfit with ID: ${id}`, error);
+            console.error(`Failed to delete product with ID: ${id}`, error);
 
             Swal.fire({
                 title: "Error!",
-                text: "Failed to delete outfit. Please try again later.",
+                text: "Failed to delete product. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK",
             });
@@ -72,7 +72,7 @@ const Actions: React.FC<ActionsProps> = ({id}) => {
                 >
                     Copy model ID
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleOutfitsClick}>
+                <DropdownMenuItem onClick={handleProductsClick}>
                     View photos
                 </DropdownMenuItem>
                 <DropdownMenuSeparator/>

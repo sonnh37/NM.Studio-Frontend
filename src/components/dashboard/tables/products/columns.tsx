@@ -1,7 +1,7 @@
 "use client"
 
 import {ColumnDef} from "@tanstack/react-table"
-import {Outfit} from "@/types/outfit";
+import {Product} from "@/types/product";
 import React from "react";
 import {Checkbox} from "@/components/ui/checkbox";
 import {DataTableColumnHeader} from "@/components/dashboard/data-table/data-table-column-header";
@@ -9,7 +9,7 @@ import {Badge} from "@/components/ui/badge";
 import Actions from "./actions";
 
 
-export const columns: ColumnDef<Outfit>[] = [
+export const columns: ColumnDef<Product>[] = [
     {
         id: "select",
         header: ({table}) => (

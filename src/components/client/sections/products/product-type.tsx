@@ -2,19 +2,19 @@
 
 import {Card} from "@/components/client/card";
 import {toSlug} from "@/lib/slug-helper";
-import {fetchCategories, fetchOutfits} from "@/services/outfit-service";
-import {CategoryGetAllQuery, OutfitGetAllQuery} from "@/types/queries/outfit-query";
+import {fetchCategories, fetchProducts} from "@/services/product-service";
+import {CategoryGetAllQuery, ProductGetAllQuery} from "@/types/queries/product-query";
 import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
-import {Category, Outfit} from "../../../types/outfit";
+import {Category, Product} from "../../../types/product";
 
 const getMatchingCategory = (categories: Category[], slug: string): Category | undefined => {
     return categories.find(category => toSlug(category.name!) === slug);
 };
 
-export function OutfitByCategoryComponent() {
-    const [outfits, setOutfits] = useState<Outfit[]>([]);
-    const [outfitGetAllQuery, setOutfitGetAllQuery] = useState<OutfitGetAllQuery>();
+export function ProductByCategoryComponent() {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [productGetAllQuery, setProductGetAllQuery] = useState<ProductGetAllQuery>();
     const param = useParams();
     const [categories, setCategories] = useState<Category[]>([]);
 
@@ -54,37 +54,37 @@ export function OutfitByCategoryComponent() {
 
     useEffect(() => {
         if (categories.length > 0 && param.slug) {
-            const categoryByoutfitName = categories[0];
+            const categoryByproductName = categories[0];
             const updatedQuery = {
-                ...outfitGetAllQuery,
-                categoryId: categoryByoutfitName.id,
-                isPagination: outfitGetAllQuery?.isPagination ?? false,
+                ...productGetAllQuery,
+                categoryId: categoryByproductName.id,
+                isPagination: productGetAllQuery?.isPagination ?? false,
             };
-            setOutfitGetAllQuery(updatedQuery);
+            setProductGetAllQuery(updatedQuery);
         }
     }, [categories, param.slug]);
 
     useEffect(() => {
         const fetchData = async () => {
-            if (outfitGetAllQuery?.categoryId !== undefined) {
+            if (productGetAllQuery?.categoryId !== undefined) {
                 try {
-                    // Cập nhật outfitGetAllQuery một cách an toàn
-                    const updatedQuery = {...outfitGetAllQuery, isPagination: true};
+                    // Cập nhật productGetAllQuery một cách an toàn
+                    const updatedQuery = {...productGetAllQuery, isPagination: true};
 
                     console.log('Input', updatedQuery);
 
                     // Gọi API với updatedQuery
-                    const outfits = await fetchOutfits(updatedQuery);
-                    console.log('Output', outfits);
-                    setOutfits(outfits);
+                    const products = await fetchProducts(updatedQuery);
+                    console.log('Output', products);
+                    setProducts(products);
                 } catch (error) {
-                    console.error('Failed to fetch outfits:', error);
+                    console.error('Failed to fetch products:', error);
                 }
             }
         };
 
         fetchData();
-    }, [outfitGetAllQuery]);
+    }, [productGetAllQuery]);
 
 
     return (
@@ -109,14 +109,14 @@ export function OutfitByCategoryComponent() {
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto gap-5 pt-10">
-                {outfits.map((card, index) => (
+                {products.map((card, index) => (
 
                     <Card
                         key={index}
                         title={card.category?.name as string}
                         description={card.description as string}
-                        imageUrl={card.outfitXPhotos && card.outfitXPhotos.length > 0 ? (card.outfitXPhotos[index]?.photo?.src as string) : ""}
-                        hoverImageUrl={card.outfitXPhotos && card.outfitXPhotos.length > 1 ? (card.outfitXPhotos[index + 1]?.photo?.src as string) : ""}
+                        imageUrl={card.productXPhotos && card.productXPhotos.length > 0 ? (card.productXPhotos[index]?.photo?.src as string) : ""}
+                        hoverImageUrl={card.productXPhotos && card.productXPhotos.length > 1 ? (card.productXPhotos[index + 1]?.photo?.src as string) : ""}
                     />
                 ))}
             </div>

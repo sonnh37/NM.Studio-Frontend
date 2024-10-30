@@ -10,24 +10,24 @@ import {Button} from "@/components/ui/button";
 import {MoreHorizontal} from "lucide-react";
 import {Photo} from "@/types/photo";
 import axios from "axios";
-import {OutfitXPhoto} from "@/types/outfit";
+import {ProductXPhoto} from "@/types/product";
 import React from "react";
 import {redirect, useParams} from 'next/navigation'
 import {useRefresh} from "@/components/dashboard/refresh-context";
 
 const ActionCell: React.FC<{ photo: Photo }> = ({photo}) => {
     const {refresh} = useRefresh();
-    const params = useParams<{ outfitId: string }>();
+    const params = useParams<{ productId: string }>();
 
     const handleAddPhoto = async () => {
-        const outfitId = params.outfitId;
-        const outfitXPhotoCommand_: Partial<OutfitXPhoto> = {
-            outfitId: outfitId.toString(),
+        const productId = params.productId;
+        const productXPhotoCommand_: Partial<ProductXPhoto> = {
+            productId: productId.toString(),
             photoId: photo.id,
         };
 
         try {
-            await axios.post(`https://localhost:7192/outfits/outfitXPhotos`, outfitXPhotoCommand_);
+            await axios.post(`https://localhost:7192/products/productXPhotos`, productXPhotoCommand_);
             refresh();
         } catch (error: any) {
             console.error('Failed to add photo', error.response?.data || error.message);

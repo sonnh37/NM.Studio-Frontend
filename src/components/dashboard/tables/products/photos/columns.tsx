@@ -9,7 +9,7 @@ import {DataTableColumnHeader} from "@/components/dashboard/data-table/data-tabl
 import Image from "next/image";
 import Link from "next/link";
 import {Badge} from "@/components/ui/badge";
-import ActionCell from "@/components/dashboard/tables/outfits/photos/actions";
+import ActionCell from "@/components/dashboard/tables/products/photos/actions";
 
 
 export const columns: ColumnDef<Photo>[] = [
