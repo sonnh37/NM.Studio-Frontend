@@ -9,6 +9,7 @@ export interface ProductGetAllQuery extends BaseQueryableQuery {
     price?: number;
     description?: string;
     categoryName?: string;
+    subCategoryName?: string;
 }
 
 export interface CategoryGetAllQuery extends BaseQueryableQuery {

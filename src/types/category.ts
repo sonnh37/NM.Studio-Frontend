@@ -4,7 +4,7 @@ import { Product } from "./product";
 export interface Category extends BaseEntity {
     name?: string;
     products: Product[];
-    categories: SubCategory[];
+    subCategories: SubCategory[];
 }
 
 export interface SubCategory extends BaseEntity {

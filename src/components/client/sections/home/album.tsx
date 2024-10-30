@@ -10,13 +10,15 @@ import { albumService } from "@/services/album-service";
 import { toSlug } from "@/lib/slug-helper";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AlbumGallery } from "../albums/album-gallery";
+import { Const } from "@/lib/const";
 
 export function AlbumHome() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const pathName = usePathname();
+  const router = useRouter();
   const serviceGetAllQuery: ServiceGetAllQuery = {
     pageNumber: 1,
     pageSize: 12,
@@ -62,14 +64,14 @@ export function AlbumHome() {
               Album
             </h2>
             <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
-              Với đa màu sắc, đầy phong cách đến từ nhà NhuMyStudio
+              
             </p>
           </motion.div>
         </div>
       </div>
       <AlbumGallery/>
       <div className="flex pt-10 justify-center">
-        <button className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200">
+        <button onClick={() => router.push(Const.ALBUM)} className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200">
           Xem thêm
         </button>
       </div>

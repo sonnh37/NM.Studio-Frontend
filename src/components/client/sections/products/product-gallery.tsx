@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation"; // Nếu sử dụng Next.js
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { Const } from "@/lib/const";
+import { motion } from "framer-motion";
 
 // Định nghĩa kiểu cho dữ liệu thẻ
 interface CardData {
@@ -22,6 +23,7 @@ export function ProductGallery() {
   const [queryProduct, setQueryProduct] = useState<ProductGetAllQuery>();
   const searchParams = useSearchParams(); // Lấy các tham số tìm kiếm từ URL
   const categoryName = searchParams.get("categoryName");
+  const subCategoryName = searchParams.get("subCategoryName");
   const router = useRouter();
   const pathName = usePathname();
   useEffect(() => {
@@ -35,11 +37,12 @@ export function ProductGallery() {
       setQueryProduct((prev) => ({
         ...prev,
         isPagination: true,
-        pageSize: 10,
+        pageSize: 12,
         categoryName: categoryName ? categoryName : undefined,
+        subCategoryName: subCategoryName ? subCategoryName : undefined,
       }));
     }
-  }, [categoryName, pathName]);
+  }, [subCategoryName, categoryName, pathName]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,27 +90,35 @@ export function ProductGallery() {
     <div className="gap-2 grid grid-cols-2 py-5 sm:grid-cols-4">
       {products.map((item, index) => (
         <Card
+        className="rounded-none"
           shadow="sm"
           key={index}
-          isPressable
           onPress={() => console.log("item pressed")}
         >
-          <CardBody className="overflow-visible p-0">
-            <Image
-              isZoomed
-              shadow="sm"
-              radius="lg"
-              width="100%"
-              alt={item.name}
-              className="w-full object-cover h-[500px]"
-              src={
-                item.productXPhotos.length > 0 && item.productXPhotos[0].photo
-                  ? item.productXPhotos[0].photo.src
-                  : "/path/to/default/image.jpg"
-              } // Sử dụng hình ảnh mặc định nếu không có
-            />
+          <CardBody className="overflow-visible z-10 p-0">
+            <motion.div
+              className="w-full h-full overflow-hidden"
+              whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
+              transition={{
+                duration: 0.3,
+                ease: "easeInOut",
+              }}
+            >
+              <Image
+                shadow="sm"
+                radius="none"
+                width="100%"
+                alt={item.name}
+                className="w-full object-cover h-[500px]"
+                src={
+                  item.productXPhotos.length > 0 && item.productXPhotos[0].photo
+                    ? item.productXPhotos[0].photo.src
+                    : "/path/to/default/image.jpg"
+                } // Sử dụng hình ảnh mặc định nếu không có
+              />
+            </motion.div>
           </CardBody>
-          <CardFooter className="text-small justify-between">
+          <CardFooter className="text-small z-20 bg-background justify-between">
             <b>{item.name}</b>
             <p className="text-default-500">{item.price}</p>
           </CardFooter>

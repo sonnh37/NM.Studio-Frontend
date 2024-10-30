@@ -137,7 +137,7 @@ function Navbar({ className }: { className?: string }) {
 
   const albumGetAllQuery: AlbumGetAllQuery = {
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 8,
     sortOrder: 1,
     isPagination: true,
   };
@@ -246,21 +246,18 @@ function Navbar({ className }: { className?: string }) {
             item="Album"
           >
             {/* <div className="text-sm grid grid-cols-2 gap-10 p-4"> */}
-            <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  py-10">
+            <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 ">
               {albums.map((album, index) => {
-                const slug = toSlug(album.title || "");
-                const path = slug;
                 return (
-                  
-                    <ProductItem
-                      index={index}
-                      title={album.title as string}
-                      href={`/albums/${path}`}
-                      src={album.background as string}
-                      description={album.description as string}
-                      hoveredIndex={hoveredIndex}
-                      setHoveredIndex={setHoveredIndex}
-                    />
+                  <ProductItem
+                    index={index}
+                    title={album.title as string}
+                    href={`/albums/${album.id}/photos`}
+                    src={album.background as string}
+                    description={album.description as string}
+                    hoveredIndex={hoveredIndex}
+                    setHoveredIndex={setHoveredIndex}
+                  />
                 );
               })}
             </div>
@@ -271,13 +268,22 @@ function Navbar({ className }: { className?: string }) {
             active={active}
             item="Product"
           >
-            <div className="flex flex-col space-y-4 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {categories.map((category, index) => {
                 const path = `/products?categoryName=${category.name}`;
                 return (
-                  <HoveredLink key={index} href={path}>
-                    {category.name}
-                  </HoveredLink>
+                  <Link href={path} key={index} className="flex gap-1 flex-col">
+                    <h3 className="font-bold mb-2">{category.name}</h3>
+                    {/* Tiêu đề thể loại */}
+                    {category.subCategories.map((subCategory, subIndex) => (
+                      <HoveredLink
+                        key={subIndex}
+                        href={`${path}&subCategoryName=${subCategory.name}`} // Lấy thuộc tính name
+                      >
+                        {subCategory.name} {/* Hiển thị tên subCategory */}
+                      </HoveredLink>
+                    ))}
+                  </Link>
                 );
               })}
             </div>

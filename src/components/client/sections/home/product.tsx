@@ -26,10 +26,10 @@ const ProductHome = () => {
             }}
           >
             <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
-              Trang phục
+              Product
             </h2>
             <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
-              Trang trọng - Lịch lãm - Quý phái
+             
             </p>
           </div>
         </div>

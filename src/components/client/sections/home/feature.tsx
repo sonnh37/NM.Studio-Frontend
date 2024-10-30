@@ -1,59 +1,81 @@
 "use client";
-import Image from 'next/image';
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 const steps = [
-    {
-        title: 'BƯỚC 1',
-        description: 'Đăng ký dịch vụ chụp ảnh cưới bằng cách điền thông tin vào form bên dưới.',
-        imageSrc: 'https://tonywedding.vn/wp-content/uploads/2024/01/Combo-tiet-kiem.png', // Update with actual image paths
-        altText: 'Bước 1'
-    },
-    {
-        title: 'BƯỚC 2',
-        description: 'Đến trực tiếp studio để xem sản phẩm, chọn ngày chụp, ký hợp đồng và chọn ngày thử trang phục.',
-        imageSrc: 'https://tonywedding.vn/wp-content/uploads/2024/01/Korean.png',
-        altText: 'Bước 2'
-    },
-    {
-        title: 'BƯỚC 3',
-        description: 'Trang điểm & chụp ảnh cưới, quay video cưới và chọn ảnh sau khi chụp.',
-        imageSrc: 'https://tonywedding.vn/wp-content/uploads/2024/01/PT.png',
-        altText: 'Bước 3'
-    },
-    {
-        title: 'BƯỚC 4',
-        description: 'Nhận file ảnh đã chỉnh sửa & duyệt in album để nhận sản phẩm cuối cùng.',
-        imageSrc: 'https://tonywedding.vn/wp-content/uploads/2024/01/NCSG.png',
-        altText: 'Bước 4'
-    }
+  {
+    title: "BƯỚC 1",
+    description:
+      "Đăng ký dịch vụ chụp ảnh cưới bằng cách điền thông tin vào form bên dưới.",
+    imageSrc:
+      "https://tonywedding.vn/wp-content/uploads/2024/01/Combo-tiet-kiem.png", // Update with actual image paths
+    altText: "Bước 1",
+  },
+  {
+    title: "BƯỚC 2",
+    description:
+      "Đến trực tiếp studio để xem sản phẩm, chọn ngày chụp, ký hợp đồng và chọn ngày thử trang phục.",
+    imageSrc: "https://tonywedding.vn/wp-content/uploads/2024/01/Korean.png",
+    altText: "Bước 2",
+  },
+  {
+    title: "BƯỚC 3",
+    description:
+      "Trang điểm & chụp ảnh cưới, quay video cưới và chọn ảnh sau khi chụp.",
+    imageSrc: "https://tonywedding.vn/wp-content/uploads/2024/01/PT.png",
+    altText: "Bước 3",
+  },
+  {
+    title: "BƯỚC 4",
+    description:
+      "Nhận file ảnh đã chỉnh sửa & duyệt in album để nhận sản phẩm cuối cùng.",
+    imageSrc: "https://tonywedding.vn/wp-content/uploads/2024/01/NCSG.png",
+    altText: "Bước 4",
+  },
 ];
 
 export default function Features() {
-    return (
-        <div className="max-w-7xl mx-auto py-10">
-            <h2 className="text-center text-2xl md:text-4xl font-bold mb-10">CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ
-                NÀO?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-                {steps.map((step, index) => (
-                    <div key={index}>
-                        <h3 className="font-bold text-xl mb-4">{step.title}</h3>
-                        <p>{step.description}</p>
-                        <div className="mt-4">
-                            <Image
-                                src={step.imageSrc}
-                                alt={step.altText}
-                                width={250}
-                                height={250}
-                                className="rounded-full"
-                            />
-                        </div>
-                    </div>
-                ))}
+  return (
+    <div className="max-w-7xl mx-auto py-10">
+      <h2 className="text-center text-2xl md:text-4xl font-bold mb-10">
+        CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-4 text-center">
+        {steps.map((step, index) => (
+          <div
+            className="flex flex-col items-center justify-between space-y-10 h-full"
+            key={index}
+          >
+            <div>
+              <h3 className="font-bold text-xl mb-4">{step.title}</h3>
+              <p>{step.description}</p>
             </div>
-        </div>
-    );
+            <div className="overflow-hidden rounded-full">
+              {" "}
+              {/* Thay đổi kích thước nếu cần */}
+              <motion.div
+                className="flex items-center justify-center w-full h-full"
+                whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
+                transition={{
+                  duration: 0.3,
+                  ease: "easeOut",
+                }}
+              >
+                <Image
+                  src={step.imageSrc}
+                  alt={step.altText}
+                  width={250}
+                  height={250}
+                  className="rounded-full"
+                />
+              </motion.div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-
 
 // import React, { useEffect, useState } from "react";
 // import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
@@ -88,8 +110,8 @@ export default function Features() {
 
 //           try {
 //             // Attempt to parse description as JSON
-//             contentState = service.description 
-//               ? convertFromRaw(JSON.parse(service.description)) 
+//             contentState = service.description
+//               ? convertFromRaw(JSON.parse(service.description))
 //               : ContentState.createFromText('');
 //           } catch (error) {
 //             // Fallback to plain text if description is not valid JSON
