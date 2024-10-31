@@ -36,42 +36,45 @@ const steps = [
 
 export default function Features() {
   return (
-    <div className="max-w-7xl mx-auto py-10">
-      <h2 className="text-center text-2xl md:text-4xl font-bold mb-10">
-        CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-4 text-center">
-        {steps.map((step, index) => (
-          <div
-            className="flex flex-col items-center justify-between space-y-10 h-full"
-            key={index}
-          >
-            <div>
-              <h3 className="font-bold text-xl mb-4">{step.title}</h3>
-              <p>{step.description}</p>
+    <div className="h-screen w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center backdrop-blur-sm">
+  <div className="absolute inset-0 pointer-events-none flex items-center justify-center dark:bg-black bg-white opacity-50"></div>
+   <div className="max-w-7xl mx-auto py-10 z-10 ">
+        <p className="text-4xl font-bold text-center relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
+          CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-4 text-center">
+          {steps.map((step, index) => (
+            <div
+              className="flex flex-col items-center justify-between space-y-10 h-full"
+              key={index}
+            >
+              <div>
+                <p className="text-xl text-neutral-700 mb-4">{step.title}</p>
+                <p className="text-neutral-500 dark:text-neutral-200">{step.description}</p>
+              </div>
+              <div className="overflow-hidden rounded-full">
+                {" "}
+                {/* Thay đổi kích thước nếu cần */}
+                <motion.div
+                  className="flex items-center justify-center w-full h-full"
+                  whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
+                  transition={{
+                    duration: 0.3,
+                    ease: "easeOut",
+                  }}
+                >
+                  <Image
+                    src={step.imageSrc}
+                    alt={step.altText}
+                    width={250}
+                    height={250}
+                    className="rounded-full"
+                  />
+                </motion.div>
+              </div>
             </div>
-            <div className="overflow-hidden rounded-full">
-              {" "}
-              {/* Thay đổi kích thước nếu cần */}
-              <motion.div
-                className="flex items-center justify-center w-full h-full"
-                whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
-                transition={{
-                  duration: 0.3,
-                  ease: "easeOut",
-                }}
-              >
-                <Image
-                  src={step.imageSrc}
-                  alt={step.altText}
-                  width={250}
-                  height={250}
-                  className="rounded-full"
-                />
-              </motion.div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

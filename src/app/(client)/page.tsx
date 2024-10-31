@@ -20,7 +20,7 @@ export default function HomePage() {
         </div>
         <AlbumHome />
         <ProductHome />
-        <Contact />
+        
       </div>
     </main>
   );

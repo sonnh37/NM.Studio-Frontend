@@ -34,7 +34,7 @@ export const MenuItem = ({
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       className="relative dark:hover:text-white py-2 hover:text-black hover:opacity-100 hover:inset-0 hover:transform
-                hover:bg-gradient-to-b  hover:rounded-sm  "
+                hover:bg-gradient-to-b  hover:rounded-sm "
     >
       <Link href={href}>
         <motion.p transition={{ duration: 0.3 }} className="cursor-pointer ">
@@ -53,7 +53,7 @@ export const MenuItem = ({
               <motion.div
                 transition={transition}
                 layoutId="active" // layoutId ensures smooth animation
-                className="bg-white dark:bg-black backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
+                className="bg-white dark:bg-black backdrop-blur-sm rounded-none overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
               >
                 <motion.div
                   layout // layout ensures smooth animation
@@ -117,7 +117,7 @@ export const ProductItem = ({
       <AnimatePresence>
         {hoveredIndex === index && (
           <motion.span
-            className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
+            className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block "
             layoutId="hoverBackground"
             initial={{ opacity: 0 }}
             animate={{
@@ -133,12 +133,12 @@ export const ProductItem = ({
       </AnimatePresence>
       <div className="group-hover:border-slate-700 relative z-20">
         <div className="relative z-50 flex">
-        <Image
+          <Image
             src={src}
             width={140}
             height={70}
             alt={title}
-            className="flex-shrink-0 rounded-md shadow-2xl"
+            className="flex-shrink-0 shadow-2xl"
           />
           <div className="pl-5">
             <h4 className="text-medium font-bold mb-1 text-black dark:text-white block truncate max-w-60">
@@ -150,7 +150,6 @@ export const ProductItem = ({
           </div>
         </div>
       </div>
-    
     </Link>
   );
 };

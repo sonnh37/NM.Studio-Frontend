@@ -90,15 +90,15 @@ export function ProductGallery() {
     <div className="gap-2 grid grid-cols-2 py-5 sm:grid-cols-4">
       {products.map((item, index) => (
         <Card
-        className="rounded-none"
-          shadow="sm"
+        className="rounded-none cursor-pointer border border-neutral-300 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.2)]" // Thêm hiệu ứng shadow khi hover
+        shadow="sm"
           key={index}
           onPress={() => console.log("item pressed")}
         >
-          <CardBody className="overflow-visible z-10 p-0">
+          <CardBody className="overflow-hidden z-10 p-0">
             <motion.div
-              className="w-full h-full overflow-hidden"
-              whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
+              className="w-full h-full"
+              whileHover={{ scale: 1.1 }}
               transition={{
                 duration: 0.3,
                 ease: "easeInOut",
@@ -109,16 +109,17 @@ export function ProductGallery() {
                 radius="none"
                 width="100%"
                 alt={item.name}
-                className="w-full object-cover h-[500px]"
+                className="w-full object-cover h-[450px]"
                 src={
                   item.productXPhotos.length > 0 && item.productXPhotos[0].photo
                     ? item.productXPhotos[0].photo.src
                     : "/path/to/default/image.jpg"
-                } // Sử dụng hình ảnh mặc định nếu không có
+                }
               />
             </motion.div>
           </CardBody>
-          <CardFooter className="text-small z-20 bg-background justify-between">
+
+          <CardFooter className="text-small z-20 justify-between">
             <b>{item.name}</b>
             <p className="text-default-500">{item.price}</p>
           </CardFooter>

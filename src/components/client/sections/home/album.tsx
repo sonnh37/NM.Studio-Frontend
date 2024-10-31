@@ -43,7 +43,7 @@ export function AlbumHome() {
   }, []);
 
   return (
-    <div className="py-10">
+    <div className="py-20">
       <div className="flex flex-row h-[50px] items-center justify-center  relative w-full">
         <div className="max-w-7xl mx-auto w-full relative overflow-hidden px-4">
           <motion.div
@@ -60,9 +60,9 @@ export function AlbumHome() {
             }}
             className="div"
           >
-            <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
+            <p className="text-4xl text-center font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-0">
               Album
-            </h2>
+            </p>
             <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
               
             </p>

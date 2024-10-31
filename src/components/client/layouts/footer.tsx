@@ -81,7 +81,7 @@ function Footer() {
                     <p className="text-white">Phone: (123) 456-7890</p>
                 </div>
             </div>
-            <MapEmbed/>
+            
             <p className="text-white text-center text-xs pt-8">
                 © 2024 Music School. All rights reserved.
             </p>
