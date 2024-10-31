@@ -55,32 +55,6 @@ export function AlbumGallery() {
       {albums.map((album) => {
         const path = "/albums/" + album.id + "/photos";
         return (
-          //   <Card
-          //   shadow="sm"
-          //   key={index}
-          //   isPressable
-          //   onPress={() => console.log("item pressed")}
-          // >
-          //   <CardBody className="overflow-visible p-0">
-          //     <Image
-          //       isZoomed
-          //       shadow="sm"
-          //       radius="lg"
-          //       width="100%"
-          //       alt={item.name}
-          //       className="w-full object-cover h-[500px]"
-          //       src={
-          //         item.productXPhotos.length > 0 && item.productXPhotos[0].photo
-          //           ? item.productXPhotos[0].photo.src
-          //           : "/path/to/default/image.jpg"
-          //       } // Sử dụng hình ảnh mặc định nếu không có
-          //     />
-          //   </CardBody>
-          //   <CardFooter className="text-small justify-between">
-          //     <b>{item.name}</b>
-          //     <p className="text-default-500">{item.price}</p>
-          //   </CardFooter>
-          // </Card>
           <div
             key={album.id}
             className="relative bg-gray-50 rounded-none dark:bg-black overflow-hidden"
@@ -93,7 +67,7 @@ export function AlbumGallery() {
               >
                 <CardBody className="overflow-visible z-10 p-0">
                   <motion.div
-                    className="w-[25rem] h-[20rem] overflow-hidden"
+                    className="w-full h-full overflow-hidden"
                     whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
                     transition={{
                       duration: 0.3,
@@ -105,7 +79,7 @@ export function AlbumGallery() {
                       src={album.background ?? ""} // Hình ảnh nền
                       width={300}
                       height={300}
-                      className="object-cover  w-full h-full"
+                      className="  w-full h-full object-cover"
                     />
                   </motion.div>
                 </CardBody>

@@ -15,7 +15,6 @@ export interface Product extends BaseEntity {
     price?: number;
     description?: string;
     color?: Color; // Định nghĩa Color nếu cần
-    category?: Category;
     subCategory?: SubCategory;
     size?: Size; // Định nghĩa Size nếu cần
     status: ProductStatus; // Định nghĩa ProductStatus nếu cần
