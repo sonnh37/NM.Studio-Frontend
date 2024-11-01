@@ -39,44 +39,31 @@ export function NavbarHeader() {
   const pathUrl = usePathname();
 
   return (
-    <div className="text-neutral-500 dark:text-neutral-200">
-      <div className="bg-neutral-200">
-        <div className="border-b-[1px] h-[40px]  relative flex justify-between items-center flex-row overflow-hidden max-w-7xl mx-auto">
-          <div className="flex space-x-4 flex-row">
-            <div>
-              <i className="fa-solid fa-phone"></i> 0908145344
-            </div>
-            <div>
-              <i className="fa-regular fa-envelope"></i> nhumystudio@gmail.com
-            </div>
+    <div className="text-neutral-500 font-medium dark:text-neutral-200">
+  <div className="bg-neutral-600 text-white font-extralight dark:text-black">
+    <div className="h-[40px] w-full flex justify-center">
+      {/* Content constrained to max-w-7xl */}
+      <div className="max-w-7xl w-full flex justify-between items-center flex-row mx-auto">
+        <div className="flex space-x-4">
+          <div>
+            <i className="fa-solid fa-phone"></i> 0908145344
           </div>
-          <div className="flex space-x-4 flex-row">Chat with me</div>
-          <div className="flex space-x-4 justify-between items-center flex-row">
-            <div>
-              <a href="">ABOUT NHUMY</a>
-            </div>
-            <div>|</div>
-            <div>
-              <a href="">Liên hệ</a>
-            </div>
+          <div>
+            <i className="fa-regular fa-envelope"></i> nhumystudio@gmail.com
           </div>
-          <div className="space-x-4 flex flex-row justify-between items-center">
-            <Input
-              classNames={{
-                base: "max-w-full sm:max-w-[10rem] h-10",
-                mainWrapper: "h-full",
-                input: "text-small",
-                inputWrapper:
-                  "h-full font-normal bg-default-400/20 dark:bg-default-500/20",
-              }}
-              color="default"
-              placeholder="Type to search..."
-              size="sm"
-              radius="none"
-              startContent={<SearchIcon size={18} />}
-              type="search"
-            />
-            <button
+        </div>
+        <div className="flex space-x-4">Chat with me</div>
+        <div className="flex space-x-4 items-center">
+          <div>
+            <a href="">ABOUT NHUMY</a>
+          </div>
+          <div>|</div>
+          <div>
+            <a href="">Liên hệ</a>
+          </div>
+        </div>
+        <div className="flex items-center space-x-4">
+        <button
               aria-label="theme toggler"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="flex h-8 w-8 items-center justify-center text-body-color duration-300 dark:text-white"
@@ -101,14 +88,19 @@ export function NavbarHeader() {
                 </svg>
               </span>
             </button>
-          </div>
         </div>
       </div>
-      <div className="border-b-1 relative flex justify-between items-center flex-row sm:px-52 px-5">
-        <div className="h-[73.84px]"></div>
-        <Navbar className="top-0 " />
-      </div>
     </div>
+  </div>
+  <div className="border-b relative flex justify-center items-center">
+    {/* Content constrained to max-w-7xl */}
+    <div className="max-w-7xl w-full flex items-center justify-between mx-auto sm:px-52 px-5">
+      <div className="h-[73.84px]"></div>
+      <Navbar className="top-0" />
+    </div>
+  </div>
+</div>
+
   );
 }
 
@@ -213,85 +205,112 @@ function Navbar({ className }: { className?: string }) {
         )}
       >
         <Menu setActive={setActive}>
-          <MenuItem
-            href="/"
-            setActive={() => {}}
-            active={null}
-            item="Home"
-          ></MenuItem>
-          <MenuItem
-            href={"/#first-section"}
-            setActive={setActive}
-            active={active}
-            item="Service"
-          >
-            <div className="flex flex-col space-y-4 text-sm">
-              {services.map((service, index) => {
-                const slug = toSlug(service.name || "");
-                const path = slug;
-                return (
-                  <HoveredLink key={index} href={`/service/${path}`}>
-                    {service.name}
-                  </HoveredLink>
-                );
-              })}
-            </div>
-          </MenuItem>
-          <Link href="/">
-            <h1 className="m-auto font-waterfall text-neutral-700 dark:text-neutral-200 text-5xl font-bold">
-              Nhu My
-            </h1>
-            {/*<img src={logoSrc} width={"200"} height={""} alt="logo"/>*/}
-          </Link>
-          <MenuItem
-            href="/albums"
-            setActive={setActive}
-            active={active}
-            item="Album"
-          >
-            {/* <div className="text-sm grid grid-cols-2 gap-10 p-4"> */}
-            <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 ">
-              {albums.map((album, index) => {
-                return (
-                  <ProductItem
-                    index={index}
-                    title={album.title as string}
-                    href={`/albums/${album.id}/photos`}
-                    src={album.background as string}
-                    description={album.description as string}
-                    hoveredIndex={hoveredIndex}
-                    setHoveredIndex={setHoveredIndex}
-                  />
-                );
-              })}
-            </div>
-          </MenuItem>
-          <MenuItem
-            href="/products"
-            setActive={setActive}
-            active={active}
-            item="Product"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {categories.map((category, index) => {
-                const path = `/products?categoryName=${category.name}`;
-                return (
-                  <Link href={path} key={index} className="flex gap-1 flex-col">
-                    <h3 className="font-bold mb-2">{category.name}</h3>
-                    {/* Tiêu đề thể loại */}
-                    {category.subCategories.map((subCategory, subIndex) => (
-                      <HoveredLink
-                        key={subIndex}
-                        href={`${path}&subCategoryName=${subCategory.name}`} // Lấy thuộc tính name
-                      >
-                        {subCategory.name} {/* Hiển thị tên subCategory */}
-                      </HoveredLink>
-                    ))}
-                  </Link>
-                );
-              })}
-            </div>
-          </MenuItem>
+          <div>
+            <Link href="/">
+              <h1 className="m-auto font-waterfall text-neutral-700 dark:text-neutral-200 text-5xl font-bold">
+                Nhu My
+              </h1>
+              {/*<img src={logoSrc} width={"200"} height={""} alt="logo"/>*/}
+            </Link>
+          </div>
+          <div className="flex gap-5">
+            <MenuItem
+              href="/"
+              setActive={() => {}}
+              active={null}
+              item="Home"
+            ></MenuItem>
+            <MenuItem
+              href={"/#first-section"}
+              setActive={setActive}
+              active={active}
+              item="Service"
+            >
+              <div className="flex flex-col space-y-4 text-sm">
+                {services.map((service, index) => {
+                  const slug = toSlug(service.name || "");
+                  const path = slug;
+                  return (
+                    <HoveredLink key={index} href={`/service/${path}`}>
+                      {service.name}
+                    </HoveredLink>
+                  );
+                })}
+              </div>
+            </MenuItem>
+
+            <MenuItem
+              href="/albums"
+              setActive={setActive}
+              active={active}
+              item="Album"
+            >
+              {/* <div className="text-sm grid grid-cols-2 gap-10 p-4"> */}
+              <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-2 ">
+                {albums.map((album, index) => {
+                  return (
+                    <ProductItem
+                      index={index}
+                      title={album.title as string}
+                      href={`/albums/${album.id}/photos`}
+                      src={album.background as string}
+                      description={album.description as string}
+                      hoveredIndex={hoveredIndex}
+                      setHoveredIndex={setHoveredIndex}
+                    />
+                  );
+                })}
+              </div>
+            </MenuItem>
+            <MenuItem
+              href="/products"
+              setActive={setActive}
+              active={active}
+              item="Product"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {categories.map((category, index) => {
+                  const path = `/products?categoryName=${category.name}`;
+                  return (
+                    <Link
+                      href={path}
+                      key={index}
+                      className="flex gap-1 flex-col"
+                    >
+                      <h3 className="font-bold mb-2">{category.name}</h3>
+                      {/* Tiêu đề thể loại */}
+                      {category.subCategories.map((subCategory, subIndex) => (
+                        <HoveredLink
+                          key={subIndex}
+                          href={`${path}&subCategoryName=${subCategory.name}`} // Lấy thuộc tính name
+                        >
+                          {subCategory.name} {/* Hiển thị tên subCategory */}
+                        </HoveredLink>
+                      ))}
+                    </Link>
+                  );
+                })}
+              </div>
+            </MenuItem>
+          </div>
+
+          <div>
+          <Input
+              classNames={{
+                base: "max-w-full sm:max-w-[10rem] h-10",
+                mainWrapper: "h-full",
+                input: "text-small",
+                inputWrapper:
+                  "h-full font-normal bg-default-400/20 dark:bg-default-500/20",
+              }}
+              color="default"
+              placeholder="Type to search..."
+              size="sm"
+              radius="none"
+              startContent={<SearchIcon size={18} />}
+              type="search"
+            />
+          </div>
         </Menu>
       </motion.div>
     </AnimatePresence>

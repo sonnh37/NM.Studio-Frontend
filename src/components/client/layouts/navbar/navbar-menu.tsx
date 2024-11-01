@@ -33,7 +33,7 @@ export const MenuItem = ({
       onMouseEnter={() => setActive(item)}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      className="relative dark:hover:text-white py-2 hover:text-black hover:opacity-100 hover:inset-0 hover:transform
+      className="relative uppercase dark:hover:text-white py-2 hover:text-black hover:opacity-100 hover:inset-0 hover:transform
                 hover:bg-gradient-to-b  hover:rounded-sm "
     >
       <Link href={href}>
@@ -82,9 +82,11 @@ export const Menu = ({
   return (
     <nav
       onMouseLeave={() => setActive(null)} // resets the state
-      className="relative boder border-transparent border-stroke shadow-input flex flex-row items-center justify-center space-x-4 py-2 bg-background"
+      className="relative w-full border-t border-stroke shadow-input bg-background"
     >
-      {children}
+      <div className="max-w-7xl mx-auto flex flex-row items-center justify-between py-2 space-x-4">
+        {children}
+      </div>
     </nav>
   );
 };
