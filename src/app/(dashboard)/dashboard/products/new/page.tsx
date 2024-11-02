@@ -1,7 +1,7 @@
 "use client"
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/content-layout";
-import { ProductForm } from "@/components/dashboard/sections/courses/create-update-form";
+import { ProductForm } from "@/components/dashboard/sections/products/create-update-form";
 
 const breadcrumbItems = [
     {title: 'Dashboard', link: '/dashboard'},
