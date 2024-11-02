@@ -2,7 +2,7 @@
 
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/content-layout";
-import DataTableProducts from "@/components/dashboard/tables/products";
+import DataTableProducts from "@/components/dashboard/sections/courses";
 
 const breadcrumbItems = [
     {title: 'Dashboard', link: '/dashboard'},

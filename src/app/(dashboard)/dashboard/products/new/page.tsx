@@ -1,7 +1,7 @@
 "use client"
 import {Breadcrumbs} from "@/components/client/breadcrumb";
-import {ProductForm} from "@/components/dashboard/tables/products/create-update-form";
 import {ContentLayout} from "@/components/dashboard/content-layout";
+import { ProductForm } from "@/components/dashboard/sections/courses/create-update-form";
 
 const breadcrumbItems = [
     {title: 'Dashboard', link: '/dashboard'},
@@ -10,7 +10,7 @@ const breadcrumbItems = [
 ];
 export default function Page() {
     return (
-        <ContentLayout title="Album">
+        <ContentLayout title="Product">
             <div className="space-y-6">
                 <Breadcrumbs items={breadcrumbItems}/>
                 <ProductForm initialData={null}/>

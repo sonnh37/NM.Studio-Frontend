@@ -3,40 +3,51 @@ import {columns} from "./columns";
 import {
     isActive_options,
     isDeleted_options,
-    status_course_options,
-    type_course_options,
+   
 } from "@/components/common/filters";
 
-import {formFilterAdvanceds} from "./filter-advanced-form";
-import {FilterEnum} from "@/types/filter-enum";
 import {DataTable} from "@/components/common/data-table-generic/data-table";
-import {formCourseFilterAdvancedSchema} from "@/schemas/course-schema";
-import {deleteCourse, fetchCourses} from "@/services/course-service";
+import {FilterEnum} from "@/types/filter-enum";
+import {formFilterAdvanceds} from "./filter-advanced-form";
+import { productService } from "@/services/product-service";
+import { z } from "zod";
 
-export default function DataTableCourses() {
+const formFilterAdvancedSchema = z.object({
+    id: z.string().nullable().optional(),
+    date: z
+        .object({
+            from: z.date().optional(),
+            to: z.date().optional(),
+        })
+        .refine((date) => !!date.to, {message: "End Date is required."})
+        .optional(),
+    isDeleted: z.boolean().nullable().optional(),
+});
+
+export default function DataTableProducts() {
     const filterEnums: FilterEnum[] = [
-        {columnId: "status", title: "Status", options: status_course_options},
-        {
-            columnId: "type",
-            title: "Type",
-            options: type_course_options,
-        },
-        {
-            columnId: "isActive",
-            title: "Is Active",
-            options: isActive_options,
-        },
+        // {columnId: "status", title: "Status", options: status_product_options},
+        // {
+        //     columnId: "type",
+        //     title: "Type",
+        //     options: type_product_options,
+        // },
+        // {
+        //     columnId: "isActive",
+        //     title: "Is Active",
+        //     options: isActive_options,
+        // },
         {columnId: "isDeleted", title: "Is deleted", options: isDeleted_options},
     ];
 
     return (
         <DataTable
-            deleteData={deleteCourse}
+            deleteData={productService.delete}
             columns={columns}
-            fetchData={fetchCourses}
-            columnSearch="name"
+            fetchData={productService.fetchAll}
+            columnSearch="code"
             filterEnums={filterEnums}
-            formSchema={formCourseFilterAdvancedSchema}
+            formSchema={formFilterAdvancedSchema}
             formFilterAdvanceds={formFilterAdvanceds}
         />
     );

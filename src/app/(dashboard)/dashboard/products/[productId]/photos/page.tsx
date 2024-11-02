@@ -7,8 +7,6 @@ import {Button} from '@/components/ui/button';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
 import {Photo} from '@/types/photo';
 import {PhotoGetAllQuery} from "@/types/queries/photo-query";
-import {fetchPhotos} from "@/services/photo-service";
-import {fetchProduct} from "@/services/product-service";
 import {Product, ProductXPhoto} from "@/types/product";
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/content-layout";

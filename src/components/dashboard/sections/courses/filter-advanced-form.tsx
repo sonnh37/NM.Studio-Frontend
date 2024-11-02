@@ -2,20 +2,9 @@
 
 import {Button} from "@/components/ui/button";
 import {Calendar} from "@/components/ui/calendar";
-import {
-    FormControl,
-    FormDescription,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+import {FormControl, FormDescription, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {Textarea} from "@/components/ui/textarea";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
 import {cn} from "@/lib/utils";
 import {FormFilterAdvanced} from "@/types/form-filter-advanced";
 import {format} from "date-fns";
@@ -86,7 +75,7 @@ export const formFilterAdvanceds: FormFilterAdvanced[] = [
             <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                    <Input placeholder="Course name..." {...field} />
+                    <Input placeholder="Product name..." {...field} />
                 </FormControl>
                 <FormMessage/>
             </FormItem>
