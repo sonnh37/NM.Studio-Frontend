@@ -128,7 +128,7 @@ export function MainNav({ items }: MainNavProps) {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+            <NavigationMenuTrigger>Info</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
@@ -139,7 +139,7 @@ export function MainNav({ items }: MainNavProps) {
                     >
                       <Icons.logo className="h-6 w-6" />
                       <div className="mb-2 mt-4 text-lg font-medium">
-                        shadcn/ui
+                        Studio and Academic
                       </div>
                       <p className="text-sm leading-tight text-muted-foreground">
                         Beautifully designed components that you can copy and
@@ -149,13 +149,13 @@ export function MainNav({ items }: MainNavProps) {
                     </a>
                   </NavigationMenuLink>
                 </li>
-                <ListItem href="/docs" title="Introduction">
+                <ListItem href="https://www.instagram.com/nhumystudio/" title="Instagram">
                   Re-usable components built using Radix UI and Tailwind CSS.
                 </ListItem>
-                <ListItem href="/docs/installation" title="Installation">
+                <ListItem href="https://www.facebook.com/NhuMyMakeUp" title="Facebook">
                   How to install dependencies and structure your app.
                 </ListItem>
-                <ListItem href="/docs/primitives/typography" title="Typography">
+                <ListItem href="https://www.tiktok.com/@nhumystudio?lang=vi-VN" title="Tiktok">
                   Styles for headings, paragraphs, lists...etc
                 </ListItem>
               </ul>
