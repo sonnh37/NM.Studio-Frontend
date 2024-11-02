@@ -33,7 +33,7 @@ export const MenuItem = ({
       onMouseEnter={() => setActive(item)}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
-      className="relative uppercase dark:hover:text-white py-2 hover:text-black hover:opacity-100 hover:inset-0 hover:transform
+      className="relative  dark:hover:text-white py-2 hover:text-black hover:opacity-100 hover:inset-0 hover:transform
                 hover:bg-gradient-to-b  hover:rounded-sm "
     >
       <Link href={href}>
