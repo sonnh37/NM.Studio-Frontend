@@ -186,7 +186,7 @@ export function MainNav({ items }: MainNavProps) {
                   <ListItem
                     key={album.id}
                     title={album.title}
-                    href={`/albums/${album.id}`}
+                    href={`/albums/${album.id}/photos`}
                   >
                     {album.description}
                   </ListItem>

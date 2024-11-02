@@ -7,23 +7,23 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {ServiceGetAllQuery} from "@/types/queries/service-query";
 import { serviceService } from "@/services/service-service";
 
-export default function Page({params}: { params: { name: string } }) {
+export default function Page({params}: { params: { serviceId: string } }) {
     const [service, setService] = useState<Service | null>(null);
     const [editorState, setEditorState] = useState<EditorState | null>(null);
-    const {name} = params;
+    const {serviceId} = params;
     const query: ServiceGetAllQuery = {
         isPagination: true,
-        name: '',
+        id: '',
     }
 
     useEffect(() => {
         const fetchService = async () => {
-            if (!name) {
+            if (!serviceId) {
                 console.error('Title is null or undefined');
                 return;
             }
             try {
-                query.name = name;
+                query.id = serviceId;
                 const response = await serviceService.fetchAll(query);
 
                 if (response && response.data && response.data.length > 0) {
