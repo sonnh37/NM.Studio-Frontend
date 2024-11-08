@@ -1,12 +1,13 @@
 "use client";
 
 import {Breadcrumbs} from "@/components/client/breadcrumb";
-import DataTableServices from "@/components/dashboard/tables/services";
+import DataTableServices from "@/components/dashboard/sections/services";
 import {ContentLayout} from "@/components/dashboard/content-layout";
+import { Const } from "@/lib/const";
 
 const breadcrumbItems = [
     {title: 'Dashboard', link: '/dashboard'},
-    {title: 'Service', link: '/dashboard/service'}
+    {title: 'Service', link: `${Const.DASHBOARD_SERVICE_URL}`}
 ];
 
 export default function Page() {

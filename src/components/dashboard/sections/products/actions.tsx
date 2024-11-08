@@ -11,6 +11,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Const } from "@/lib/const";
 import { productService } from "@/services/product-service";
 import { Product } from "@/types/product";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,7 +30,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
   const queryClient = useQueryClient();
 
   const handleEditClick = () => {
-    router.push(`/products/${model.id}`);
+    router.push(`${Const.DASHBOARD_PRODUCT_URL}/${model.id}`);
   };
 
   const handleDeleteClick = async () => {};

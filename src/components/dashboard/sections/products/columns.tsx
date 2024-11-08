@@ -3,7 +3,7 @@
 import {DataTableColumnHeader} from "@/components/common/data-table-generic/data-table-column-header";
 import {Badge} from "@/components/ui/badge";
 import {Checkbox} from "@/components/ui/checkbox";
-import {Product} from "@/types/product";
+import {Product, ProductStatus} from "@/types/product";
 import {ColumnDef} from "@tanstack/react-table";
 import Actions from "./actions";
 import Image from "next/image";
@@ -244,42 +244,42 @@ export const columns: ColumnDef<Product>[] = [
     //         return value.includes(row.getValue(id));
     //     },
     // },
-    // {
-    //     accessorKey: "status",
-    //     header: ({column}) => (
-    //         <DataTableColumnHeader column={column} title="Status"/>
-    //     ),
-    //     cell: ({row}) => {
-    //         const status = row.getValue("status") as ProductStatus;
-    //         const statusText = ProductStatus[status];
+    {
+        accessorKey: "status",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Status"/>
+        ),
+        cell: ({row}) => {
+            const status = row.getValue("status") as ProductStatus;
+            const statusText = ProductStatus[status];
 
-    //         let badgeVariant:
-    //             | "secondary"
-    //             | "destructive"
-    //             | "default"
-    //             | "outline"
-    //             | null = "default";
+            let badgeVariant:
+                | "secondary"
+                | "destructive"
+                | "default"
+                | "outline"
+                | null = "default";
 
-    //         switch (status) {
-    //             case ProductStatus.Pending:
-    //                 badgeVariant = "secondary";
-    //                 break;
-    //             case ProductStatus.Approved:
-    //                 badgeVariant = "default";
-    //                 break;
-    //             case ProductStatus.Rejected:
-    //                 badgeVariant = "destructive";
-    //                 break;
-    //             default:
-    //                 badgeVariant = "default";
-    //         }
+            switch (status) {
+                case ProductStatus.InMaintenance:
+                    badgeVariant = "secondary";
+                    break;
+                case ProductStatus.Available:
+                    badgeVariant = "default";
+                    break;
+                case ProductStatus.Discontinued:
+                    badgeVariant = "destructive";
+                    break;
+                default:
+                    badgeVariant = "outline";
+            }
 
-    //         return <Badge variant={badgeVariant}>{statusText}</Badge>;
-    //     },
-    //     filterFn: (row, id, value) => {
-    //         return value.includes(row.getValue(id));
-    //     },
-    // },
+            return <Badge variant={badgeVariant}>{statusText}</Badge>;
+        },
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id));
+        },
+    },
     // {
     //     accessorKey: "isActive",
     //     header: ({column}) => (

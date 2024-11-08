@@ -21,10 +21,10 @@ export interface Product extends BaseEntity {
 }
 
 
-enum ProductStatus {
-    Unspecified = 0,
-    Available = 1,
-    Rented = 2,
-    InMaintenance = 3,
-    Discontinued = 4
+export enum ProductStatus {
+    Unspecified,
+    Available,
+    Rented,
+    InMaintenance,
+    Discontinued
 }

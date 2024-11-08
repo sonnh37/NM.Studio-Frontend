@@ -35,3 +35,12 @@ export const formatCurrency = (value: number | undefined): string => {
     currency: "VND",
   }).format(value);
 };
+
+export function getEnumOptions(enumObject: any) {
+  return Object.keys(enumObject)
+    .filter((key) => isNaN(Number(key))) // Lọc để chỉ lấy tên (không lấy số index)
+    .map((key) => ({
+      label: key,
+      value: enumObject[key].toString(),
+    }));
+}

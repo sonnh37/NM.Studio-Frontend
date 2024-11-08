@@ -1,11 +1,14 @@
 "use client";
-import React, {useEffect, useState} from "react";
-import {Service} from "@/types/service";
-import {ContentState, convertFromRaw, EditorState} from "draft-js";
-import {Editor} from "react-draft-wysiwyg";
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import {ServiceGetAllQuery} from "@/types/queries/service-query";
+import React, { useEffect, useState } from "react";
+import { Service } from "@/types/service";
+import { ContentState, convertFromRaw, EditorState } from "draft-js";
+import dynamic from 'next/dynamic';
+import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { serviceService } from "@/services/service-service";
+
+// Dynamically import the Editor component to prevent SSR issues
+const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Editor), { ssr: false });
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function Page({params}: { params: { serviceId: string } }) {
     const [service, setService] = useState<Service | null>(null);
@@ -25,9 +28,9 @@ export default function Page({params}: { params: { serviceId: string } }) {
             try {
                 query.id = serviceId;
                 const response = await serviceService.fetchAll(query);
-
-                if (response && response.data && response.data.length > 0) {
-                    const fetchedService = response.data.results[0] as Service;
+                console.log("check_service", response);
+                if (response && response.data) {
+                    const fetchedService = response.data!.results![0] as Service;
                     setService(fetchedService);
 
                     let contentState;
@@ -54,12 +57,12 @@ export default function Page({params}: { params: { serviceId: string } }) {
         };
 
         fetchService();
-    }, [name]);
+    }, [serviceId]);
 
     return (
         <>
             {service && (
-                <div className="service-details">
+                <div className="service-details container py-8">
                     <h1>{service.name}</h1>
                     {editorState && (
                         <div>

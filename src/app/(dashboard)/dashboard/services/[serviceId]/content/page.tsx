@@ -1,6 +1,7 @@
 "use client";
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import RichEditor from "@/components/client/react-draft-wysiwyg";
+import { Const } from "@/lib/const";
 import {Service} from "@/types/service";
 import axios from "axios";
 import {useEffect, useState} from "react";
@@ -23,8 +24,8 @@ export default function Page({params}: { params: { serviceId: string } }) {
 
     const breadcrumbItems = [
         {title: 'Dashboard', link: '/dashboard'},
-        {title: 'Service', link: '/dashboard/service'},
-        {title: `${params.serviceId}`, link: `/dashboard/service/${params.serviceId}`}
+        {title: 'Service', link: `${Const.DASHBOARD_SERVICE_URL}`},
+        {title: `${params.serviceId}`, link: `/dashboard/services/${params.serviceId}`}
     ];
 
     return (

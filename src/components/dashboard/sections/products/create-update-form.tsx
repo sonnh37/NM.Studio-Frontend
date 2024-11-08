@@ -30,7 +30,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {productService} from "@/services/product-service";
+import { productService } from "@/services/product-service";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, isValid, parse } from "date-fns";
@@ -51,29 +51,36 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import TimePicker from "react-time-picker";
 import { storage } from "../../../../../firebase";
-import { formatCurrency } from "@/lib/utils";
-
+import { formatCurrency, getEnumOptions } from "@/lib/utils";
+import { ProductStatus } from "@/types/product";
+import {
+  ProductCreateCommand,
+  ProductUpdateCommand,
+} from "@/types/commands/product-command";
 
 interface ProductFormProps {
   initialData: any | null;
 }
 
 const formSchema = z.object({
-  id: z.string().optional(),
-  sizeId: z.string().optional(),
-  colorId: z.string().optional(),
-  subCategoryId: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
-  sku: z.string().optional(),
-  description: z.string().optional(),
-  price: z.number().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-  startTime: z.string().optional(),
-  endTime: z.string().optional(),
-  createdDate: z.date().optional(),
-  createdBy: z.string().optional(),
-  isDeleted: z.boolean(),
+  id: z.string().optional().default(""),
+  sizeId: z.string().optional().default(""),
+  colorId: z.string().optional().default(""),
+  subCategoryId: z.string().optional().default(""),
+  name: z.string().min(1, "Name is required").default(""),
+  sku: z.string().optional().default(""),
+  description: z.string().optional().default(""),
+  price: z.number().optional().default(0),
+  status: z
+    .nativeEnum(ProductStatus)
+    .optional()
+    .default(ProductStatus.Unspecified),
+  createdDate: z
+    .date()
+    .optional()
+    .default(() => new Date()),
+  createdBy: z.string().optional().default(""),
+  isDeleted: z.boolean().default(false),
 });
 
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
@@ -127,46 +134,28 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      // const updatedValues = await uploadImageFirebase(values); // Chờ upload hoàn tất và nhận values mới
-      // const productCommand = {
-      //   id: initialData ? values.id : null,
-      //   name: values.name,
-      //   subjectId: values.subjectId,
-      //   providerId: values.providerId,
-      //   code: values.code,
-      //   teacherName: values.teacherName,
-      //   description: values.description,
-      //   status: values.status,
-      //   backgroundImage: updatedValues.backgroundImage,
-      //   price: values.price,
-      //   type: values.type,
-      //   totalSlots: values.totalSlots,
-      //   totalSessions: values.totalSessions,
-      //   startDate: convertToISODate(values.startDate),
-      //   endDate: convertToISODate(values.endDate),
-      //   startTime: formatTimeSpan(values.startTime ?? ""),
-      //   endTime: formatTimeSpan(values.endTime ?? ""),
-      //   isActive: values.isActive,
-      // };
-      // console.log("check_new", productCommand);
+      const values_ = values;
+      if (initialData) {
+        const updatedValues: ProductUpdateCommand = {
+          ...values_,
+        };
+        const response = await productService.update(updatedValues);
+        if (response.status != 1) throw new Error(response.message);
 
-      // if (initialData) {
-      //   const response = await productService.update(
-      //     productCommand as ProductUpdateCommand
-      //   );
-      //   if (response.status != 1) throw new Error(response.message);
-      //   toast.success(response.message);
-      // } else {
-      //   const response = await productService.create(
-      //     productCommand as ProductCreateCommand
-      //   );
-      //   if (response.status != 1) throw new Error(response.message);
-      //   toast.success(response.message);
-      // }
+        toast.success(response.message);
+      } else {
+        const createdValues: ProductCreateCommand = {
+          ...values_,
+        };
+        const response = await productService.create(createdValues);
+        if (response.status != 1) throw new Error(response.message);
+        toast.success(response.message);
+      }
 
-      // router.push(Const.URL_COURSE);
+      router.push(Const.DASHBOARD_SERVICE_URL);
     } catch (error: any) {
-      return toast.error(error.message);
+      console.error(error);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -174,63 +163,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      // name: "",
-      // subjectId: "",
-      // providerId: "",
-      // description: "",
-      // code: "",
-      // teacherName: "",
-      // status: undefined,
-      // type: undefined,
-      // backgroundImage: "",
-      // price: 0,
-      // totalSlots: 0,
-      // totalSessions: 0,
-      // startDate: undefined,
-      // endDate: undefined,
-      // endTime: undefined,
-      // isActive: true,
-      // createdBy: "N/A",
-      // createdDate: new Date(),
-      // isDeleted: false,
-    },
   });
 
   useEffect(() => {
     if (initialData) {
-      form.reset({
-        // id: initialData.id || "",
-        // name: initialData.name || "",
-        // subjectId: initialData.subjectId || "",
-        // providerId: initialData.providerId || "",
-        // status: initialData.status || "",
-        // type: initialData.type || "",
-        // description: initialData.description || "",
-        // code: initialData.code || "",
-        // teacherName: initialData.teacherName || "",
-        // backgroundImage: initialData.backgroundImage || "",
-        // price: initialData.price || 0,
-        // soldProducts: initialData.soldProducts || 0,
-        // totalSlots: initialData.totalSlots || 0,
-        // totalSessions: initialData.totalSessions || 0,
-        // startTime: initialData.startTime || "",
-        // endTime: initialData.endTime || "",
-        // startDate: initialData.startDate
-        //   ? new Date(initialData.startDate)
-        //   : undefined, // Convert to Date or set to null
-        // endDate: initialData.endDate
-        //   ? new Date(initialData.endDate)
-        //   : undefined, // Correct typo (assuming endDate is in initialData)
-        // isActive: !!initialData.isActive,
-        // createdDate: initialData.createdDate
-        //   ? new Date(initialData.createdDate)
-        //   : new Date(),
-        // createdBy: initialData.createdBy || "",
-        // isDeleted: !!initialData.isDeleted,
-      });
+      console.log("check_init", initialData);
+      const parsedInitialData = {
+        ...initialData,
+        createdDate: initialData.createdDate
+          ? new Date(initialData.createdDate)
+          : new Date(),
+      };
 
-      setFirebaseLink(initialData.backgroundImage || "");
+      form.reset(parsedInitialData);
+      setDate(parsedInitialData.createdDate);
+      setFirebaseLink(parsedInitialData.backgroundImage || "");
     } else {
       setDate(new Date());
     }
@@ -360,10 +307,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                             <FormItem>
                               <FormLabel>Name</FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder="Enter name"
-                                  {...field}
-                                />
+                                <Input placeholder="Enter name" {...field} />
                               </FormControl>
                               <FormDescription>
                                 This is your public display name.
@@ -389,6 +333,46 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                             </FormItem>
                           )}
                         />
+
+                        <FormField
+                          control={form.control}
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={(value) => {
+                                    console.log("Selected Value:", value);
+                                    field.onChange(Number(value));
+                                  }}
+                                  value={field.value?.toString()}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {getEnumOptions(ProductStatus).map(
+                                      (option) => (
+                                        <SelectItem
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormDescription>
+                                Select the current status of the course.
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
                         {/* <FormField
                           control={form.control}
                           name="status"
@@ -473,7 +457,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                           name="price"
                           render={({ field }) => {
                             const inputRef = useRef<HTMLInputElement>(null);
-                        
+
                             return (
                               <FormItem>
                                 <FormLabel>Price</FormLabel>
@@ -485,19 +469,31 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                                     type="text"
                                     className="mt-2 w-full"
                                     min="0"
-                                    value={field.value !== undefined ? formatCurrency(field.value) : ''}
+                                    value={
+                                      field.value !== undefined
+                                        ? formatCurrency(field.value)
+                                        : ""
+                                    }
                                     onChange={(e) => {
-                                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                                      const parsedValue = parseFloat(rawValue) || 0;
-                        
+                                      const rawValue = e.target.value.replace(
+                                        /[^0-9]/g,
+                                        ""
+                                      );
+                                      const parsedValue =
+                                        parseFloat(rawValue) || 0;
+
                                       // Cập nhật giá trị trong form
                                       field.onChange(parsedValue);
-                        
+
                                       // Giữ vị trí con trỏ
                                       if (inputRef.current) {
-                                        const cursorPosition = e.target.selectionStart || 0;
+                                        const cursorPosition =
+                                          e.target.selectionStart || 0;
                                         setTimeout(() => {
-                                          inputRef.current?.setSelectionRange(cursorPosition, cursorPosition);
+                                          inputRef.current?.setSelectionRange(
+                                            cursorPosition,
+                                            cursorPosition
+                                          );
                                         }, 0);
                                       }
                                     }}
