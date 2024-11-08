@@ -119,25 +119,33 @@ export const columns: ColumnDef<Service>[] = [
     },
     {
         accessorKey: "isDeleted",
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title=""/>
-        ),
+        header: ({column}) => <DataTableColumnHeader column={column} title=""/>,
         cell: ({row}) => {
             const isDeleted = row.getValue("isDeleted") as boolean;
             if (!isDeleted) {
                 return (
-                    <Badge variant="secondary">Active</Badge>
+                    <Image
+                        src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Fcheck.png?alt=media&token=1bdb7751-4bdc-4af1-b6e1-9b758df3a3d5"
+                        width={500}
+                        height={500}
+                        alt="Gallery Icon"
+                        className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+                    />
                 );
             }
             return (
-                <Badge variant="destructive">Deactivate</Badge>
+                <Image
+                    src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Funcheck.png?alt=media&token=3b2b94d3-1c59-4a96-b4c6-312033d868b1"
+                    width={500}
+                    height={500}
+                    alt="Gallery Icon"
+                    className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+                />
             );
         },
         filterFn: (row, id, value) => {
-            const isDeletedValue = row.getValue(id) as boolean;
-            return value.includes(isDeletedValue.toString()); // Chuyển đổi boolean sang string để so sánh
+            return value.includes(row.getValue(id));
         },
-        enableGlobalFilter: false
     },
     {
         id: "actions",

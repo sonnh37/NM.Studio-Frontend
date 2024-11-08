@@ -33,7 +33,6 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
     router.push(`${Const.DASHBOARD_PRODUCT_URL}/${model.id}`);
   };
 
-  const handleDeleteClick = async () => {};
   const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
 
   return (
