@@ -18,6 +18,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
 import { FilterEnum } from "@/types/filter-enum";
 import { BusinessResult } from "@/types/response/business-result";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
@@ -33,16 +34,19 @@ import { FiFilter } from "react-icons/fi";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { DeleteBaseEntitysDialog } from "./delete-dialog-generic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RiCheckboxBlankLine, RiCheckboxLine  } from "react-icons/ri";
-import { IoIosCheckbox, IoIosCheckboxOutline  } from "react-icons/io";
+import { CiViewTable } from "react-icons/ci";
+import { RiCheckboxBlankLine, RiCheckboxLine } from "react-icons/ri";
+import { IoIosCheckbox, IoIosCheckboxOutline } from "react-icons/io";
 import { GrCheckbox } from "react-icons/gr";
 import { IoCheckboxSharp } from "react-icons/io5";
+import { DndContext, useDraggable, useDroppable, DragEndEvent } from "@dnd-kit/core";
+
 interface DataTableToolbarProps<TData> {
   form: UseFormReturn<
     {
@@ -63,6 +67,44 @@ interface DataTableToolbarProps<TData> {
   renderFormFields?: () => JSX.Element[] | [];
 }
 
+const DraggableColumnItem = ({ column, onToggleVisibility }: any) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: column.id,
+  });
+
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id: column.id,
+  });
+
+  return (
+    <div
+      ref={(node) => {
+        setNodeRef(node);
+        setDroppableRef(node);
+      }}
+      {...listeners}
+      {...attributes}
+      style={{
+        transform: `translate3d(${transform ? transform.x : 0}px, ${transform ? transform.y : 0
+          }px, 0)`,
+        cursor: "move",
+      }}
+      className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
+      onClick={onToggleVisibility}
+    >
+      <span className="">
+        {column.getIsVisible() ? (
+          <IoCheckboxSharp className="w-6 h-6 text-black" />
+        ) : (
+          <GrCheckbox className="w-6 h-6 text-gray-500" />
+        )}
+      </span>
+      <span className="capitalize">{column.id}</span>
+    </div>
+  );
+};
+
+
 export function DataTableToolbar<TData>({
   form,
   table,
@@ -79,9 +121,60 @@ export function DataTableToolbar<TData>({
   const side = "left";
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isToggleColumn, setIsToggleColumn] = useState(false);
+
+  // Initialize column order and visibility
+  const initialColumns = table.getAllColumns().filter(
+    (column) => typeof column.accessorFn !== "undefined" && column.getCanHide()
+  );
+
+  const [columnOrder, setColumnOrder] = useState(initialColumns.map((col) => col.id));
+  const [columnVisibility, setColumnVisibility] = useState(
+    initialColumns.reduce((acc, col) => {
+      acc[col.id] = col.getIsVisible();
+      return acc;
+    }, {} as Record<string, boolean>)
+  );
+
+  // Update table column order and visibility
+  useEffect(() => {
+    table.setColumnOrder(columnOrder);
+    Object.entries(columnVisibility).forEach(([id, isVisible]) => {
+      const column = table.getColumn(id);
+      if (column) {
+        column.toggleVisibility(isVisible);
+      }
+    });
+  }, [columnOrder, columnVisibility, table]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    if (!event.over) return;
+
+    const sourceIndex = columnOrder.findIndex((id) => id === event.active.id);
+    const targetIndex = columnOrder.findIndex((id) => id === event.over.id);
+
+    if (sourceIndex !== -1 && targetIndex !== -1 && sourceIndex !== targetIndex) {
+      const updatedOrder = [...columnOrder];
+      const [movedId] = updatedOrder.splice(sourceIndex, 1);
+      updatedOrder.splice(targetIndex, 0, movedId);
+
+      setColumnOrder(updatedOrder);
+      table.setColumnOrder(updatedOrder);
+    }
+  };
+
+  const toggleColumnVisibility = (columnId: string) => {
+    setColumnVisibility((prev) => ({
+      ...prev,
+      [columnId]: !prev[columnId],
+    }));
+  };
+
   const getCurrentTableData = () => {
     return table.getRowModel().rows.map((row) => row.original);
   };
+
+
   const fields = renderFormFields ? renderFormFields() : [];
   return (
     <div className="flex items-center justify-between">
@@ -166,48 +259,77 @@ export function DataTableToolbar<TData>({
             </SheetContent>
           </Sheet>
         )}
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="ml-auto hidden h-8 lg:flex"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    <MixerHorizontalIcon className="h-4 w-4" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent
-                align="end"
-                className="w-fit p-2 shadow-lg rounded-md border bg-white"
-                onClick={(e) => e.stopPropagation()}
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto hidden h-8 lg:flex"
+              onClick={() => setIsOpen(!isOpen)}
             >
-                <div className="font-medium mb-2">Toggle columns</div>
-                <div className="border-t my-2"></div>
-                {table
-                    .getAllColumns()
-                    .filter(
-                        (column) =>
-                            typeof column.accessorFn !== "undefined" &&
-                            column.getCanHide()
-                    )
-                    .map((column) => (
-                        <div
-                            key={column.id}
-                            className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
-                            onClick={() => column.toggleVisibility(!column.getIsVisible())}
-                        >
-                            <span className="">
-                                {column.getIsVisible() ? (
-                                    <IoCheckboxSharp className="w-6 h-6 text-black" />
-                                ) : (
-                                    <GrCheckbox className="w-6 h-6 text-gray-500" />
-                                )}
-                            </span>
-                            <span className="capitalize">{column.id}</span>
-                        </div>
-                    ))}
-            </PopoverContent>
+              <CiViewTable className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="end"
+            className="w-fit p-2 shadow-lg rounded-md border bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="font-medium mb-2">Select position columns</div>
+            <div className="border-t my-2"></div>
+            <DndContext onDragEnd={handleDragEnd}>
+              {columnOrder.map((columnId) => {
+                const column = table.getColumn(columnId);
+                return (
+                  <DraggableColumnItem
+                    key={column.id}
+                    column={column}
+                    onToggleVisibility={() => toggleColumnVisibility(column.id)}
+                  />
+                );
+              })}
+            </DndContext>
+          </PopoverContent>
+        </Popover>
+
+        <Popover open={isToggleColumn} onOpenChange={setIsToggleColumn}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto hidden h-8 lg:flex"
+              onClick={() => setIsToggleColumn(!isToggleColumn)}
+            >
+              <MixerHorizontalIcon className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="end"
+            className="w-fit p-2 shadow-lg rounded-md border bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="font-medium mb-2">Toggle columns</div>
+            <div className="border-t my-2"></div>
+            {columnOrder.map((columnId) => {
+              const column = table.getColumn(columnId);
+              return (
+                <div
+                  key={column.id}
+                  className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
+                  onClick={() => toggleColumnVisibility(column.id)}
+                >
+                  <span className="">
+                    {columnVisibility[column.id] ? (
+                      <IoCheckboxSharp className="w-6 h-6 text-black" />
+                    ) : (
+                      <GrCheckbox className="w-6 h-6 text-gray-500" />
+                    )}
+                  </span>
+                  <span className="capitalize">{column.id}</span>
+                </div>
+              );
+            })}
+          </PopoverContent>
         </Popover>
         <CSVLink
           filename="export_data.csv"
