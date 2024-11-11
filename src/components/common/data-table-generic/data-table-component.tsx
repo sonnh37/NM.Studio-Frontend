@@ -4,7 +4,7 @@ import * as React from "react";
 import {flexRender, Table as ReactTable} from "@tanstack/react-table";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
 import {DataTablePagination} from "./data-table-pagination";
-
+    
 interface TableComponentProps<TData> {
     table: ReactTable<TData>;
     className?: string;

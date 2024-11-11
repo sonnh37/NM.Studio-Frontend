@@ -43,9 +43,9 @@ export default function DataTableProducts() {
     return (
         <DataTable
             deleteData={productService.delete}
-            columns={columns}
+            columns={columns} 
             fetchData={productService.fetchAll}
-            columnSearch="code"
+            columnSearch="sku"
             filterEnums={filterEnums}
             formSchema={formFilterAdvancedSchema}
             formFilterAdvanceds={formFilterAdvanceds}
