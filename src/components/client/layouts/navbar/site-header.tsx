@@ -5,8 +5,6 @@ import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
 import { ProductsCombobox } from "../../common/products-combobox";
 import { CartSheet } from "../../common/cart-sheet";
-import { LocaleSwitcher } from "../locale-switcher";
-import { AuthDropdown } from "../auth-dropdown";
 
 
 interface SiteHeaderProps {

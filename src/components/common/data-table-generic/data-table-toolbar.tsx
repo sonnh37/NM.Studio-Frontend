@@ -46,6 +46,9 @@ import { IoIosCheckbox, IoIosCheckboxOutline } from "react-icons/io";
 import { GrCheckbox } from "react-icons/gr";
 import { IoCheckboxSharp } from "react-icons/io5";
 import { DndContext, useDraggable, useDroppable, DragEndEvent } from "@dnd-kit/core";
+import { Slider } from "@/components/ui/slider";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedWidths } from "@/lib/slices/widthsSlice";
 
 interface DataTableToolbarProps<TData> {
   form: UseFormReturn<
@@ -173,8 +176,15 @@ export function DataTableToolbar<TData>({
   const getCurrentTableData = () => {
     return table.getRowModel().rows.map((row) => row.original);
   };
+// redux
+  const dispatch = useDispatch();
+  const tableWidth = useSelector((state: any) => state.widths.selectedWidths[0] || 100); // Get initial value from Redux
 
+  const handleWidthChange = (value: number) => {
+    dispatch(setSelectedWidths([value])); // Update state width in Redux
+  };
 
+  //end redux
   const fields = renderFormFields ? renderFormFields() : [];
   return (
     <div className="flex items-center justify-between">
@@ -291,7 +301,18 @@ export function DataTableToolbar<TData>({
             </DndContext>
           </PopoverContent>
         </Popover>
-
+        <div className="flex items-center space-x-2">
+          <span>Table Width:</span>
+          <Slider
+            defaultValue={[tableWidth]}
+            onValueChange={(value) => handleWidthChange(value[0])}
+            min={50}
+            max={100}
+            step={1}
+            className="w-24"
+          />
+          <span>{tableWidth}%</span>
+        </div>
         <Popover open={isToggleColumn} onOpenChange={setIsToggleColumn}>
           <PopoverTrigger asChild>
             <Button

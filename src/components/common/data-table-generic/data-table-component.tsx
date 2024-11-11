@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import {flexRender, Table as ReactTable} from "@tanstack/react-table";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
-import {DataTablePagination} from "./data-table-pagination";
-    
+import { flexRender, Table as ReactTable } from "@tanstack/react-table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DataTablePagination } from "./data-table-pagination";
+import { useSelector } from "react-redux";
+
 interface TableComponentProps<TData> {
     table: ReactTable<TData>;
     className?: string;
@@ -20,15 +21,20 @@ export function DataTableComponent<TData>({
         .getHeaderGroups()
         .flatMap((group) => group.headers).length;
 
+    const tableWidth = useSelector((state: any) => state.widths.selectedWidths[0] || 100);
+
     return (
         <div
             className={`rounded-md border ${className} space-y-8`}
-            style={{overflowY: "auto"}} // Set maxHeight and overflow
+            style={{
+                overflowY: "auto",
+                width: '100%',
+            }}
         >
-            <Table>
+            <Table style={{ width: '100%' }}>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow key={headerGroup.id} style={{ transform: `scale(${tableWidth / 100})`, transformOrigin: 'left' }}>
                             {headerGroup.headers.map((header) => (
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder
@@ -48,6 +54,7 @@ export function DataTableComponent<TData>({
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() ? "selected" : undefined}
+                                style={{ transform: `scale(${tableWidth / 100})`, transformOrigin: 'left' }}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>

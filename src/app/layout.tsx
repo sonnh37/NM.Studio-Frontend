@@ -6,6 +6,8 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import { Toaster } from "sonner";
+import { Provider } from "react-redux";
+import store from "@/lib/store";
 
 export default function RootLayout({
   children,
@@ -31,7 +33,9 @@ export default function RootLayout({
               enableSystem={true}
               defaultTheme="light"
             >
-              <RefreshProvider>{children}</RefreshProvider>
+              <RefreshProvider>
+                <Provider store={store}>{children}</Provider>
+              </RefreshProvider>
             </ThemeProvider>
           </SessionProvider>
         </NextUIProvider>
