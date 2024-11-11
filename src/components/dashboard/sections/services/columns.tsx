@@ -85,18 +85,6 @@ export const columns: ColumnDef<Service>[] = [
         },
     },
     {
-        accessorKey: "duration",
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title="Duration"/>
-        ),
-    },
-    {
-        accessorKey: "promotion",
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title="Promotion"/>
-        ),
-    },
-    {
         accessorKey: "isActive",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Is Active"/>
