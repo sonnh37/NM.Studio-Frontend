@@ -19,6 +19,7 @@ export class BaseService<T> {
             }
         }
         const cleanedQuery = cleanQueryParams(query!);
+        console.log("check_url", `${this.endpoint}?${cleanedQuery}`)
         return axiosInstance
             .get<BusinessResult<PagedResponse<T>>>(`${this.endpoint}?${cleanedQuery}`)
             .then(response => {
@@ -52,7 +53,7 @@ export class BaseService<T> {
 
     public delete = (id: string): Promise<BusinessResult<null>> => {
         return axiosInstance
-            .delete<BusinessResult<null>>(`${this.endpoint}/${id}`)
+            .delete<BusinessResult<null>>(`${this.endpoint}?id=${id}`)
             .then(response => response.data)
             .catch(error => this.handleError(error)); // Xử lý lỗi
     }

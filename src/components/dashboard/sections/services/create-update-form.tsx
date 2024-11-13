@@ -54,8 +54,18 @@ import { z } from "zod";
 import { storage } from "../../../../../firebase";
 import { Const } from "@/lib/const";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
+import { formatCurrency } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 interface ServiceFormProps {
   initialData: any | null;
@@ -66,19 +76,10 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required").default(""),
   description: z.string().optional().default(""),
   src: z.string().optional().default(""),
+  price: z.number().optional().default(0),
   createdDate: z.date().optional().default(new Date()),
-  createdBy: z.string().optional().default(""),
+  createdBy: z.string().nullable().optional().default(null),
   isDeleted: z.boolean().default(false),
-  photos: z
-    .array(
-      z.object({
-        id: z.string().optional(),
-        src: z.string().optional(),
-        name: z.string().optional(),
-      })
-    )
-    .optional()
-    .default([]),
 });
 
 export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
@@ -96,6 +97,10 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [pendingValues, setPendingValues] = useState<z.infer<
+    typeof formSchema
+  > | null>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -140,23 +145,16 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
       if (initialData) {
         const updatedValues: ServiceUpdateCommand = {
           ...values_,
-          isActive: true,
         };
         const response = await serviceService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);
+        router.push(Const.DASHBOARD_SERVICE_URL);
       } else {
-        const createdValues: ServiceCreateCommand = {
-          ...values_,
-          isActive: true,
-        };
-        const response = await serviceService.create(createdValues);
-        if (response.status != 1) throw new Error(response.message);
-        toast.success(response.message);
+        setPendingValues(values_);
+        setShowConfirmationDialog(true);
       }
-      
-      router.push(Const.DASHBOARD_SERVICE_URL);
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
@@ -171,23 +169,72 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-        const parsedInitialData = {
-            ...initialData,
-            createdDate: initialData.createdDate ? new Date(initialData.createdDate) : new Date(),
-            
-        };
+      const parsedInitialData = {
+        ...initialData,
+        createdDate: initialData.createdDate
+          ? new Date(initialData.createdDate)
+          : new Date(),
+      };
 
-        form.reset(parsedInitialData);
-        setDate(parsedInitialData.createdDate);
-        setFirebaseLink(parsedInitialData.src || "");
+      form.reset(parsedInitialData);
+      setDate(parsedInitialData.createdDate);
+      setFirebaseLink(parsedInitialData.src || "");
     } else {
-        setDate(new Date());
+      setDate(new Date());
     }
-}, [initialData, form]);
+  }, [initialData, form]);
 
+  const handleCreateConfirmation = async () => {
+    if (pendingValues) {
+      const createdValues: ServiceCreateCommand = {
+        ...pendingValues,
+      };
+      const response = await serviceService.create(createdValues);
+      if (response.status != 1) throw new Error(response.message);
+      toast.success(response.message);
+    }
+    setShowConfirmationDialog(false);
+    setPendingValues(null);
+  };
 
   return (
     <>
+      <Dialog
+        open={showConfirmationDialog}
+        onOpenChange={setShowConfirmationDialog}
+      >
+        <DialogContent>
+          <DialogTitle>
+            Do you want to continue adding this service?
+          </DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. Are you sure you want to permanently
+            delete this file from our servers?
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button
+                onClick={() => {
+                  handleCreateConfirmation();
+                  router.push(Const.DASHBOARD_SERVICE_URL);
+                }}
+                type="button"
+                variant="secondary"
+              >
+                No
+              </Button>
+            </DialogClose>
+            <Button
+              onClick={() => {
+                handleCreateConfirmation();
+                
+              }}
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
@@ -213,7 +260,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                           {initialData
                             ? field.value
                               ? "Deleted"
-                              : "Last Updated: " + initialData.updatedDate
+                              : "Last Updated: " + initialData.lastUpdatedDate
                             : "New"}
                         </p>
                       </FormControl>
@@ -271,7 +318,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                         />
                       </div>
                       <div className="grid gap-3">
-                      <FormField
+                        <FormField
                           control={form.control}
                           name="description"
                           render={({ field }) => (
@@ -294,6 +341,91 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                           )}
                         />
                       </div>
+
+                      <div className="grid gap-3">
+                        <FormField
+                          control={form.control}
+                          name="price"
+                          render={({ field }) => {
+                            const inputRef = useRef<HTMLInputElement>(null);
+
+                            return (
+                              <FormItem>
+                                <FormLabel>Price</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    ref={inputRef}
+                                    placeholder="Nhập giá..."
+                                    type="text"
+                                    className="mt-2 w-full"
+                                    min="0"
+                                    value={
+                                      field.value !== undefined
+                                        ? formatCurrency(field.value)
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      const rawValue = e.target.value.replace(
+                                        /[^0-9]/g,
+                                        ""
+                                      );
+                                      const parsedValue =
+                                        parseFloat(rawValue) || 0;
+
+                                      // Cập nhật giá trị trong form
+                                      field.onChange(parsedValue);
+
+                                      // Giữ vị trí con trỏ
+                                      if (inputRef.current) {
+                                        const cursorPosition =
+                                          e.target.selectionStart || 0;
+                                        setTimeout(() => {
+                                          inputRef.current?.setSelectionRange(
+                                            cursorPosition,
+                                            cursorPosition
+                                          );
+                                        }, 0);
+                                      }
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      </div>
+
+                      {/* <div className="grid gap-3">
+                        <FormField
+                          control={form.control}
+                          name="isActive"
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                              className="flex flex-row items-center justify-between"
+                              >
+                                <div className="space-y-0.5">
+                                  <FormLabel className="text-base">
+                                    Active Service
+                                  </FormLabel>
+                                  <FormDescription>
+                                    Enable to show data in home page
+                                  </FormDescription>
+                                </div>
+                                <FormControl>
+                                  <Switch
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      </div> */}
                     </div>
                   </CardContent>
                 </Card>

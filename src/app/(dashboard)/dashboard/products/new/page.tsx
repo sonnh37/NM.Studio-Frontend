@@ -2,11 +2,12 @@
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/content-layout";
 import { ProductForm } from "@/components/dashboard/sections/products/create-update-form";
+import {Const} from "@/lib/const";
 
 const breadcrumbItems = [
-    {title: 'Dashboard', link: '/dashboard'},
-    {title: 'Product', link: '/dashboard/product'},
-    {title: 'New', link: '/dashboard/product/new'},
+    {title: 'Dashboard', link: Const.DASHBOARD_URL},
+    {title: 'Products', link: Const.DASHBOARD_PRODUCT_URL},
+    {title: 'New', link: Const.DASHBOARD_PRODUCT_NEW_URL},
 ];
 export default function Page() {
     return (

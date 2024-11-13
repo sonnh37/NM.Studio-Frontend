@@ -3,10 +3,11 @@
 import {Breadcrumbs} from "@/components/client/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/content-layout";
 import DataTableProducts from "@/components/dashboard/sections/products";
+import {Const} from "@/lib/const";
 
 const breadcrumbItems = [
-    {title: 'Dashboard', link: '/dashboard'},
-    {title: 'Product', link: '/dashboard/product'}
+    {title: 'Dashboard', link: Const.DASHBOARD_URL},
+    {title: 'Product', link: Const.DASHBOARD_PRODUCT_URL}
 ];
 
 export default function Page() {

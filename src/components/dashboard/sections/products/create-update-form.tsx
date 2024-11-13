@@ -1,961 +1,453 @@
 "use client";
-import { CalendarIcon, ChevronLeft, Upload } from "lucide-react";
-import Image from "next/image";
+import {ChevronLeft} from "lucide-react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import {useForm} from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import {Badge} from "@/components/ui/badge";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
+import {productService} from "@/services/product-service";
 
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { productService } from "@/services/product-service";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useEffect, useRef, useState} from "react";
+import {toast} from "sonner";
+import {z} from "zod";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format, isValid, parse } from "date-fns";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { z } from "zod";
-
-import { useRouter } from "next/navigation";
-import { Const } from "@/lib/const";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import TimePicker from "react-time-picker";
-import { storage } from "../../../../../firebase";
-import { formatCurrency, getEnumOptions } from "@/lib/utils";
-import { ProductStatus } from "@/types/product";
-import {
-  ProductCreateCommand,
-  ProductUpdateCommand,
-} from "@/types/commands/product-command";
+import {useRouter} from "next/navigation";
+import {Const} from "@/lib/const";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {getEnumOptions} from "@/lib/utils";
+import {ProductStatus} from "@/types/product";
+import {ProductCreateCommand, ProductUpdateCommand,} from "@/types/commands/product-command";
+import {colorService} from "@/services/color-service";
+import {sizeService} from "@/services/size-service";
+import {Color} from "@/types/color";
+import {Size} from "@/types/size";
+import {Category, SubCategory} from "@/types/category";
+import {categoryService} from "@/services/category-service";
+import ConfirmationDialog, {
+  FormInput,
+  FormInputDate,
+  FormInputNumber,
+  FormInputTextArea,
+  FormSelectEnum,
+  FormSelectObject,
+} from "@/lib/form-custom-shadcn";
 
 interface ProductFormProps {
-  initialData: any | null;
+    initialData: any | null;
 }
 
 const formSchema = z.object({
-  id: z.string().optional().default(""),
-  sizeId: z.string().optional().default(""),
-  colorId: z.string().optional().default(""),
-  subCategoryId: z.string().optional().default(""),
-  name: z.string().min(1, "Name is required").default(""),
-  sku: z.string().optional().default(""),
-  description: z.string().optional().default(""),
-  price: z.number().optional().default(0),
-  status: z
-    .nativeEnum(ProductStatus)
-    .optional()
-    .default(ProductStatus.Unspecified),
-  createdDate: z
-    .date()
-    .optional()
-    .default(() => new Date()),
-  createdBy: z.string().optional().default(""),
-  isDeleted: z.boolean().default(false),
+    id: z.string().optional(),
+    sizeId: z.string().nullable().optional(),
+    colorId: z.string().nullable().optional(),
+    subCategoryId: z.string().nullable(),
+    name: z.string().min(1, "Name is required"),
+    sku: z.string(),
+    description: z.string().optional(),
+    price: z.number().default(0),
+    status: z.nativeEnum(ProductStatus),
+    createdDate: z
+        .date()
+        .optional()
+        .default(() => new Date()),
+    createdBy: z.string().nullable().optional().default(null),
+    isDeleted: z.boolean().default(false),
 });
 
-export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
-  const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
-  const action = initialData ? "Save changes" : "Create";
-  const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
-  const [date, setDate] = useState<Date>();
-  const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
+export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
+    const [loading, setLoading] = useState(false);
+    const [imgLoading, setImgLoading] = useState(false);
+    const title = initialData ? "Edit product" : "Create product";
+    const description = initialData ? "Edit a product." : "Add a new product";
+    const toastMessage = initialData ? "Product updated." : "Product created.";
+    const action = initialData ? "Save changes" : "Create";
+    const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
+    const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
+    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+    const [pendingValues, setPendingValues] = useState<z.infer<
+        typeof formSchema
+    > | null>(null);
 
-  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0];
-  //   if (file) {
-  //     setFirebaseLink(URL.createObjectURL(file)); // Hiển thị preview
-  //     setSelectedFile(file); // Lưu file vào state thay vì upload
-  //   }
-  // };
+    const [sizes, setSizes] = useState<Size[]>([]);
+    const [colors, setColors] = useState<Color[]>([]);
+    const selectedCategoryId = initialData
+        ? initialData.subCategory.categoryId
+        : null;
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
-  // const handleImageDelete = () => {
-  //   setFirebaseLink(""); // Xóa preview của hình ảnh
-  //   setSelectedFile(null); // Đặt file về null để xóa file đã chọn
-  //   form.setValue("backgroundImage", ""); // Xóa giá trị hình ảnh trong form nếu có
-  // };
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            setLoading(true);
+            const values_ = values;
+            if (initialData) {
+                const updatedValues: ProductUpdateCommand = {
+                    ...values_,
+                };
+                console.log("check_output", updatedValues);
+                const response = await productService.update(updatedValues);
+                if (response.status != 1) throw new Error(response.message);
 
-  // const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
-  //   if (selectedFile) {
-  //     const storageRef = ref(storage, `Product/${selectedFile.name}`);
-  //     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+                toast.success(response.message);
+                router.push(Const.DASHBOARD_PRODUCT_URL);
+            } else {
+                setPendingValues(values_);
+                setShowConfirmationDialog(true);
+            }
+        } catch (error: any) {
+            console.error(error);
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  //     const uploadPromise = new Promise<string>((resolve, reject) => {
-  //       uploadTask.on(
-  //         "state_changed",
-  //         null,
-  //         (error) => reject(error),
-  //         () => {
-  //           getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
-  //         }
-  //       );
-  //     });
+    const handleCreateConfirmation = async () => {
+        console.log("check_pend", pendingValues)
+        if (pendingValues) {
+            const createdValues: ProductCreateCommand = {
+                ...pendingValues,
+            };
 
-  //     const downloadURL = await uploadPromise;
-  //     return { ...values, backgroundImage: downloadURL }; // Trả về values đã cập nhật
-  //   }
-  //   return values; // Trả về values gốc nếu không có file
-  // };
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      const values_ = values;
-      if (initialData) {
-        const updatedValues: ProductUpdateCommand = {
-          ...values_,
+            const response = await productService.create(createdValues);
+            if (response.status != 1) throw new Error(response.message);
+            toast.success(response.message);
+        }
+        setShowConfirmationDialog(false);
+        setPendingValues(null);
+    };
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+    });
+
+    useEffect(() => {
+        if (initialData) {
+            const parsedInitialData = {
+                ...initialData,
+                createdDate: initialData.createdDate
+                    ? new Date(initialData.createdDate)
+                    : new Date(),
+            };
+
+            if (initialData.subCategory.categoryId) {
+                const category = categories.find(
+                    (ca) => ca.id === initialData.subCategory.categoryId
+                );
+                if (category) {
+                    setSubCategories(category.subCategories || []);
+                } else {
+                    setSubCategories([]);
+                }
+            }
+
+            form.reset({
+                ...parsedInitialData,
+                createdDate: parsedInitialData.createdDate
+                    ? new Date(parsedInitialData.createdDate)
+                    : new Date(),
+            });
+
+            console.log("check_init", parsedInitialData);
+        }
+    }, [initialData, form, categories]);
+
+    const fetchColors = async () => {
+        const response = await colorService.fetchAll();
+        return response.data?.results;
+    };
+
+    const fetchSizes = async () => {
+        const response = await sizeService.fetchAll();
+        return response.data?.results;
+    };
+
+    const fetchCategories = async () => {
+        const response = await categoryService.fetchAll();
+        return response.data?.results;
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [colors, sizes, categories] = await Promise.all([
+                    fetchColors(),
+                    fetchSizes(),
+                    fetchCategories(),
+                ]);
+                console.log("check_coloir", colors)
+                setColors(colors!);
+                setSizes(sizes!);
+                setCategories(categories!);
+                setSelectedCategory(selectedCategoryId);
+
+            } catch (error) {
+                console.error(error);
+            }
         };
-        const response = await productService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
 
-        toast.success(response.message);
-      } else {
-        const createdValues: ProductCreateCommand = {
-          ...values_,
-        };
-        const response = await productService.create(createdValues);
-        if (response.status != 1) throw new Error(response.message);
-        toast.success(response.message);
-      }
+        fetchData();
+    }, [selectedCategoryId]);
 
-      router.push(Const.DASHBOARD_SERVICE_URL);
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // useEffect(() => {
+    //   setSelectedCategory(selectedCategoryId);
+    // }, [selectedCategoryId]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+    useEffect(() => {
+        if (selectedCategory) {
+            const category = categories.find((ca) => ca.id === selectedCategory);
+            if (category) {
+                setSubCategories(category.subCategories || []);
+            } else {
+                setSubCategories([]);
+            }
+        }
+    }, [selectedCategory, categories]);
 
-  useEffect(() => {
-    if (initialData) {
-      console.log("check_init", initialData);
-      const parsedInitialData = {
-        ...initialData,
-        createdDate: initialData.createdDate
-          ? new Date(initialData.createdDate)
-          : new Date(),
-      };
+    return (
+        <>
+            <ConfirmationDialog
+                isOpen={showConfirmationDialog}
+                onConfirm={() => {
+                    handleCreateConfirmation();
+                    setShowConfirmationDialog(false)
+                    router.push(Const.DASHBOARD_PRODUCT_URL)
+                }} // Đóng modal
+                onClose={() => {
+                    handleCreateConfirmation();
+                    setShowConfirmationDialog(false)
+                }} // Đóng modal
+                title="Do you want to continue adding this product?"
+                description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
+                confirmText="Yes"
+                cancelText="No"
+            />
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
+                        <div className="flex items-center gap-4">
+                            <Link href="/products">
+                                <Button variant="outline" size="icon" className="h-7 w-7">
+                                    <ChevronLeft className="h-4 w-4"/>
+                                    <span className="sr-only">Back</span>
+                                </Button>
+                            </Link>
 
-      form.reset(parsedInitialData);
-      setDate(parsedInitialData.createdDate);
-      setFirebaseLink(parsedInitialData.backgroundImage || "");
-    } else {
-      setDate(new Date());
-    }
-  }, [initialData, form]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       // Gọi API lấy danh sách subjectId
-  //       const response_subjects = await subjectService.fetchAll();
-  //       setSubjects(response_subjects.data?.results!);
-  //       console.log("check_subjects", response_subjects.data?.results!);
-  //       // Gọi API lấy danh sách providerId
-  //       const response_providers = await providerService.fetchAll();
-  //       console.log("check_providers", response_providers.data?.results!);
-  //       setProviders(response_providers.data?.results!);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-  return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-            <div className="flex items-center gap-4">
-              <Link href="/products">
-                <Button variant="outline" size="icon" className="h-7 w-7">
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="sr-only">Back</span>
-                </Button>
-              </Link>
-
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Product Controller
-              </h1>
-              <Badge variant="outline" className="ml-auto sm:ml-0">
-                <FormField
-                  control={form.control}
-                  name="isDeleted"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <p>
-                          {initialData
-                            ? field.value
-                              ? "Deleted"
-                              : "Last Updated: " + initialData.updatedDate
-                            : "New"}
-                        </p>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </Badge>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Link href="/products" passHref>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push("/products");
-                    }} // Ngăn chặn submit
-                  >
-                    Discard
-                  </Button>
-                </Link>
-                <Button type="submit" size="sm" disabled={loading}>
-                  {loading ? "Processing..." : action}
-                </Button>
-              </div>
-            </div>
-            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-0">
-                  <CardHeader>
-                    <CardTitle>Product Details</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Enter name" {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                This is your public display name.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="sku"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Sku</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Enter sku" {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                This is your public display name.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Enter name" {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                This is your public display name.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="description"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Description</FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  {...field} // Kết nối field với input
-                                  placeholder="Nhập mô tả..."
-                                  className="mt-2" // Thêm khoảng cách trên nếu cần
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="status"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Status</FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) => {
-                                    console.log("Selected Value:", value);
-                                    field.onChange(Number(value));
-                                  }}
-                                  value={field.value?.toString()}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {getEnumOptions(ProductStatus).map(
-                                      (option) => (
-                                        <SelectItem
-                                          key={option.value}
-                                          value={option.value}
-                                        >
-                                          {option.label}
-                                        </SelectItem>
-                                      )
+                            <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+                                Product Controller
+                            </h1>
+                            <Badge variant="outline" className="ml-auto sm:ml-0">
+                                <FormField
+                                    control={form.control}
+                                    name="isDeleted"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <p>
+                                                    {initialData
+                                                        ? field.value
+                                                            ? "Deleted"
+                                                            : "Last Updated: " + initialData.lastUpdatedDate
+                                                        : "New"}
+                                                </p>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
                                     )}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormDescription>
-                                Select the current status of the course.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* <FormField
-                          control={form.control}
-                          name="status"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Status</FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) =>
-                                    field.onChange(Number(value))
-                                  } // Chuyển đổi string sang number
-                                  value={field.value?.toString()} // Chuyển đổi number sang string
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem
-                                      value={ProductStatus.Pending.toString()}
+                                />
+                            </Badge>
+                            <div className="hidden items-center gap-2 md:ml-auto md:flex">
+                                <Link href="" passHref>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push(Const.DASHBOARD_PRODUCT_URL);
+                                        }}
                                     >
-                                      Pending
-                                    </SelectItem>
-                                    <SelectItem
-                                      value={ProductStatus.Approved.toString()}
-                                    >
-                                      Approved
-                                    </SelectItem>
-                                    <SelectItem
-                                      value={ProductStatus.Rejected.toString()}
-                                    >
-                                      Rejected
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormDescription>
-                                Select the current status of the product.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        /> */}
-                        {/* <FormField
-                          control={form.control}
-                          name="type"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Type</FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) =>
-                                    field.onChange(Number(value))
-                                  } // Chuyển đổi string sang number
-                                  value={field.value?.toString()} // Chuyển đổi number sang string
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem
-                                      value={ProductType.Online.toString()}
-                                    >
-                                      Online
-                                    </SelectItem>
-                                    <SelectItem
-                                      value={ProductType.Offline.toString()}
-                                    >
-                                      Offline
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormDescription>
-                                Select the current status of the product.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        /> */}
-                        <FormField
-                          control={form.control}
-                          name="price"
-                          render={({ field }) => {
-                            const inputRef = useRef<HTMLInputElement>(null);
-
-                            return (
-                              <FormItem>
-                                <FormLabel>Price</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    {...field}
-                                    ref={inputRef}
-                                    placeholder="Nhập giá..."
-                                    type="text"
-                                    className="mt-2 w-full"
-                                    min="0"
-                                    value={
-                                      field.value !== undefined
-                                        ? formatCurrency(field.value)
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      const rawValue = e.target.value.replace(
-                                        /[^0-9]/g,
-                                        ""
-                                      );
-                                      const parsedValue =
-                                        parseFloat(rawValue) || 0;
-
-                                      // Cập nhật giá trị trong form
-                                      field.onChange(parsedValue);
-
-                                      // Giữ vị trí con trỏ
-                                      if (inputRef.current) {
-                                        const cursorPosition =
-                                          e.target.selectionStart || 0;
-                                        setTimeout(() => {
-                                          inputRef.current?.setSelectionRange(
-                                            cursorPosition,
-                                            cursorPosition
-                                          );
-                                        }, 0);
-                                      }
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      </div>
-
-                      {/* <div className="grid grid-cols-2 gap-3">
-                        <FormField
-                          control={form.control}
-                          name="subjectId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Subject</FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) =>
-                                    field.onChange(value)
-                                  }
-                                  value={field.value}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select subject" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {subjects.map((subject: Subject) => (
-                                      <SelectItem
-                                        key={subject.id}
-                                        value={subject.id}
-                                      >
-                                        {subject.name}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormDescription>
-                                Select the subject of the product.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="providerId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Provider</FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) =>
-                                    field.onChange(value)
-                                  }
-                                  value={field.value}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select provider" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {providers.map((provider: Provider) => (
-                                      <SelectItem
-                                        key={provider.id}
-                                        value={provider.id}
-                                      >
-                                        {provider.website}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormDescription>
-                                Select the provider for this product.
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div> */}
-                    </div>
-                  </CardContent>
-                </Card>
-                {/* <Card
-                  className="overflow-hidden"
-                  x-chunk="dashboard-07-chunk-2"
-                >
-                  <CardHeader>
-                    <CardTitle>Product Background</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="backgroundImage"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Product Background</FormLabel>
-                          <FormControl>
-                            <div className="grid gap-2">
-                              {firebaseLink ? (
-                                <>
-                                  <Image
-                                    alt="Product Background"
-                                    className="aspect-square w-full rounded-md object-cover"
-                                    height={300}
-                                    src={firebaseLink}
-                                    width={300}
-                                  />
-                                  <Button
-                                    onClick={handleImageDelete}
-                                    variant="destructive"
-                                  >
-                                    Delete Image
-                                  </Button>
-                                </>
-                              ) : (
-                                <div className="grid grid-cols-3 gap-2">
-                                  <button
-                                    type="button"
-                                    className="flex aspect-square w-full items-center justify-center rounded-md bproduct bproduct-dashed"
-                                    onClick={() =>
-                                      fileInputRef.current?.click()
-                                    }
-                                  >
-                                    <Upload className="h-4 w-4 text-muted-foreground" />
-                                    <span className="sr-only">Upload</span>
-                                  </button>
-                                </div>
-                              )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                className="hidden"
-                                onChange={handleImageChange}
-                              />
-                              <FormMessage />
+                                        Discard
+                                    </Button>
+                                </Link>
+                                <Button type="submit" size="sm" disabled={loading}>
+                                    {loading ? "Processing..." : action}
+                                </Button>
                             </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card> */}
-              </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
-                  <CardHeader>
-                    <CardTitle>Information</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormField
-                          control={form.control}
-                          name="createdBy"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input disabled placeholder="N/A" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <FormField
-                          control={form.control}
-                          name="createdDate"
-                          render={({ field }) => {
-                            const handleDateSelect = (selectedDate: any) => {
-                              setDate(selectedDate);
-                              field.onChange(
-                                selectedDate
-                                  ? new Date(selectedDate)
-                                  : new Date()
-                              );
-                            };
-                            return (
-                              <FormItem>
-                                <FormLabel>Created Date</FormLabel>
-                                <FormControl>
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <Button
-                                        disabled
-                                        variant={"outline"}
-                                        className={`w-[280px] justify-start text-left font-normal ${
-                                          !date ? "text-muted-foreground" : ""
-                                        }`}
-                                      >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {date ? (
-                                          format(date, "PPP")
-                                        ) : (
-                                          <span>Pick a date</span>
-                                        )}
-                                      </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                      <Calendar
-                                        mode="single"
-                                        selected={date}
-                                        onSelect={handleDateSelect}
-                                        initialFocus
-                                      />
-                                    </PopoverContent>
-                                  </Popover>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      </div>
+                        </div>
+                        <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+                            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+                                <Card x-chunk="dashboard-07-chunk-0">
+                                    <CardHeader>
+                                        <CardTitle>Product Details</CardTitle>
+                                        <CardDescription>
+                                            Lipsum dolor sit amet, consectetur adipiscing elit
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid gap-6">
+                                            <div className="grid gap-3">
+                                                <FormInput
+                                                    control={form.control}
+                                                    name="name"
+                                                    label="Name"
+                                                    description="This is your public display name."
+                                                    placeholder="Enter name"
+                                                />
+                                                <FormInput
+                                                    control={form.control}
+                                                    name="sku"
+                                                    label="Code"
+                                                    description="This is your public display code."
+                                                    placeholder="Enter code"
+                                                />
+
+                                                <FormInputTextArea
+                                                    control={form.control}
+                                                    name="description"
+                                                    label="Description"
+                                                    description="This is your public display description."
+                                                    placeholder="Enter description"
+                                                />
+
+                                                <FormSelectEnum
+                                                    control={form.control}
+                                                    name="status"
+                                                    label="Status"
+                                                    description="Select the current status of the course."
+                                                    enumOptions={getEnumOptions(ProductStatus)}
+                                                    placeholder="Select status"
+                                                />
+
+                                                <FormInputNumber
+                                                    control={form.control}
+                                                    name="price"
+                                                    label="Price"
+                                                    placeholder="Enter price"
+                                                    className="mt-2 w-full"
+                                                />
+
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <FormSelectObject
+                                                        control={form.control}
+                                                        name="sizeId"
+                                                        label="Size"
+                                                        description="Select the size for this product."
+                                                        options={sizes}
+                                                        selectLabel="name"
+                                                        selectValue="id"
+                                                        placeholder="Select size"
+                                                    />
+
+                                                    <FormSelectObject
+                                                        control={form.control}
+                                                        name="colorId"
+                                                        label="Color"
+                                                        description="Select the color for this product."
+                                                        options={colors}
+                                                        selectLabel="name"
+                                                        selectValue="id"
+                                                        placeholder="Select color"
+                                                    />
+                                                </div>
+                                                <FormItem>
+                                                    <FormLabel>Category</FormLabel>
+                                                    <Select
+                                                        onValueChange={(value) => {
+                                                            setSelectedCategory(value);
+                                                        }}
+                                                        value={selectedCategory ?? undefined}
+                                                    >
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select category"/>
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {categories.map((category) => (
+                                                                <SelectItem
+                                                                    key={category.id}
+                                                                    value={category.id}
+                                                                >
+                                                                    {category.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="subCategoryId"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>SubCategory</FormLabel>
+                                                            <FormControl>
+                                                                <Select
+                                                                    onValueChange={(value) =>
+                                                                        field.onChange(value)
+                                                                    }
+                                                                    value={field.value ?? undefined} // Ensure the value is set correctly
+                                                                >
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Select subcategory"/>
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        {subCategories.map((subCategory) => (
+                                                                            <SelectItem
+                                                                                key={subCategory.id}
+                                                                                value={subCategory.id}
+                                                                            >
+                                                                                {subCategory.name}
+                                                                            </SelectItem>
+                                                                        ))}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </FormControl>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                            <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                                <Card x-chunk="dashboard-07-chunk-3">
+                                    <CardHeader>
+                                        <CardTitle>Information</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid gap-6">
+                                            <div className="grid gap-3">
+                                                <FormInput
+                                                    control={form.control}
+                                                    name="createdBy"
+                                                    label="Created By"
+                                                    placeholder="N/A"
+                                                    disabled={true}
+                                                />
+                                            </div>
+                                            <div className="grid gap-3">
+                                                <FormInputDate
+                                                    control={form.control}
+                                                    name="createdDate"
+                                                    label="Created Date"
+                                                    disabled={true}
+                                                />
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
                     </div>
-                  </CardContent>
-                </Card>
-                {/* <Card x-chunk="dashboard-07-chunk-5">
-                  <CardHeader>
-                    <CardTitle>Quantity with time</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-3">
-                      <FormField
-                        control={form.control}
-                        name="soldProducts"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Sold products</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field} // Kết nối field với input
-                                placeholder=""
-                                type="number"
-                                disabled // Đặt trường này ở trạng thái disabled
-                                className="mt-2 w-full"
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseFloat(e.target.value) || 0
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="totalSlots"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Total slots</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field} // Kết nối field với input
-                                placeholder="Enter number slots..."
-                                type="number"
-                                className="mt-2 w-full"
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseFloat(e.target.value) || 0
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="totalSessions"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Total sessions</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field} // Kết nối field với input
-                                placeholder="Enter number sessions"
-                                type="number"
-                                className="mt-2 w-full"
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseFloat(e.target.value) || 0
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="startTime"
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>Start Time</FormLabel>
-                              <FormControl>
-                                <TimePicker
-                                  value={field.value}
-                                  onChange={(value) => field.onChange(value)} 
-                                  className="mt-2 w-full"
-                                  clockIcon={null}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="endTime"
-                        render={({ field }) => {
-                          // const handleTimeChange = (value: any) => {
-                          //   // Chuyển đổi giá trị từ TimePicker về định dạng hh:mm:ss
-                          //   if (value) {
-                          //     const [hours, minutes] = value.split(":");
-                          //     const formattedTime = `${String(hours).padStart(
-                          //       2,
-                          //       "0"
-                          //     )}:${String(minutes).padStart(2, "0")}:00`;
-                          //     field.onChange(formattedTime);
-                          //   } else {
-                          //     field.onChange(null); // Xử lý trường hợp người dùng xóa thời gian
-                          //   }
-                          // };
-
-                          return (
-                            <FormItem>
-                              <FormLabel>End Time</FormLabel>
-                              <FormControl>
-                                <TimePicker
-                                  value={field.value}
-                                  onChange={(value) => field.onChange(value)} 
-                                  className="mt-2 w-full"
-                                  clockIcon={null}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="startDate"
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>Start Date</FormLabel>
-                              <FormControl>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant={"outline"}
-                                      className={`w-[280px] justify-start text-left font-normal 
-                                    }`}
-                                    >
-                                      <CalendarIcon className="mr-2 h-4 w-4" />
-                                      {field.value ? (
-                                        format(field.value, "dd/MM/yyyy")
-                                      ) : (
-                                        <span>Pick a date</span>
-                                      )}
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                      mode="single"
-                                      selected={
-                                        field.value
-                                          ? new Date(field.value)
-                                          : undefined
-                                      }
-                                      onSelect={(date_) =>
-                                        field.onChange(date_)
-                                      }
-                                      className="mt-2 w-full"
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="endDate"
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>End Date</FormLabel>
-                              <FormControl>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant={"outline"}
-                                      className={`w-[280px] justify-start text-left font-normal 
-                                    }`}
-                                    >
-                                      <CalendarIcon className="mr-2 h-4 w-4" />
-                                      {field.value ? (
-                                        format(field.value, "dd/MM/yyyy")
-                                      ) : (
-                                        <span>Pick a date</span>
-                                      )}
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                      mode="single"
-                                      selected={
-                                        field.value
-                                          ? new Date(field.value)
-                                          : undefined
-                                      }
-                                      onSelect={(date_) =>
-                                        field.onChange(date_)
-                                      }
-                                      className="mt-2 w-full"
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    </div>
-                  </CardContent>
-                </Card> */}
-              </div>
-            </div>
-          </div>
-        </form>
-      </Form>
-    </>
-  );
+                </form>
+            </Form>
+        </>
+    );
 };

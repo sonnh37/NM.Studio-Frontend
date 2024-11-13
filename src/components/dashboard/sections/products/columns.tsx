@@ -56,6 +56,12 @@ export const columns: ColumnDef<Product>[] = [
         ),
     },
     {
+        accessorKey: "name",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Name"/>
+        ),
+    },
+    {
         accessorKey: "subCategory.name",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="SubCategory"/>
@@ -71,12 +77,6 @@ export const columns: ColumnDef<Product>[] = [
         accessorKey: "color.name",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Color"/>
-        ),
-    },
-    {
-        accessorKey: "name",
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title="Name"/>
         ),
     },
     {

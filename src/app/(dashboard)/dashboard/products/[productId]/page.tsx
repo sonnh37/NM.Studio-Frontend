@@ -7,6 +7,7 @@ import {ContentLayout} from "@/components/dashboard/content-layout";
 import { productService } from "@/services/product-service";
 import { toast } from "sonner";
 import { ProductForm } from "@/components/dashboard/sections/products/create-update-form";
+import {Const} from "@/lib/const";
 
 export default function Page({params}: { params: { productId: string } }) {
     const [product, setProduct] = useState<Product | null>(null);
@@ -23,9 +24,9 @@ export default function Page({params}: { params: { productId: string } }) {
     }, [params.productId]);
 
     const breadcrumbItems = [
-        {title: 'Dashboard', link: '/dashboard'},
-        {title: 'Product', link: '/dashboard/product'},
-        {title: `${params.productId}`, link: `/dashboard/product/${params.productId}`}
+        {title: 'Dashboard', link: Const.DASHBOARD_URL},
+        {title: 'Product', link: Const.DASHBOARD_PRODUCT_URL},
+        {title: `${params.productId}`, link: `${Const.DASHBOARD_PRODUCT_URL}/${params.productId}`}
     ];
 
     return (
