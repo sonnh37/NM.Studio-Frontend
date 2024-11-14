@@ -60,7 +60,7 @@ export function Hero() {
 
     return (
         <div className="pb-10">
-            <ImagesSlider className="h-[40rem]" images={images}>
+            <ImagesSlider className="h-screen" images={images}>
                 <motion.div
                     initial={{
                         opacity: 0,

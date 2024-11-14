@@ -38,7 +38,7 @@ export default function Features() {
   return (
     <div className="h-screen w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center backdrop-blur-sm">
   <div className="absolute inset-0 pointer-events-none flex items-center justify-center dark:bg-black bg-white opacity-50"></div>
-   <div className="max-w-7xl mx-auto py-10 z-10 ">
+   <div className="container mx-auto py-10 z-10 ">
         <p className="text-4xl font-bold text-center relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
           CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
         </p>
@@ -157,7 +157,7 @@ export default function Features() {
 
 //   return (
 //     <div className="w-full h-full">
-//       <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans">
+//       <h2 className="container pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans">
 //         Hãy đến với các dịch vụ của chúng tôi.
 //       </h2>
 //       <Carousel items={cards} />

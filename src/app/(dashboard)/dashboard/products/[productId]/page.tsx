@@ -23,12 +23,6 @@ export default function Page({params}: { params: { productId: string } }) {
         fetchData();
     }, [params.productId]);
 
-    const breadcrumbItems = [
-        {title: 'Dashboard', link: Const.DASHBOARD_URL},
-        {title: 'Product', link: Const.DASHBOARD_PRODUCT_URL},
-        {title: `${params.productId}`, link: `${Const.DASHBOARD_PRODUCT_URL}/${params.productId}`}
-    ];
-
     return (
             <div className="space-y-6">
                 <ProductForm initialData={product}/>

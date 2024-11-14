@@ -16,7 +16,7 @@ const ProductHome = () => {
   return (
     <div className="w-full bg-neutral-100  h-auto py-20">
       <div className="flex flex-row items-center justify-center relative w-full">
-        <div className="max-w-7xl mx-auto w-full relative overflow-hidden px-4">
+        <div className="container mx-auto w-full relative overflow-hidden px-4">
           <div
             className="div"
             style={{

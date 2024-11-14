@@ -87,7 +87,7 @@ export function ProductGallery() {
   // ];
 
   return (
-    <div className="gap-2 grid grid-cols-2 py-5 sm:grid-cols-4">
+    <div className="gap-2 container mx-auto grid grid-cols-2 py-5 sm:grid-cols-4">
       {products.map((item, index) => (
         <Card
         className="rounded-none cursor-pointer border border-neutral-300 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.2)]" // Thêm hiệu ứng shadow khi hover

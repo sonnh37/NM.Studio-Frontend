@@ -42,7 +42,7 @@ export function NavbarHeader() {
     <div className="text-neutral-500 font-medium dark:text-neutral-200">
       <div className="bg-neutral-600 text-white font-extralight dark:text-black">
         <div className="h-[40px] w-full flex justify-center">
-          {/* Content constrained to max-w-7xl */}
+          {/* Content constrained to container */}
           <div className="max-w-7xl w-full flex justify-between items-center flex-row mx-auto">
             <div className="flex space-x-4">
               <div>
@@ -277,7 +277,7 @@ function Navbar({ className }: { className?: string }) {
                     >
                       <h3 className="font-bold mb-2">{category.name}</h3>
                       {/* Tiêu đề thể loại */}
-                      {category.subCategories.map((subCategory, subIndex) => (
+                      {category.subCategories!.map((subCategory, subIndex) => (
                         <HoveredLink
                           key={subIndex}
                           href={`${path}&subCategoryName=${subCategory.name}`} // Lấy thuộc tính name

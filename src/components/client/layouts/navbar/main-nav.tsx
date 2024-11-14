@@ -205,7 +205,7 @@ export function MainNav({ items }: MainNavProps) {
                   return (
                     <div key={index}>
                       <Link href={path} className="font-bold block select-none space-y-1 rounded-md p-3 pl-1 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">{category.name}</Link>
-                      {category.subCategories.map((subCategory, subIndex) => (
+                      {category.subCategories!.map((subCategory, subIndex) => (
                         <ListItem
                           key={subCategory.id}
                           className="p-1"

@@ -8,7 +8,7 @@ import { CartSheet } from "../../common/cart-sheet";
 
 
 interface SiteHeaderProps {
-  user: User | null;
+  user: any | null;
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
@@ -40,17 +40,19 @@ export function SiteHeader({ user }: SiteHeaderProps) {
           </div>
         </div>
       </div>
-      <div className="container flex h-16 items-center">
-        <MainNav items={siteConfig.mainNav} />
-        <MobileNav items={siteConfig.mainNav} />
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-2">
-            <ModeToggle />
-            <ProductsCombobox />
-            <CartSheet />
-            {/* <LocaleSwitcher /> */}
-            {/* <AuthDropdown user={user} /> */}
-          </nav>
+      <div className="w-full flex justify-center">
+        <div className="container flex h-16 items-center">
+          <MainNav items={siteConfig.mainNav}/>
+          <MobileNav items={siteConfig.mainNav}/>
+          <div className="flex flex-1 items-center justify-end space-x-4">
+            <nav className="flex items-center space-x-2">
+              <ModeToggle/>
+              <ProductsCombobox/>
+              <CartSheet/>
+              {/* <LocaleSwitcher /> */}
+              {/* <AuthDropdown user={user} /> */}
+            </nav>
+          </div>
         </div>
       </div>
     </header>

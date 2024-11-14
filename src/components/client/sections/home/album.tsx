@@ -45,7 +45,7 @@ export function AlbumHome() {
   return (
     <div className="py-20">
       <div className="flex flex-row h-[50px] items-center justify-center  relative w-full">
-        <div className="max-w-7xl mx-auto w-full relative overflow-hidden px-4">
+        <div className="container mx-auto w-full relative overflow-hidden px-4">
           <motion.div
             initial={{
               opacity: 0,

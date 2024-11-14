@@ -2,6 +2,7 @@ import {ModeToggle} from "@/components/common/mode-toggle";
 import {UserNav} from "@/components/dashboard/common/user-nav";
 import {SheetMenu} from "@/components/dashboard/common/sheet-menu";
 import DynamicBreadcrumbs from "@/components/common/dynamic-breadcrumbs";
+import {ProductsCombobox} from "@/components/client/common/products-combobox";
 
 export function Navbar() {
     return (
@@ -12,7 +13,8 @@ export function Navbar() {
                     <SheetMenu/>
                     <h1 className="font-bold"><DynamicBreadcrumbs/></h1>
                 </div>
-                <div className="flex flex-1 items-center justify-end">
+                <div className="flex flex-1 items-center gap-2 justify-end">
+                    <ProductsCombobox />
                     <ModeToggle/>
                     <UserNav/>
                 </div>
