@@ -148,8 +148,7 @@ export function DataTable<TData>({
         queryFn: () => fetchData(queryParams),
         placeholderData: keepPreviousData,
         enabled: shouldFetch,
-        refetchOnWindowFocus: false, // Ngăn tự động refetch khi lấy lại tiêu điểm
-        
+        refetchOnWindowFocus: false,
     });
 
     const handleFilterClick = () => {

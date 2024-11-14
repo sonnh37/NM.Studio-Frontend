@@ -1,5 +1,5 @@
 "use client";
-import {AlbumForm} from "@/components/dashboard/tables/albums/create-update-form";
+import {AlbumForm} from "@/components/dashboard/sections/albums/create-update-form";
 import {useEffect, useState} from "react";
 import {Album} from "@/types/album";
 import {albumService} from "@/services/album-service";

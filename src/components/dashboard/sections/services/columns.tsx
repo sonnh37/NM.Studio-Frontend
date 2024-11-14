@@ -13,7 +13,7 @@ import Actions from "./actions";
 
 export const columns: ColumnDef<Service>[] = [
     {
-        id: "select",
+        accessorKey: "select",
         header: ({table}) => (
             <Checkbox
                 checked={
@@ -31,8 +31,13 @@ export const columns: ColumnDef<Service>[] = [
                 aria-label="Select row"
             />
         ),
-        enableSorting: false,
-        enableHiding: false,
+    },
+    {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({row}) => {
+            return <Actions row={row}/>;
+        },
     },
     {
         accessorKey: "name",
@@ -101,7 +106,7 @@ export const columns: ColumnDef<Service>[] = [
     },
     {
         accessorKey: "isDeleted",
-        header: ({column}) => <DataTableColumnHeader column={column} title=""/>,
+        header: ({column}) => <DataTableColumnHeader column={column} title="Is Deleted"/>,
         cell: ({row}) => {
             const isDeleted = row.getValue("isDeleted") as boolean;
             if (!isDeleted) {
@@ -128,11 +133,5 @@ export const columns: ColumnDef<Service>[] = [
         filterFn: (row, id, value) => {
             return value.includes(row.getValue(id));
         },
-    },
-    {
-        id: "actions",
-        cell: ({row}) => {
-            return <Actions row={row}/>;
-        },
-    },
+    }
 ]

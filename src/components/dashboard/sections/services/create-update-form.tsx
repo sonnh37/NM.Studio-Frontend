@@ -34,6 +34,7 @@ import ConfirmationDialog, {
 } from "@/lib/form-custom-shadcn";
 import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
+import {usePreviousPath} from "@/hooks/use-previous-path";
 
 interface ServiceFormProps {
     initialData: any | null;
@@ -43,7 +44,7 @@ const formSchema = z.object({
     id: z.string().optional(),
     name: z.string().min(1, "Name is required").default(""),
     description: z.string().optional().default(""),
-    src: z.string().optional().default(""),
+    src: z.string().nullable().optional().default(""),
     price: z.number().optional().default(0),
     createdDate: z.date().optional().default(new Date()),
     createdBy: z.string().nullable().optional().default(null),
@@ -69,6 +70,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
     const [pendingValues, setPendingValues] = useState<z.infer<
         typeof formSchema
     > | null>(null);
+    const previousPath = usePreviousPath();
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -118,7 +120,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
                 if (response.status != 1) throw new Error(response.message);
 
                 toast.success(response.message);
-                router.push(Const.DASHBOARD_SERVICE_URL);
+                router.push(previousPath);
             } else {
                 setPendingValues(values_);
                 setShowConfirmationDialog(true);
@@ -169,11 +171,12 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
                 onConfirm={() => {
                     handleCreateConfirmation();
                     setShowConfirmationDialog(false)
-                    router.push(Const.DASHBOARD_SERVICE_URL)
+
                 }} // Đóng modal
                 onClose={() => {
                     handleCreateConfirmation();
                     setShowConfirmationDialog(false)
+                    router.push(previousPath)
                 }} // Đóng modal
                 title="Do you want to continue adding this service?"
                 description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
@@ -184,7 +187,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                         <div className="flex items-center gap-4">
-                            <Link href={Const.DASHBOARD_SERVICE_URL}>
+                            <Link href={previousPath}>
                                 <Button variant="outline" size="icon" className="h-7 w-7">
                                     <ChevronLeft className="h-4 w-4"/>
                                     <span className="sr-only">Back</span>
@@ -222,7 +225,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            router.push(Const.DASHBOARD_SERVICE_URL);
+                                            router.push(previousPath);
                                         }} // Ngăn chặn submit
                                     >
                                         Discard

@@ -17,7 +17,7 @@ import { Service } from "@/types/service";
 import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import React from "react";
 
 interface ActionsProps {
@@ -29,8 +29,9 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const pathName = usePathname();
   const handleEditClick = () => {
-    router.push(`${Const.DASHBOARD_SERVICE_URL}/${model.id}`);
+    router.push(`${pathName}/${model.id}`);
   };
 
   const handleDeleteClick = async () => {};

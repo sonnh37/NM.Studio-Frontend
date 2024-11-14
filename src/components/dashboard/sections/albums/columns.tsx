@@ -13,7 +13,7 @@ import Actions from "./actions";
 
 export const columns: ColumnDef<Album>[] = [
     {
-        id: "select",
+        accessorKey: "select",
         header: ({table}) => (
             <Checkbox
                 checked={
@@ -31,8 +31,32 @@ export const columns: ColumnDef<Album>[] = [
                 aria-label="Select row"
             />
         ),
-        enableSorting: false,
-        enableHiding: false,
+    },
+    {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({row}) => {
+            return <Actions row={row}/>;
+        },
+    },
+    {
+
+        accessorKey: "background",
+        header: "Background Image",
+        cell: ({row}) => {
+            const backgroundUrl = row.getValue("background") as string; // Lấy URL của hình ảnh từ dữ liệu album
+            return (
+                <Link href={backgroundUrl || "#"}>
+                    <Image
+                        alt={`Album background`}
+                        className="aspect-square rounded-md object-cover"
+                        height={64}
+                        width={64}
+                        src={backgroundUrl ?? ''} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+                    />
+                </Link>
+            );
+        },
     },
     {
         accessorKey: "title",
@@ -48,26 +72,6 @@ export const columns: ColumnDef<Album>[] = [
         cell: ({row}) => {
             return <div className="truncate max-w-xs">{row.getValue("description")}</div>
         }
-    },
-    {
-
-        accessorKey: "background",
-        header: "Background Image",
-        cell: ({row}) => {
-            const backgroundUrl = row.getValue("background") as string; // Lấy URL của hình ảnh từ dữ liệu album
-            return (
-                <Link href={backgroundUrl}>
-                    <Image
-                        alt={`Album background`}
-                        className="aspect-square rounded-md object-cover"
-                        height={64}
-                        width={64}
-                        src={backgroundUrl} // Sử dụng đường dẫn hình ảnh từ dữ liệu
-                    />
-                </Link>
-            );
-        },
-        enableHiding: false,
     },
     {
         accessorKey: "createdDate",
@@ -86,7 +90,7 @@ export const columns: ColumnDef<Album>[] = [
     },
     {
         accessorKey: "isDeleted",
-        header: ({column}) => <DataTableColumnHeader column={column} title=""/>,
+        header: ({column}) => <DataTableColumnHeader column={column} title="Is Deleted"/>,
         cell: ({row}) => {
             const isDeleted = row.getValue("isDeleted") as boolean;
             if (!isDeleted) {
@@ -114,10 +118,5 @@ export const columns: ColumnDef<Album>[] = [
             return value.includes(row.getValue(id));
         },
     },
-    {
-        id: "actions",
-        cell: ({row}) => {
-            return <Actions row={row}/>;
-        },
-    },
+
 ]

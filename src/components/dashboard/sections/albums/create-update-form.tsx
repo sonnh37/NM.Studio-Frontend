@@ -1,5 +1,5 @@
 "use client";
-import {ChevronLeft} from "lucide-react";
+import {ChevronLeft, Upload} from "lucide-react";
 import Link from "next/link";
 import {useForm} from "react-hook-form";
 
@@ -7,7 +7,7 @@ import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {productService} from "@/services/product-service";
+import {albumService} from "@/services/album-service";
 
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useRef, useState} from "react";
@@ -15,54 +15,44 @@ import {toast} from "sonner";
 import {z} from "zod";
 
 import {useRouter} from "next/navigation";
-import {Const} from "@/lib/const";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
-import {getEnumOptions} from "@/lib/utils";
-import {ProductStatus} from "@/types/product";
-import {ProductCreateCommand, ProductUpdateCommand,} from "@/types/commands/product-command";
-import {colorService} from "@/services/color-service";
-import {sizeService} from "@/services/size-service";
+import {AlbumCreateCommand, AlbumUpdateCommand,} from "@/types/commands/album-command";
 import {Color} from "@/types/color";
 import {Size} from "@/types/size";
 import {Category, SubCategory} from "@/types/category";
-import {categoryService} from "@/services/category-service";
-import ConfirmationDialog, {
-    FormInput,
-    FormInputDate,
-    FormInputNumber,
-    FormInputTextArea,
-    FormSelectEnum,
-    FormSelectObject,
-} from "@/lib/form-custom-shadcn";
+import ConfirmationDialog, {FormInput, FormInputDate, FormInputTextArea,} from "@/lib/form-custom-shadcn";
+import {usePreviousPath} from "@/hooks/use-previous-path";
+import {getDownloadURL, ref, uploadBytesResumable} from "firebase/storage";
+import {storage} from "../../../../../firebase";
+import Image from "next/image";
 
-interface ProductFormProps {
+interface AlbumFormProps {
     initialData: any | null;
 }
 
 const formSchema = z.object({
     id: z.string().optional(),
-    sizeId: z.string().nullable().optional(),
-    colorId: z.string().nullable().optional(),
-    subCategoryId: z.string().nullable(),
-    name: z.string().min(1, "Name is required"),
-    sku: z.string(),
+    title: z.string().min(1, "Title is required"),
     description: z.string().optional(),
-    price: z.number().default(0),
-    status: z.nativeEnum(ProductStatus),
+    background: z.string().nullable().optional(),
     createdDate: z
         .date()
         .optional()
         .default(() => new Date()),
     createdBy: z.string().nullable().optional().default(null),
     isDeleted: z.boolean().default(false),
+    photos: z.array(z.object({
+        id: z.string().optional(),
+        src: z.string().optional(),
+        title: z.string().optional(),
+    })).optional(),
 });
 
-export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
+export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
     const [loading, setLoading] = useState(false);
     const [imgLoading, setImgLoading] = useState(false);
-    const title = initialData ? "Edit product" : "Create product";
-    const description = initialData ? "Edit a product." : "Add a new product";
-    const toastMessage = initialData ? "Product updated." : "Product created.";
+    const title = initialData ? "Edit album" : "Create album";
+    const description = initialData ? "Edit a album." : "Add a new album";
+    const toastMessage = initialData ? "Album updated." : "Album created.";
     const action = initialData ? "Save changes" : "Create";
     const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
     const router = useRouter();
@@ -75,27 +65,62 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
 
     const [sizes, setSizes] = useState<Size[]>([]);
     const [colors, setColors] = useState<Color[]>([]);
-    const selectedCategoryId = initialData
-        ? initialData.subCategory.categoryId
-        : null;
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
+    const previousPath = usePreviousPath();
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setFirebaseLink(URL.createObjectURL(file));
+            setSelectedFile(file);
+        }
+    };
+
+    const handleImageDelete = () => {
+        setFirebaseLink("");
+        setSelectedFile(null);
+        form.setValue("background", "");
+    };
+
+    const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
+        if (selectedFile) {
+            const storageRef = ref(storage, `Album/${selectedFile.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+
+            const uploadPromise = new Promise<string>((resolve, reject) => {
+                uploadTask.on(
+                    "state_changed",
+                    null,
+                    (error) => reject(error),
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
+                    }
+                );
+            });
+
+            const downloadURL = await uploadPromise;
+            return {...values, background: downloadURL};
+        }
+        return values;
+    };
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setLoading(true);
-            const values_ = values;
+            const values_ = await uploadImageFirebase(values);
             if (initialData) {
-                const updatedValues: ProductUpdateCommand = {
+                const updatedValues: AlbumUpdateCommand = {
                     ...values_,
                 };
                 console.log("check_output", updatedValues);
-                const response = await productService.update(updatedValues);
+                const response = await albumService.update(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
 
                 toast.success(response.message);
-                router.push(Const.DASHBOARD_PRODUCT_URL);
+                router.push(previousPath);
             } else {
                 setPendingValues(values_);
                 setShowConfirmationDialog(true);
@@ -109,13 +134,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
     };
 
     const handleCreateConfirmation = async () => {
-        console.log("check_pend", pendingValues)
         if (pendingValues) {
-            const createdValues: ProductCreateCommand = {
+            const createdValues: AlbumCreateCommand = {
                 ...pendingValues,
             };
 
-            const response = await productService.create(createdValues);
+            const response = await albumService.create(createdValues);
             if (response.status != 1) throw new Error(response.message);
             toast.success(response.message);
         }
@@ -136,71 +160,61 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                     : new Date(),
             };
 
-            if (initialData.subCategory.categoryId) {
-                const category = categories.find(
-                    (ca) => ca.id === initialData.subCategory.categoryId
-                );
-                if (category) {
-                    setSubCategories(category.subCategories || []);
-                } else {
-                    setSubCategories([]);
-                }
-            }
 
             form.reset({
                 ...parsedInitialData,
             });
-
+            setFirebaseLink(parsedInitialData.background || "");
         }
-    }, [initialData, form, categories]);
+    }, [initialData, form]);
 
-    const fetchColors = async () => {
-        const response = await colorService.fetchAll();
-        return response.data?.results;
-    };
+    // const fetchColors = async () => {
+    //     const response = await colorService.fetchAll();
+    //     return response.data?.results;
+    // };
+    //
+    // const fetchSizes = async () => {
+    //     const response = await sizeService.fetchAll();
+    //     return response.data?.results;
+    // };
+    //
+    // const fetchCategories = async () => {
+    //     const response = await categoryService.fetchAll();
+    //     return response.data?.results;
+    // };
+    //
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const [colors, sizes, categories] = await Promise.all([
+    //                 fetchColors(),
+    //                 fetchSizes(),
+    //                 fetchCategories(),
+    //             ]);
+    //             console.log("check_coloir", colors)
+    //             setColors(colors!);
+    //             setSizes(sizes!);
+    //             setCategories(categories!);
+    //             setSelectedCategory(selectedCategoryId);
+    //
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
+    //
+    //     fetchData();
+    // }, [selectedCategoryId]);
 
-    const fetchSizes = async () => {
-        const response = await sizeService.fetchAll();
-        return response.data?.results;
-    };
-
-    const fetchCategories = async () => {
-        const response = await categoryService.fetchAll();
-        return response.data?.results;
-    };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [colors, sizes, categories] = await Promise.all([
-                    fetchColors(),
-                    fetchSizes(),
-                    fetchCategories(),
-                ]);
-                console.log("check_coloir", colors)
-                setColors(colors!);
-                setSizes(sizes!);
-                setCategories(categories!);
-                setSelectedCategory(selectedCategoryId);
-
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData();
-    }, [selectedCategoryId]);
-
-    useEffect(() => {
-        if (selectedCategory) {
-            const category = categories.find((ca) => ca.id === selectedCategory);
-            if (category) {
-                setSubCategories(category.subCategories || []);
-            } else {
-                setSubCategories([]);
-            }
-        }
-    }, [selectedCategory, categories]);
+    // useEffect(() => {
+    //     if (selectedCategory) {
+    //         const category = categories.find((ca) => ca.id === selectedCategory);
+    //         if (category) {
+    //             setSubCategories(category.subCategories || []);
+    //         } else {
+    //             setSubCategories([]);
+    //         }
+    //     }
+    // }, [selectedCategory, categories]);
 
     return (
         <>
@@ -209,13 +223,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                 onConfirm={() => {
                     handleCreateConfirmation();
                     setShowConfirmationDialog(false)
-                    router.push(Const.DASHBOARD_PRODUCT_URL)
                 }} // Đóng modal
                 onClose={() => {
                     handleCreateConfirmation();
                     setShowConfirmationDialog(false)
+                    router.push(previousPath)
                 }} // Đóng modal
-                title="Do you want to continue adding this product?"
+                title="Do you want to continue adding this album?"
                 description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
                 confirmText="Yes"
                 cancelText="No"
@@ -224,7 +238,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                         <div className="flex items-center gap-4">
-                            <Link href={Const.DASHBOARD_PRODUCT_URL}>
+                            <Link href={previousPath}>
                                 <Button variant="outline" size="icon" className="h-7 w-7">
                                     <ChevronLeft className="h-4 w-4"/>
                                     <span className="sr-only">Back</span>
@@ -232,7 +246,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                             </Link>
 
                             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                                Product Controller
+                                Album Controller
                             </h1>
                             <Badge variant="outline" className="ml-auto sm:ml-0">
                                 <FormField
@@ -262,7 +276,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            router.push(Const.DASHBOARD_PRODUCT_URL);
+                                            router.push(previousPath);
                                         }}
                                     >
                                         Discard
@@ -277,7 +291,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                             <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                                 <Card x-chunk="dashboard-07-chunk-0">
                                     <CardHeader>
-                                        <CardTitle>Product Details</CardTitle>
+                                        <CardTitle>Album Details</CardTitle>
                                         <CardDescription>
                                             Lipsum dolor sit amet, consectetur adipiscing elit
                                         </CardDescription>
@@ -287,17 +301,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                                             <div className="grid gap-3">
                                                 <FormInput
                                                     control={form.control}
-                                                    name="name"
-                                                    label="Name"
-                                                    description="This is your public display name."
-                                                    placeholder="Enter name"
-                                                />
-                                                <FormInput
-                                                    control={form.control}
-                                                    name="sku"
-                                                    label="Code"
-                                                    description="This is your public display code."
-                                                    placeholder="Enter code"
+                                                    name="title"
+                                                    label="Title"
+                                                    description="This is your public display title."
+                                                    placeholder="Enter title"
                                                 />
 
                                                 <FormInputTextArea
@@ -307,104 +314,74 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                                                     description="This is your public display description."
                                                     placeholder="Enter description"
                                                 />
-
-                                                <FormSelectEnum
-                                                    control={form.control}
-                                                    name="status"
-                                                    label="Status"
-                                                    description="Select the current status of the course."
-                                                    enumOptions={getEnumOptions(ProductStatus)}
-                                                    placeholder="Select status"
-                                                />
-
-                                                <FormInputNumber
-                                                    control={form.control}
-                                                    name="price"
-                                                    label="Price"
-                                                    placeholder="Enter price"
-                                                    className="mt-2 w-full"
-                                                />
-
-                                                <div className="grid grid-cols-2 gap-3">
-                                                    <FormSelectObject
-                                                        control={form.control}
-                                                        name="sizeId"
-                                                        label="Size"
-                                                        description="Select the size for this product."
-                                                        options={sizes}
-                                                        selectLabel="name"
-                                                        selectValue="id"
-                                                        placeholder="Select size"
-                                                    />
-
-                                                    <FormSelectObject
-                                                        control={form.control}
-                                                        name="colorId"
-                                                        label="Color"
-                                                        description="Select the color for this product."
-                                                        options={colors}
-                                                        selectLabel="name"
-                                                        selectValue="id"
-                                                        placeholder="Select color"
-                                                    />
-                                                </div>
-                                                <FormItem>
-                                                    <FormLabel>Category</FormLabel>
-                                                    <Select
-                                                        onValueChange={(value) => {
-                                                            setSelectedCategory(value);
-                                                        }}
-                                                        value={selectedCategory ?? undefined}
-                                                    >
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select category"/>
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {categories.map((category) => (
-                                                                <SelectItem
-                                                                    key={category.id}
-                                                                    value={category.id}
-                                                                >
-                                                                    {category.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </FormItem>
-                                                <FormField
-                                                    control={form.control}
-                                                    name="subCategoryId"
-                                                    render={({field}) => (
-                                                        <FormItem>
-                                                            <FormLabel>SubCategory</FormLabel>
-                                                            <FormControl>
-                                                                <Select
-                                                                    onValueChange={(value) =>
-                                                                        field.onChange(value)
-                                                                    }
-                                                                    value={field.value ?? undefined} // Ensure the value is set correctly
-                                                                >
-                                                                    <SelectTrigger>
-                                                                        <SelectValue placeholder="Select subcategory"/>
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        {subCategories.map((subCategory) => (
-                                                                            <SelectItem
-                                                                                key={subCategory.id}
-                                                                                value={subCategory.id}
-                                                                            >
-                                                                                {subCategory.name}
-                                                                            </SelectItem>
-                                                                        ))}
-                                                                    </SelectContent>
-                                                                </Select>
-                                                            </FormControl>
-                                                            <FormMessage/>
-                                                        </FormItem>
-                                                    )}
-                                                />
                                             </div>
                                         </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card
+                                    className="overflow-hidden"
+                                    x-chunk="dashboard-07-chunk-2"
+                                >
+                                    <CardHeader>
+                                        <CardTitle>Album Background</CardTitle>
+                                        <CardDescription>
+                                            Lipsum dolor sit amet, consectetur adipiscing elit
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <FormField
+                                            control={form.control}
+                                            name="background"
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>Service Background</FormLabel>
+                                                    <FormControl>
+                                                        <div className="grid gap-2">
+                                                            {firebaseLink ? (
+                                                                <>
+                                                                    <Image
+                                                                        alt="Album Background"
+                                                                        className="aspect-square w-full rounded-md object-cover"
+                                                                        height={300}
+                                                                        src={firebaseLink}
+                                                                        width={300}
+                                                                    />
+                                                                    <Button
+                                                                        onClick={handleImageDelete}
+                                                                        variant="destructive"
+                                                                    >
+                                                                        Delete Image
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <div className="grid grid-cols-3 gap-2">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="flex aspect-square w-full items-center justify-center rounded-md balbum balbum-dashed"
+                                                                        onClick={() =>
+                                                                            fileInputRef.current?.click()
+                                                                        }
+                                                                    >
+                                                                        <Upload
+                                                                            className="h-4 w-4 text-muted-foreground"/>
+                                                                        <span className="sr-only">Upload</span>
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                ref={fileInputRef}
+                                                                className="hidden"
+                                                                onChange={handleImageChange}
+                                                            />
+                                                            <FormMessage/>
+                                                        </div>
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
                                     </CardContent>
                                 </Card>
                             </div>

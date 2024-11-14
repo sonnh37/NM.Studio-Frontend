@@ -7,10 +7,11 @@ import {Product, ProductStatus} from "@/types/product";
 import {ColumnDef} from "@tanstack/react-table";
 import Actions from "./actions";
 import Image from "next/image";
+import React from "react";
 
 export const columns: ColumnDef<Product>[] = [
     {
-        id: "select",
+        accessorKey: "select",
         header: ({table}) => (
             <Checkbox
                 checked={
@@ -28,27 +29,14 @@ export const columns: ColumnDef<Product>[] = [
                 aria-label="Select row"
             />
         ),
-        enableSorting: false,
-        enableHiding: false,
     },
-    // {
-    //     accessorKey: "backgroundImage",
-    //     header: ({column}) => (
-    //         <DataTableColumnHeader column={column} title="Image"/>
-    //     ),
-    //     cell: ({row}) => {
-    //         const imageUrl = row.getValue("backgroundImage") as string;
-    //         return (
-    //             <Image
-    //                 src={imageUrl}
-    //                 alt="Background"
-    //                 width={100}
-    //                 height={100}
-    //                 style={{objectFit: 'cover'}}
-    //             />
-    //         );
-    //     },
-    // },
+    {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({row}) => {
+            return <Actions row={row}/>;
+        },
+    },
     {
         accessorKey: "sku",
         header: ({column}) => (
@@ -298,7 +286,7 @@ export const columns: ColumnDef<Product>[] = [
     // },
     {
         accessorKey: "isDeleted",
-        header: ({column}) => <DataTableColumnHeader column={column} title=""/>,
+        header: ({column}) => <DataTableColumnHeader column={column} title="Is Deleted"/>,
         cell: ({row}) => {
             const isDeleted = row.getValue("isDeleted") as boolean;
             if (!isDeleted) {
@@ -325,11 +313,5 @@ export const columns: ColumnDef<Product>[] = [
         filterFn: (row, id, value) => {
             return value.includes(row.getValue(id));
         },
-    },
-    {
-        id: "actions",
-        cell: ({row}) => {
-            return <Actions row={row}/>;
-        },
-    },
+    }
 ];

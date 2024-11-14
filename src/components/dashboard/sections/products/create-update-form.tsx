@@ -14,7 +14,7 @@ import {useEffect, useRef, useState} from "react";
 import {toast} from "sonner";
 import {z} from "zod";
 
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {Const} from "@/lib/const";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import {getEnumOptions} from "@/lib/utils";
@@ -34,6 +34,7 @@ import ConfirmationDialog, {
     FormSelectEnum,
     FormSelectObject,
 } from "@/lib/form-custom-shadcn";
+import {usePreviousPath} from "@/hooks/use-previous-path";
 
 interface ProductFormProps {
     initialData: any | null;
@@ -202,6 +203,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
         }
     }, [selectedCategory, categories]);
 
+    const previousPath = usePreviousPath()
+
     return (
         <>
             <ConfirmationDialog
@@ -209,11 +212,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                 onConfirm={() => {
                     handleCreateConfirmation();
                     setShowConfirmationDialog(false)
-                    router.push(Const.DASHBOARD_PRODUCT_URL)
+
                 }} // Đóng modal
                 onClose={() => {
                     handleCreateConfirmation();
                     setShowConfirmationDialog(false)
+                    router.push(previousPath)
                 }} // Đóng modal
                 title="Do you want to continue adding this product?"
                 description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
@@ -224,7 +228,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                         <div className="flex items-center gap-4">
-                            <Link href={Const.DASHBOARD_PRODUCT_URL}>
+                            <Link href={previousPath}>
                                 <Button variant="outline" size="icon" className="h-7 w-7">
                                     <ChevronLeft className="h-4 w-4"/>
                                     <span className="sr-only">Back</span>
@@ -262,7 +266,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            router.push(Const.DASHBOARD_PRODUCT_URL);
+                                            router.push(previousPath);
                                         }}
                                     >
                                         Discard
