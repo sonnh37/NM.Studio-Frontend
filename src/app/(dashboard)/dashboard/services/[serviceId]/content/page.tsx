@@ -1,5 +1,5 @@
 "use client";
-import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {Breadcrumbs} from "@/components/common/breadcrumb";
 import RichEditor from "@/components/client/common/react-draft-wysiwyg";
 import { Const } from "@/lib/const";
 import {Service} from "@/types/service";

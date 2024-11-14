@@ -1,7 +1,7 @@
 "use client";
 import AdminPanelLayout from "@/components/dashboard/common/admin-panel-layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {Breadcrumbs} from "@/components/common/breadcrumb";
 import {Dashboard} from "@/components/dashboard/sections/home/dashboard";
 import {ContentLayout} from "@/components/dashboard/common/content-layout";
 

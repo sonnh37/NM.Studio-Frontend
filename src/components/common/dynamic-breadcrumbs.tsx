@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumbs } from "@/components/client/common/breadcrumb";
+import { Breadcrumbs } from "@/components/common/breadcrumb";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 

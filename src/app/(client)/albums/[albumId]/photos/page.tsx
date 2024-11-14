@@ -47,12 +47,12 @@ export default function Page() {
   }, [id, queryAlbum]);
 
   return (
-    <div className="pt-10 w-[80%] relative mx-auto grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-1">
+    <div className="pt-10 container relative mx-auto grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-1">
     {photos.map((photo) => {
       return (
         <div
           key={photo.id}
-          className="relative bg-gray-50 rounded-lg dark:bg-black overflow-hidden"
+          className="relative bg-gray-50 dark:bg-black overflow-hidden"
         >
           <motion.div
             className="w-auto h-auto"

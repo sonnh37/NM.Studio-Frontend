@@ -62,7 +62,7 @@ export default function Page({params}: { params: { serviceId: string } }) {
     return (
         <>
             {service && (
-                <div className="service-details container py-8">
+                <div className="service-details container mx-auto py-8">
                     <h1>{service.name}</h1>
                     {editorState && (
                         <div>

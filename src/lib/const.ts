@@ -46,5 +46,22 @@ export class Const {
     static readonly API_ALBUM_X_PHOTO = `${this.API_BASE}/${Const.ALBUM_X_PHOTO}`;
     static readonly API_PRODUCT_X_PHOTO = `${this.API_BASE}/${Const.PRODUCT_X_PHOTO}`;
     static readonly API_SUBCATEGORY = `${this.API_BASE}/${Const.SUBCATEGORY}`;
+
+    static readonly FADE_BOTTOM_ANIMATION_VARIANTS = {
+        hidden: {opacity: 0, y: -10},
+        show: {opacity: 1, y: 0, transition: {type: "spring", duration: 0.5}}, // Thêm duration
+    };
+    static readonly FADE_TOP_ANIMATION_VARIANTS = {
+        hidden: {opacity: 0, y: 10},
+        show: {opacity: 1, y: 0, transition: {type: "spring", duration: 0.5}}, // Thêm duration
+    };
+    static readonly FADE_RIGHT_ANIMATION_VARIANTS = {
+        hidden: {opacity: 0, x: -10},
+        show: {opacity: 1, x: 0, transition: {type: "spring", duration: 0.5}}, // Thêm duration
+    };
+    static readonly FADE_LEFT_ANIMATION_VARIANTS = {
+        hidden: {opacity: 0, x: 10},
+        show: {opacity: 1, x: 0, transition: {type: "spring", duration: 0.5}}, // Thêm duration
+    };
 }
 

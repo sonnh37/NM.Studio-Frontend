@@ -4,6 +4,7 @@ import Map from "@/components/client/layouts/map";
 import { SiteHeader } from "@/components/client/layouts/navbar/site-header";
 import Contact from "@/components/client/sections/home/contact";
 import React from "react";
+import BreadcrumbClient from "@/components/client/layouts/navbar/breadcrumb";
 
 export default function HomeLayout({
   children,
@@ -11,12 +12,13 @@ export default function HomeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="">
-      <SiteHeader user={null} />
-      {children}
-      <Map />
-      <Contact />
-      <Footer />
-    </div>
+      <div className="">
+          <SiteHeader user={null}/>
+          <BreadcrumbClient/>
+          {children}
+          <Map/>
+          <Contact/>
+          <Footer/>
+      </div>
   );
 }

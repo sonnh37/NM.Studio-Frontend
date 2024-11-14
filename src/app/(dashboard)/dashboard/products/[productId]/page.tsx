@@ -1,5 +1,5 @@
 "use client";
-import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {Breadcrumbs} from "@/components/common/breadcrumb";
 import {Product} from "@/types/product";
 import axios from "axios";
 import {useEffect, useState} from "react";

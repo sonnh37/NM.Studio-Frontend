@@ -1,6 +1,6 @@
 "use client";
 
-import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {Breadcrumbs} from "@/components/common/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import DataTablePhotos from "@/components/dashboard/tables/photos";
 
