@@ -8,8 +8,8 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/c
 import {Photo} from '@/types/photo';
 import {PhotoGetAllQuery} from "@/types/queries/photo-query";
 import {Album, AlbumXPhoto} from "@/types/album";
-import {Breadcrumbs} from "@/components/client/breadcrumb";
-import {ContentLayout} from "@/components/dashboard/content-layout";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import DataOnlyTablePhotos from "@/components/dashboard/tables/albums/photos";
 import {useRefresh} from "@/components/dashboard/refresh-context"; // Đảm bảo bạn đã định nghĩa kiểu Photo
 import { albumService } from '@/services/album-service';

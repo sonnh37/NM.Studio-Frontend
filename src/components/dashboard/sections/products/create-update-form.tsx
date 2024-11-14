@@ -27,12 +27,12 @@ import {Size} from "@/types/size";
 import {Category, SubCategory} from "@/types/category";
 import {categoryService} from "@/services/category-service";
 import ConfirmationDialog, {
-  FormInput,
-  FormInputDate,
-  FormInputNumber,
-  FormInputTextArea,
-  FormSelectEnum,
-  FormSelectObject,
+    FormInput,
+    FormInputDate,
+    FormInputNumber,
+    FormInputTextArea,
+    FormSelectEnum,
+    FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 
 interface ProductFormProps {
@@ -149,12 +149,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
 
             form.reset({
                 ...parsedInitialData,
-                createdDate: parsedInitialData.createdDate
-                    ? new Date(parsedInitialData.createdDate)
-                    : new Date(),
             });
 
-            console.log("check_init", parsedInitialData);
         }
     }, [initialData, form, categories]);
 
@@ -195,10 +191,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
         fetchData();
     }, [selectedCategoryId]);
 
-    // useEffect(() => {
-    //   setSelectedCategory(selectedCategoryId);
-    // }, [selectedCategoryId]);
-
     useEffect(() => {
         if (selectedCategory) {
             const category = categories.find((ca) => ca.id === selectedCategory);
@@ -232,7 +224,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                         <div className="flex items-center gap-4">
-                            <Link href="/products">
+                            <Link href={Const.DASHBOARD_PRODUCT_URL}>
                                 <Button variant="outline" size="icon" className="h-7 w-7">
                                     <ChevronLeft className="h-4 w-4"/>
                                     <span className="sr-only">Back</span>

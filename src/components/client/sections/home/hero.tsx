@@ -2,7 +2,7 @@
 import {motion} from "framer-motion";
 import {ImagesSlider} from "@/components/ui/images-slider";
 import {AnimatedTooltip} from "@/components/ui/animated-tooltip";
-import {BookingModal} from "@/components/client/animated-modal";
+import {BookingModal} from "@/components/client/common/animated-modal";
 
 export function Hero() {
     const images = [

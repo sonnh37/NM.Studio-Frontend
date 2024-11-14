@@ -1,6 +1,6 @@
 "use client";
-import {ContentLayout} from "@/components/dashboard/content-layout";
-import {Breadcrumbs} from "@/components/client/breadcrumb";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
 import DataTableAlbums from "@/components/dashboard/tables/albums";
 
 const breadcrumbItems = [

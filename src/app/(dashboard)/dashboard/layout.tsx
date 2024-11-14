@@ -1,6 +1,9 @@
 "use client";
-import AdminPanelLayout from "@/components/dashboard/admin-panel-layout";
+import AdminPanelLayout from "@/components/dashboard/common/admin-panel-layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {Dashboard} from "@/components/dashboard/sections/home/dashboard";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
 
 const queryClient = new QueryClient();
 
@@ -11,7 +14,11 @@ export default function DashboardLayout({
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AdminPanelLayout>{children}</AdminPanelLayout>
+      <AdminPanelLayout>
+        <ContentLayout>
+          {children}
+        </ContentLayout>
+        </AdminPanelLayout>
     </QueryClientProvider>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
-import {Breadcrumbs} from "@/components/client/breadcrumb";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
 import {Photo} from "@/types/photo";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {ContentLayout} from "@/components/dashboard/content-layout";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import {PhotoForm} from "@/components/dashboard/tables/photos/create-update-form";
 
 export default function Page({params}: { params: { photoId: string } }) {

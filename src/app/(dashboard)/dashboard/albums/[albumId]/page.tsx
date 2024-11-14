@@ -1,10 +1,10 @@
 "use client";
-import {Breadcrumbs} from "@/components/client/breadcrumb";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
 import {AlbumForm} from "@/components/dashboard/tables/albums/create-update-form";
 import {Album} from "@/types/album";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {ContentLayout} from "@/components/dashboard/content-layout";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import { albumService } from "@/services/album-service";
 
 export default function Page({params}: { params: { albumId: string } }) {

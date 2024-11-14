@@ -6,7 +6,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {Service} from '@/types/service';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import NeuButton from '../ui/neu-button';
+import NeuButton from '../../ui/neu-button';
 
 interface RichEditorProps {
     service: Service;

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import {Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger,} from "../ui/animated-modal";
+import {Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger,} from "../../ui/animated-modal";
 import Image from "next/image";
 import {motion} from "framer-motion";
 

@@ -1,4 +1,4 @@
-import MapEmbed from "../map-embed"
+import MapEmbed from "../common/map-embed"
 
 function Footer() {
     return (

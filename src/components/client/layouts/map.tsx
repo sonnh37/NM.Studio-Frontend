@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { ProductGallery } from "@/components/client/sections/products/product-gallery";
 import { useRouter } from "next/navigation";
 import { Const } from "@/lib/const";
-import MapEmbed from "../map-embed";
+import MapEmbed from "../common/map-embed";
 
 // export const metadata: Metadata = {
 //   title: "Album | Play SaaS Starter Kit and Boilerplate for Next.js",

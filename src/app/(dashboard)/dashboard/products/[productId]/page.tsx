@@ -1,9 +1,9 @@
 "use client";
-import {Breadcrumbs} from "@/components/client/breadcrumb";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
 import {Product} from "@/types/product";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {ContentLayout} from "@/components/dashboard/content-layout";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import { productService } from "@/services/product-service";
 import { toast } from "sonner";
 import { ProductForm } from "@/components/dashboard/sections/products/create-update-form";
@@ -30,11 +30,8 @@ export default function Page({params}: { params: { productId: string } }) {
     ];
 
     return (
-        <ContentLayout title="Product">
             <div className="space-y-6">
-                <Breadcrumbs items={breadcrumbItems}/>
                 <ProductForm initialData={product}/>
             </div>
-        </ContentLayout>
     );
 }

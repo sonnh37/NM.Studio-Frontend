@@ -1,7 +1,7 @@
 "use client";
 
-import {Breadcrumbs} from "@/components/client/breadcrumb";
-import {ContentLayout} from "@/components/dashboard/content-layout";
+import {Breadcrumbs} from "@/components/client/common/breadcrumb";
+import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import {PhotoForm} from "@/components/dashboard/tables/photos/create-update-form";
 
 const breadcrumbItems = [
