@@ -84,6 +84,7 @@ export default function DataTableAlbums() {
                                 <TabsTrigger value="selected">Selected</TabsTrigger>
                                 <TabsTrigger value="available">Available</TabsTrigger>
                             </TabsList>
+                            
                             <TabsContent value="selected">
                                 <Card>
                                     <DataTablePhotos
