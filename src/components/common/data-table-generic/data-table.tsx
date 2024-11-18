@@ -125,7 +125,12 @@ export function DataTable<TData>({
 
         Object.entries(formValues).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
-                filterParams[key] = value;
+                // If the value is an object, serialize it to JSON string
+                if (typeof value === 'object' && value !== null) {
+                    filterParams[key] = JSON.stringify(value); // Convert object to string
+                } else {
+                    filterParams[key] = value;
+                }
             }
         });
 

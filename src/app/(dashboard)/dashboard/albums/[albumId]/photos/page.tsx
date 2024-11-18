@@ -12,8 +12,8 @@ import {Breadcrumbs} from "@/components/common/breadcrumb";
 import {ContentLayout} from "@/components/dashboard/common/content-layout";
 import DataOnlyTablePhotos from "@/components/dashboard/tables/albums/photos";
 import {useRefresh} from "@/components/dashboard/refresh-context"; // Đảm bảo bạn đã định nghĩa kiểu Photo
-import { albumService } from '@/services/album-service';
-import { photoService } from '@/services/photo-service';
+import {albumService} from '@/services/album-service';
+import {photoService} from '@/services/photo-service';
 
 export default function Page({params}: { params: { albumId: string } }) {
     const [photoInAlbums, setPhotoInAlbums] = useState<Photo[]>([]);

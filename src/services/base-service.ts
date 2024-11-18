@@ -1,12 +1,12 @@
 import axiosInstance from "@/lib/axios-instance";
-import { cleanQueryParams } from "@/lib/clean-query-param";
-import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
-import { BaseQueryableQuery } from "@/types/queries/base-query";
-import { BusinessResult } from "@/types/response/business-result";
+import {cleanQueryParams} from "@/lib/clean-query-param";
+import {CreateCommand, UpdateCommand} from "@/types/commands/base-command";
+import {BaseQueryableQuery} from "@/types/queries/base-query";
+import {BusinessResult} from "@/types/response/business-result";
 
 export class BaseService<T> {
-    private endpoint: string;
-    
+    public endpoint: string;
+
     constructor(endpoint: string) {
         this.endpoint = endpoint;
     }

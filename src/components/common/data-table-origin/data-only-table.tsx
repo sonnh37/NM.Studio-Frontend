@@ -20,15 +20,15 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 import {DataOnlyTableToolbar} from "./data-only-table-toolbar";
 import {DataOnlyTablePagination} from "./data-only-table-pagination";
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData> {
+    columns: ColumnDef<TData>[];
     data: TData[];
 }
 
-export function DataOnlyTable<TData, TValue>({
-                                                 columns,
-                                                 data
-                                             }: DataTableProps<TData, TValue>) {
+export function DataOnlyTable<TData>({
+                                         columns,
+                                         data
+                                     }: DataTableProps<TData>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []

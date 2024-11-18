@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { flexRender, Table as ReactTable } from "@tanstack/react-table";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DataTablePagination } from "./data-table-pagination";
-import { useSelector } from "react-redux";
+import {flexRender, Table as ReactTable} from "@tanstack/react-table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {DataTablePagination} from "./data-table-pagination";
+import {useSelector} from "react-redux";
 
 interface TableComponentProps<TData> {
     table: ReactTable<TData>;
@@ -31,10 +31,11 @@ export function DataTableComponent<TData>({
                 width: '100%',
             }}
         >
-            <Table style={{ width: '100%' }}>
+            <Table style={{width: '100%'}}>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id} style={{ transform: `scale(${tableWidth / 100})`, transformOrigin: 'left' }}>
+                        <TableRow key={headerGroup.id}
+                                  style={{transform: `scale(${tableWidth / 100})`, transformOrigin: 'left'}}>
                             {headerGroup.headers.map((header) => (
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder
@@ -54,7 +55,7 @@ export function DataTableComponent<TData>({
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() ? "selected" : undefined}
-                                style={{ transform: `scale(${tableWidth / 100})`, transformOrigin: 'left' }}
+                                style={{transform: `scale(${tableWidth / 100})`, transformOrigin: 'left'}}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>

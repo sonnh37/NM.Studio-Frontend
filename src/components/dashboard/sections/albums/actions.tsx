@@ -33,7 +33,9 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
     };
 
     const handleAlbumsClick = () => {
-        router.push(`${pathName}/${model.id}/photos`);
+        queryClient.setQueryData(["album"], model);
+        console.log("check_select_album_add", queryClient.getQueryData(["album"]))
+
     };
 
     const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);

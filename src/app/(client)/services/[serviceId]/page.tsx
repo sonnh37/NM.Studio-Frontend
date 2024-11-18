@@ -1,14 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Service } from "@/types/service";
-import { ContentState, convertFromRaw, EditorState } from "draft-js";
+import React, {useEffect, useState} from "react";
+import {Service} from "@/types/service";
+import {ContentState, convertFromRaw, EditorState} from "draft-js";
 import dynamic from 'next/dynamic';
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
-import { serviceService } from "@/services/service-service";
+import {ServiceGetAllQuery} from "@/types/queries/service-query";
+import {serviceService} from "@/services/service-service";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 // Dynamically import the Editor component to prevent SSR issues
-const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Editor), { ssr: false });
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Editor), {ssr: false});
 
 export default function Page({params}: { params: { serviceId: string } }) {
     const [service, setService] = useState<Service | null>(null);

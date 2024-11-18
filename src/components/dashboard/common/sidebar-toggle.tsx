@@ -14,7 +14,7 @@ export function SidebarToggle({isOpen, setIsOpen}: SidebarToggleProps) {
             <Button
                 onClick={() => setIsOpen?.()}
                 className="rounded-lg border-0 w-8 h-8"
-                
+
                 variant="outline"
                 size="icon"
             >

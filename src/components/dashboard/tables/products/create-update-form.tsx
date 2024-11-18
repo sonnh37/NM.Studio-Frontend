@@ -46,8 +46,8 @@ const formSchema = z.object({
 });
 
 export const ProductForm: React.FC<ProductFormProps> = ({
-                                                          initialData
-                                                      }) => {
+                                                            initialData
+                                                        }) => {
     const [loading, setLoading] = useState(false);
     const [imgLoading, setImgLoading] = useState(false);
     const title = initialData ? 'Edit product' : 'Create product';
@@ -277,7 +277,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                                         <FormItem>
                                                             <FormLabel>Description</FormLabel>
                                                             <FormControl>
-                                                                <Textarea placeholder="Product description" {...field} />
+                                                                <Textarea
+                                                                    placeholder="Product description" {...field} />
                                                             </FormControl>
                                                             <FormMessage/>
                                                         </FormItem>

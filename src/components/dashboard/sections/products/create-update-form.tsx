@@ -14,7 +14,7 @@ import {useEffect, useRef, useState} from "react";
 import {toast} from "sonner";
 import {z} from "zod";
 
-import {usePathname, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {Const} from "@/lib/const";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import {getEnumOptions} from "@/lib/utils";

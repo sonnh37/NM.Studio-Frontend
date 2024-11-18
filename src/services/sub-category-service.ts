@@ -1,6 +1,6 @@
-import { Category, SubCategory } from "@/types/category";
-import { BaseService } from "./base-service";
-import { Const } from "@/lib/const";
+import {SubCategory} from "@/types/category";
+import {BaseService} from "./base-service";
+import {Const} from "@/lib/const";
 
 class SubCategoryService extends BaseService<SubCategory> {
     constructor() {

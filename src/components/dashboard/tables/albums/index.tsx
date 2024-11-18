@@ -9,9 +9,9 @@ import {
 
 import {formFilterAdvanceds} from "./filter-advanced-form";
 import {DataTable} from "@/components/common/data-table-generic/data-table";
-import { FilterEnum } from "@/types/filter-enum";
-import { z } from "zod";
-import { albumService } from "@/services/album-service";
+import {FilterEnum} from "@/types/filter-enum";
+import {z} from "zod";
+import {albumService} from "@/services/album-service";
 
 
 export const formAlbumFilterAdvancedSchema = z.object({

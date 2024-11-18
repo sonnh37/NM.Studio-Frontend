@@ -1,6 +1,6 @@
-import { BaseEntity } from "./base";
-import { Product } from "./product";
-import { Photo } from "./photo";
+import {BaseEntity} from "./base";
+import {Product} from "./product";
+import {Photo} from "./photo";
 
 export interface ProductXPhoto extends BaseEntity {
     productId?: string;

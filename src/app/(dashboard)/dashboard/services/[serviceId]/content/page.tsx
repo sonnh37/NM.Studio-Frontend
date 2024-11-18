@@ -1,7 +1,7 @@
 "use client";
 import {Breadcrumbs} from "@/components/common/breadcrumb";
 import RichEditor from "@/components/client/common/react-draft-wysiwyg";
-import { Const } from "@/lib/const";
+import {Const} from "@/lib/const";
 import {Service} from "@/types/service";
 import axios from "axios";
 import {useEffect, useState} from "react";
@@ -13,7 +13,7 @@ export default function Page({params}: { params: { serviceId: string } }) {
         if (params.serviceId) {
             axios.get(`https://localhost:7192/services/${params.serviceId}`)
                 .then(response => {
-                    console.log("check",response.data.result);
+                    console.log("check", response.data.result);
                     setService(response.data.result);
                 })
                 .catch(err => {

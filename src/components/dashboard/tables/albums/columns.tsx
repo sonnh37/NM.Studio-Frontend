@@ -7,7 +7,6 @@ import {Checkbox} from "@/components/ui/checkbox";
 import {DataTableColumnHeader} from "@/components/dashboard/data-table/data-table-column-header";
 import Image from "next/image";
 import Link from "next/link";
-import {Badge} from "@/components/ui/badge";
 import Actions from "./actions";
 
 

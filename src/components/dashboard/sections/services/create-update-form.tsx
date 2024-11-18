@@ -1,5 +1,5 @@
 "use client";
-import {CalendarIcon, ChevronLeft, Upload} from "lucide-react";
+import {ChevronLeft, Upload} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {useForm} from "react-hook-form";
@@ -8,30 +8,18 @@ import {Badge} from "@/components/ui/badge";
 
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
-
-import {Input} from "@/components/ui/input";
-
-import {Calendar} from "@/components/ui/calendar";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
 import {serviceService} from "@/services/service-service";
 import {ServiceCreateCommand, ServiceUpdateCommand,} from "@/types/commands/service-command";
 import {Photo} from "@/types/photo";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {format} from "date-fns";
 import {getDownloadURL, ref, uploadBytesResumable,} from "firebase/storage";
 import {useEffect, useRef, useState} from "react";
 import {toast} from "sonner";
 import {z} from "zod";
 import {storage} from "../../../../../firebase";
-import {Const} from "@/lib/const";
 import {useRouter} from "next/navigation";
-import ConfirmationDialog, {
-    FormInput,
-    FormInputDate,
-    FormInputNumber,
-    FormInputTextArea
-} from "@/lib/form-custom-shadcn";
+import ConfirmationDialog, {FormInput, FormInputDate, FormInputNumber} from "@/lib/form-custom-shadcn";
 import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
 import {usePreviousPath} from "@/hooks/use-previous-path";
@@ -259,14 +247,15 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
                                                 <FormField
                                                     control={form.control}
                                                     name="description"
-                                                    render={({ field }) => (
+                                                    render={({field}) => (
                                                         <FormItem>
                                                             <FormControl>
                                                                 <Dialog>
                                                                     <DialogTrigger asChild>
                                                                         <Button variant="outline">Content</Button>
                                                                     </DialogTrigger>
-                                                                    <DialogContent className="w-full h-full max-w-[80%] max-h-[90%] overflow-y-auto">
+                                                                    <DialogContent
+                                                                        className="w-full h-full max-w-[80%] max-h-[90%] overflow-y-auto">
                                                                         <RichEditor
                                                                             description={field.value || ""} // Pass the current value from form field
                                                                             onChange={field.onChange} // Pass the onChange handler
@@ -274,7 +263,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
                                                                     </DialogContent>
                                                                 </Dialog>
                                                             </FormControl>
-                                                            <FormMessage />
+                                                            <FormMessage/>
                                                         </FormItem>
                                                     )}
                                                 />

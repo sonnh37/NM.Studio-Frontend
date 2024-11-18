@@ -29,10 +29,16 @@ interface AlbumFormProps {
     initialData: any | null;
 }
 
+const albumXPhotoSchema = z.object({
+    id: z.string().optional(),
+    albumId: z.string().default(""),
+    photoId: z.string().default(""),
+});
+
 const formSchema = z.object({
     id: z.string().optional(),
     title: z.string().min(1, "Title is required"),
-    description: z.string().optional(),
+    description: z.string().nullable().optional(),
     background: z.string().nullable().optional(),
     createdDate: z
         .date()
@@ -40,11 +46,7 @@ const formSchema = z.object({
         .default(() => new Date()),
     createdBy: z.string().nullable().optional().default(null),
     isDeleted: z.boolean().default(false),
-    photos: z.array(z.object({
-        id: z.string().optional(),
-        src: z.string().optional(),
-        title: z.string().optional(),
-    })).optional(),
+    albumXPhotos: z.array(albumXPhotoSchema).default([]),
 });
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
@@ -384,6 +386,8 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                                         />
                                     </CardContent>
                                 </Card>
+
+
                             </div>
                             <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                                 <Card x-chunk="dashboard-07-chunk-3">
@@ -414,6 +418,75 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                                 </Card>
                             </div>
                         </div>
+                        <div className="grid gap-4 grid-cols-1 lg:gap-8">
+                            {/*<Card*/}
+                            {/*    className="overflow-hidden"*/}
+                            {/*    x-chunk="dashboard-07-chunk-2"*/}
+
+                            {/*>*/}
+                            {/*    <CardHeader>*/}
+                            {/*        <CardTitle>Photos</CardTitle>*/}
+                            {/*        <CardDescription>*/}
+                            {/*            Lipsum dolor sit amet, consectetur adipiscing elit*/}
+                            {/*        </CardDescription>*/}
+                            {/*    </CardHeader>*/}
+                            {/*    <CardContent>*/}
+                            {/*        <FormField*/}
+                            {/*            control={form.control}*/}
+                            {/*            name="albumXPhotos"*/}
+                            {/*            render={({field}) => (*/}
+                            {/*                <FormItem>*/}
+                            {/*                    <FormLabel>List</FormLabel>*/}
+                            {/*                    <FormControl>*/}
+                            {/*                        <div className="grid gap-2">*/}
+                            {/*                            <Tabs defaultValue="selected" className="w-full">*/}
+                            {/*                                <TabsList className="grid w-full grid-cols-2">*/}
+                            {/*                                    <TabsTrigger value="selected">Selected</TabsTrigger>*/}
+                            {/*                                    <TabsTrigger value="available">Available</TabsTrigger>*/}
+                            {/*                                </TabsList>*/}
+                            {/*                                <TabsContent value="selected">*/}
+                            {/*                                    <Card>*/}
+                            {/*                                        <DataTablePhotos*/}
+                            {/*                                            albumId={*/}
+                            {/*                                                initialData && initialData.id*/}
+                            {/*                                                    ? initialData.id*/}
+                            {/*                                                    : undefined*/}
+                            {/*                                            }*/}
+                            {/*                                            onChange={(pxcs) => {*/}
+                            {/*                                                field.onChange(pxcs);*/}
+                            {/*                                            }}*/}
+                            {/*                                            albumXPhotos={field.value ?? []}*/}
+                            {/*                                            tab={0}*/}
+                            {/*                                        />*/}
+                            {/*                                    </Card>*/}
+                            {/*                                </TabsContent>*/}
+                            {/*                                <TabsContent value="available">*/}
+                            {/*                                    <Card>*/}
+                            {/*                                        <DataTablePhotos*/}
+                            {/*                                            albumId={*/}
+                            {/*                                                initialData && initialData.id*/}
+                            {/*                                                    ? initialData.id*/}
+                            {/*                                                    : undefined*/}
+                            {/*                                            }*/}
+                            {/*                                            onChange={(pxcs) => {*/}
+                            {/*                                                field.onChange(pxcs);*/}
+                            {/*                                            }}*/}
+                            {/*                                            albumXPhotos={field.value ?? []}*/}
+                            {/*                                            tab={1}*/}
+                            {/*                                        />*/}
+                            {/*                                    </Card>*/}
+                            {/*                                </TabsContent>*/}
+                            {/*                            </Tabs>*/}
+                            {/*                            <FormMessage/>*/}
+                            {/*                        </div>*/}
+                            {/*                    </FormControl>*/}
+                            {/*                </FormItem>*/}
+                            {/*            )}*/}
+                            {/*        />*/}
+                            {/*    </CardContent>*/}
+                            {/*</Card>*/}
+                        </div>
+
                     </div>
                 </form>
             </Form>

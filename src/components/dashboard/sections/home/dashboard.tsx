@@ -1,6 +1,6 @@
-import { AreaGraph } from "@/components/common/charts/area-graph";
-import { BarGraph } from "@/components/common/charts/bar-graph";
-import { Button } from "@/components/ui/button";
+import {AreaGraph} from "@/components/common/charts/area-graph";
+import {BarGraph} from "@/components/common/charts/bar-graph";
+import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -8,18 +8,18 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { OrderGetAllQuery } from "@/types/queries/order-query";
-import { endOfMonth, endOfWeek, endOfYear, startOfMonth, startOfWeek, startOfYear } from "date-fns";
-import { File } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { KPIStats } from "./kpi-stats";
-import { RecentSales } from "./recent-sales";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import {OrderGetAllQuery} from "@/types/queries/order-query";
+import {endOfMonth, endOfWeek, endOfYear, startOfMonth, startOfWeek, startOfYear} from "date-fns";
+import {File} from "lucide-react";
+import {useEffect, useRef, useState} from "react";
+import {KPIStats} from "./kpi-stats";
+import {RecentSales} from "./recent-sales";
 
 const defaultQueryParams: OrderGetAllQuery = {
     isPagination: true,
-    fromDate: startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString(),
-    toDate: endOfWeek(new Date(), { weekStartsOn: 1 }).toISOString(),
+    fromDate: startOfWeek(new Date(), {weekStartsOn: 1}).toISOString(),
+    toDate: endOfWeek(new Date(), {weekStartsOn: 1}).toISOString(),
 };
 
 export function Dashboard() {
@@ -33,8 +33,8 @@ export function Dashboard() {
             label: "Week",
             description: "Recent orders from your store.",
         },
-        { value: "month", label: "Month", description: "Orders from this month." },
-        { value: "year", label: "Year", description: "Orders from this year." },
+        {value: "month", label: "Month", description: "Orders from this month."},
+        {value: "year", label: "Year", description: "Orders from this year."},
     ];
 
     const fetchOrders = () => {
@@ -43,8 +43,8 @@ export function Dashboard() {
         if (currentTab === "week") {
             query = {
                 ...defaultQueryParams,
-                fromDate: startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString(),
-                toDate: endOfWeek(new Date(), { weekStartsOn: 1 }).toISOString(),
+                fromDate: startOfWeek(new Date(), {weekStartsOn: 1}).toISOString(),
+                toDate: endOfWeek(new Date(), {weekStartsOn: 1}).toISOString(),
             };
         } else if (currentTab === "month") {
             query = {
@@ -85,7 +85,7 @@ export function Dashboard() {
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="overview" className="space-y-4">
-                    <KPIStats />
+                    <KPIStats/>
                     <Tabs
                         defaultValue="week"
                         onValueChange={(value) => {
@@ -104,7 +104,7 @@ export function Dashboard() {
                                 <DropdownMenu>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
+                                        <DropdownMenuSeparator/>
                                         <DropdownMenuCheckboxItem checked>
                                             Fulfilled
                                         </DropdownMenuCheckboxItem>
@@ -121,7 +121,7 @@ export function Dashboard() {
                                     variant="outline"
                                     className="h-7 gap-1 text-sm"
                                 >
-                                    <File className="h-3.5 w-3.5" />
+                                    <File className="h-3.5 w-3.5"/>
                                     <span className="sr-only sm:not-sr-only">Export</span>
                                 </Button>
                             </div>
@@ -130,11 +130,11 @@ export function Dashboard() {
                             <TabsContent key={tab.value} value={tab.value}>
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
                                     <div className="col-span-4">
-                                        <BarGraph queryParams={getQueryParams} />
+                                        <BarGraph queryParams={getQueryParams}/>
                                     </div>
-                                    <RecentSales queryParams={getQueryParams} />
+                                    <RecentSales queryParams={getQueryParams}/>
                                     <div className="col-span-full">
-                                        <AreaGraph queryParams={getQueryParams} />
+                                        <AreaGraph queryParams={getQueryParams}/>
                                     </div>
                                 </div>
                             </TabsContent>

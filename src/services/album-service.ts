@@ -1,7 +1,6 @@
-import { Album } from "@/types/album";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
-import { BaseService } from "./base-service";
-import { Const } from "@/lib/const";
+import {Album} from "@/types/album";
+import {BaseService} from "./base-service";
+import {Const} from "@/lib/const";
 
 class AlbumService extends BaseService<Album> {
     constructor() {

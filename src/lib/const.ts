@@ -1,7 +1,7 @@
 export class Const {
     //#region Environment Variables
     static readonly CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID_GOOGLE;
-    static readonly API_BASE = `${process.env.NEXT_PUBLIC_API_BASE}`; 
+    static readonly API_BASE = `${process.env.NEXT_PUBLIC_API_BASE}`;
     //#endregion
     static readonly ALBUM = "albums";
     static readonly ALBUM_X_PHOTO = "albums/albumXPhotos";

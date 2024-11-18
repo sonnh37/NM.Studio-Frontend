@@ -1,9 +1,8 @@
 import {BaseEntity} from "./base";
-import { Category, SubCategory } from "./category";
-import { Color } from "./color";
-import { ProductXPhoto } from "./product-x-photo";
-import {Photo} from "./photo";
-import { Size } from "./size";
+import {SubCategory} from "./category";
+import {Color} from "./color";
+import {ProductXPhoto} from "./product-x-photo";
+import {Size} from "./size";
 
 export interface Product extends BaseEntity {
     sku?: string;

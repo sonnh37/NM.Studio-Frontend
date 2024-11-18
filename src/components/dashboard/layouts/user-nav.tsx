@@ -1,10 +1,10 @@
 "use client";
 
-import { LayoutGrid, LogOut, User as UserIcon } from "lucide-react";
+import {LayoutGrid, LogOut, User as UserIcon} from "lucide-react";
 import Link from "next/link";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,9 +14,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip";
+import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
 
 export function UserNav() {
     const router = useRouter();

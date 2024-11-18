@@ -1,16 +1,12 @@
 import {columns} from "./columns";
 
-import {
-    isActive_options,
-    isDeleted_options,
-   
-} from "@/components/common/filters";
+import {isDeleted_options,} from "@/components/common/filters";
 
 import {DataTable} from "@/components/common/data-table-generic/data-table";
 import {FilterEnum} from "@/types/filter-enum";
 import {formFilterAdvanceds} from "./filter-advanced-form";
-import { serviceService } from "@/services/service-service";
-import { z } from "zod";
+import {serviceService} from "@/services/service-service";
+import {z} from "zod";
 
 const formFilterAdvancedSchema = z.object({
     id: z.string().nullable().optional(),

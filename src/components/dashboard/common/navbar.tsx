@@ -14,7 +14,7 @@ export function Navbar() {
                     <h1 className="font-bold"><DynamicBreadcrumbs/></h1>
                 </div>
                 <div className="flex flex-1 items-center gap-2 justify-end">
-                    <ProductsCombobox />
+                    <ProductsCombobox/>
                     <ModeToggle/>
                     <UserNav/>
                 </div>

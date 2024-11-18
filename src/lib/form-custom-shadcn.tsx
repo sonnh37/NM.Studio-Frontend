@@ -1,5 +1,5 @@
 // TextInputField.tsx
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 import {Input} from "@/components/ui/input"; // Đảm bảo đúng đường dẫn
 import {Control, FieldPath, FieldValues} from "react-hook-form";

@@ -1,4 +1,4 @@
-import { AlbumXPhoto } from "../album-x-photo";
+import {AlbumXPhoto} from "../album-x-photo";
 import {CreateCommand, UpdateCommand} from "./base-command";
 
 export interface AlbumCreateCommand extends CreateCommand {

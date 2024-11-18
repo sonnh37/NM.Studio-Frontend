@@ -1,5 +1,5 @@
-import { BaseEntity } from "./base";
-import { Product } from "./product";
+import {BaseEntity} from "./base";
+import {Product} from "./product";
 
 export interface Size extends BaseEntity {
     name?: string;

@@ -20,7 +20,7 @@ export function Breadcrumbs({items}: { items: BreadcrumbItemProps[] }) {
                 <BreadcrumbItem>
                     <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
+                <BreadcrumbSeparator/>
                 {items.map((item, index) => (
                     <Fragment key={item.title}>
                         {index !== items.length - 1 && (

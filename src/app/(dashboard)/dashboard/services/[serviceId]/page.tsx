@@ -4,7 +4,6 @@ import {useEffect, useState} from "react";
 import {ServiceForm} from "@/components/dashboard/sections/services/create-update-form";
 import {toast} from "sonner";
 import {serviceService} from "@/services/service-service";
-import {Const} from "@/lib/const";
 
 export default function Page({params}: { params: { serviceId: string } }) {
     const [service, setService] = useState<Service | null>(null);

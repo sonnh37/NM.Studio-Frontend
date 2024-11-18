@@ -1,6 +1,5 @@
 "use client";
-import { Breadcrumbs } from "@/components/common/breadcrumb";
-import Link from "next/link";
+import {Breadcrumbs} from "@/components/common/breadcrumb";
 import {usePathname} from "next/navigation";
 
 export default function DynamicBreadcrumbs() {
@@ -11,8 +10,8 @@ export default function DynamicBreadcrumbs() {
         const path = "/" + pathSegments.slice(0, index + 1).join("/");
         const title = segment.charAt(0).toUpperCase() + segment.slice(1);
 
-        return { title, link: path };
+        return {title, link: path};
     });
 
-    return <Breadcrumbs items={breadcrumbItems} />;
+    return <Breadcrumbs items={breadcrumbItems}/>;
 }

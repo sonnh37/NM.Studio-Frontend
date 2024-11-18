@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductGallery } from "@/components/client/sections/products/product-gallery";
+import {ProductGallery} from "@/components/client/sections/products/product-gallery";
 
 // export const metadata: Metadata = {
 //   title: "Album | Play SaaS Starter Kit and Boilerplate for Next.js",
@@ -8,7 +8,7 @@ import { ProductGallery } from "@/components/client/sections/products/product-ga
 // };
 
 const ProductPage = () => {
-  return <ProductGallery />;
+    return <ProductGallery/>;
 };
 
 export default ProductPage;
