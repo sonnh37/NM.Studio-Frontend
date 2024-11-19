@@ -14,8 +14,8 @@ import DataTablePhotos from "@/components/dashboard/sections/albums/photos";
 import {photoService} from "@/services/photo-service";
 import {PhotoGetAllQuery} from "@/types/queries/photo-query";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {useEffect} from "react";
-import {Album} from "@/types/album";
+import { useSearchParams } from 'next/navigation'
+import {useEffect, useRef} from "react";
 
 const formFilterAdvancedSchema = z.object({
     id: z.string().nullable().optional(),
@@ -42,17 +42,24 @@ export default function DataTableAlbums() {
         {columnId: "isDeleted", title: "Is deleted", options: isDeleted_options},
     ];
     const queryClient = useQueryClient();
+    const searchParams = useSearchParams()
+    const queryParam = searchParams.get('q')
+    const { data: album, isLoading } = useQuery({
+        queryKey: ["album", queryParam], // Cache theo queryParam
+        queryFn: async () => {
+            const response = await albumService.fetchById(queryParam as string)
+            return response.data;
+        }, // Gọi API với queryParam
 
-    // Lấy dữ liệu từ queryClient cache
-    const {data: album, isLoading} = useQuery({
-        queryKey: ["album"],
-        queryFn: async () => queryClient.getQueryData<Album>(["album"]), // Lấy dữ liệu từ cache
     });
 
-    useEffect(() => {
-        console.log("check_select", album);
-    }, [album]);
+    const tabsRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        if (!isLoading && queryParam && tabsRef.current) {
+            tabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, [isLoading, queryParam]);
     return (
         <Accordion
             defaultValue={["item-1", "item-2"]}
@@ -79,14 +86,14 @@ export default function DataTableAlbums() {
                     {isLoading || !album ? (
                         <p>Loading...</p> // Hiển thị khi dữ liệu đang tải hoặc album không có sẵn
                     ) : (
-                        <Tabs defaultValue="selected" className="w-full">
+                        <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
                             <TabsList className="grid w-full grid-cols-2">
                                 <TabsTrigger value="selected">Selected</TabsTrigger>
                                 <TabsTrigger value="available">Available</TabsTrigger>
                             </TabsList>
-                            
+
                             <TabsContent value="selected">
-                                <Card>
+                                <Card className="p-4">
                                     <DataTablePhotos
                                         albumId={album.id}
                                         albumXPhotos={album.albumXPhotos ?? []}
@@ -95,7 +102,7 @@ export default function DataTableAlbums() {
                                 </Card>
                             </TabsContent>
                             <TabsContent value="available">
-                                <Card>
+                                <Card className="p-4">
                                     <DataTablePhotos
                                         albumId={album.id}
                                         albumXPhotos={album.albumXPhotos ?? []}

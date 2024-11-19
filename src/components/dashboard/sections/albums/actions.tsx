@@ -33,9 +33,8 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
     };
 
     const handleAlbumsClick = () => {
-        queryClient.setQueryData(["album"], model);
-        console.log("check_select_album_add", queryClient.getQueryData(["album"]))
-
+        row.toggleSelected();
+        router.push(`${pathName}?q=${model.id}`);
     };
 
     const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
@@ -52,7 +51,7 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuItem
-                        onClick={() => navigator.clipboard.writeText(model.id)}
+                        onClick={() => navigator.clipboard.writeText(model.id!)}
                     >
                         Copy model ID
                     </DropdownMenuItem>

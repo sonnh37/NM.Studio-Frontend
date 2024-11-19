@@ -5,9 +5,6 @@ import {useEffect, useState} from "react";
 import {PhotoGetAllQuery} from "@/types/queries/photo-query";
 import {Photo} from "@/types/photo";
 import {ColumnDef} from "@tanstack/react-table";
-import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {setSelectedAlbumXPhotos} from "@/lib/slices/photosSlice";
-import {Checkbox} from "@/components/ui/checkbox";
 import {AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
 import {photoService} from "@/services/photo-service";
 import {DataOnlyTable} from "@/components/common/data-table-origin/data-only-table";
@@ -17,7 +14,7 @@ import {Button} from "@/components/ui/button";
 import {albumXPhotoService} from "@/services/album-x-photo-service";
 import {AlbumXPhoto} from "@/types/album-x-photo";
 import {toast} from "sonner";
-import {isEqual} from "lodash";
+import {useQueryClient} from "@tanstack/react-query";
 
 interface DataTablePhotosProps {
     albumId?: string;
@@ -30,14 +27,8 @@ export default function DataTablePhotos({
                                             tab,
                                             albumXPhotos,
                                         }: DataTablePhotosProps) {
-    const dispatch = useAppDispatch();
-    const reduxSelectedAlbumXPhotos = useAppSelector(
-        (state) => state.photos.selectedAlbumXPhotos
-    );
     const [getQueryParams, setGetQueryParams] = useState<PhotoGetAllQuery>();
-    const selectedAlbumXPhotos = useAppSelector(
-        (state) => state.photos.selectedAlbumXPhotos
-    );
+
     useEffect(() => {
         const defaultQueryParams: PhotoGetAllQuery = {
             isPagination: true,
@@ -46,30 +37,8 @@ export default function DataTablePhotos({
 
         setGetQueryParams(defaultQueryParams);
     }, [albumId]);
-    useEffect(() => {
-        console.log("check_recieve_albumxPhoto", albumXPhotos)
-        if (albumXPhotos) {
-            const albumXPhotoIds = new Set(albumXPhotos.map((photo) => photo.photoId));
-            const mergedPhotos = [
-                ...albumXPhotos,
-                ...selectedAlbumXPhotos.filter((photo) => !albumXPhotoIds.has(photo.photoId)),
-            ];
 
-            // Kiểm tra sâu để tránh dispatch không cần thiết
-            if (!isEqual(mergedPhotos, selectedAlbumXPhotos)) {
-                dispatch(setSelectedAlbumXPhotos(mergedPhotos));
-            }
-        }
-    }, [albumXPhotos, selectedAlbumXPhotos, dispatch]);
-
-    useEffect(() => {
-        console.log(
-            "Redux selectedAlbumXPhotos updated:",
-            reduxSelectedAlbumXPhotos
-        );
-    }, [reduxSelectedAlbumXPhotos]);
-
-
+    const queryClient = useQueryClient();
     const handleSelectAll = (value: boolean, table: any) => {
         // const allRows = table.getRowModel().rows;
         // const allSelected_ = allRows.map((row) => row.original);
@@ -95,13 +64,9 @@ export default function DataTablePhotos({
             isDeleted: false,
         };
 
-        albumXPhotoService.delete_(albumXPhoto_).then((response) => {
+        albumXPhotoService.delete_(albumXPhoto_).then(async (response) => {
             if (response.status === 1) {
-                const updatedPhotos = selectedAlbumXPhotos.filter(
-                    (photo) => photo.photoId !== photoId
-                );
-
-                dispatch(setSelectedAlbumXPhotos(updatedPhotos));
+                queryClient.invalidateQueries({queryKey: ["album", albumId]});
                 toast.success(response.message);
             } else {
                 toast.error(response.message);
@@ -116,11 +81,10 @@ export default function DataTablePhotos({
             isDeleted: false,
         };
 
-        const updatedPhotos = [...selectedAlbumXPhotos, albumXPhoto_];
-
         albumXPhotoService.create(albumXPhoto_).then((response) => {
             if (response.status === 1) {
-                dispatch(setSelectedAlbumXPhotos(updatedPhotos));
+                queryClient.invalidateQueries({queryKey: ["album", albumId]});
+                queryClient.invalidateQueries({queryKey: ["data", getQueryParams]});
                 toast.success(response.message);
             } else {
                 toast.error(response.message);
@@ -133,14 +97,15 @@ export default function DataTablePhotos({
         {
             accessorKey: "select",
             header: ({table}) => (
-                <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
-                    onCheckedChange={(value) => handleSelectAll(!!value, table)}
-                    aria-label="Select all"
-                />
+                // <Checkbox
+                //     checked={
+                //         table.getIsAllPageRowsSelected() ||
+                //         (table.getIsSomePageRowsSelected() && "indeterminate")
+                //     }
+                //     onCheckedChange={(value) => handleSelectAll(!!value, table)}
+                //     aria-label="Select all"
+                // />
+                <></>
             ),
             cell: ({row}) => (
                 <Button
@@ -160,25 +125,17 @@ export default function DataTablePhotos({
         {
             accessorKey: "select",
             header: ({table}) => (
-                <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate")
-                    }
-                    onCheckedChange={(value) => handleSelectAll(!!value, table)}
-                    aria-label="Select all"
-                />
+                // <Checkbox
+                //     checked={
+                //         table.getIsAllPageRowsSelected() ||
+                //         (table.getIsSomePageRowsSelected() && "indeterminate")
+                //     }
+                //     onCheckedChange={(value) => handleSelectAll(!!value, table)}
+                //     aria-label="Select all"
+                // />
+                <></>
             ),
             cell: ({row}) => {
-                const isSelected = selectedAlbumXPhotos.some(
-                    (photo) =>
-                        photo.photoId === row.original.id && photo.albumId === albumId
-                );
-
-                if (isSelected) {
-                    return null;
-                }
-
                 return (
                     <Button
                         type="button"
