@@ -228,6 +228,7 @@ export function DataTableToolbar<TData>({
                                 onClick={handleFilterClick}
                             >
                                 <FiFilter className="h-4 w-4"/>
+                                Filter
                                 {/* <span className=" sm:whitespace-nowrap">Filter Advanced</span> */}
                             </Button>
                         </SheetTrigger>
@@ -260,10 +261,11 @@ export function DataTableToolbar<TData>({
                         <Button
                             variant="outline"
                             size="sm"
-                            className="ml-auto hidden h-8 lg:flex"
+                            className="h-8 gap-1"
                             onClick={() => setIsOpen(!isOpen)}
                         >
                             <CiViewTable className="h-4 w-4"/>
+                            Sort Columns
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent
@@ -304,10 +306,11 @@ export function DataTableToolbar<TData>({
                         <Button
                             variant="outline"
                             size="sm"
-                            className="ml-auto hidden h-8 lg:flex"
+                            className="h-8 gap-1"
                             onClick={() => setIsToggleColumn(!isToggleColumn)}
                         >
                             <MixerHorizontalIcon className="h-4 w-4"/>
+                            Select columns
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent
@@ -345,6 +348,7 @@ export function DataTableToolbar<TData>({
                 >
                     <Button size="sm" variant="outline" className="h-8 gap-1">
                         <MdOutlineFileDownload className="h-4 w-4"/>
+                        Download csv
                     </Button>
                 </CSVLink>
 
@@ -362,10 +366,10 @@ export function DataTableToolbar<TData>({
                         >
                             <Button
                                 size="sm"
-                                className="shadow-[0_4px_14px_0_rgb(0,118,255,79%)] hover:shadow-[0_6px_20px_rgba(0,118,255,23%)] font-light transition duration-300 ease-linear"
+                                className="gap-1 transition duration-300 ease-linear"
                             >
                                 <PlusCircle className="fill-primary-background h-5 w-5"/>
-                                {/* Add */}
+                                New
                             </Button>
                         </motion.div>
                     </Link>

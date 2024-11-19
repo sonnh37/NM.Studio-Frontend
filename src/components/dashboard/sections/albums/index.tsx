@@ -45,7 +45,7 @@ export default function DataTableAlbums() {
     const searchParams = useSearchParams()
     const queryParam = searchParams.get('q')
     const { data: album, isLoading } = useQuery({
-        queryKey: ["album", queryParam], // Cache theo queryParam
+        queryKey: ["album", queryParam?.toLowerCase()], // Cache theo queryParam
         queryFn: async () => {
             const response = await albumService.fetchById(queryParam as string)
             return response.data;
@@ -84,7 +84,7 @@ export default function DataTableAlbums() {
                 <AccordionTrigger>Photos</AccordionTrigger>
                 <AccordionContent>
                     {isLoading || !album ? (
-                        <p>Loading...</p> // Hiển thị khi dữ liệu đang tải hoặc album không có sẵn
+                        <p>Loading...</p>
                     ) : (
                         <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
                             <TabsList className="grid w-full grid-cols-2">

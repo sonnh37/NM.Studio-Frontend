@@ -26,7 +26,6 @@ interface ActionsProps {
 const Actions: React.FC<ActionsProps> = ({row}) => {
     const model = row.original;
     const router = useRouter();
-    const queryClient = useQueryClient();
     const pathName = usePathname();
     const handleEditClick = () => {
         router.push(`${pathName}/${model.id}`);
@@ -34,6 +33,11 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
 
     const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
 
+    const handleProductsClick = () => {
+        //row.toggleSelected();
+        router.push(`${pathName}?q=${model.id}`);
+    };
+    
     return (
         <>
             <DropdownMenu>
@@ -46,13 +50,13 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuItem
-                        onClick={() => navigator.clipboard.writeText(model.id)}
+                        onClick={() => navigator.clipboard.writeText(model.id!)}
                     >
                         Copy model ID
                     </DropdownMenuItem>
-                    {/*<DropdownMenuItem onClick={handleProductsClick}>*/}
-                    {/*    View photos*/}
-                    {/*</DropdownMenuItem>*/}
+                    <DropdownMenuItem onClick={handleProductsClick}>
+                        View photos
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>

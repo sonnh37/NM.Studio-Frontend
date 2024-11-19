@@ -7,4 +7,5 @@ export interface PhotoGetAllQuery extends BaseQueryableQuery {
     href?: string;
     tag?: string;
     albumId?: string;
+    productId?: string;
 }
