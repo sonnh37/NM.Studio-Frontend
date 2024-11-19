@@ -15,6 +15,7 @@ import {albumXPhotoService} from "@/services/album-x-photo-service";
 import {AlbumXPhoto} from "@/types/album-x-photo";
 import {toast} from "sonner";
 import {useQueryClient} from "@tanstack/react-query";
+import {formFilterAdvanceds} from "@/components/dashboard/sections/photos/filter-advanced-form";
 
 interface DataTablePhotosProps {
     albumId?: string;
@@ -174,6 +175,7 @@ export default function DataTablePhotos({
                     options: isDeleted_options,
                 },
             ]}
+            // formFilterAdvanceds={formFilterAdvanceds}
         />
     );
 }

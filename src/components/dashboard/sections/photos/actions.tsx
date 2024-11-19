@@ -11,8 +11,8 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {albumService} from "@/services/album-service";
-import {Album} from "@/types/album";
+import {photoService} from "@/services/photo-service";
+import {Photo} from "@/types/photo";
 import {useQueryClient} from "@tanstack/react-query";
 import {Row} from "@tanstack/react-table";
 import {MoreHorizontal} from "lucide-react";
@@ -20,21 +20,15 @@ import {usePathname, useRouter} from "next/navigation";
 import React from "react";
 
 interface ActionsProps {
-    row: Row<Album>;
+    row: Row<Photo>;
 }
 
 const Actions: React.FC<ActionsProps> = ({row}) => {
     const model = row.original;
     const router = useRouter();
-    const queryClient = useQueryClient();
     const pathName = usePathname();
     const handleEditClick = () => {
         router.push(`${pathName}/${model.id}`);
-    };
-
-    const handleAlbumsClick = () => {
-        //row.toggleSelected();
-        router.push(`${pathName}?q=${model.id}`);
     };
 
     const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
@@ -55,9 +49,6 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
                     >
                         Copy model ID
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleAlbumsClick}>
-                        View photos
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
@@ -67,7 +58,7 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
                 </DropdownMenuContent>
             </DropdownMenu>
             <DeleteBaseEntitysDialog
-                deleteData={albumService.delete}
+                deleteData={photoService.delete}
                 open={showDeleteTaskDialog}
                 onOpenChange={setShowDeleteTaskDialog}
                 list={[model]}

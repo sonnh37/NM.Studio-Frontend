@@ -70,6 +70,10 @@ export function DataTable<TData>({
     }, [defaultValues, queryClient]);
 
     const getDefaultValues = () => {
+        if (formFilterAdvanceds.length == 0) {
+            return defaultValues;
+        }
+
         const generatedDefaultValues = formFilterAdvanceds.reduce(
             (
                 acc: { [x: string]: any },

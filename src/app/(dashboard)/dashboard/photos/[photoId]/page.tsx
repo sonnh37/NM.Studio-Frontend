@@ -1,41 +1,27 @@
 "use client";
-import {Breadcrumbs} from "@/components/common/breadcrumb";
 import {Photo} from "@/types/photo";
-import axios from "axios";
 import {useEffect, useState} from "react";
-import {ContentLayout} from "@/components/dashboard/common/content-layout";
-import {PhotoForm} from "@/components/dashboard/tables/photos/create-update-form";
+import {photoService} from "@/services/photo-service";
+import {toast} from "sonner";
+import {PhotoForm} from "@/components/dashboard/sections/photos/create-update-form";
 
 export default function Page({params}: { params: { photoId: string } }) {
     const [photo, setPhoto] = useState<Photo | null>(null);
 
-    // Fetch photo data when params.photoId changes
     useEffect(() => {
-        if (params.photoId) {
-            axios
-                .get(`https://localhost:7192/photo-management/photos/${params.photoId}`)
-                .then((response) => {
-                    setPhoto(response.data.result);
-                })
-                .catch((err) => {
-                    console.error("Failed to fetch photo data", err);
-                });
-        }
+        const fetchData = async () => {
+            const response = await photoService.fetchById(params.photoId);
+            if (response.status !== 1) {
+                return toast.error(response.message);
+            }
+            setPhoto(response.data as Photo); // Assuming response.data contains the photo data
+        };
+        fetchData();
     }, [params.photoId]);
 
-    // Set breadcrumb items based on params.photoId and photo data
-    const breadcrumbItems = [
-        {title: "Dashboard", link: "/dashboard"},
-        {title: "Photo", link: "/dashboard/photo"},
-        {title: `${params.photoId}`, link: `/dashboard/photo/${params.photoId}`},
-    ];
-
     return (
-        <ContentLayout title="Photo">
-            <div className="space-y-6">
-                <Breadcrumbs items={breadcrumbItems}/>
-                <PhotoForm initialData={photo}/>
-            </div>
-        </ContentLayout>
+        <div className="space-y-6">
+            <PhotoForm initialData={photo}/>
+        </div>
     );
 }

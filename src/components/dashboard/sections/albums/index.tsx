@@ -81,7 +81,7 @@ export default function DataTableAlbums() {
                 </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-                <AccordionTrigger>Is it styled?</AccordionTrigger>
+                <AccordionTrigger>Photos</AccordionTrigger>
                 <AccordionContent>
                     {isLoading || !album ? (
                         <p>Loading...</p> // Hiển thị khi dữ liệu đang tải hoặc album không có sẵn

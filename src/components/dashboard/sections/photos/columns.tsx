@@ -1,7 +1,7 @@
 "use client"
 
 import {ColumnDef} from "@tanstack/react-table"
-import {Album} from "@/types/album";
+import {Photo} from "@/types/photo";
 import React from "react";
 import {Checkbox} from "@/components/ui/checkbox";
 import {DataTableColumnHeader} from "@/components/dashboard/data-table/data-table-column-header";
@@ -10,7 +10,7 @@ import Link from "next/link";
 import Actions from "./actions";
 
 
-export const columns: ColumnDef<Album>[] = [
+export const columns: ColumnDef<Photo>[] = [
     {
         accessorKey: "select",
         header: ({table}) => (
@@ -40,18 +40,18 @@ export const columns: ColumnDef<Album>[] = [
     },
     {
 
-        accessorKey: "background",
-        header: "Background Image",
+        accessorKey: "src",
+        header: "Src Image",
         cell: ({row}) => {
-            const backgroundUrl = row.getValue("background") as string; // Lấy URL của hình ảnh từ dữ liệu album
+            const srcUrl = row.getValue("src") as string; // Lấy URL của hình ảnh từ dữ liệu photo
             return (
-                <Link href={backgroundUrl || "#"}>
+                <Link href={srcUrl || "#"}>
                     <Image
-                        alt={`Album background`}
+                        alt={`Photo src`}
                         className="aspect-square rounded-md object-cover"
                         height={64}
                         width={64}
-                        src={backgroundUrl ?? ''} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+                        src={srcUrl ?? ''} // Sử dụng đường dẫn hình ảnh từ dữ liệu
                     />
                 </Link>
             );
@@ -71,6 +71,18 @@ export const columns: ColumnDef<Album>[] = [
         cell: ({row}) => {
             return <div className="truncate max-w-xs">{row.getValue("description")}</div>
         }
+    },
+    {
+        accessorKey: "href",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Link to"/>
+        )
+    },
+    {
+        accessorKey: "tag",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Tag"/>
+        )
     },
     {
         accessorKey: "createdDate",

@@ -7,7 +7,7 @@ import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {albumService} from "@/services/album-service";
+import {photoService} from "@/services/photo-service";
 
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useRef, useState} from "react";
@@ -15,7 +15,7 @@ import {toast} from "sonner";
 import {z} from "zod";
 
 import {useRouter} from "next/navigation";
-import {AlbumCreateCommand, AlbumUpdateCommand,} from "@/types/commands/album-command";
+import {PhotoCreateCommand, PhotoUpdateCommand,} from "@/types/commands/photo-command";
 import {Color} from "@/types/color";
 import {Size} from "@/types/size";
 import {Category, SubCategory} from "@/types/category";
@@ -25,7 +25,7 @@ import {getDownloadURL, ref, uploadBytesResumable} from "firebase/storage";
 import {storage} from "../../../../../firebase";
 import Image from "next/image";
 
-interface AlbumFormProps {
+interface PhotoFormProps {
     initialData: any | null;
 }
 
@@ -33,7 +33,9 @@ const formSchema = z.object({
     id: z.string().optional(),
     title: z.string().min(1, "Title is required"),
     description: z.string().nullable().optional(),
-    background: z.string().nullable().optional(),
+    src: z.string().nullable().optional(),
+    href: z.string().nullable().optional(),
+    tag: z.string().nullable().optional(),
     createdDate: z
         .date()
         .optional()
@@ -42,12 +44,12 @@ const formSchema = z.object({
     isDeleted: z.boolean().default(false),
 });
 
-export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
+export const PhotoForm: React.FC<PhotoFormProps> = ({initialData}) => {
     const [loading, setLoading] = useState(false);
     const [imgLoading, setImgLoading] = useState(false);
-    const title = initialData ? "Edit album" : "Create album";
-    const description = initialData ? "Edit a album." : "Add a new album";
-    const toastMessage = initialData ? "Album updated." : "Album created.";
+    const title = initialData ? "Edit photo" : "Create photo";
+    const description = initialData ? "Edit a photo." : "Add a new photo";
+    const toastMessage = initialData ? "Photo updated." : "Photo created.";
     const action = initialData ? "Save changes" : "Create";
     const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
     const router = useRouter();
@@ -77,12 +79,12 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
     const handleImageDelete = () => {
         setFirebaseLink("");
         setSelectedFile(null);
-        form.setValue("background", "");
+        form.setValue("src", "");
     };
 
     const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
         if (selectedFile) {
-            const storageRef = ref(storage, `Album/${selectedFile.name}`);
+            const storageRef = ref(storage, `Photo/${selectedFile.name}`);
             const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
             const uploadPromise = new Promise<string>((resolve, reject) => {
@@ -97,7 +99,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
             });
 
             const downloadURL = await uploadPromise;
-            return {...values, background: downloadURL};
+            return {...values, src: downloadURL};
         }
         return values;
     };
@@ -107,11 +109,11 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
             setLoading(true);
             const values_ = await uploadImageFirebase(values);
             if (initialData) {
-                const updatedValues: AlbumUpdateCommand = {
+                const updatedValues: PhotoUpdateCommand = {
                     ...values_,
                 };
                 console.log("check_output", updatedValues);
-                const response = await albumService.update(updatedValues);
+                const response = await photoService.update(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
 
                 toast.success(response.message);
@@ -130,11 +132,11 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         if (pendingValues) {
-            const createdValues: AlbumCreateCommand = {
+            const createdValues: PhotoCreateCommand = {
                 ...pendingValues,
             };
 
-            const response = await albumService.create(createdValues);
+            const response = await photoService.create(createdValues);
             if (response.status != 1) throw new Error(response.message);
             toast.success(response.message);
         }
@@ -159,57 +161,9 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
             form.reset({
                 ...parsedInitialData,
             });
-            setFirebaseLink(parsedInitialData.background || "");
+            setFirebaseLink(parsedInitialData.src || "");
         }
     }, [initialData, form]);
-
-    // const fetchColors = async () => {
-    //     const response = await colorService.fetchAll();
-    //     return response.data?.results;
-    // };
-    //
-    // const fetchSizes = async () => {
-    //     const response = await sizeService.fetchAll();
-    //     return response.data?.results;
-    // };
-    //
-    // const fetchCategories = async () => {
-    //     const response = await categoryService.fetchAll();
-    //     return response.data?.results;
-    // };
-    //
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const [colors, sizes, categories] = await Promise.all([
-    //                 fetchColors(),
-    //                 fetchSizes(),
-    //                 fetchCategories(),
-    //             ]);
-    //             console.log("check_coloir", colors)
-    //             setColors(colors!);
-    //             setSizes(sizes!);
-    //             setCategories(categories!);
-    //             setSelectedCategory(selectedCategoryId);
-    //
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-    //
-    //     fetchData();
-    // }, [selectedCategoryId]);
-
-    // useEffect(() => {
-    //     if (selectedCategory) {
-    //         const category = categories.find((ca) => ca.id === selectedCategory);
-    //         if (category) {
-    //             setSubCategories(category.subCategories || []);
-    //         } else {
-    //             setSubCategories([]);
-    //         }
-    //     }
-    // }, [selectedCategory, categories]);
 
     return (
         <>
@@ -224,7 +178,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                     setShowConfirmationDialog(false)
                     router.push(previousPath)
                 }} // Đóng modal
-                title="Do you want to continue adding this album?"
+                title="Do you want to continue adding this photo?"
                 description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
                 confirmText="Yes"
                 cancelText="No"
@@ -241,7 +195,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             </Link>
 
                             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                                Album Controller
+                                Photo Controller
                             </h1>
                             <Badge variant="outline" className="ml-auto sm:ml-0">
                                 <FormField
@@ -286,7 +240,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                                 <Card x-chunk="dashboard-07-chunk-0">
                                     <CardHeader>
-                                        <CardTitle>Album Details</CardTitle>
+                                        <CardTitle>Photo Details</CardTitle>
                                         <CardDescription>
                                             Lipsum dolor sit amet, consectetur adipiscing elit
                                         </CardDescription>
@@ -309,6 +263,22 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                                                     description="This is your public display description."
                                                     placeholder="Enter description"
                                                 />
+
+                                                <FormInput
+                                                    control={form.control}
+                                                    name="href"
+                                                    label="Link to (if has)"
+                                                    description="This is your public display href."
+                                                    placeholder="Enter href"
+                                                />
+
+                                                <FormInput
+                                                    control={form.control}
+                                                    name="tag"
+                                                    label="Tag"
+                                                    description="This is your public display tag."
+                                                    placeholder="Enter tag"
+                                                />
                                             </div>
                                         </div>
                                     </CardContent>
@@ -319,7 +289,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                                     x-chunk="dashboard-07-chunk-2"
                                 >
                                     <CardHeader>
-                                        <CardTitle>Album Background</CardTitle>
+                                        <CardTitle>Photo Src</CardTitle>
                                         <CardDescription>
                                             Lipsum dolor sit amet, consectetur adipiscing elit
                                         </CardDescription>
@@ -327,16 +297,16 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                                     <CardContent>
                                         <FormField
                                             control={form.control}
-                                            name="background"
+                                            name="src"
                                             render={({field}) => (
                                                 <FormItem>
-                                                    <FormLabel>Service Background</FormLabel>
+                                                    <FormLabel>Service Src</FormLabel>
                                                     <FormControl>
                                                         <div className="grid gap-2">
                                                             {firebaseLink ? (
                                                                 <>
                                                                     <Image
-                                                                        alt="Album Background"
+                                                                        alt="Photo Src"
                                                                         className="aspect-square w-full rounded-md object-cover"
                                                                         height={300}
                                                                         src={firebaseLink}
@@ -353,7 +323,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                                                                 <div className="grid grid-cols-3 gap-2">
                                                                     <button
                                                                         type="button"
-                                                                        className="flex aspect-square w-full items-center justify-center rounded-md balbum balbum-dashed"
+                                                                        className="flex aspect-square w-full items-center justify-center rounded-md bphoto bphoto-dashed"
                                                                         onClick={() =>
                                                                             fileInputRef.current?.click()
                                                                         }
@@ -426,7 +396,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             {/*    <CardContent>*/}
                             {/*        <FormField*/}
                             {/*            control={form.control}*/}
-                            {/*            name="albumXPhotos"*/}
+                            {/*            name="photoXPhotos"*/}
                             {/*            render={({field}) => (*/}
                             {/*                <FormItem>*/}
                             {/*                    <FormLabel>List</FormLabel>*/}
@@ -440,7 +410,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             {/*                                <TabsContent value="selected">*/}
                             {/*                                    <Card>*/}
                             {/*                                        <DataTablePhotos*/}
-                            {/*                                            albumId={*/}
+                            {/*                                            photoId={*/}
                             {/*                                                initialData && initialData.id*/}
                             {/*                                                    ? initialData.id*/}
                             {/*                                                    : undefined*/}
@@ -448,7 +418,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             {/*                                            onChange={(pxcs) => {*/}
                             {/*                                                field.onChange(pxcs);*/}
                             {/*                                            }}*/}
-                            {/*                                            albumXPhotos={field.value ?? []}*/}
+                            {/*                                            photoXPhotos={field.value ?? []}*/}
                             {/*                                            tab={0}*/}
                             {/*                                        />*/}
                             {/*                                    </Card>*/}
@@ -456,7 +426,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             {/*                                <TabsContent value="available">*/}
                             {/*                                    <Card>*/}
                             {/*                                        <DataTablePhotos*/}
-                            {/*                                            albumId={*/}
+                            {/*                                            photoId={*/}
                             {/*                                                initialData && initialData.id*/}
                             {/*                                                    ? initialData.id*/}
                             {/*                                                    : undefined*/}
@@ -464,7 +434,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
                             {/*                                            onChange={(pxcs) => {*/}
                             {/*                                                field.onChange(pxcs);*/}
                             {/*                                            }}*/}
-                            {/*                                            albumXPhotos={field.value ?? []}*/}
+                            {/*                                            photoXPhotos={field.value ?? []}*/}
                             {/*                                            tab={1}*/}
                             {/*                                        />*/}
                             {/*                                    </Card>*/}
