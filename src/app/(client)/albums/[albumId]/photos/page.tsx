@@ -1,12 +1,13 @@
 "use client"
 import {albumService} from "@/services/album-service";
-import {Album, AlbumXPhoto} from "@/types/album";
+import {Album} from "@/types/album";
 import {Photo} from "@/types/photo";
 import {AlbumGetAllQuery} from "@/types/queries/album-query";
 import {motion} from "framer-motion";
 import Image from "next/image";
 import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
+import {AlbumXPhoto} from "@/types/album-x-photo";
 
 export default function Page() {
     const [album, setAlbum] = useState<Album | null>(null);
@@ -47,8 +48,9 @@ export default function Page() {
     }, [id, queryAlbum]);
 
     return (
-        <div className="pt-10 container relative mx-auto grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-1">
-            {photos.map((photo) => {
+        <div className="container mx-auto">
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4 [&>img:not(:first-child)]:mt-8">
+                {photos.map((photo) => {
                 return (
                     <div
                         key={photo.id}
@@ -64,8 +66,9 @@ export default function Page() {
                         >
                             <Image
                                 alt="image"
-                                src={photo.src ?? ""} // Hình ảnh nền
-                                width={300}
+                                src={photo.src ?? "/image-notfound.jpg"} // Hình ảnh nền
+                                layout="intrinsic"
+                                width={500} // Giá trị width ban đầu cho Next.js để tính tỷ lệ
                                 height={300}
                                 className="object-cover w-full h-full"
                             />
@@ -73,6 +76,7 @@ export default function Page() {
                     </div>
                 );
             })}
+        </div>
         </div>
     );
 }

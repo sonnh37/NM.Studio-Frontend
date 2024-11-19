@@ -114,6 +114,7 @@ const config = {
     },
     plugins: [
         require('tailwindcss-animate'),
+		require('@tailwindcss/forms'),
         require('@tailwindcss/line-clamp'),
         addVariablesForColors,
 

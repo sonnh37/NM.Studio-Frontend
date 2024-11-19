@@ -1,6 +1,6 @@
 "use client"
 
-import {ProductGallery} from "@/components/client/sections/products/product-gallery";
+import {ProductCards} from "@/components/client/sections/products/product-cards";
 import {useRouter} from "next/navigation";
 import {Const} from "@/lib/const";
 
@@ -33,7 +33,7 @@ const ProductHome = () => {
                     </div>
                 </div>
             </div>
-            <ProductGallery/>
+            <ProductCards/>
             <div className="flex pt-5 justify-center">
                 <button
                     onClick={() => router.push(Const.PRODUCT)}
