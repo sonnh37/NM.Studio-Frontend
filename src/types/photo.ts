@@ -1,4 +1,4 @@
-import {AlbumXPhoto} from "./album";
+import { AlbumXPhoto } from "./album-x-photo";
 import {BaseEntity} from "./base";
 import {ProductXPhoto} from "@/types/product-x-photo";
 

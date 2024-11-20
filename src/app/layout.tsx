@@ -9,13 +9,14 @@ import {Toaster} from "sonner";
 import {Provider} from "react-redux";
 import store from "@/lib/store";
 
+
 export default function RootLayout({
                                        children,
                                    }: {
     children: React.ReactNode;
 }) {
     return (
-        <html suppressHydrationWarning={true} className="!scroll-smooth" lang="en">
+        <html lang="en">
         <head>
             {/* Use Script component for loading external scripts asynchronously */}
             <Script

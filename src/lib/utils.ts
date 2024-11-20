@@ -1,5 +1,6 @@
 import {type ClassValue, clsx} from "clsx";
 import {twMerge} from "tailwind-merge";
+import sizeOf from 'image-size';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -12,13 +13,37 @@ export function isMacOs() {
 }
 
 export const convertToISODate = (
-    date: Date | null | undefined
+    date: Date | string | null | undefined
 ): string | null => {
     if (!date) return null;
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+
+    // If it's a string, convert it to a Date object
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+    // Ensure dateObj is a valid Date object
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+        console.error("Invalid date:", date);
+        return null;
+    }
+
+    return new Date(dateObj.getTime() - dateObj.getTimezoneOffset() * 60000)
         .toISOString()
         .split("T")[0];
 };
+
+export const isValidImage = async (src: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true); // Image loaded successfully
+        img.onerror = () => resolve(false); // Error in loading image
+        img.src = src;
+    });
+};
+
+// export const isValidImage = (src: string): boolean => {
+//     const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+//     return validExtensions.some(extension => src.endsWith(extension));
+// };
 
 export const formatTimeSpan = (time: string): string => {
     // Chia tách giờ và phút

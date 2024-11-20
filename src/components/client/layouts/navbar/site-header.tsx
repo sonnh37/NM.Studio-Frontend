@@ -13,7 +13,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({user}: SiteHeaderProps) {
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background">
+        <header className="sticky top-0 z-[1000] w-full border-b bg-background">
             <div className="bg-neutral-600 text-white font-extralight dark:text-black">
                 <div className="h-[40px] w-full flex justify-center">
                     {/* Content constrained to max-w-7xl */}

@@ -7,7 +7,7 @@ export default function Contact() {
                         <p className="text-neutral-600 text-xl  font-semibold uppercase tracking-wide">
                             Liên hệ
                         </p>
-                        <h2 className="text-4xl text-center font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-300 to-neutral-500">
+                        <h2 className="text-4xl text-center relative z-20 bg-clip-text text-neutral-800">
                             Điền form thông tin để được liên hệ ngay
                         </h2>
                         <p className="text-center text-base md:text-lg font-normal text-neutral-500 dark:text-neutral-200 w-full mt-2 mx-auto pb-5"></p>
