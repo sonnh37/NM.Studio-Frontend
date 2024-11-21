@@ -23,6 +23,8 @@ export function ProductCards() {
 
     const categoryName = searchParams.get("categoryName");
     const subCategoryName = searchParams.get("subCategoryName");
+    const sortBy = searchParams.get("sortBy");
+    const sortOrder = parseInt(searchParams.get("sortOrder") || "0", 10);
     const pageNumber = parseInt(searchParams.get("page") || "1", 10);
 
     useEffect(() => {
@@ -30,13 +32,18 @@ export function ProductCards() {
             ...prev,
             categoryName: categoryName || undefined,
             subCategoryName: subCategoryName || undefined,
-            pageNumber,
+            pageNumber: pageNumber,
+            sortOrder: sortOrder != 0 ? sortOrder : undefined,
+            sortField: sortBy || undefined,
         }));
-    }, [categoryName, subCategoryName, pageNumber]);
+    }, [categoryName, subCategoryName, pageNumber, sortOrder, sortBy]);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
             if (!queryProduct) return;
+            console.log("check_field", queryProduct)
 
             try {
                 const response = await productService.fetchAll(queryProduct);
@@ -49,12 +56,6 @@ export function ProductCards() {
 
         fetchData();
     }, [queryProduct]);
-
-    const handlePageChange = (page: number) => {
-        const params = new URLSearchParams(searchParams as any);
-        params.set("page", page.toString());
-        router.push(`?${params.toString()}`); // Điều hướng URL
-    };
 
     return (
         <div>

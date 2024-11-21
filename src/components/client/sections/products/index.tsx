@@ -12,8 +12,6 @@
   }
   ```
 */
-'use client'
-
 import {useState} from 'react'
 import {
     Dialog,
@@ -30,14 +28,9 @@ import {
 import {XMarkIcon} from '@heroicons/react/24/outline'
 import {ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon} from '@heroicons/react/20/solid'
 import {ProductCards} from "@/components/client/sections/products/product-cards";
+import {useRouter, useSearchParams} from "next/navigation";
+import {forEach} from "lodash";
 
-const sortOptions = [
-    {name: 'Most Popular', href: '#', current: true},
-    {name: 'Best Rating', href: '#', current: false},
-    {name: 'Newest', href: '#', current: false},
-    {name: 'Price: Low to High', href: '#', current: false},
-    {name: 'Price: High to Low', href: '#', current: false},
-]
 const subCategories = [
     {name: 'Totes', href: '#'},
     {name: 'Backpacks', href: '#'},
@@ -89,6 +82,30 @@ function classNames(...classes: any) {
 
 export default function SidebarProductCards() {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+    const searchParams = useSearchParams();
+const router = useRouter();
+
+    const prevParams = new URLSearchParams(searchParams)
+
+    prevParams.delete('sortBy');
+    prevParams.delete('sortOrder');
+
+    const [sortOptions, setSortOptions] = useState([
+        { name: 'Newest', href: `?${prevParams.toString()}&sortBy=createdDate&sortOrder=-1`, current: true },
+        { name: 'Price: Low to High', href: `?${prevParams.toString()}&sortBy=price&sortOrder=1`, current: false },
+        { name: 'Price: High to Low', href: `?${prevParams.toString()}&sortBy=price&sortOrder=-1`, current: false },
+    ]);
+
+    const handleSortChange = (sortOption: any) => {
+        const updatedSortOptions = sortOptions.map(option => ({
+            ...option,
+            current: option.href === sortOption.href, // Đánh dấu current là true cho tùy chọn được chọn
+        }));
+
+        setSortOptions(updatedSortOptions);
+
+        router.push(sortOption.href);
+    };
 
     return (
         <div className="bg-white">
@@ -191,13 +208,13 @@ export default function SidebarProductCards() {
 
                                 <MenuItems
                                     transition
-                                    className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                                    className="absolute right-0 z-40 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                                 >
                                     <div className="py-1">
                                         {sortOptions.map((option) => (
                                             <MenuItem key={option.name}>
                                                 <a
-                                                    href={option.href}
+                                                    onClick={() => handleSortChange(option)}
                                                     className={classNames(
                                                         option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                                         'block px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:outline-none',
