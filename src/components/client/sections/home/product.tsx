@@ -3,6 +3,7 @@
 import {ProductCards} from "@/components/client/sections/products/product-cards";
 import {useRouter} from "next/navigation";
 import {Const} from "@/lib/const";
+import {ProductCardsHome} from "@/components/client/sections/products/product-cards-home";
 
 // export const metadata: Metadata = {
 //   title: "Album | Play SaaS Starter Kit and Boilerplate for Next.js",
@@ -33,7 +34,7 @@ const ProductHome = () => {
                     </div>
                 </div>
             </div>
-            <ProductCards/>
+            <ProductCardsHome/>
             <div className="flex pt-5 justify-center">
                 <button
                     onClick={() => router.push(Const.PRODUCT)}

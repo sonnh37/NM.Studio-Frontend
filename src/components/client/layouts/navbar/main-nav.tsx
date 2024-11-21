@@ -197,18 +197,18 @@ export function MainNav({items}: MainNavProps) {
                     <NavigationMenuItem>
                         <NavigationMenuTrigger>Products</NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px]">
+                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px] max-h-[480px] overflow-y-auto">
                                 {categories.map((category, index) => {
-                                    const path = `/products?categoryName=${category.name}`;
+                                    const path = `/products?categoryName=${category.name}&page=1`;
                                     return (
                                         <div key={index}>
                                             <Link href={path}
-                                                  className="font-bold block select-none space-y-1 rounded-md p-3 pl-1 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">{category.name}</Link>
+                                                  className="font-bold block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">{category.name}</Link>
                                             {category.subCategories!.map((subCategory, subIndex) => (
                                                 <ListItem
                                                     key={subCategory.id}
-                                                    className="p-1"
-                                                    href={`${path}&subCategoryName=${subCategory.name}`}
+                                                    className="p-3"
+                                                    href={`${path}&subCategoryName=${subCategory.name}&page=1`}
                                                 >
                                                     {subCategory.name}
                                                 </ListItem>

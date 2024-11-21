@@ -283,6 +283,7 @@ export default function SidebarProductCards() {
                             {/* Product grid */}
                             <div className="lg:col-span-3">
                                 <ProductCards/>
+
                             </div>
                         </div>
                     </section>
