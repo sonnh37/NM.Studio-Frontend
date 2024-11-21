@@ -13,7 +13,7 @@ export function ProductCards() {
     const [products, setProducts] = useState<Product[]>([]);
     const [queryProduct, setQueryProduct] = useState<ProductGetAllQuery>({
         isPagination: true,
-        pageSize: 12,
+        pageSize: 1,
         pageNumber: 1,
     });
     const [totalPages, setTotalPages] = useState(1);

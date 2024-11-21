@@ -199,7 +199,7 @@ export function MainNav({items}: MainNavProps) {
                         <NavigationMenuContent>
                             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px] max-h-[480px] overflow-y-auto">
                                 {categories.map((category, index) => {
-                                    const path = `/products?categoryName=${category.name}&page=1`;
+                                    const path = `/products?categoryName=${category.name}`;
                                     return (
                                         <div key={index}>
                                             <Link href={path}
@@ -208,7 +208,7 @@ export function MainNav({items}: MainNavProps) {
                                                 <ListItem
                                                     key={subCategory.id}
                                                     className="p-3"
-                                                    href={`${path}&subCategoryName=${subCategory.name}&page=1`}
+                                                    href={`${path}&subCategoryName=${subCategory.name}`}
                                                 >
                                                     {subCategory.name}
                                                 </ListItem>

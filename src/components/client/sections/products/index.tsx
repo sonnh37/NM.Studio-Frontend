@@ -12,7 +12,7 @@
   }
   ```
 */
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {
     Dialog,
     DialogBackdrop,
@@ -29,82 +29,232 @@ import {XMarkIcon} from '@heroicons/react/24/outline'
 import {ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon} from '@heroicons/react/20/solid'
 import {ProductCards} from "@/components/client/sections/products/product-cards";
 import {useRouter, useSearchParams} from "next/navigation";
-import {forEach} from "lodash";
+import {colorService} from "@/services/color-service";
+import {sizeService} from "@/services/size-service";
+import {categoryService} from "@/services/category-service";
+import {Color} from "@/types/color";
+import {Category, SubCategory} from "@/types/category";
+import {Size} from "@/types/size";
+import {CategoryGetAllQuery} from "@/types/queries/product-query";
+import {NavigateOptions} from "react-router";
 
-const subCategories = [
-    {name: 'Totes', href: '#'},
-    {name: 'Backpacks', href: '#'},
-    {name: 'Travel Bags', href: '#'},
-    {name: 'Hip Bags', href: '#'},
-    {name: 'Laptop Sleeves', href: '#'},
-]
-const filters = [
-    {
-        id: 'color',
-        name: 'Color',
-        options: [
-            {value: 'white', label: 'White', checked: false},
-            {value: 'beige', label: 'Beige', checked: false},
-            {value: 'blue', label: 'Blue', checked: true},
-            {value: 'brown', label: 'Brown', checked: false},
-            {value: 'green', label: 'Green', checked: false},
-            {value: 'purple', label: 'Purple', checked: false},
-        ],
-    },
-    {
-        id: 'category',
-        name: 'Category',
-        options: [
-            {value: 'new-arrivals', label: 'New Arrivals', checked: false},
-            {value: 'sale', label: 'Sale', checked: false},
-            {value: 'travel', label: 'Travel', checked: true},
-            {value: 'organization', label: 'Organization', checked: false},
-            {value: 'accessories', label: 'Accessories', checked: false},
-        ],
-    },
-    {
-        id: 'size',
-        name: 'Size',
-        options: [
-            {value: '2l', label: '2L', checked: false},
-            {value: '6l', label: '6L', checked: false},
-            {value: '12l', label: '12L', checked: false},
-            {value: '18l', label: '18L', checked: false},
-            {value: '20l', label: '20L', checked: false},
-            {value: '40l', label: '40L', checked: true},
-        ],
-    },
-]
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function SidebarProductCards() {
+export default function SidebarProductCards(href: string, options?: NavigateOptions) {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const searchParams = useSearchParams();
-const router = useRouter();
+    const router = useRouter();
+    const [colors, setColors] = useState<Color[]>([]);
+    const [sizes, setSizes] = useState<Size[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+    const [filters, setFilters] = useState([
+        {
+            id: 'color',
+            name: 'Color',
+            options: [],
+        },
+        {
+            id: 'size',
+            name: 'Size',
+            options: [],
+        },
+        {
+            id: 'category',
+            name: 'Category',
+            options: [],
+        },
+    ]);
+    const [selectedFilters, setSelectedFilters] = useState<{
+        [key: string]: string[]; // key là id của section, value là danh sách các giá trị được chọn
+    }>({});
 
     const prevParams = new URLSearchParams(searchParams)
 
-    prevParams.delete('sortBy');
-    prevParams.delete('sortOrder');
+    // prevParams.delete('sortBy');
+    // prevParams.delete('sortOrder');
 
     const [sortOptions, setSortOptions] = useState([
-        { name: 'Newest', href: `?${prevParams.toString()}&sortBy=createdDate&sortOrder=-1`, current: true },
-        { name: 'Price: Low to High', href: `?${prevParams.toString()}&sortBy=price&sortOrder=1`, current: false },
-        { name: 'Price: High to Low', href: `?${prevParams.toString()}&sortBy=price&sortOrder=-1`, current: false },
+        {name: 'Newest', sortBy: `createdDate`, sortOrder: -1, current: true},
+        {name: 'Price: Low to High', sortBy: `price`, sortOrder: 1, current: false},
+        {name: 'Price: High to Low', sortBy: `price`, sortOrder: -1, current: false},
     ]);
 
     const handleSortChange = (sortOption: any) => {
         const updatedSortOptions = sortOptions.map(option => ({
             ...option,
-            current: option.href === sortOption.href, // Đánh dấu current là true cho tùy chọn được chọn
+            current: option.sortBy === sortOption.sortBy && option.sortOrder === sortOption.sortOrder, // Đánh dấu tùy chọn hiện tại
+
         }));
-
         setSortOptions(updatedSortOptions);
+        console.log("updatedSortOptions", updatedSortOptions);
 
-        router.push(sortOption.href);
+        const newParams = new URLSearchParams(searchParams);
+
+        newParams.set('sortBy', sortOption.sortBy);
+        newParams.set('sortOrder', sortOption.sortOrder.toString());
+
+        router.push(`?${newParams.toString()}`, undefined);
+    };
+
+    const handleFilterChange = (sectionId: string, value: string, checked: boolean) => {
+        setSelectedFilters((prev) => {
+            const updatedSection = checked
+                ? [...(prev[sectionId] || []), value]
+                : (prev[sectionId] || []).filter((item) => item !== value);
+
+            return {
+                ...prev,
+                [sectionId]: updatedSection,
+            };
+        });
+
+        // Cập nhật URL sau khi xử lý state
+        const newParams = new URLSearchParams(searchParams);
+
+        // Xóa giá trị hiện tại của sectionId
+        newParams.delete(sectionId);
+
+        // Thêm các giá trị được chọn mới
+        const selectedItems = checked
+            ? [...(selectedFilters[sectionId] || []), value]
+            : (selectedFilters[sectionId] || []).filter((item) => item !== value);
+
+        selectedItems.forEach((item) => {
+            newParams.append(sectionId, item);
+        });
+
+        router.push(`?${newParams.toString()}`, undefined);
+    };
+
+
+    const fetchColors = async () => {
+        const response = await colorService.fetchAll();
+        return response.data?.results;
+    };
+
+    const fetchSizes = async () => {
+        const response = await sizeService.fetchAll();
+        return response.data?.results;
+    };
+
+    const fetchCategoryByCategoryName = async () => {
+        const key = searchParams.get("categoryName");
+        const request: CategoryGetAllQuery = {
+            isPagination: true,
+            pageSize: 1,
+            name: key ?? undefined,
+        }
+        const response = await categoryService.fetchAll(request);
+        return response.data?.results![0];
+    };
+
+    const fetchCategories = async () => {
+        const response = await categoryService.fetchAll();
+        return response.data?.results;
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [fetchedColors, fetchedSizes, fetchedCategories, category] = await Promise.all([
+                    fetchColors(),
+                    fetchSizes(),
+                    fetchCategories(),
+                    fetchCategoryByCategoryName(),
+                ]);
+
+                setColors(fetchedColors!);
+                setSizes(fetchedSizes!);
+                setCategories(fetchedCategories!);
+                setSubCategories(category ? category.subCategories! : []);
+
+                const params = new URLSearchParams(searchParams);
+
+                // Đồng bộ sortOptions
+                syncSortOptions(params);
+
+                // Đồng bộ selectedFilters và cập nhật filters
+                const updatedFilters = syncSelectedFilters(params);
+                updateFilters(fetchedColors, fetchedSizes, fetchedCategories, updatedFilters);
+
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const updateFilters = (fetchedColors: Color[], fetchedSizes: Size[], fetchedCategories: Category[], updatedFilters: { [key: string]: string[] }) => {
+        setFilters((prevFilters) => prevFilters.map((filter: any) => {
+            if (filter.id === 'color') {
+                return {
+                    ...filter,
+                    options: fetchedColors
+                        ? fetchedColors.map((color) => ({
+                            value: color.name,
+                            label: color.name,
+                            checked: updatedFilters['color']?.includes(color.name) || false,
+                        }))
+                        : [],
+                };
+            } else if (filter.id === 'size') {
+                return {
+                    ...filter,
+                    options: fetchedSizes
+                        ? fetchedSizes.map((size) => ({
+                            value: size.name,
+                            label: size.name,
+                            checked: updatedFilters['size']?.includes(size.name) || false,
+                        }))
+                        : [],
+                };
+            } else if (filter.id === 'category') {
+                return {
+                    ...filter,
+                    options: fetchedCategories
+                        ? fetchedCategories.map((category) => ({
+                            value: category.name,
+                            label: category.name,
+                            checked: updatedFilters['category']?.includes(category.name) || false,
+                        }))
+                        : [],
+                };
+            }
+            return filter;
+        }));
+    };
+
+    const syncSelectedFilters = (params: URLSearchParams) => {
+        const updatedFilters: { [key: string]: string[] } = {};
+        const filters_id = filters.map(m => m.id)
+
+        filters_id.forEach((id) => {
+            const values = params.getAll(id);
+            if (values.length > 0) {
+                updatedFilters[id] = values;
+            }
+        });
+
+        setSelectedFilters(updatedFilters);
+        return updatedFilters;
+    };
+    const syncSortOptions = (params: URLSearchParams) => {
+        const sortBy = params.get('sortBy');
+        const sortOrder = params.get('sortOrder');
+        if (sortBy && sortOrder) {
+            setSortOptions((prev) =>
+                prev.map((option) => ({
+                    ...option,
+                    current: option.sortBy === sortBy && option.sortOrder.toString() === sortOrder,
+                }))
+            );
+        }
     };
 
     return (
@@ -134,57 +284,7 @@ const router = useRouter();
                                 </button>
                             </div>
 
-                            {/* Filters */}
-                            <form className="mt-4 border-t border-gray-200">
-                                <h3 className="sr-only">Categories</h3>
-                                <ul role="list" className="px-2 py-3 font-medium text-gray-900">
-                                    {subCategories.map((category) => (
-                                        <li key={category.name}>
-                                            <a href={category.href} className="block px-2 py-3">
-                                                {category.name}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
 
-                                {filters.map((section) => (
-                                    <Disclosure key={section.id} as="div"
-                                                className="border-t border-gray-200 px-4 py-6">
-                                        <h3 className="-mx-2 -my-3 flow-root">
-                                            <DisclosureButton
-                                                className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                                <span className="font-medium text-gray-900">{section.name}</span>
-                                                <span className="ml-6 flex items-center">
-                          <PlusIcon aria-hidden="true" className="size-5 group-data-[open]:hidden"/>
-                          <MinusIcon aria-hidden="true" className="size-5 [.group:not([data-open])_&]:hidden"/>
-                        </span>
-                                            </DisclosureButton>
-                                        </h3>
-                                        <DisclosurePanel className="pt-6">
-                                            <div className="space-y-6">
-                                                {section.options.map((option, optionIdx) => (
-                                                    <div key={option.value} className="flex items-center">
-                                                        <input
-                                                            defaultValue={option.value}
-                                                            defaultChecked={option.checked}
-                                                            id={`filter-mobile-${section.id}-${optionIdx}`}
-                                                            name={`${section.id}[]`}
-                                                            type="checkbox"
-                                                            className="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <label
-                                                            htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                                            className="ml-3 min-w-0 flex-1 text-gray-500"
-                                                        >
-                                                            {option.label}
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </DisclosurePanel>
-                                    </Disclosure>
-                                ))}
-                            </form>
                         </DialogPanel>
                     </div>
                 </Dialog>
@@ -268,9 +368,11 @@ const router = useRouter();
                                                 className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
                                                 <span className="font-medium text-gray-900">{section.name}</span>
                                                 <span className="ml-6 flex items-center">
-                          <PlusIcon aria-hidden="true" className="size-5 group-data-[open]:hidden"/>
-                          <MinusIcon aria-hidden="true" className="size-5 [.group:not([data-open])_&]:hidden"/>
-                        </span>
+                                                  <PlusIcon aria-hidden="true"
+                                                            className="size-5 group-data-[open]:hidden"/>
+                                                  <MinusIcon aria-hidden="true"
+                                                             className="size-5 [.group:not([data-open])_&]:hidden"/>
+                                                </span>
                                             </DisclosureButton>
                                         </h3>
                                         <DisclosurePanel className="pt-6">
@@ -281,6 +383,7 @@ const router = useRouter();
                                                             defaultValue={option.value}
                                                             defaultChecked={option.checked}
                                                             id={`filter-${section.id}-${optionIdx}`}
+                                                            onChange={(e) => handleFilterChange(section.id, option.value, e.target.checked)}
                                                             name={`${section.id}[]`}
                                                             type="checkbox"
                                                             className="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
