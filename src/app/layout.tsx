@@ -1,14 +1,13 @@
 "use client";
-import {NextUIProvider} from "@nextui-org/react";
+
 import "./globals.css";
-import {RefreshProvider} from "@/components/common/refresh-context";
 import {SessionProvider} from "next-auth/react";
 import {ThemeProvider} from "next-themes";
 import Script from "next/script";
 import {Toaster} from "sonner";
 import {Provider} from "react-redux";
 import store from "@/lib/store";
-
+import SmoothScroll from "./smooth-scrollbar";
 
 export default function RootLayout({
                                        children,
@@ -16,7 +15,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
+        <html suppressHydrationWarning={true} lang="en">
         <head>
             {/* Use Script component for loading external scripts asynchronously */}
             <Script
@@ -27,21 +26,19 @@ export default function RootLayout({
             <title>Studio</title>
         </head>
         <body>
-        <NextUIProvider>
+        <SmoothScroll>
             <SessionProvider>
                 <ThemeProvider
                     attribute="class"
                     enableSystem={true}
                     defaultTheme="light"
                 >
-                    <RefreshProvider>
-                        <Provider store={store}>{children}</Provider>
-                    </RefreshProvider>
+                    <Provider store={store}>{children}</Provider>
                 </ThemeProvider>
             </SessionProvider>
-        </NextUIProvider>
+            <Toaster position="top-center"/>
+        </SmoothScroll>
         </body>
-        <Toaster position="top-center"/>
         </html>
     );
 }

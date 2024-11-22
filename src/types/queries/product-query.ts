@@ -10,6 +10,8 @@ export interface ProductGetAllQuery extends BaseQueryableQuery {
     description?: string;
     categoryName?: string;
     subCategoryName?: string;
+    sizes?: string[];
+    colors?: string[];
 }
 
 export interface CategoryGetAllQuery extends BaseQueryableQuery {

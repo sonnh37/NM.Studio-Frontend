@@ -36,48 +36,10 @@ export function ProductCardsHome() {
 
     return (
         <div className="">
-            {/*{products.map((item, index) => (*/}
-            {/*    <Card*/}
-            {/*        className="rounded-none cursor-pointer border border-neutral-300 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(0,0,0,0.2)]" // Thêm hiệu ứng shadow khi hover*/}
-            {/*        shadow="sm"*/}
-            {/*        key={index}*/}
-            {/*        onPress={() => console.log("item pressed")}*/}
-            {/*    >*/}
-            {/*        <CardBody className="overflow-hidden z-10 p-0">*/}
-            {/*            <motion.div*/}
-            {/*                className="w-full h-full"*/}
-            {/*                whileHover={{scale: 1.1}}*/}
-            {/*                transition={{*/}
-            {/*                    duration: 0.3,*/}
-            {/*                    ease: "easeInOut",*/}
-            {/*                }}*/}
-            {/*            >*/}
-            {/*                <Image*/}
-            {/*                    shadow="sm"*/}
-            {/*                    radius="none"*/}
-            {/*                    width="100%"*/}
-            {/*                    alt={item.name}*/}
-            {/*                    className="w-full object-cover h-[450px]"*/}
-            {/*                    src={*/}
-            {/*                        item.productXPhotos.length > 0 && item.productXPhotos[0].photo*/}
-            {/*                            ? item.productXPhotos[0].photo.src*/}
-            {/*                            : "/path/to/default/image.jpg"*/}
-            {/*                    }*/}
-            {/*                />*/}
-            {/*            </motion.div>*/}
-            {/*        </CardBody>*/}
-
-            {/*        <CardFooter className="text-small z-20 justify-between">*/}
-            {/*            <b>{item.name}</b>*/}
-            {/*            <p className="text-default-500">{item.price}</p>*/}
-            {/*        </CardFooter>*/}
-            {/*    </Card>*/}
-            {/*))}*/}
-
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-4 lg:max-w-7xl lg:px-8">
-                <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-                    Customers also purchased
-                </h2>
+                {/*<h2 className="text-2xl font-bold tracking-tight text-gray-900">*/}
+                {/*    Customers also purchased*/}
+                {/*</h2>*/}
 
                 <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
                     {products.map((product) => (

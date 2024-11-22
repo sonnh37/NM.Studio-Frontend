@@ -55,7 +55,7 @@ export function AlbumHome() {
                         }}
                         className="div"
                     >
-                        <p className="text-4xl text-center font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-0">
+                        <p className="text-4xl text-center relative z-20 bg-clip-text text-transparent bg-neutral-500 py-0">
                             Album
                         </p>
                         <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">

@@ -13,7 +13,7 @@ export function ProductCards() {
     const [products, setProducts] = useState<Product[]>([]);
     const [queryProduct, setQueryProduct] = useState<ProductGetAllQuery>({
         isPagination: true,
-        pageSize: 1,
+        pageSize: 12,
         pageNumber: 1,
     });
     const [totalPages, setTotalPages] = useState(1);
@@ -23,21 +23,24 @@ export function ProductCards() {
 
     const categoryName = searchParams.get("categoryName");
     const subCategoryName = searchParams.get("subCategoryName");
+    const sizes = searchParams.getAll("size");
+    const colors = searchParams.getAll("color");
     const sortBy = searchParams.get("sortBy");
     const sortOrder = parseInt(searchParams.get("sortOrder") || "0", 10);
     const pageNumber = parseInt(searchParams.get("page") || "1", 10);
 
     useEffect(() => {
-        setQueryProduct((prev) => ({
+        setQueryProduct(prev => ({
             ...prev,
             categoryName: categoryName || undefined,
             subCategoryName: subCategoryName || undefined,
-            pageNumber: pageNumber,
-            sortOrder: sortOrder != 0 ? sortOrder : undefined,
+            sizes: sizes.length > 0 ? sizes : undefined,
+            colors: colors.length > 0 ? colors : undefined,
+            sortOrder: sortOrder !== 0 ? sortOrder : undefined,
             sortField: sortBy || undefined,
+            pageNumber: pageNumber
         }));
-    }, [categoryName, subCategoryName, pageNumber, sortOrder, sortBy]);
-
+    }, [categoryName, subCategoryName, JSON.stringify(sizes), JSON.stringify(colors), sortBy, sortOrder, pageNumber]);
 
 
     useEffect(() => {
@@ -104,7 +107,7 @@ export function ProductCards() {
             </div>
 
             {/* Pagination */}
-            <Pagination currentPage={pageNumber} totalPages={totalPages} />
+            <Pagination currentPage={pageNumber} totalPages={totalPages}/>
         </div>
     );
 }

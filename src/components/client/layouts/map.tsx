@@ -12,13 +12,10 @@ const Map = () => {
     const router = useRouter();
 
     return (
-        <div className="container mx-auto h-auto pt-20">
-            <div className="flex flex-row items-center justify-center relative w-full">
-                <div className="container mx-auto w-full relative overflow-hidden px-4">
-
-                </div>
+        <div className="container mx-auto h-auto ">
+            <div className="border-t-2 py-20">
+                <MapEmbed/>
             </div>
-            <MapEmbed/>
         </div>
     );
 };

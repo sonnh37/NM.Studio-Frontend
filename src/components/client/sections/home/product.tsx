@@ -25,7 +25,7 @@ const ProductHome = () => {
                             transition: "opacity 1s, transform 1s",
                         }}
                     >
-                        <h2 className="text-4xl text-center font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 pb-0">
+                        <h2 className="text-4xl text-center relative z-20 bg-clip-text text-transparent bg-neutral-500 pb-0">
                             Product
                         </h2>
                         <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">

@@ -43,7 +43,7 @@ function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function SidebarProductCards(href: string, options?: NavigateOptions) {
+export default function SidebarProductCards() {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -61,11 +61,6 @@ export default function SidebarProductCards(href: string, options?: NavigateOpti
         {
             id: 'size',
             name: 'Size',
-            options: [],
-        },
-        {
-            id: 'category',
-            name: 'Category',
             options: [],
         },
     ]);
@@ -214,17 +209,6 @@ export default function SidebarProductCards(href: string, options?: NavigateOpti
                         }))
                         : [],
                 };
-            } else if (filter.id === 'category') {
-                return {
-                    ...filter,
-                    options: fetchedCategories
-                        ? fetchedCategories.map((category) => ({
-                            value: category.name,
-                            label: category.name,
-                            checked: updatedFilters['category']?.includes(category.name) || false,
-                        }))
-                        : [],
-                };
             }
             return filter;
         }));
@@ -256,6 +240,15 @@ export default function SidebarProductCards(href: string, options?: NavigateOpti
             );
         }
     };
+
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+
+        // Đồng bộ lại selectedFilters mỗi khi searchParams thay đổi
+        const updatedFilters = syncSelectedFilters(params);
+        updateFilters(colors, sizes, categories, updatedFilters);
+
+    }, [searchParams]);
 
     return (
         <div className="bg-white">

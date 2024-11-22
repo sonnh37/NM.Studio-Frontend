@@ -41,7 +41,7 @@ export default function Features() {
             <div
                 className="absolute inset-0 pointer-events-none flex items-center justify-center dark:bg-black bg-white opacity-50"></div>
             <div className="container mx-auto py-10 z-10 ">
-                <p className="text-4xl font-bold text-center relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
+                <p className="text-4xl text-center relative z-20 bg-clip-text text-transparent bg-neutral-500 py-8">
                     CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-4 text-center">

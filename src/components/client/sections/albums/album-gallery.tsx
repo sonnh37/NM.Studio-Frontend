@@ -54,43 +54,6 @@ export function AlbumGallery() {
                 const path = "/albums/" + album.id + "/photos";
                 return (
 
-
-                    // <div
-                    //     key={album.id}
-                    //     className="relative bg-gray-50 rounded-none dark:bg-black overflow-hidden"
-                    // >
-                    //     <Link href={path}>
-                    //         <Card
-                    //             shadow="sm"
-                    //             className="rounded-none"
-                    //             onPress={() => console.log("item pressed")}
-                    //         >
-                    //             <CardBody className="overflow-visible z-10 p-0">
-                    //                 <motion.div
-                    //                     className="w-full h-full overflow-hidden"
-                    //                     whileHover={{scale: 1.1}} // Tạo hiệu ứng zoom
-                    //                     transition={{
-                    //                         duration: 0.3,
-                    //                         ease: "easeOut",
-                    //                     }}
-                    //                 >
-                    //                     <Image
-                    //                         alt="image"
-                    //                         src={album.background ?? ""} // Hình ảnh nền
-                    //                         width={300}
-                    //                         height={300}
-                    //                         className="  w-full h-full object-cover"
-                    //                     />
-                    //                 </motion.div>
-                    //             </CardBody>
-                    //             <CardFooter className="text-small z-20 bg-background  text-gray-500 justify-center">
-                    //                 <p>{album.title}</p>
-                    //             </CardFooter>
-                    //         </Card>
-                    //         {/* Bọc motion.div trong Link */}
-                    //     </Link>
-                    // </div>
-
                     <Link href={path}>
                     <div
                         className="relative h-[400px] isolate flex flex-col justify-end overflow-hidden rounded-md px-8 pb-8 pt-40"
