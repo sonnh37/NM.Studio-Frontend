@@ -88,7 +88,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
             setLoading(true);
             const values_ = values;
             if (initialData) {
-                const updatedValues: ProductUpdateCommand = {
+                const updatedValues = {
                     ...values_,
                 };
                 console.log("check_output", updatedValues);
@@ -112,7 +112,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
     const handleCreateConfirmation = async () => {
         console.log("check_pend", pendingValues)
         if (pendingValues) {
-            const createdValues: ProductCreateCommand = {
+            const createdValues = {
                 ...pendingValues,
             };
 
@@ -367,7 +367,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                                                             {categories.map((category) => (
                                                                 <SelectItem
                                                                     key={category.id}
-                                                                    value={category.id}
+                                                                    value={category.id!}
                                                                 >
                                                                     {category.name}
                                                                 </SelectItem>
@@ -395,7 +395,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                                                                         {subCategories.map((subCategory) => (
                                                                             <SelectItem
                                                                                 key={subCategory.id}
-                                                                                value={subCategory.id}
+                                                                                value={subCategory.id!}
                                                                             >
                                                                                 {subCategory.name}
                                                                             </SelectItem>

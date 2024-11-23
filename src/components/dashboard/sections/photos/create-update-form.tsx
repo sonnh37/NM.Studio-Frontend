@@ -109,7 +109,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({initialData}) => {
             setLoading(true);
             const values_ = await uploadImageFirebase(values);
             if (initialData) {
-                const updatedValues: PhotoUpdateCommand = {
+                const updatedValues = {
                     ...values_,
                 };
                 console.log("check_output", updatedValues);
@@ -132,7 +132,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         if (pendingValues) {
-            const createdValues: PhotoCreateCommand = {
+            const createdValues = {
                 ...pendingValues,
             };
 

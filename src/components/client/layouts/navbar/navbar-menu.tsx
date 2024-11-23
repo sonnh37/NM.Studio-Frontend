@@ -13,6 +13,7 @@ const transition = {
     restSpeed: 0.001,
 };
 
+// @ts-ignore
 export const MenuItem = ({
                              setActive,
                              active,
@@ -71,6 +72,7 @@ export const MenuItem = ({
     );
 };
 
+// @ts-ignore
 export const Menu = ({
                          setActive,
                          children,
@@ -90,6 +92,7 @@ export const Menu = ({
     );
 };
 
+// @ts-ignore
 export const ProductItem = ({
                                 title,
                                 description,

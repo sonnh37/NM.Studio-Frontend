@@ -101,7 +101,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
             setLoading(true);
             const values_ = await uploadImageFirebase(values);
             if (initialData) {
-                const updatedValues: ServiceUpdateCommand = {
+                const updatedValues = {
                     ...values_,
                 };
                 const response = await serviceService.update(updatedValues);
@@ -141,7 +141,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         if (pendingValues) {
-            const createdValues: ServiceCreateCommand = {
+            const createdValues = {
                 ...pendingValues,
             };
             const response = await serviceService.create(createdValues);

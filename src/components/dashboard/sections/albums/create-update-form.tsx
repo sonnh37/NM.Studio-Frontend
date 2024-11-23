@@ -107,7 +107,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
             setLoading(true);
             const values_ = await uploadImageFirebase(values);
             if (initialData) {
-                const updatedValues: AlbumUpdateCommand = {
+                const updatedValues = {
                     ...values_,
                 };
                 console.log("check_output", updatedValues);
@@ -130,7 +130,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         if (pendingValues) {
-            const createdValues: AlbumCreateCommand = {
+            const createdValues = {
                 ...pendingValues,
             };
 
