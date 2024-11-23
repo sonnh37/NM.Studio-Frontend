@@ -1,13 +1,10 @@
 "use client";
 
-import {ProductCards} from "@/components/client/sections/products/product-cards";
-import SidebarProductCards from "@/components/client/sections/products";
+import dynamic from "next/dynamic";
 
-// export const metadata: Metadata = {
-//   title: "Album | Play SaaS Starter Kit and Boilerplate for Next.js",
-//   description: "This is About page description",
-// };
-
+const SidebarProductCards = dynamic(() => import('@/components/client/sections/products'), {
+    ssr: false,  // Tắt SSR cho component này, chỉ render phía client
+});
 const ProductPage = () => {
     return <SidebarProductCards/>;
 };
