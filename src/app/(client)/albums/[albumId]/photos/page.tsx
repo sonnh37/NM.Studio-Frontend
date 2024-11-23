@@ -1,7 +1,7 @@
 "use client"
 import dynamic from "next/dynamic";
 const Gallery = dynamic(() => import("@/components/client/sections/albums/gallery"), {
-    ssr: true,
+    ssr: false,
   });
 export default function Page() {
     return (

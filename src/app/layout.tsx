@@ -5,15 +5,16 @@ import {SessionProvider} from "next-auth/react";
 import {ThemeProvider} from "next-themes";
 import Script from "next/script";
 import {Toaster} from "sonner";
-import {Provider} from "react-redux";
-import store from "@/lib/store";
-import SmoothScroll from "./smooth-scrollbar";
+import {Provider, useDispatch, useSelector} from "react-redux";
+import store, {RootState} from "@/lib/store";
+import {toggleChat} from "@/lib/slices/chatSlice";
 
 export default function RootLayout({
                                        children,
                                    }: {
     children: React.ReactNode;
 }) {
+
     return (
         <html suppressHydrationWarning={true} lang="en">
         <head>
@@ -26,18 +27,20 @@ export default function RootLayout({
             <title>Studio</title>
         </head>
         <body>
-        <SmoothScroll>
-            <SessionProvider>
-                <ThemeProvider
-                    attribute="class"
-                    enableSystem={true}
-                    defaultTheme="light"
-                >
-                    <Provider store={store}>{children}</Provider>
-                </ThemeProvider>
-            </SessionProvider>
-            <Toaster position="top-center"/>
-        </SmoothScroll>
+
+        <SessionProvider>
+            <ThemeProvider
+                attribute="class"
+                enableSystem={true}
+                defaultTheme="light"
+            >
+                <Provider store={store}>{children}</Provider>
+            </ThemeProvider>
+        </SessionProvider>
+
+
+
+        <Toaster position="top-center"/>
         </body>
         </html>
     );

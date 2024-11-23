@@ -42,7 +42,21 @@ const RichEditor: React.FC<RichEditorProps> = ({
                 onEditorStateChange={handleEditorStateChange} // Sử dụng hàm mới
                 wrapperClassName="wrapper-class"
                 editorClassName="editor-class"
-                toolbarClassName="toolbar-class"
+                toolbarStyle={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 10,
+                    backgroundColor: "#fff",
+                    borderBottom: "1px solid #ddd",
+                    padding: "5px",
+                }}
+                editorStyle={{
+                    flexGrow: 1,
+                    minHeight: "300px",
+                    padding: "10px",
+                    border: "1px solid #ddd",
+                    borderTop: "none",
+                }}
             />
         </div>
     );

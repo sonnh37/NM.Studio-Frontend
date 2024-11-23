@@ -24,6 +24,7 @@ import {CategoryGetAllQuery} from "@/types/queries/product-query";
 import {ServiceGetAllQuery} from "@/types/queries/service-query";
 import {Service} from "@/types/service";
 import {usePathname} from "next/navigation";
+import {useEffect} from "react";
 
 interface MainNavProps {
     items?: MainNavItem[];
@@ -79,6 +80,7 @@ export function MainNav({items}: MainNavProps) {
         pageSize: 10,
         sortOrder: 1,
         isActive: true,
+        isDeleted: false,
         isPagination: true,
     };
 
@@ -86,14 +88,16 @@ export function MainNav({items}: MainNavProps) {
         pageNumber: 1,
         pageSize: 8,
         sortOrder: 1,
+        isDeleted: false,
         isPagination: true,
     };
 
     const categoryGetAllQuery: CategoryGetAllQuery = {
         isPagination: false,
+        isDeleted: false,
     };
 
-    React.useEffect(() => {
+    useEffect(() =>  {
         const loadAlbumsAndServices = async () => {
             try {
                 const fetchedAlbums = await albumService.fetchAll(albumGetAllQuery);
@@ -126,7 +130,7 @@ export function MainNav({items}: MainNavProps) {
             <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger>Info</NavigationMenuTrigger>
+                        <NavigationMenuTrigger>Thông tin</NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                                 <li className="row-span-3">
@@ -160,16 +164,17 @@ export function MainNav({items}: MainNavProps) {
                         </NavigationMenuContent>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+                        <NavigationMenuTrigger>Dịch vụ</NavigationMenuTrigger>
                         <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                            <ul className="grid w-[200px] gap-1 p-4 md:w-[200px] md:grid-cols-1 ">
                                 {services.map((service) => (
                                     <ListItem
                                         key={service.id}
                                         title={service.name}
+                                        className="p-2"
                                         href={`/services/${service.id}`}
                                     >
-                                        {service.description}
+                                        {/*{service.description}*/}
                                     </ListItem>
                                 ))}
                             </ul>
@@ -195,7 +200,7 @@ export function MainNav({items}: MainNavProps) {
 
                     {/* Categories Section */}
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+                        <NavigationMenuTrigger>Sản phẩm</NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px] max-h-[480px] overflow-y-auto">
                                 {categories.map((category, index) => {
@@ -207,7 +212,7 @@ export function MainNav({items}: MainNavProps) {
                                             {category.subCategories!.map((subCategory, subIndex) => (
                                                 <ListItem
                                                     key={subCategory.id}
-                                                    className="p-3"
+                                                    className="p-2"
                                                     href={`${path}&subCategoryName=${subCategory.name}`}
                                                 >
                                                     {subCategory.name}
@@ -223,7 +228,7 @@ export function MainNav({items}: MainNavProps) {
                     <NavigationMenuItem>
                         <Link href="/blogs" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                V-Blog
+                                Tin tức
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
