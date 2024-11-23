@@ -140,7 +140,7 @@ export function DataTableToolbar<TData>({
         if (!event.over) return;
 
         const sourceIndex = columnOrder.findIndex((id) => id === event.active.id);
-        const targetIndex = columnOrder.findIndex((id) => id === event.over.id);
+        const targetIndex = columnOrder.findIndex((id) => id === event.over!.id);
 
         if (sourceIndex !== -1 && targetIndex !== -1 && sourceIndex !== targetIndex) {
             const updatedOrder = [...columnOrder];
@@ -280,9 +280,9 @@ export function DataTableToolbar<TData>({
                                 const column = table.getColumn(columnId);
                                 return (
                                     <DraggableColumnItem
-                                        key={column.id}
+                                        key={column!.id}
                                         column={column}
-                                        onToggleVisibility={() => toggleColumnVisibility(column.id)}
+                                        onToggleVisibility={() => toggleColumnVisibility(column!.id)}
                                     />
                                 );
                             })}
@@ -324,18 +324,18 @@ export function DataTableToolbar<TData>({
                             const column = table.getColumn(columnId);
                             return (
                                 <div
-                                    key={column.id}
+                                    key={column!.id}
                                     className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
-                                    onClick={() => toggleColumnVisibility(column.id)}
+                                    onClick={() => toggleColumnVisibility(column!.id)}
                                 >
                   <span className="">
-                    {columnVisibility[column.id] ? (
+                    {columnVisibility[column!.id] ? (
                         <IoCheckboxSharp className="w-6 h-6 text-black"/>
                     ) : (
                         <GrCheckbox className="w-6 h-6 text-gray-500"/>
                     )}
                   </span>
-                                    <span className="capitalize">{column.id}</span>
+                                    <span className="capitalize">{column!.id}</span>
                                 </div>
                             );
                         })}

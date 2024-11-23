@@ -1,6 +1,6 @@
 import {ModeToggle} from "@/components/common/mode-toggle";
-import {UserNav} from "@/components/layouts/user-nav";
 import {SheetMenu} from "@/components/common/sheet-menu";
+import {UserNav} from "@/components/dashboard/layouts/user-nav";
 
 interface NavbarProps {
     title: string;
@@ -15,7 +15,7 @@ export function Navbar({title}: NavbarProps) {
             </div>
             <div className="flex flex-1 items-center justify-end">
                 <ModeToggle/>
-                <UserNav/>
+                {/*<UserNav/>*/}
             </div>
         </div>
     );

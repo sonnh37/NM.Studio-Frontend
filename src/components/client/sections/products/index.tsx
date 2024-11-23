@@ -175,7 +175,7 @@ export default function SidebarProductCards() {
 
                 // Đồng bộ selectedFilters và cập nhật filters
                 const updatedFilters = syncSelectedFilters(params);
-                updateFilters(fetchedColors, fetchedSizes, fetchedCategories, updatedFilters);
+                updateFilters(fetchedColors!, fetchedSizes!, fetchedCategories!, updatedFilters!);
 
             } catch (error) {
                 console.error(error);
@@ -194,7 +194,7 @@ export default function SidebarProductCards() {
                         ? fetchedColors.map((color) => ({
                             value: color.name,
                             label: color.name,
-                            checked: updatedFilters['color']?.includes(color.name) || false,
+                            checked: updatedFilters['color']?.includes(color.name!) || false,
                         }))
                         : [],
                 };
@@ -205,7 +205,7 @@ export default function SidebarProductCards() {
                         ? fetchedSizes.map((size) => ({
                             value: size.name,
                             label: size.name,
-                            checked: updatedFilters['size']?.includes(size.name) || false,
+                            checked: updatedFilters['size']?.includes(size.name!) || false,
                         }))
                         : [],
                 };
@@ -349,7 +349,7 @@ export default function SidebarProductCards() {
                                     className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                                     {subCategories.map((category) => (
                                         <li key={category.name}>
-                                            <a href={category.href}>{category.name}</a>
+                                            <a >{category.name}</a>
                                         </li>
                                     ))}
                                 </ul>
@@ -370,7 +370,7 @@ export default function SidebarProductCards() {
                                         </h3>
                                         <DisclosurePanel className="pt-6">
                                             <div className="space-y-4">
-                                                {section.options.map((option, optionIdx) => (
+                                                {section.options.map((option: any, optionIdx) => (
                                                     <div key={option.value} className="flex items-center">
                                                         <input
                                                             defaultValue={option.value}

@@ -20,29 +20,29 @@ import {useEffect, useState} from "react";
 
 export function UserNav() {
     const router = useRouter();
-    const [userInfo, setUserInfo] = useState<User | null>(null); // Sử dụng kiểu User
-    const token = getTokenFromCookie(); // Lấy token từ cookie
+    const [userInfo, setUserInfo] = useState<any | null>(null); // Sử dụng kiểu User
+    const token = "getTokenFromCookie()"; // Lấy token từ cookie
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!token) {
-                router.push("/login");
-                return;
-            }
-
-            const response = await decodeToken(token);
-            const decodedToken = response.status === 1 ? response.data : null;
-            if (!decodedToken) {
-                router.push("/login");
-                return;
-            }
-
-            const response_user = await fetchUser(decodedToken.id);
-            setUserInfo(response_user.data!);
-        };
-
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         if (!token) {
+    //             router.push("/login");
+    //             return;
+    //         }
+    //
+    //         const response = await decodeToken(token);
+    //         const decodedToken = response.status === 1 ? response.data : null;
+    //         if (!decodedToken) {
+    //             router.push("/login");
+    //             return;
+    //         }
+    //
+    //         const response_user = await fetchUser(decodedToken.id);
+    //         setUserInfo(response_user.data!);
+    //     };
+    //
+    //     fetchData();
+    // }, []);
     if (!userInfo) return null;
     return (
         <DropdownMenu>
@@ -99,7 +99,7 @@ export function UserNav() {
                 <DropdownMenuItem
                     className="hover:cursor-pointer"
                     onClick={() => {
-                        logout();
+                        // logout();
                     }}
                 >
                     <LogOut className="w-4 h-4 mr-3 text-muted-foreground"/>
