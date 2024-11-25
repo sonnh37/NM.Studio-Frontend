@@ -48,6 +48,7 @@ const GalleryContent = ({slides}: GalleryContentProps) => {
             />
 
             <Lightbox
+                styles={{ root: { "--yarl__color_backdrop": "rgba(0, 0, 0, .8)" } }}
                 index={index}
                 slides={slides}
                 open={index >= 0}
