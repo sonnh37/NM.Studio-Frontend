@@ -67,6 +67,7 @@ export function ProductsCombobox() {
                 <CommandInput
                     placeholder="Search products..."
                     value={query}
+                    className="border-0 hover:border-0 focus:outline-0 focus:ring-0"
                     onValueChange={setQuery}
                 />
                 <CommandList>

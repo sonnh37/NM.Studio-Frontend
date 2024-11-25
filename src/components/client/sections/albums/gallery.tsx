@@ -98,7 +98,7 @@ export default function Gallery() {
         </div>
 
         <div className="col-span-4">
-          <AnimatedTestimonialsPhotos autoplay={true} photos={photos} />
+          <AnimatedTestimonialsPhotos autoplay={false} photos={photos} />
         </div>
       </div>
       <GalleryContent slides={slides_} />

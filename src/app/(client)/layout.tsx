@@ -7,10 +7,10 @@ import BreadcrumbClient from "@/components/client/layouts/navbar/breadcrumb";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/lib/store";
 import dynamic from "next/dynamic";
-import {IoCameraOutline} from "react-icons/io5";
 import {BsTelephone} from "react-icons/bs";
 import {SiZalo} from "react-icons/si";
 import {LiaFacebookMessenger} from "react-icons/lia";
+import {BookingModal} from "@/components/client/common/animated-modal";
 
 // Dynamically load SideHeader without SSR
 const SiteHeader = dynamic(() => import('@/components/client/layouts/navbar/site-header'), {
@@ -35,16 +35,15 @@ export default function HomeLayout({
                 <Contact/>
                 <Footer/>
             </div>
-            {/* Popup Chat Component */
-            }
             {
                 isOpen && (
                     <div className="fixed w-[60px] bottom-[40px] right-[24px] z-[99999] hide">
                         <div
                             className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] flex items-center justify-center">
-                            <a href="#register-popup" className="btn-gallery" target="_blank">
-                                <IoCameraOutline className="text-[#FFF] text-[40px]"/>
+                            <a className="btn-gallery" target="_blank">
+                                <BookingModal/>
                             </a>
+
                         </div>
                         <div
                             className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] flex items-center justify-center">

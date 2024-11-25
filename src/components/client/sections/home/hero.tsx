@@ -59,7 +59,7 @@ export function Hero() {
     ];
 
     return (
-        <div className="pb-10">
+        <div className="pb-10 relative">
             <ImagesSlider className="h-screen" images={images}>
                 <motion.div
                     initial={{
@@ -78,10 +78,9 @@ export function Hero() {
                     <div className="flex flex-row items-center justify-center w-full">
                         <AnimatedTooltip items={people}/>
                     </div>
-
-                    <BookingModal/>
                 </motion.div>
             </ImagesSlider>
+
         </div>
     );
 }

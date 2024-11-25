@@ -27,7 +27,7 @@ export async function CartSheet() {
                     <Icons.cart className="size-4" aria-hidden="true"/>
                 </Button>
             </SheetTrigger>
-            <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
+            <SheetContent className="flex w-full z-[1001] flex-col pr-0 sm:max-w-lg">
                 <SheetHeader className="space-y-2.5 pr-6">
                     {/* <SheetTitle>Cart {itemCount > 0 && `(${itemCount})`}</SheetTitle> */}
                     <Separator/>
