@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import {useEffect} from "react";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
 import {
@@ -24,7 +25,7 @@ import {CategoryGetAllQuery} from "@/types/queries/product-query";
 import {ServiceGetAllQuery} from "@/types/queries/service-query";
 import {Service} from "@/types/service";
 import {usePathname} from "next/navigation";
-import {useEffect} from "react";
+import {Button} from "@/components/ui/button";
 
 interface MainNavProps {
     items?: MainNavItem[];
@@ -97,7 +98,7 @@ export function MainNav({items}: MainNavProps) {
         isDeleted: false,
     };
 
-    useEffect(() =>  {
+    useEffect(() => {
         const loadAlbumsAndServices = async () => {
             try {
                 const fetchedAlbums = await albumService.fetchAll(albumGetAllQuery);
@@ -195,6 +196,9 @@ export function MainNav({items}: MainNavProps) {
                                     </ListItem>
                                 ))}
                             </ul>
+                            <div className={"w-full grid justify-end"}>
+                                <Button variant="link"> <Link href="/albums">...Xem thêm</Link></Button>
+                            </div>
                         </NavigationMenuContent>
                     </NavigationMenuItem>
 
@@ -222,12 +226,16 @@ export function MainNav({items}: MainNavProps) {
                                     );
                                 })}
                             </ul>
+
+                            <div className={"w-full grid justify-end"}>
+                                <Button variant="link"> <Link href="/products">...Xem thêm</Link></Button>
+                            </div>
                         </NavigationMenuContent>
                     </NavigationMenuItem>
 
                     <NavigationMenuItem>
                         <Link href="/blogs" legacyBehavior passHref>
-                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                 Tin tức
                             </NavigationMenuLink>
                         </Link>
