@@ -36,7 +36,7 @@ import {Color} from "@/types/color";
 import {Category, SubCategory} from "@/types/category";
 import {Size} from "@/types/size";
 import {CategoryGetAllQuery} from "@/types/queries/product-query";
-import {NavigateOptions} from "react-router";
+import {Button} from "@/components/ui/button";
 
 
 function classNames(...classes: any) {
@@ -126,6 +126,29 @@ export default function SidebarProductCards() {
         router.push(`?${newParams.toString()}`, undefined);
     };
 
+    const handleSubCategoryChange = (subcate: SubCategory) => {
+        const newParams = new URLSearchParams(searchParams);
+
+
+        // Xóa giá trị hiện tại của sectionId
+        newParams.delete("subCategoryName");
+
+        newParams.append("subCategoryName", subcate.name!);
+
+        router.push(`?${newParams.toString()}`, undefined);
+    };
+
+    const handleCategoryChange = (cate: Category) => {
+        const newParams = new URLSearchParams(searchParams);
+
+        // Xóa giá trị hiện tại của sectionId
+        newParams.delete("categoryName");
+
+        newParams.append("categoryName", cate.name!);
+
+        router.push(`?${newParams.toString()}`, undefined);
+    };
+
 
     const fetchColors = async () => {
         const response = await colorService.fetchAll();
@@ -153,39 +176,38 @@ export default function SidebarProductCards() {
         return response.data?.results;
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [fetchedColors, fetchedSizes, fetchedCategories, category] = await Promise.all([
-                    fetchColors(),
-                    fetchSizes(),
-                    fetchCategories(),
-                    fetchCategoryByCategoryName(),
-                ]);
+    const fetchData = async () => {
+        try {
+            const [fetchedColors, fetchedSizes, fetchedCategories, category] = await Promise.all([
+                fetchColors(),
+                fetchSizes(),
+                fetchCategories(),
+                fetchCategoryByCategoryName(),
+            ]);
 
-                setColors(fetchedColors!);
-                setSizes(fetchedSizes!);
-                setCategories(fetchedCategories!);
-                setSubCategories(category ? category.subCategories! : []);
+            setColors(fetchedColors!);
+            setSizes(fetchedSizes!);
+            setCategories(fetchedCategories!);
+            setSubCategories(category ? category.subCategories! : []);
 
-                const params = new URLSearchParams(searchParams);
+            const params = new URLSearchParams(searchParams);
 
-                // Đồng bộ sortOptions
-                syncSortOptions(params);
+            // Đồng bộ sortOptions
+            syncSortOptions(params);
 
-                // Đồng bộ selectedFilters và cập nhật filters
-                const updatedFilters = syncSelectedFilters(params);
-                updateFilters(fetchedColors!, fetchedSizes!, fetchedCategories!, updatedFilters!);
+            // Đồng bộ selectedFilters và cập nhật filters
+            const updatedFilters = syncSelectedFilters(params);
+            updateFilters(fetchedColors!, fetchedSizes!, fetchedCategories!, updatedFilters!);
 
-            } catch (error) {
-                console.error(error);
-            }
-        };
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-        fetchData();
-    }, []);
 
-    const updateFilters = (fetchedColors: Color[], fetchedSizes: Size[], fetchedCategories: Category[], updatedFilters: { [key: string]: string[] }) => {
+    const updateFilters = (fetchedColors: Color[], fetchedSizes: Size[], fetchedCategories: Category[], updatedFilters: {
+        [key: string]: string[]
+    }) => {
         setFilters((prevFilters) => prevFilters.map((filter: any) => {
             if (filter.id === 'color') {
                 return {
@@ -242,13 +264,21 @@ export default function SidebarProductCards() {
     };
 
     useEffect(() => {
-        const params = new URLSearchParams(searchParams);
+        fetchData()
+            .then((data) => {
+                const params = new URLSearchParams(searchParams);
 
-        // Đồng bộ lại selectedFilters mỗi khi searchParams thay đổi
-        const updatedFilters = syncSelectedFilters(params);
-        updateFilters(colors, sizes, categories, updatedFilters);
-
+                const updatedFilters = syncSelectedFilters(params);
+                updateFilters(colors, sizes, categories, updatedFilters);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
     }, [searchParams]);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     return (
         <div className="bg-white">
@@ -344,15 +374,37 @@ export default function SidebarProductCards() {
                         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                             {/* Filters */}
                             <form className="hidden lg:block">
-                                <h3 className="sr-only">Categories</h3>
-                                <ul role="list"
-                                    className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                                    {subCategories.map((category) => (
-                                        <li key={category.name}>
-                                            <a >{category.name}</a>
-                                        </li>
-                                    ))}
-                                </ul>
+                                {
+                                    searchParams.size === 0 ?
+                                        <>
+                                            <h3 className="sr-only">Categories</h3>
+                                            <ul role="list"
+                                                className="border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                                                {categories.map((category) => (
+                                                    <li key={category.id}>
+                                                        <Button type={"button"}
+                                                                onClick={() => handleCategoryChange(category)}
+                                                                variant="ghost">+ &nbsp; {category.name}</Button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                        :
+                                        <>
+                                            <h3 className="sr-only">SubCategories</h3>
+                                            <ul role="list"
+                                                className="border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                                                {subCategories.map((category) => (
+                                                    <li key={category.id}>
+                                                        <Button type={"button"}
+                                                                onClick={() => handleSubCategoryChange(category)}
+                                                                variant="ghost">- &nbsp; {category.name}</Button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                }
+
 
                                 {filters.map((section) => (
                                     <Disclosure key={section.id} as="div" className="border-b border-gray-200 py-6">
