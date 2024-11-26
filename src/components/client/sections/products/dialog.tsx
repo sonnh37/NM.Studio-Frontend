@@ -18,20 +18,33 @@ import { Size } from "@/types/size";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 
 async function mapProductToProductDetail(
   product: Product
 ): Promise<ProductDetail> {
   const colors = await colorService.fetchAll(); // Giả sử fetchAll() trả về một Promise
   const sizes = await sizeService.fetchAll(); // Giả sử bạn có một hàm để fetch sizes
-console.log("check_pxc", product.productXPhotos)
+  const srcList: string[] =
+  product.productXPhotos.length > 0
+    ? product.productXPhotos
+        .map(m => m.photo?.src) // Map từng item thành `src` hoặc `undefined`
+        .filter(src => src !== undefined) // Lọc bỏ các giá trị `undefined`
+    : ["/image-notfound.jpg"];
   return {
     name: product.name ?? "N/A",
     price: product.price?.toString() ?? "Liên hệ",
     rating: 5,
     reviewCount: 9999,
-    imageSrc: product.productXPhotos.length > 0 ? (product.productXPhotos[0].photo?.src ?? "") : "/image-notfound.jpg",
-    imageAlt: "Test",
+    src: srcList,
     colors: mapColorToColorDetail(colors.data?.results ?? []),
     sizes: mapSizeToSizeDetail(sizes.data?.results ?? []),
   };
@@ -69,8 +82,7 @@ interface ProductDetail {
   price: string;
   rating: number;
   reviewCount: number;
-  imageSrc: string;
-  imageAlt: string;
+  src: string[];
   colors: ColorDetail[];
   sizes: SizeDetail[];
 }
@@ -146,11 +158,33 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
               </button>
 
               <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
-                <img
+                <div className="aspect-[2/3] w-full rounded-lg bg-gray-100 object-cover sm:col-span-4 lg:col-span-5">
+                  <Carousel className="w-full">
+                    <CarouselContent>
+                      {productDetail.src.map((pic, index) => (
+                        <CarouselItem key={index}>
+                            <Card>
+                              <CardContent className="flex aspect-square p-0 items-center justify-center">
+                                <Image
+                                  className="aspect-[2/3]  w-full"
+                                  width={500}
+                                  height={500}
+                                  alt={productDetail.name}
+                                  src={pic}
+                                />
+                              </CardContent>
+                            </Card>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute left-2 top-2/2 -translate-y-1/2 p-2 bg-neutral-100 rounded-lg shadow-lg z-10" />
+                    <CarouselNext className="absolute right-2 top-2/2 -translate-y-1/2 p-2 bg-neutral-100 rounded-lg shadow-lg z-10" />
+                  </Carousel>
+                </div>
+                {/* <img
                   alt={productDetail.imageAlt}
                   src={productDetail.imageSrc}
-                  className="aspect-[2/3] w-full rounded-lg bg-gray-100 object-cover sm:col-span-4 lg:col-span-5"
-                />
+                /> */}
                 <div className="sm:col-span-8 lg:col-span-7">
                   <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">
                     {productDetail.name}

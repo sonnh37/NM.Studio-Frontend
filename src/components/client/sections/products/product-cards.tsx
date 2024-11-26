@@ -5,11 +5,11 @@ import { Product } from "@/types/product";
 import { ProductGetAllQuery } from "@/types/queries/product-query";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Image } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { Pagination } from "@/components/client/common/pagination";
 import { Button } from "@/components/ui/button";
 import Example from "./dialog";
+import Image from "next/image";
 
 export function ProductCards() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -24,7 +24,6 @@ export function ProductCards() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-
 
   const categoryName = searchParams.get("categoryName");
   const subCategoryName = searchParams.get("subCategoryName");
@@ -72,7 +71,7 @@ export function ProductCards() {
 
   function handleOpenDialog(pr: Product) {
     setOpen(true);
-    setSelectedProduct(pr)
+    setSelectedProduct(pr);
   }
 
   return (
@@ -80,10 +79,10 @@ export function ProductCards() {
       <div className="mt-6 grid grid-cols-1 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-3">
         {products.map((product) => (
           <div className="grid grid-cols-1 overflow-hidden">
-            <div className="relative h-[400px] group overflow-hidden rounded-md">
+            <div className="relative group overflow-hidden rounded-md">
               <motion.div
                 key={product.id}
-                className="relative h-full w-full"
+                className="relative"
                 whileHover={{ scale: 1.1 }}
                 transition={{
                   duration: 0.3,
@@ -91,14 +90,16 @@ export function ProductCards() {
                 }}
               >
                 <Image
-                  className="aspect-square h-[400px] w-full bg-gray-200 rounded-md object-cover lg:aspect-auto"
-                  alt={product.name}
+                  className="aspect-[2/3] bg-gray-200 rounded-md object-cover"
+                  alt={product.name!}
                   src={
                     product.productXPhotos.length > 0 &&
                     product.productXPhotos[0].photo
-                      ? product.productXPhotos[0].photo.src
+                      ? (product.productXPhotos[0].photo.src ?? "/image-notfound.jpg") 
                       : "/image-notfound.jpg"
                   }
+                  width={500}
+                  height={500}
                 />
               </motion.div>
               <div className="absolute bottom-0 z-10 left-0 w-full bg-neutral-700 bg-opacity-70 py-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out">
@@ -129,7 +130,11 @@ export function ProductCards() {
             </div>
           </div>
         ))}
-        <Example product={selectedProduct as Product} open={open} setOpen={setOpen} />
+        <Example
+          product={selectedProduct as Product}
+          open={open}
+          setOpen={setOpen}
+        />
       </div>
 
       {/* Pagination */}
