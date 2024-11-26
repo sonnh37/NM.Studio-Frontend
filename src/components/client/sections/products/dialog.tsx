@@ -15,24 +15,22 @@ import { colorService } from "@/services/color-service";
 import { sizeService } from "@/services/size-service";
 import { Color } from "@/types/color";
 import { Size } from "@/types/size";
-
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 async function mapProductToProductDetail(
   product: Product
 ): Promise<ProductDetail> {
-
   const colors = await colorService.fetchAll(); // Giả sử fetchAll() trả về một Promise
   const sizes = await sizeService.fetchAll(); // Giả sử bạn có một hàm để fetch sizes
-
+console.log("check_pxc", product.productXPhotos)
   return {
     name: product.name ?? "N/A",
     price: product.price?.toString() ?? "Liên hệ",
     rating: 5,
     reviewCount: 9999,
-    imageSrc: product.productXPhotos[0].photo?.src ?? "",
+    imageSrc: product.productXPhotos.length > 0 ? (product.productXPhotos[0].photo?.src ?? "") : "/image-notfound.jpg",
     imageAlt: "Test",
     colors: mapColorToColorDetail(colors.data?.results ?? []),
     sizes: mapSizeToSizeDetail(sizes.data?.results ?? []),
@@ -40,21 +38,21 @@ async function mapProductToProductDetail(
 }
 
 function mapColorToColorDetail(colors: Color[]): ColorDetail[] {
-  if (colors.length > 0) {
+  if (colors.length == 0) {
     return [];
   }
   return colors.map(
     (color) =>
       ({
         name: color.name,
-        class: `bg-${color.name}-300`,
-        selectedClass: "ring-gray-400",
+        class: `${color.name}`,
+        selectedClass: "ring-gray-700",
       } as ColorDetail)
   );
 }
 
 function mapSizeToSizeDetail(sizes: Size[]): SizeDetail[] {
-  if (sizes.length > 0) {
+  if (sizes.length == 0) {
     return [];
   }
   return sizes.map(
@@ -95,7 +93,9 @@ interface ExampleProps {
 }
 
 export default function Example({ product, open, setOpen }: ExampleProps) {
-  const [productDetail, setProductDetail] = useState<ProductDetail | null>(null);
+  const [productDetail, setProductDetail] = useState<ProductDetail | null>(
+    null
+  );
   const [selectedColor, setSelectedColor] = useState<ColorDetail | null>(null);
   const [selectedSize, setSelectedSize] = useState<SizeDetail | null>(null);
 
@@ -119,13 +119,17 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
   }
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} className="relative z-10">
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      className="relative z-[1001]"
+    >
       <DialogBackdrop
         transition
         className="fixed inset-0 hidden bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in md:block"
       />
 
-      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div className="fixed inset-0 z-[1001] w-screen overflow-y-auto">
         <div className="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
           <DialogPanel
             transition
@@ -173,7 +177,7 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                             <StarIcon
                               key={rating}
                               aria-hidden="true"
-                              className={classNames(
+                              className={cn(
                                 productDetail.rating > rating
                                   ? "text-gray-900"
                                   : "text-gray-200",
@@ -217,17 +221,17 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                               key={color.name}
                               value={color}
                               aria-label={color.name}
-                              className={classNames(
+                              className={cn(
                                 color.selectedClass,
                                 "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none data-[checked]:ring-2 data-[focus]:data-[checked]:ring data-[focus]:data-[checked]:ring-offset-1"
                               )}
                             >
                               <span
                                 aria-hidden="true"
-                                className={classNames(
-                                  color.class,
+                                className={cn(
                                   "size-8 rounded-full border border-black/10"
                                 )}
+                                style={{ backgroundColor: color.class }}
                               />
                             </Radio>
                           ))}
@@ -258,7 +262,7 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                               key={size.name}
                               value={size}
                               disabled={!size.inStock}
-                              className={classNames(
+                              className={cn(
                                 size.inStock
                                   ? "cursor-pointer bg-white text-gray-900 shadow-sm"
                                   : "cursor-not-allowed bg-gray-50 text-gray-200",
@@ -297,12 +301,13 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                         </RadioGroup>
                       </fieldset>
 
-                      <button
+                      <Button
                         type="submit"
-                        className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        variant="destructive"
+                        className="grid grid-cols-1 w-full mt-4"
                       >
-                        Add to bag
-                      </button>
+                        <Link href="tel:0935538855">Liên hệ</Link>
+                      </Button>
                     </form>
                   </section>
                 </div>
