@@ -142,12 +142,12 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
       />
 
       <div className="fixed inset-0 z-[1001] w-screen overflow-y-auto">
-        <div className="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
+        <div className="flex min-h-full items-stretch justify-center text-center md:items-center p-0 m-0 border-none">
           <DialogPanel
             transition
             className="flex w-full transform text-left text-base transition data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in md:my-8 md:max-w-2xl md:px-4 data-[closed]:md:translate-y-0 data-[closed]:md:scale-95 lg:max-w-4xl"
           >
-            <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+            <div className="relative flex w-full items-center overflow-hidden bg-white p-0 shadow-2xl">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -157,14 +157,14 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                 <XMarkIcon aria-hidden="true" className="size-6" />
               </button>
 
-              <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
-                <div className="aspect-[2/3] w-full rounded-lg bg-gray-100 object-cover sm:col-span-4 lg:col-span-5">
+              <div className="grid w-full grid-cols-1 items-start sm:grid-cols-12">
+                <div className="aspect-[2/3] p-0 w-full rounded-none border-none bg-gray-100 object-cover sm:col-span-6">
                   <Carousel className="w-full">
                     <CarouselContent>
                       {productDetail.src.map((pic, index) => (
                         <CarouselItem key={index}>
-                            <Card>
-                              <CardContent className="flex aspect-square p-0 items-center justify-center">
+                            <Card className="border-none">
+                              <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
                                 <Image
                                   className="aspect-[2/3]  w-full"
                                   width={500}
@@ -177,15 +177,15 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="absolute left-2 top-2/2 -translate-y-1/2 p-2 bg-neutral-100 rounded-lg shadow-lg z-10" />
-                    <CarouselNext className="absolute right-2 top-2/2 -translate-y-1/2 p-2 bg-neutral-100 rounded-lg shadow-lg z-10" />
+                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-neutral-100 bg-opacity-40 rounded-lg border-none shadow-lg z-10" />
+                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-neutral-100 bg-opacity-40 rounded-lg border-none shadow-lg z-10" />
                   </Carousel>
                 </div>
                 {/* <img
                   alt={productDetail.imageAlt}
                   src={productDetail.imageSrc}
                 /> */}
-                <div className="sm:col-span-8 lg:col-span-7">
+                <div className="sm:col-span-6 m-8">
                   <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">
                     {productDetail.name}
                   </h2>
