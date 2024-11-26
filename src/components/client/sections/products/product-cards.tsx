@@ -9,6 +9,7 @@ import { Image } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { Pagination } from "@/components/client/common/pagination";
 import { Button } from "@/components/ui/button";
+import Example from "./dialog";
 
 export function ProductCards() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,9 +19,12 @@ export function ProductCards() {
     pageNumber: 1,
   });
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+
 
   const categoryName = searchParams.get("categoryName");
   const subCategoryName = searchParams.get("subCategoryName");
@@ -66,6 +70,11 @@ export function ProductCards() {
     fetchData();
   }, [queryProduct]);
 
+  function handleOpenDialog(pr: Product) {
+    setOpen(true);
+    setSelectedProduct(pr)
+  }
+
   return (
     <div>
       <div className="mt-6 grid grid-cols-1 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-3">
@@ -81,7 +90,6 @@ export function ProductCards() {
                   ease: "linear",
                 }}
               >
-                {/* Hình ảnh sản phẩm và Nút "Xem nhanh" */}
                 <Image
                   className="aspect-square h-[400px] w-full bg-gray-200 rounded-md object-cover lg:aspect-auto"
                   alt={product.name}
@@ -97,12 +105,12 @@ export function ProductCards() {
                 <Button
                   variant="link"
                   className="mx-auto block py-2 px-4 text-white font-bold"
+                  onClick={() => handleOpenDialog(product)}
                 >
                   XEM NHANH
                 </Button>
               </div>
             </div>
-            {/* Thông tin sản phẩm */}
             <div className="mt-4 flex justify-between">
               <div>
                 <h3 className="text-sm text-gray-700">
@@ -121,6 +129,7 @@ export function ProductCards() {
             </div>
           </div>
         ))}
+        <Example product={selectedProduct as Product} open={open} setOpen={setOpen} />
       </div>
 
       {/* Pagination */}
