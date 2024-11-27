@@ -7,6 +7,8 @@ export interface ProductGetAllQuery extends BaseQueryableQuery {
     colorId?: string;
     name?: string;
     price?: number;
+    slug?: string;
+    isNotNullSlug: boolean;
     description?: string;
     categoryName?: string;
     subCategoryName?: string;

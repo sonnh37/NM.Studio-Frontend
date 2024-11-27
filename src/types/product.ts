@@ -6,6 +6,7 @@ import {Size} from "./size";
 
 export interface Product extends BaseEntity {
     sku?: string;
+    slug?: string;
     subCategoryId?: string;
     sizeId?: string;
     colorId?: string;

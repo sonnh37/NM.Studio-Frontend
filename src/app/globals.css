@@ -9,7 +9,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+body {
+    pointer-events: auto !important;
+  }
 @font-face {
     font-family: "Waterfall";
     font-style: normal;

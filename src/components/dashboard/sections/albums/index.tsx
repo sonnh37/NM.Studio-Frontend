@@ -29,14 +29,6 @@ const formFilterAdvancedSchema = z.object({
     isDeleted: z.boolean().nullable().optional(),
 });
 
-const fetchAlbumPhotos = async (albumId_: string) => {
-    const query: PhotoGetAllQuery = {
-        albumId: albumId_,
-        isPagination: true,
-    };
-    return photoService.fetchAll(query);
-};
-
 export default function DataTableAlbums() {
     const filterEnums: FilterEnum[] = [
         {columnId: "isDeleted", title: "Is deleted", options: isDeleted_options},

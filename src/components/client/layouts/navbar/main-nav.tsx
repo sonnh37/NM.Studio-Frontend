@@ -80,9 +80,9 @@ export function MainNav({items}: MainNavProps) {
         pageNumber: 1,
         pageSize: 10,
         sortOrder: 1,
-        isActive: true,
         isDeleted: false,
         isPagination: true,
+        isNotNullSlug: true,
     };
 
     const albumGetAllQuery: AlbumGetAllQuery = {
@@ -91,6 +91,7 @@ export function MainNav({items}: MainNavProps) {
         sortOrder: 1,
         isDeleted: false,
         isPagination: true,
+        isNotNullSlug: true,
     };
 
     const categoryGetAllQuery: CategoryGetAllQuery = {
@@ -103,17 +104,18 @@ export function MainNav({items}: MainNavProps) {
             try {
                 const fetchedAlbums = await albumService.fetchAll(albumGetAllQuery);
                 const albums = fetchedAlbums.data?.results;
-                setAlbums(albums!);
+                setAlbums(albums ?? []);
 
                 const fetchedServices = await serviceService.fetchAll(
                     serviceGetAllQuery
                 );
-                setServices(fetchedServices.data?.results!);
+                const services = fetchedServices.data?.results;
+                setServices(services ?? []);
 
                 const fetchedCategories = await categoryService.fetchAll(
                     categoryGetAllQuery
                 );
-                setCategories(fetchedCategories.data?.results!);
+                setCategories(fetchedCategories.data?.results ?? []);
             } catch (error) {
                 console.error("Failed to load albums and services:", error);
             }
@@ -173,7 +175,7 @@ export function MainNav({items}: MainNavProps) {
                                         key={service.id}
                                         title={service.name}
                                         className="p-2"
-                                        href={`/services/${service.id}`}
+                                        href={`/services/${service.slug}`}
                                     >
                                         {/*{service.description}*/}
                                     </ListItem>
@@ -190,7 +192,7 @@ export function MainNav({items}: MainNavProps) {
                                     <ListItem
                                         key={album.id}
                                         title={album.title}
-                                        href={`/albums/${album.id}/photos`}
+                                        href={`/albums/${album.slug}`}
                                     >
                                         {album.description}
                                     </ListItem>

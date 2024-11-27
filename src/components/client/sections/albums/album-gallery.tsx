@@ -19,13 +19,17 @@ export function AlbumGallery() {
         if (pathName == `/${Const.ALBUM}`) {
             setQueryAlbum((prev) => ({
                 ...prev,
+                isNotNullSlug: true,
                 isPagination: true,
+                isDeleted: false,
                 pageSize: 60,
             }));
         } else {
             setQueryAlbum((prev) => ({
                 ...prev,
+                isNotNullSlug: true,
                 isPagination: true,
+                isDeleted: false,
                 pageSize: 12,
             }));
         }
@@ -38,7 +42,8 @@ export function AlbumGallery() {
             try {
                 const response = await albumService.fetchAll(queryAlbum);
                 const albums_ = response.data!.results;
-                setAlbums(albums_ ?? []);
+                const albums_checked = albums_?.filter(m => m.slug != null)
+                setAlbums(albums_checked ?? []);
             } catch (error) {
                 console.error("Failed to fetch images:", error);
             }

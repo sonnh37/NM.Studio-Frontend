@@ -7,27 +7,35 @@ import { Slide } from "@/types/slide";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import GalleryContent from "./gallery-content";
+import { AlbumGetAllQuery } from "@/types/queries/album-query";
 
 export default function Gallery() {
   const [index, setIndex] = useState(-1);
   const [album, setAlbum] = useState<Album | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [slides_, setSlides_] = useState<Slide[]>([]);
-  const { albumId } = useParams();
+  const { slug } = useParams();
 
   // This ref stores whether the image loading process has already occurred.
   const imagesLoadedRef = useRef(false);
 
   useEffect(() => {
     const fetchPhotos = async () => {
-      if (!albumId) {
+      if (!slug) {
         console.error("Album ID is null or undefined");
         return;
       }
 
       try {
-        const response = await albumService.fetchById(albumId.toString());
-        const albumData = response.data;
+        const query: AlbumGetAllQuery = {
+          isNotNullSlug: true,
+          isPagination: true,
+          pageSize: 1,
+          pageNumber: 1,
+          slug: slug.toString()
+        }
+        const response = await albumService.fetchAll(query);
+        const albumData = response.data?.results ? response.data?.results[0] : {} as Album;
         if (albumData) {
           setAlbum(albumData);
           const albumXPhotos = albumData.albumXPhotos || [];
@@ -46,7 +54,7 @@ export default function Gallery() {
     };
 
     fetchPhotos();
-  }, [albumId]);
+  }, [slug]);
 
   useEffect(() => {
     const validateImagesAndCreateSlides = async () => {

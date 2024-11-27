@@ -31,8 +31,10 @@ import Image from "next/image";
 async function mapProductToProductDetail(
   product: Product
 ): Promise<ProductDetail> {
-  const colors = await colorService.fetchAll(); // Giả sử fetchAll() trả về một Promise
-  const sizes = await sizeService.fetchAll(); // Giả sử bạn có một hàm để fetch sizes
+  const colors = [] as Color[];
+  colors.push(product.color!)
+  const sizes = [] as Size[]; 
+  sizes.push(product.size!);
   const srcList: string[] =
   product.productXPhotos.length > 0
     ? product.productXPhotos
@@ -45,8 +47,8 @@ async function mapProductToProductDetail(
     rating: 5,
     reviewCount: 9999,
     src: srcList,
-    colors: mapColorToColorDetail(colors.data?.results ?? []),
-    sizes: mapSizeToSizeDetail(sizes.data?.results ?? []),
+    colors: mapColorToColorDetail(colors ?? []),
+    sizes: mapSizeToSizeDetail(sizes ?? []),
   };
 }
 

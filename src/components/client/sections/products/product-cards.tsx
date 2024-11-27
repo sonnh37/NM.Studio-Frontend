@@ -17,6 +17,7 @@ export function ProductCards() {
     isPagination: true,
     pageSize: 12,
     pageNumber: 1,
+    isNotNullSlug: true,
   });
   const [totalPages, setTotalPages] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
