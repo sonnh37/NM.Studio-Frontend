@@ -18,7 +18,7 @@ export function AlbumHome() {
         pageNumber: 1,
         pageSize: 12,
         sortOrder: 1,
-        isActive: true,
+        isNotNullSlug: true,
         isPagination: true,
     };
 
