@@ -37,6 +37,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
 
 interface FormInputProps<TFieldValues extends FieldValues> {
   label: string;
@@ -222,6 +223,37 @@ export const FormInputNumber = <TFieldValues extends FieldValues>({
   );
 };
 
+export const FormSwitch = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  description= "",
+  control,
+}: FormInputProps<TFieldValues>) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <div className="space-y-4">
+      <FormField
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <FormLabel className="text-base">{label}</FormLabel>
+              <FormDescription>
+                {description}
+              </FormDescription>
+            </div>
+            <FormControl>
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+};
+
 interface FormSelectObjectProps<TFieldValues extends FieldValues> {
   label: string;
   name: FieldPath<TFieldValues>;
@@ -279,60 +311,59 @@ export const FormSelectObject = <TFieldValues extends FieldValues>({
 };
 
 export const FormSelectColor = <TFieldValues extends FieldValues>({
-    label,
-    name,
-    description,
-    control,
-    options,
-    selectLabel,
-    selectValue,
-    placeholder = "Select an option",
-  }: FormSelectObjectProps<TFieldValues>) => {
-    return (
-      <FormField
-        control={control}
-        name={name}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{label}</FormLabel>
-            <FormControl>
-              <Select
-                onValueChange={(value) => field.onChange(value)}
-                value={field.value ?? undefined}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={placeholder} />
-                </SelectTrigger>
-                <SelectContent>
-                  {options.map((option) => (
-                    <SelectItem
-                      key={option[selectValue]}
-                      value={option[selectValue]}
-                    >
-                      <div className="flex items-center space-x-2">
-                        {/* Hiển thị ô màu */}
-                        <span
-                          className="w-4 h-4 rounded-full border border-gray-300"
-                          style={{
-                            backgroundColor: option[selectLabel],
-                          }}
-                        ></span>
-                        {/* Hiển thị tên màu */}
-                        <span>{option[selectLabel]}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            {description && <FormDescription>{description}</FormDescription>}
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  };
-  
+  label,
+  name,
+  description,
+  control,
+  options,
+  selectLabel,
+  selectValue,
+  placeholder = "Select an option",
+}: FormSelectObjectProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Select
+              onValueChange={(value) => field.onChange(value)}
+              value={field.value ?? undefined}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.map((option) => (
+                  <SelectItem
+                    key={option[selectValue]}
+                    value={option[selectValue]}
+                  >
+                    <div className="flex items-center space-x-2">
+                      {/* Hiển thị ô màu */}
+                      <span
+                        className="w-4 h-4 rounded-full border border-gray-300"
+                        style={{
+                          backgroundColor: option[selectLabel],
+                        }}
+                      ></span>
+                      {/* Hiển thị tên màu */}
+                      <span>{option[selectLabel]}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
 
 export const FormInputDate = <TFieldValues extends FieldValues>({
   label,
@@ -411,7 +442,7 @@ const ConfirmationDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open}>
-      <DialogContent className="overflow-hidden p-0 z-[1001] shadow-lg">
+      <DialogContent className="overflow-hidden z-[1001] shadow-lg">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
         <DialogFooter>

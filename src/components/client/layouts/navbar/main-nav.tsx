@@ -80,7 +80,7 @@ export function MainNav({items}: MainNavProps) {
         pageNumber: 1,
         pageSize: 10,
         sortOrder: 1,
-        isDeleted: false,
+        isDeleted: [false],
         isPagination: true,
         isNotNullSlug: true,
     };
@@ -89,14 +89,14 @@ export function MainNav({items}: MainNavProps) {
         pageNumber: 1,
         pageSize: 8,
         sortOrder: 1,
-        isDeleted: false,
+        isDeleted: [false],
         isPagination: true,
         isNotNullSlug: true,
     };
 
     const categoryGetAllQuery: CategoryGetAllQuery = {
         isPagination: false,
-        isDeleted: false,
+        isDeleted: [false],
     };
 
     useEffect(() => {
@@ -206,7 +206,7 @@ export function MainNav({items}: MainNavProps) {
 
                     {/* Categories Section */}
                     <NavigationMenuItem>
-                        <NavigationMenuTrigger>Sản phẩm</NavigationMenuTrigger>
+                        <NavigationMenuTrigger>Trang phục cưới</NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px] max-h-[480px] overflow-y-auto">
                                 {categories.map((category, index) => {

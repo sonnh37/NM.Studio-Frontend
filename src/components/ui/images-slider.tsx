@@ -5,7 +5,6 @@ import React, {useEffect, useState} from "react";
 
 export const ImagesSlider = ({
                                  images,
-                                 children,
                                  overlay = true,
                                  overlayClassName,
                                  className,
@@ -13,7 +12,6 @@ export const ImagesSlider = ({
                                  direction = "up",
                              }: {
     images: string[];
-    children: React.ReactNode;
     overlay?: React.ReactNode;
     overlayClassName?: string;
     className?: string;
@@ -50,9 +48,11 @@ export const ImagesSlider = ({
                 img.onerror = reject;
             });
         });
+        console.log("check_loaded", loadPromises)
 
         Promise.all(loadPromises)
             .then((loadedImages) => {
+                console.log("check_loadedImages", loadedImages)
                 setLoadedImages(loadedImages as string[]);
                 setLoading(false);
             })
@@ -126,7 +126,6 @@ export const ImagesSlider = ({
                 perspective: "1000px",
             }}
         >
-            {areImagesLoaded && children}
             {areImagesLoaded && overlay && (
                 <div
                     className={cn("absolute inset-0 bg-black/60 z-40", overlayClassName)}

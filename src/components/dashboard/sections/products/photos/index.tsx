@@ -45,7 +45,7 @@ export default function DataTablePhotos({
         // const allSelectedProductXPhotos: ProductXPhotoUpdateCommand[] = allSelected_.map((photo) => ({
         //   photoId: photo.id,
         //   productId,
-        //   isDeleted: false,
+        //   isDeleted: [false],
         // }));
 
         // if (value) {
@@ -61,7 +61,7 @@ export default function DataTablePhotos({
         const productXPhoto_: ProductXPhoto = {
             photoId,
             productId,
-            isDeleted: false,
+            isDeleted: [false],
         };
 
         productXPhotoService.delete_(productXPhoto_).then(async (response) => {
@@ -78,7 +78,7 @@ export default function DataTablePhotos({
         const productXPhoto_: ProductXPhoto = {
             photoId: row.id,
             productId,
-            isDeleted: false,
+            isDeleted: [false],
         };
 
         productXPhotoService.create(productXPhoto_).then((response) => {

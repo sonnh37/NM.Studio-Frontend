@@ -18,6 +18,7 @@ export class BaseService<T> {
                 isPagination: false,
             }
         }
+        console.log("check_query", query)
         const cleanedQuery = cleanQueryParams(query!);
         console.log("check_url", `${this.endpoint}?${cleanedQuery}`)
         return axiosInstance

@@ -21,7 +21,7 @@ export function AlbumGallery() {
                 ...prev,
                 isNotNullSlug: true,
                 isPagination: true,
-                isDeleted: false,
+                isDeleted: [false],
                 pageSize: 60,
             }));
         } else {
@@ -29,7 +29,7 @@ export function AlbumGallery() {
                 ...prev,
                 isNotNullSlug: true,
                 isPagination: true,
-                isDeleted: false,
+                isDeleted: [false],
                 pageSize: 12,
             }));
         }
@@ -56,7 +56,7 @@ export function AlbumGallery() {
         <div
             className="pt-10 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
             {albums.map((album) => {
-                const path = "/albums/" + album.id + "/photos";
+                const path = "/albums/" + album.slug;
                 return (
 
                     <Link href={path}>

@@ -44,6 +44,7 @@ export function ProductCards() {
       sortOrder: sortOrder !== 0 ? sortOrder : undefined,
       sortField: sortBy || undefined,
       pageNumber: pageNumber,
+      isDeleted: [false]
     }));
   }, [
     categoryName,
@@ -60,6 +61,8 @@ export function ProductCards() {
       if (!queryProduct) return;
       try {
         const response = await productService.fetchAll(queryProduct);
+
+        console.log("check_", response)
         setProducts(response.data!.results || []);
         setTotalPages(response.data!.totalPages || 1);
       } catch (error) {

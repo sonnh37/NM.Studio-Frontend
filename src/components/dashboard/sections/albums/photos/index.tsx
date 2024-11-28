@@ -46,7 +46,7 @@ export default function DataTablePhotos({
         // const allSelectedAlbumXPhotos: AlbumXPhotoUpdateCommand[] = allSelected_.map((photo) => ({
         //   photoId: photo.id,
         //   albumId,
-        //   isDeleted: false,
+        //   isDeleted: [false],
         // }));
 
         // if (value) {
@@ -62,7 +62,7 @@ export default function DataTablePhotos({
         const albumXPhoto_: AlbumXPhoto = {
             photoId,
             albumId,
-            isDeleted: false,
+            isDeleted: [false],
         };
 
         albumXPhotoService.delete_(albumXPhoto_).then(async (response) => {
@@ -79,7 +79,7 @@ export default function DataTablePhotos({
         const albumXPhoto_: AlbumXPhoto = {
             photoId: row.id,
             albumId,
-            isDeleted: false,
+            isDeleted: [false],
         };
 
         albumXPhotoService.create(albumXPhoto_).then((response) => {

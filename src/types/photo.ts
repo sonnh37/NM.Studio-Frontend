@@ -5,6 +5,7 @@ import {ProductXPhoto} from "@/types/product-x-photo";
 export interface Photo extends BaseEntity {
     title?: string;
     description?: string;
+    isFeatured: boolean;
     src?: string;
     href?: string;
     tag?: string;

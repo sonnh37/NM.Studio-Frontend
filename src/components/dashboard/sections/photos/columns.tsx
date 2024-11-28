@@ -8,6 +8,7 @@ import {DataTableColumnHeader} from "@/components/dashboard/data-table/data-tabl
 import Image from "next/image";
 import Link from "next/link";
 import Actions from "./actions";
+import { Badge } from "@/components/ui/badge";
 
 
 export const columns: ColumnDef<Photo>[] = [
@@ -98,6 +99,24 @@ export const columns: ColumnDef<Photo>[] = [
                 day: 'numeric'    // 20
             });
         }
+    },
+    {
+        accessorKey: "isFeatured",
+        header: ({column}) => <DataTableColumnHeader column={column} title="Is Featured"/>,
+        cell: ({row}) => {
+            const isFeatured = row.getValue("isFeatured") as boolean;
+            if (!isFeatured) {
+                return (
+                    <Badge variant="outline">In album</Badge>
+                );
+            }
+            return (
+                <Badge>In home page</Badge>
+            );
+        },
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id));
+        },
     },
     {
         accessorKey: "isDeleted",
