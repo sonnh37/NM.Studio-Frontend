@@ -141,9 +141,9 @@ export function Hero() {
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
         style={{
-          '--swiper-nacv vigation-color': '#fff',
+          '--swiper-navigation-color': '#fff',
           '--swiper-pagination-color': '#fff',
-        }  as CSSProperties}
+        } as CSSProperties}
       >
         {images.map((pic, index) => (
           <SwiperSlide key={index}>
