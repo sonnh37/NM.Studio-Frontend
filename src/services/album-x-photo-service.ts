@@ -3,13 +3,14 @@ import {BaseService} from "./base-service";
 import {Const} from "@/lib/const";
 import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/axios-instance";
+import { AlbumXPhotoUpdateCommand } from "@/types/commands/album-x-photo-command";
 
 class AlbumXPhotoService extends BaseService<AlbumXPhoto> {
     constructor() {
         super(`${Const.ALBUM_X_PHOTO}`);
     }
 
-    public delete_ = (query?: AlbumXPhoto): Promise<BusinessResult<null>> => {
+    public delete_ = (query?: AlbumXPhotoUpdateCommand): Promise<BusinessResult<null>> => {
         const params = query ? {...query} : {};
         return axiosInstance
             .delete<BusinessResult<null>>(`${this.endpoint}`, {params})

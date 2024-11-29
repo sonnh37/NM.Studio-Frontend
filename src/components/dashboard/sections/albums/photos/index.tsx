@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {PhotoGetAllQuery} from "@/types/queries/photo-query";
 import {Photo} from "@/types/photo";
 import {ColumnDef} from "@tanstack/react-table";
-import {AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
+import {AlbumXPhotoCreateCommand, AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
 import {photoService} from "@/services/photo-service";
 import {DataOnlyTable} from "@/components/common/data-table-origin/data-only-table";
 import {GrSubtract} from "react-icons/gr";
@@ -33,6 +33,7 @@ export default function DataTablePhotos({
     useEffect(() => {
         const defaultQueryParams: PhotoGetAllQuery = {
             isPagination: true,
+            isDeleted: [true, false],
             albumId: albumId,
         };
 
@@ -59,10 +60,9 @@ export default function DataTablePhotos({
     };
 
     const handleRemovePhoto = (photoId: string) => {
-        const albumXPhoto_: AlbumXPhoto = {
+        const albumXPhoto_: AlbumXPhotoUpdateCommand = {
             photoId,
             albumId,
-            isDeleted: [false],
         };
 
         albumXPhotoService.delete_(albumXPhoto_).then(async (response) => {
@@ -76,10 +76,9 @@ export default function DataTablePhotos({
     };
 
     const handleAddPhoto = (row: Photo) => {
-        const albumXPhoto_: AlbumXPhoto = {
+        const albumXPhoto_: AlbumXPhotoCreateCommand = {
             photoId: row.id,
             albumId,
-            isDeleted: [false],
         };
 
         albumXPhotoService.create(albumXPhoto_).then((response) => {

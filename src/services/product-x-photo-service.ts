@@ -3,13 +3,14 @@ import {BaseService} from "./base-service";
 import {Const} from "@/lib/const";
 import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/axios-instance";
+import { ProductXPhotoUpdateCommand } from "@/types/commands/product-x-photo-command";
 
 class ProductXPhotoService extends BaseService<ProductXPhoto> {
     constructor() {
         super(`${Const.PRODUCT_X_PHOTO}`);
     }
 
-    public delete_ = (query?: ProductXPhoto): Promise<BusinessResult<null>> => {
+    public delete_ = (query?: ProductXPhotoUpdateCommand): Promise<BusinessResult<null>> => {
         const params = query ? {...query} : {};
         return axiosInstance
             .delete<BusinessResult<null>>(`${this.endpoint}`, {params})

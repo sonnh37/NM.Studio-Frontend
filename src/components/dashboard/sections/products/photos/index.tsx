@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {PhotoGetAllQuery} from "@/types/queries/photo-query";
 import {Photo} from "@/types/photo";
 import {ColumnDef} from "@tanstack/react-table";
-import {ProductXPhotoUpdateCommand} from "@/types/commands/product-x-photo-command";
+import {ProductXPhotoCreateCommand, ProductXPhotoUpdateCommand} from "@/types/commands/product-x-photo-command";
 import {photoService} from "@/services/photo-service";
 import {DataOnlyTable} from "@/components/common/data-table-origin/data-only-table";
 import {GrSubtract} from "react-icons/gr";
@@ -58,10 +58,9 @@ export default function DataTablePhotos({
     };
 
     const handleRemovePhoto = (photoId: string) => {
-        const productXPhoto_: ProductXPhoto = {
+        const productXPhoto_: ProductXPhotoUpdateCommand = {
             photoId,
             productId,
-            isDeleted: [false],
         };
 
         productXPhotoService.delete_(productXPhoto_).then(async (response) => {
@@ -75,10 +74,9 @@ export default function DataTablePhotos({
     };
 
     const handleAddPhoto = (row: Photo) => {
-        const productXPhoto_: ProductXPhoto = {
+        const productXPhoto_: ProductXPhotoCreateCommand = {
             photoId: row.id,
             productId,
-            isDeleted: [false],
         };
 
         productXPhotoService.create(productXPhoto_).then((response) => {
