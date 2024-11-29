@@ -1,4 +1,4 @@
-import {Navbar} from "@/components/dashboard/common/navbar";
+import {Navbar} from "@/components/dashboard/layouts/navbar";
 
 interface ContentLayoutProps {
     children: React.ReactNode;
