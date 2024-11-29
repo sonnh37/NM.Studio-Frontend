@@ -1,7 +1,7 @@
 import {LayoutGrid, Settings, Users} from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import {FcServices, FcStackOfPhotos} from "react-icons/fc";
+import {FcServices, FcStackOfPhotos, FcNews} from "react-icons/fc";
 import {Const} from "./const";
 
 type Submenu = {
@@ -129,6 +129,26 @@ export function getMenuList(pathname: string): Group[] {
                             href: Const.DASHBOARD_SERVICE_NEW_URL,
                             label: "New Service",
                             active: pathname === Const.DASHBOARD_SERVICE_NEW_URL,
+                        },
+                    ],
+                },
+                {
+                    href: "",
+                    label: "Blogs",
+                    active: pathname.includes(Const.DASHBOARD_BLOG_URL),
+                    icon: () => (
+                        <FcNews className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+                    ),
+                    submenus: [
+                        {
+                            href: Const.DASHBOARD_BLOG_URL,
+                            label: "All Blogs",
+                            active: pathname === Const.DASHBOARD_BLOG_URL,
+                        },
+                        {
+                            href: Const.DASHBOARD_BLOG_NEW_URL,
+                            label: "New Blog",
+                            active: pathname === Const.DASHBOARD_BLOG_NEW_URL,
                         },
                     ],
                 },

@@ -187,54 +187,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     }
   }, [initialData, form]);
 
-  // const fetchColors = async () => {
-  //     const response = await colorService.fetchAll();
-  //     return response.data?.results;
-  // };
-  //
-  // const fetchSizes = async () => {
-  //     const response = await sizeService.fetchAll();
-  //     return response.data?.results;
-  // };
-  //
-  // const fetchCategories = async () => {
-  //     const response = await categoryService.fetchAll();
-  //     return response.data?.results;
-  // };
-  //
-  // useEffect(() => {
-  //     const fetchData = async () => {
-  //         try {
-  //             const [colors, sizes, categories] = await Promise.all([
-  //                 fetchColors(),
-  //                 fetchSizes(),
-  //                 fetchCategories(),
-  //             ]);
-  //             console.log("check_coloir", colors)
-  //             setColors(colors!);
-  //             setSizes(sizes!);
-  //             setCategories(categories!);
-  //             setSelectedCategory(selectedCategoryId);
-  //
-  //         } catch (error) {
-  //             console.error(error);
-  //         }
-  //     };
-  //
-  //     fetchData();
-  // }, [selectedCategoryId]);
-
-  // useEffect(() => {
-  //     if (selectedCategory) {
-  //         const category = categories.find((ca) => ca.id === selectedCategory);
-  //         if (category) {
-  //             setSubCategories(category.subCategories || []);
-  //         } else {
-  //             setSubCategories([]);
-  //         }
-  //     }
-  // }, [selectedCategory, categories]);
-
   return (
     <>
       <ConfirmationDialog

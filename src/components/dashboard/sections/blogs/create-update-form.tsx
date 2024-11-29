@@ -22,11 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { serviceService } from "@/services/service-service";
+import { blogService } from "@/services/blog-service";
 import {
-  ServiceCreateCommand,
-  ServiceUpdateCommand,
-} from "@/types/commands/service-command";
+  BlogCreateCommand,
+  BlogUpdateCommand,
+} from "@/types/commands/blog-command";
 import { Photo } from "@/types/photo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -39,32 +39,33 @@ import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputNumber,
+  FormSwitch,
 } from "@/lib/form-custom-shadcn";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 
-interface ServiceFormProps {
+interface BlogFormProps {
   initialData: any | null;
 }
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required").default(""),
-  description: z.string().optional().default(""),
-  src: z.string().nullable().optional().default(""),
-  price: z.number().optional().default(0),
+  title: z.string().min(1, "Title is required").default(""),
+  content: z.string().optional().default(""),
+  thumbnail: z.string().nullable().optional().default(""),
   createdDate: z.date().optional().default(new Date()),
   createdBy: z.string().nullable().optional().default(null),
   isDeleted: z.boolean().default(false),
+  isFeatured: z.boolean().default(false),
 });
 
-export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
+export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
-  const name = initialData ? "Edit service" : "Create service";
-  const description = initialData ? "Edit a service." : "Add a new service";
-  const toastMessage = initialData ? "Service updated." : "Service created.";
+  const title = initialData ? "Edit blog" : "Create blog";
+  const content = initialData ? "Edit a blog." : "Add a new blog";
+  const toastMessage = initialData ? "Blog updated." : "Blog created.";
   const action = initialData ? "Save changes" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -83,6 +84,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      console.log("check_file", URL.createObjectURL(file))
       setFirebaseLink(URL.createObjectURL(file));
       setSelectedFile(file);
     }
@@ -91,12 +93,12 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const handleImageDelete = () => {
     setFirebaseLink("");
     setSelectedFile(null);
-    form.setValue("src", "");
+    form.setValue("thumbnail", "");
   };
 
   const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
     if (selectedFile) {
-      const storageRef = ref(storage, `Service/${selectedFile.name}`);
+      const storageRef = ref(storage, `Blog/${selectedFile.name}`);
       const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
       const uploadPromise = new Promise<string>((resolve, reject) => {
@@ -111,7 +113,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
       });
 
       const downloadURL = await uploadPromise;
-      return { ...values, src: downloadURL };
+      return { ...values, thumbnail: downloadURL };
     }
     return values;
   };
@@ -120,11 +122,12 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       const values_ = await uploadImageFirebase(values);
+      console.log("check_value_", values);
       if (initialData) {
         const updatedValues = {
           ...values_,
         };
-        const response = await serviceService.update(updatedValues);
+        const response = await blogService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);
@@ -155,7 +158,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
       };
 
       form.reset(parsedInitialData);
-      setFirebaseLink(parsedInitialData.src || "");
+      setFirebaseLink(parsedInitialData.thumbnail || "");
     }
   }, [initialData, form]);
 
@@ -165,7 +168,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
         const createdValues = {
           ...pendingValues,
         };
-        const response = await serviceService.create(createdValues);
+        const response = await blogService.create(createdValues);
         if (response.status != 1) throw new Error(response.message);
         toast.success(response.message);
       }
@@ -190,7 +193,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
           setShowConfirmationDialog(false);
           router.push(previousPath);
         }} // Đóng modal
-        title="Do you want to continue adding this service?"
+        title="Do you want to continue adding this blog?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"
@@ -207,7 +210,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
               </Link>
 
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Service Controller
+                Blog Controller
               </h1>
               <Badge variant="outline" className="ml-auto sm:ml-0">
                 <FormField
@@ -252,25 +255,31 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-0">
                   <CardHeader>
-                    <CardTitle>Service Details</CardTitle>
+                    <CardTitle>Blog Details</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-6">
                       <div className="grid gap-3">
+                        <FormSwitch
+                          control={form.control}
+                          name="isFeatured"
+                          label="Featured"
+                          description="This is your public about home."
+                        />
+
                         <FormInput
                           control={form.control}
-                          name="name"
-                          label="Name"
-                          description="This is your public display name."
-                          placeholder="Enter name"
+                          name="title"
+                          label="Title"
+                          description="This is your public display title."
+                          placeholder="Enter title"
                         />
 
                         <FormField
                           control={form.control}
-                          name="description"
+                          name="content"
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
@@ -291,15 +300,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                           )}
                         />
 
-                        <FormInputNumber
-                          control={form.control}
-                          name="price"
-                          label="Price"
-                          placeholder="Enter price"
-                          className="mt-2 w-full"
-                        />
                       </div>
-                    </div>
                   </CardContent>
                 </Card>
                 <Card
@@ -315,10 +316,10 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                   <CardContent>
                     <FormField
                       control={form.control}
-                      name="src"
+                      name="thumbnail"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Service Background</FormLabel>
+                          <FormLabel>Blog Background</FormLabel>
                           <FormControl>
                             <div className="grid gap-2">
                               {firebaseLink ? (
@@ -396,7 +397,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                 </Card>
                 <Card x-chunk="dashboard-07-chunk-5">
                   <CardHeader>
-                    <CardTitle>Archive Service</CardTitle>
+                    <CardTitle>Archive Blog</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit.
                     </CardDescription>
@@ -404,7 +405,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                   <CardContent>
                     <div></div>
                     <Button size="sm" variant="secondary">
-                      Archive Service
+                      Archive Blog
                     </Button>
                   </CardContent>
                 </Card>
