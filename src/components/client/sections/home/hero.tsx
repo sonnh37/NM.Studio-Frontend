@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ImagesSlider } from "@/components/ui/images-slider";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { BookingModal } from "@/components/client/common/animated-modal";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { photoService } from "@/services/photo-service";
 import { PhotoGetAllQuery } from "@/types/queries/photo-query";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -141,9 +141,9 @@ export function Hero() {
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
         style={{
-          '--swiper-navigation-color': '#fff',
+          '--swiper-nacv vigation-color': '#fff',
           '--swiper-pagination-color': '#fff',
-        }}
+        }  as CSSProperties}
       >
         {images.map((pic, index) => (
           <SwiperSlide key={index}>
