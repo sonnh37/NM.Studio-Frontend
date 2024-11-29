@@ -3,7 +3,10 @@ import Image from "next/image";
 import React from "react";
 import {FcServices, FcStackOfPhotos, FcNews} from "react-icons/fc";
 import {Const} from "./const";
-
+import { BiCategory } from "react-icons/bi";
+import { MdOutlineCategory } from "react-icons/md";
+import { MdOutlineColorLens } from "react-icons/md";
+import { IoIosResize } from "react-icons/io";
 type Submenu = {
     href: string;
     label: string;
@@ -149,6 +152,46 @@ export function getMenuList(pathname: string): Group[] {
                             href: Const.DASHBOARD_BLOG_NEW_URL,
                             label: "New Blog",
                             active: pathname === Const.DASHBOARD_BLOG_NEW_URL,
+                        },
+                    ],
+                },
+                {
+                    href: "",
+                    label: "Sizes",
+                    active: pathname.includes(Const.DASHBOARD_SIZE_URL),
+                    icon: () => (
+                        <IoIosResize className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+                    ),
+                    submenus: [
+                        {
+                            href: Const.DASHBOARD_SIZE_URL,
+                            label: "All Sizes",
+                            active: pathname === Const.DASHBOARD_SIZE_URL,
+                        },
+                        {
+                            href: Const.DASHBOARD_SIZE_NEW_URL,
+                            label: "New Size",
+                            active: pathname === Const.DASHBOARD_SIZE_NEW_URL,
+                        },
+                    ],
+                },
+                {
+                    href: "",
+                    label: "Colors",
+                    active: pathname.includes(Const.DASHBOARD_COLOR_URL),
+                    icon: () => (
+                        <MdOutlineColorLens className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+                    ),
+                    submenus: [
+                        {
+                            href: Const.DASHBOARD_COLOR_URL,
+                            label: "All Colors",
+                            active: pathname === Const.DASHBOARD_COLOR_URL,
+                        },
+                        {
+                            href: Const.DASHBOARD_COLOR_NEW_URL,
+                            label: "New Color",
+                            active: pathname === Const.DASHBOARD_COLOR_NEW_URL,
                         },
                     ],
                 },
