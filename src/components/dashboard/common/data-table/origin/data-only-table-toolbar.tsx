@@ -5,20 +5,17 @@ import type {Table} from "@tanstack/react-table"
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {X} from "lucide-react"
-import {isDeleted_options} from "../common/filters"
-import {DataTableFacetedFilter} from "@/components/dashboard/data-table/data-table-faceted-filter";
-import {DataTableViewOptions} from "@/components/dashboard/data-table/data-table-view-options";
+import {DataOnlyTableViewOptions} from "@/components/dashboard/common/data-table/origin/data-only-table-view-options";
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>
-    stringObject: string
 }
 
-export function DataTableToolbar<TData>({
-                                            table,
-                                            stringObject
-                                        }: DataTableToolbarProps<TData>) {
+export function DataOnlyTableToolbar<TData>({
+                                                table,
+                                            }: DataTableToolbarProps<TData>) {
     const isFiltered = table.getState().columnFilters.length > 0
+
     return (
         <div className="flex items-center justify-between">
             <div className="flex flex-1 items-center space-x-2">
@@ -30,14 +27,20 @@ export function DataTableToolbar<TData>({
                     }
                     className="h-8 w-[150px] lg:w-[250px]"
                 />
-                {table.getColumn("isDeleted") && (
-                    <DataTableFacetedFilter
-                        column={table.getColumn("isDeleted")}
-                        title="Status"
-                        options={isDeleted_options}
-                    />
-                )}
-
+                {/*{table.getColumn("status") && (*/}
+                {/*    <DataOnlyTableFacetedFilter*/}
+                {/*        column={table.getColumn("status")}*/}
+                {/*        title="Status"*/}
+                {/*        options={status_options}*/}
+                {/*    />*/}
+                {/*)}*/}
+                {/*{table.getColumn("priority") && (*/}
+                {/*    <DataOnlyTableFacetedFilter*/}
+                {/*        column={table.getColumn("priority")}*/}
+                {/*        title="Priority"*/}
+                {/*        options={priority_options}*/}
+                {/*    />*/}
+                {/*)}*/}
                 {isFiltered && (
                     <Button
                         variant="ghost"
@@ -49,7 +52,7 @@ export function DataTableToolbar<TData>({
                     </Button>
                 )}
             </div>
-            <DataTableViewOptions stringObject={stringObject} table={table}/>
+            <DataOnlyTableViewOptions table={table}/>
         </div>
     )
 }

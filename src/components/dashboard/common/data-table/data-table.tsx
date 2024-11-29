@@ -15,9 +15,9 @@ import {
 import {keepPreviousData, useQuery,} from '@tanstack/react-query'
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {DataTablePagination} from "@/components/dashboard/data-table/data-table-pagination";
+import {DataTablePagination} from "@/components/dashboard/common/data-table/data-table-pagination";
 import {BaseQueryableQuery} from "@/types/queries/base-query";
-import {DataTableToolbar} from "@/components/dashboard/data-table/data-table-toolbar";
+import {DataTableToolbar} from "@/components/dashboard/common/data-table/data-table-toolbar";
 import BarLoader from "@/components/common/bar-loader"
 
 interface DataTableProps<TData, TValue> {
