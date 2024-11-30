@@ -8,12 +8,12 @@ export interface CategoryUpdateCommand extends UpdateCommand {
     name?: string;
 }
 
-export interface SubCatgoryCreateCommand extends CreateCommand {
+export interface SubCategoryCreateCommand extends CreateCommand {
     name?: string;
     categoryId?: string;
 }
 
-export interface SubCatgoryUpdateCommand extends UpdateCommand {
+export interface SubCategoryUpdateCommand extends UpdateCommand {
     name?: string;
     categoryId?: string;
 }

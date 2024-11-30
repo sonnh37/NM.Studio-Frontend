@@ -129,14 +129,19 @@ export function DataTable<TData>({
 
         Object.entries(formValues).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
-                // If the value is an object, serialize it to JSON string
+                if (Array.isArray(value) && value.every(v => typeof v === 'boolean')) {
+                    filterParams[key] = value;
+                } 
+                else
                 if (typeof value === 'object' && value !== null) {
-                    filterParams[key] = JSON.stringify(value); // Convert object to string
+                    filterParams[key] = JSON.stringify(value); 
                 } else {
                     filterParams[key] = value;
                 }
             }
         });
+
+        console.log("filter", filterParams)
 
         return {
             pageNumber: pagination.pageIndex + 1,
@@ -151,6 +156,7 @@ export function DataTable<TData>({
     }, [pagination, sorting, formValues, columnFilters]);
 
     const queryParams = useMemo(() => getQueryParams(), [getQueryParams]);
+
 
     const {data, isFetching, error} = useQuery({
         queryKey: ["data", queryParams],

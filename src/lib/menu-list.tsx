@@ -157,6 +157,46 @@ export function getMenuList(pathname: string): Group[] {
                 },
                 {
                     href: "",
+                    label: "Categories",
+                    active: pathname.includes(Const.DASHBOARD_CATEGORY_URL),
+                    icon: () => (
+                        <BiCategory className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+                    ),
+                    submenus: [
+                        {
+                            href: Const.DASHBOARD_CATEGORY_URL,
+                            label: "All Categories",
+                            active: pathname === Const.DASHBOARD_CATEGORY_URL,
+                        },
+                        {
+                            href: Const.DASHBOARD_CATEGORY_NEW_URL,
+                            label: "New Category",
+                            active: pathname === Const.DASHBOARD_CATEGORY_NEW_URL,
+                        },
+                    ],
+                },
+                {
+                    href: "",
+                    label: "Sub Categories",
+                    active: pathname.includes(Const.DASHBOARD_SUBCATEGORY_URL),
+                    icon: () => (
+                        <MdOutlineCategory className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+                    ),
+                    submenus: [
+                        {
+                            href: Const.DASHBOARD_SUBCATEGORY_URL,
+                            label: "All SubCategories",
+                            active: pathname === Const.DASHBOARD_SUBCATEGORY_URL,
+                        },
+                        {
+                            href: Const.DASHBOARD_SUBCATEGORY_NEW_URL,
+                            label: "New SubCategory",
+                            active: pathname === Const.DASHBOARD_SUBCATEGORY_NEW_URL,
+                        },
+                    ],
+                },
+                {
+                    href: "",
                     label: "Sizes",
                     active: pathname.includes(Const.DASHBOARD_SIZE_URL),
                     icon: () => (

@@ -7,4 +7,5 @@ export interface CategoryGetAllQuery extends BaseQueryableQuery {
 export interface SubCategoryGetAllQuery extends BaseQueryableQuery {
     name?: string;
     categoryId?: string;
+    isNullCategoryId?: boolean;
 }

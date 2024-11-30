@@ -33,7 +33,7 @@ export default function DataTablePhotos({
     useEffect(() => {
         const defaultQueryParams: PhotoGetAllQuery = {
             isPagination: true,
-            isDeleted: [true, false],
+            isDeleted: [false],
             albumId: albumId,
         };
 
