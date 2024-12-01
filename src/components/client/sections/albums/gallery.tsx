@@ -96,8 +96,8 @@ export default function Gallery() {
   }, [photos]);
 
   return (
-    <div className="container mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-16 mb-32">
+    <div className="container py-16 mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="grid content-center">
           <h2 className="text-4xl text-end relative z-20">{album?.title}</h2>
           <p className="text-end w-full text-base md:text-xs font-normal text-neutral-500 dark:text-neutral-200 mt-2 mx-auto pb-5">

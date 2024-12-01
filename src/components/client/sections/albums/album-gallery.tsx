@@ -54,7 +54,7 @@ export function AlbumGallery() {
 
     return (
         <div
-            className="pt-10 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
+            className="py-16 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
             {albums.map((album) => {
                 const path = "/albums/" + album.slug;
                 return (

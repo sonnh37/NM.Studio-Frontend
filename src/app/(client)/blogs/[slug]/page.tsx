@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Service } from "@/types/service";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
 import dynamic from "next/dynamic";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
-import { serviceService } from "@/services/service-service";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import Image from "next/image";
+import { blogService } from "@/services/blog-service";
+import { Blog } from "@/types/blog";
+import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { formatDate } from "@/lib/utils";
+import Image from "next/image";
 
 // Dynamically import the Editor component to prevent SSR issues
 const Editor = dynamic(
@@ -15,75 +16,86 @@ const Editor = dynamic(
   { ssr: false }
 );
 
-export default function Page({ params }: { params: { serviceId: string } }) {
-  const [service, setService] = useState<Service | null>(null);
+export default function Page({ params }: { params: { slug: string } }) {
+  const [blog, setBlog] = useState<Blog | null>(null);
   const [editorState, setEditorState] = useState<EditorState | null>(null);
-  const { serviceId } = params;
-  const query: ServiceGetAllQuery = {
+  const { slug } = params;
+  const query: BlogGetAllQuery = {
     isNotNullSlug: true,
+    isDeleted: [false],
+    isFeatured: false,
     isPagination: true,
     pageSize: 1,
     pageNumber: 1,
-    slug: serviceId,
+    slug: slug,
   };
 
   useEffect(() => {
-    const fetchService = async () => {
-      if (!serviceId) {
+    const fetchBlog = async () => {
+      if (!slug) {
         console.error("Title is null or undefined");
         return;
       }
       try {
-        const response = await serviceService.fetchAll(query);
+        const response = await blogService.fetchAll(query);
         console.log("check_service", response);
         if (response && response.data) {
-          const fetchedService = response.data!.results![0] as Service;
-          setService(fetchedService);
+          const fetchedBlog = response.data!.results![0] as Blog;
+          setBlog(fetchedBlog);
 
           let contentState;
 
           try {
             // Attempt to parse description as JSON
-            contentState = fetchedService.description
-              ? convertFromRaw(JSON.parse(fetchedService.description))
+            contentState = fetchedBlog.content
+              ? convertFromRaw(JSON.parse(fetchedBlog.content))
               : ContentState.createFromText("");
           } catch (error) {
             // Fallback to plain text if description is not valid JSON
             contentState = ContentState.createFromText(
-              fetchedService.description || ""
+              fetchedBlog.content || ""
             );
           }
 
-          // Create editor state for the service description
+          // Create editor state for the blog description
           const editorState = EditorState.createWithContent(contentState);
           setEditorState(editorState);
         } else {
-          console.error("No service found with the given name");
+          console.error("No blog found with the given name");
         }
       } catch (error) {
-        console.error("Failed to fetch service:", error);
+        console.error("Failed to fetch blog:", error);
       }
     };
 
-    fetchService();
-  }, [serviceId]);
+    fetchBlog();
+  }, [slug]);
 
   return (
     <>
-      {service && (
-        <div className="service-details container mx-auto py-16 space-y-8">
+      {blog && (
+        <div className="service-details container mx-auto space-y-8 py-16">
           <div className="grid justify-center gap-8">
             <div className="grid justify-center gap-2 ">
-              <h1 className="text-4xl text-center">{service.name}</h1>
+              <h1 className="text-4xl text-center">{blog.title}</h1>
               <div className="flex flex-row justify-center gap-4">
                 <p className="text-gray-500 text-sm">
-                  {service.createdBy ?? "Admin"}
+                  {blog.createdBy ?? "Admin"}
                 </p>
                 <p className="text-gray-500 text-sm">|</p>
                 <p className="text-gray-500 text-sm">
-                  {formatDate(service.createdDate)}
+                  {formatDate(blog.createdDate)}
                 </p>
               </div>
+            </div>
+            <div>
+              <Image
+                alt={blog.title ?? ""}
+                className="object-cover"
+                src={blog.thumbnail ?? "/image-notfound.jpg"}
+                height={9999}
+                width={9999}
+              />
             </div>
           </div>
           <div className="container">
@@ -91,6 +103,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
               <Editor editorState={editorState} readOnly={true} toolbarHidden />
             )}
           </div>
+          {/* Render other service details here */}
         </div>
       )}
     </>

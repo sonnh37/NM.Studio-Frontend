@@ -46,7 +46,7 @@ export default function SiteHeader({user}: SiteHeaderProps) {
 
                         <div className="flex space-x-4 items-center">
                             <div>
-                                <a href="">ABOUT NHUMY</a>
+                                <a href="/about">ABOUT NHUMY</a>
                             </div>
                             <div>|</div>
                             <div>

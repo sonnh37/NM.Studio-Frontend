@@ -30,7 +30,9 @@ export default function HomeLayout({
             <div className="">
                 <SiteHeader user={null}/>
                 <BreadcrumbClient/>
+                <div >
                 {children}
+                </div>
                 <Map/>
                 <Contact/>
                 <Footer/>
