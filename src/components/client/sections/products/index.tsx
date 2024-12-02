@@ -37,6 +37,8 @@ import {Category, SubCategory} from "@/types/category";
 import {Size} from "@/types/size";
 import {CategoryGetAllQuery} from "@/types/queries/product-query";
 import {Button} from "@/components/ui/button";
+import { SizeGetAllQuery } from '@/types/queries/size-query';
+import { ColorGetAllQuery } from '@/types/queries/color-query';
 
 
 function classNames(...classes: any) {
@@ -68,11 +70,6 @@ export default function SidebarProductCards() {
         [key: string]: string[]; // key là id của section, value là danh sách các giá trị được chọn
     }>({});
 
-    const prevParams = new URLSearchParams(searchParams)
-
-    // prevParams.delete('sortBy');
-    // prevParams.delete('sortOrder');
-
     const [sortOptions, setSortOptions] = useState([
         {name: 'Newest', sortBy: `createdDate`, sortOrder: -1, current: true},
         {name: 'Price: Low to High', sortBy: `price`, sortOrder: 1, current: false},
@@ -86,7 +83,6 @@ export default function SidebarProductCards() {
 
         }));
         setSortOptions(updatedSortOptions);
-        console.log("updatedSortOptions", updatedSortOptions);
 
         const newParams = new URLSearchParams(searchParams);
 
@@ -108,13 +104,10 @@ export default function SidebarProductCards() {
             };
         });
 
-        // Cập nhật URL sau khi xử lý state
         const newParams = new URLSearchParams(searchParams);
 
-        // Xóa giá trị hiện tại của sectionId
         newParams.delete(sectionId);
 
-        // Thêm các giá trị được chọn mới
         const selectedItems = checked
             ? [...(selectedFilters[sectionId] || []), value]
             : (selectedFilters[sectionId] || []).filter((item) => item !== value);
@@ -151,12 +144,20 @@ export default function SidebarProductCards() {
 
 
     const fetchColors = async () => {
-        const response = await colorService.fetchAll();
+        const request: ColorGetAllQuery = {
+            isPagination: false,
+            isDeleted: [false],
+        }
+        const response = await colorService.fetchAll(request);
         return response.data?.results;
     };
 
     const fetchSizes = async () => {
-        const response = await sizeService.fetchAll();
+        const request: SizeGetAllQuery = {
+            isPagination: false,
+            isDeleted: [false],
+        }
+        const response = await sizeService.fetchAll(request);
         return response.data?.results;
     };
 
@@ -164,6 +165,7 @@ export default function SidebarProductCards() {
         const key = searchParams.get("categoryName");
         const request: CategoryGetAllQuery = {
             isPagination: true,
+            isDeleted: [false],
             pageSize: 1,
             name: key ?? undefined,
         }
@@ -172,7 +174,11 @@ export default function SidebarProductCards() {
     };
 
     const fetchCategories = async () => {
-        const response = await categoryService.fetchAll();
+        const request: CategoryGetAllQuery = {
+            isPagination: false,
+            isDeleted: [false],
+        }
+        const response = await categoryService.fetchAll(request);
         return response.data?.results;
     };
 

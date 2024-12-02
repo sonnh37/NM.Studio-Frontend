@@ -27,6 +27,7 @@ export default function Gallery() {
       try {
         const query: AlbumGetAllQuery = {
           isNotNullSlug: true,
+          isDeleted: [false],
           isPagination: true,
           pageSize: 1,
           pageNumber: 1,

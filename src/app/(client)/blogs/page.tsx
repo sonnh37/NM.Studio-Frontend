@@ -20,6 +20,7 @@ export default function AlbumPage() {
     pageSize: 6,
     pageNumber: 1,
     isFeatured: false,
+    isDeleted: [false],
     isNotNullSlug: true,
   });
   const [totalPages, setTotalPages] = useState(1);
@@ -30,7 +31,6 @@ export default function AlbumPage() {
     SetQuery((prev) => ({
       ...prev,
       pageNumber: pageNumber,
-      isDeleted: [false],
     }));
   }, [pageNumber]);
 

@@ -5,7 +5,7 @@ interface ChatState {
 }
 
 const initialState: ChatState = {
-    isOpen: false,
+    isOpen: true,
 };
 
 const chatSlice = createSlice({

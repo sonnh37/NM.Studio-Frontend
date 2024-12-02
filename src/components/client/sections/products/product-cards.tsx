@@ -15,6 +15,7 @@ export function ProductCards() {
   const [products, setProducts] = useState<Product[]>([]);
   const [queryProduct, setQueryProduct] = useState<ProductGetAllQuery>({
     isPagination: true,
+    isDeleted: [false],
     pageSize: 12,
     pageNumber: 1,
     isNotNullSlug: true,
@@ -44,7 +45,6 @@ export function ProductCards() {
       sortOrder: sortOrder !== 0 ? sortOrder : undefined,
       sortField: sortBy || undefined,
       pageNumber: pageNumber,
-      isDeleted: [false]
     }));
   }, [
     categoryName,
@@ -62,7 +62,7 @@ export function ProductCards() {
       try {
         const response = await productService.fetchAll(queryProduct);
 
-        console.log("check_", response)
+        console.log("check_", response);
         setProducts(response.data!.results || []);
         setTotalPages(response.data!.totalPages || 1);
       } catch (error) {
@@ -99,7 +99,8 @@ export function ProductCards() {
                   src={
                     product.productXPhotos.length > 0 &&
                     product.productXPhotos[0].photo
-                      ? (product.productXPhotos[0].photo.src ?? "/image-notfound.jpg") 
+                      ? product.productXPhotos[0].photo.src ??
+                        "/image-notfound.jpg"
                       : "/image-notfound.jpg"
                   }
                   width={500}
