@@ -73,7 +73,7 @@ export default function DataTableProducts() {
                 <AccordionTrigger>Photos</AccordionTrigger>
                 <AccordionContent>
                     {isLoading || !product ? (
-                        <p>Loading...</p>
+                        <></>
                     ) : (
                         <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
                             <TabsList className="grid w-full grid-cols-2">

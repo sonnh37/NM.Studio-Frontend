@@ -74,7 +74,7 @@ export default function DataTableCategorys() {
                 <AccordionTrigger>Sub-Categories</AccordionTrigger>
                 <AccordionContent>
                     {isLoading || !category ? (
-                        <p>Loading...</p>
+                        <></>
                     ) : (
                         <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
                             <TabsList className="grid w-full grid-cols-2">

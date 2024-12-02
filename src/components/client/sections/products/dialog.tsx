@@ -129,7 +129,7 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
   }, [product]);
 
   if (!productDetail) {
-    return <div>Loading...</div>;
+    return;
   }
 
   return (
