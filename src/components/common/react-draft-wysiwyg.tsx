@@ -5,8 +5,11 @@ import {
   EditorState,
 } from "draft-js";
 import { debounce } from "lodash";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import { Editor } from "react-draft-wysiwyg";
+const Editor = dynamic(() => import("react-draft-wysiwyg").then(mod => mod.Editor), {
+  ssr: false, // Disable SSR for this component
+});
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { toast } from "sonner";
 

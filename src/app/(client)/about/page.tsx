@@ -9,7 +9,9 @@ import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
-import { Editor } from "react-draft-wysiwyg";
+const Editor = dynamic(() => import("react-draft-wysiwyg").then(mod => mod.Editor), {
+  ssr: false, // Disable SSR for this component
+});
 
 
 export default function Page() {

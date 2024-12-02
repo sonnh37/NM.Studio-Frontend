@@ -1,12 +1,15 @@
 import {useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {ContentState, convertFromRaw, convertToRaw, EditorState} from 'draft-js';
-import {Editor} from 'react-draft-wysiwyg';
+const Editor = dynamic(() => import("react-draft-wysiwyg").then(mod => mod.Editor), {
+    ssr: false, // Disable SSR for this component
+  });
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {Service} from '@/types/service';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import NeuButton from '../../ui/neu-button';
+import dynamic from 'next/dynamic';
 
 interface RichEditorProps {
     service: Service;
