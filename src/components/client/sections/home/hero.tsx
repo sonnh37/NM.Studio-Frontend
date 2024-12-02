@@ -1,27 +1,16 @@
 "use client";
-import { motion } from "framer-motion";
-import { ImagesSlider } from "@/components/ui/images-slider";
-import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
-import { BookingModal } from "@/components/client/common/animated-modal";
-import { CSSProperties, useEffect, useState } from "react";
+import {
+  CarouselApi
+} from "@/components/ui/carousel";
 import { photoService } from "@/services/photo-service";
 import { PhotoGetAllQuery } from "@/types/queries/photo-query";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import React from "react";
-import { Zoom, Autoplay, Pagination, Navigation } from "swiper/modules";
+import React, { CSSProperties, useEffect, useState } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Autoplay, Navigation, Pagination, Zoom } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 export function Hero() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -86,13 +75,12 @@ export function Hero() {
 
   const [images, setImages] = useState<string[]>([]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const query: PhotoGetAllQuery = {
           isPagination: true,
-          pageSize: 10,
+          pageSize: 100,
           pageNumber: 1,
           isFeatured: true,
           isDeleted: [false],
@@ -101,7 +89,6 @@ export function Hero() {
         const photos = response.data?.results ?? [];
 
         const photos_links = photos.map((m) => m.src ?? "") ?? [];
-        console.log("check_loadedphotos", photos_links);
         setImages(photos_links);
       } catch (error) {
         console.error("Error fetching photos:", error);
@@ -121,8 +108,8 @@ export function Hero() {
         centeredSlides={true}
         zoom={true}
         autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
+          delay: 5000,
+         disableOnInteraction: false,
         }}
         loop={true}
         pagination={{
@@ -134,8 +121,8 @@ export function Hero() {
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
         style={{
-          '--swiper-navigation-color': '#fff',
-          '--swiper-pagination-color': '#fff',
+          '--swiper-navigation-color': '#525252',
+          '--swiper-pagination-color': '#525252',
         } as CSSProperties}
       >
         {images.map((pic, index) => (

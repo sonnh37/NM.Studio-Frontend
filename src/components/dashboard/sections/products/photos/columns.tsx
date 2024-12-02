@@ -27,6 +27,12 @@ export const columns: ColumnDef<Photo>[] = [
         },
     },
     {
+        accessorKey: "title",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Title"/>
+        ),
+    },
+    {
         accessorKey: "href",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Href link to"/>

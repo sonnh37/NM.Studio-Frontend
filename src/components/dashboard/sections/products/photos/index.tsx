@@ -163,17 +163,8 @@ export default function DataTablePhotos({
             deleteData={photoService.delete}
             columns={columns_tab1}
             fetchData={photoService.fetchAll}
-            columnSearch="name"
+            columnSearch="title"
             defaultValues={getQueryParams}
-            filterEnums={[
-                {columnId: "isActive", title: "Is Active", options: isActive_options},
-                {
-                    columnId: "isDeleted",
-                    title: "Is deleted",
-                    options: isDeleted_options,
-                },
-            ]}
-            // formFilterAdvanceds={formFilterAdvanceds}
         />
     );
 }

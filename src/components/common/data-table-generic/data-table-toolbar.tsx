@@ -234,7 +234,7 @@ export function DataTableToolbar<TData>({
                         </SheetTrigger>
                         <SheetContent
                             side={side}
-                            className="dark:backdrop-blur-3 dark:bg-white/5"
+                            className="dark:backdrop-blur-3  z-[1001] dark:bg-white/5"
                         >
                             <Form {...form}>
                                 <form className="space-y-8">

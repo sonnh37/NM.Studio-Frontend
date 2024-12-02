@@ -145,14 +145,17 @@ export function MainNav({ items }: MainNavProps) {
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-1 p-4 md:w-[200px] md:grid-cols-1 ">
                 {services.map((service) => (
-                  <ListItem
-                    key={service.id}
-                    title={service.name}
-                    className="p-2 text-neutral-500"
-                    href={`/services/${service.slug}`}
-                  >
-                    {/*{service.description}*/}
-                  </ListItem>
+                  <div key={service.id}>
+                    <ListItem
+                      key={service.id}
+                      title={service.name}
+                      className="p-2 text-neutral-500 hover:bg-transparent"
+                      href={`/services/${service.slug}`}
+                    >
+                      {/*{service.description}*/}
+                    </ListItem>
+                    <hr className="border-t border-neutral-300 my-1" />{" "}
+                  </div>
                 ))}
               </ul>
             </NavigationMenuContent>
@@ -196,18 +199,20 @@ export function MainNav({ items }: MainNavProps) {
                     <div key={index}>
                       <Link
                         href={path}
-                        className="block select-none space-y-1 rounded-md p-3 pl-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
+                        className="block font-bold select-none space-y-1 rounded-md p-3 pl-2 leading-none no-underline outline-none transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
                       >
                         {category.name}
                       </Link>
                       {category.subCategories!.map((subCategory, subIndex) => (
-                        <ListItem
-                          key={subCategory.id}
-                          title={subCategory.name}
-                          className="p-2 text-neutral-500 text-sm"
-                          href={`${path}&subCategoryName=${subCategory.name}`}
-                        >
-                        </ListItem>
+                        <div key={subCategory.id}>
+                          <ListItem
+                            title={subCategory.name}
+                            className="p-2 text-neutral-500 text-sm hover:bg-transparent"
+                            href={`${path}&subCategoryName=${subCategory.name}`}
+                          ></ListItem>
+                          <hr className="border-t border-neutral-300 my-1" />{" "}
+                          {/* Thanh line mỏng */}
+                        </div>
                       ))}
                     </div>
                   );
