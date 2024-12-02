@@ -20,7 +20,7 @@ export default function HomeLayout({
       <SiteHeader user={null} />
       <BreadcrumbClient />
       {children}
-      <Map />
+      {/* <Map /> */}
       <Contact />
       <Footer />
 
