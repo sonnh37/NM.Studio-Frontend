@@ -2,7 +2,7 @@
 import Footer from "@/components/client/layouts/footer";
 import Map from "@/components/client/layouts/map";
 import Contact from "@/components/client/sections/home/contact";
-import React from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import BreadcrumbClient from "@/components/client/layouts/navbar/breadcrumb";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/lib/store";
@@ -11,6 +11,7 @@ import {BsTelephone} from "react-icons/bs";
 import {SiZalo} from "react-icons/si";
 import {LiaFacebookMessenger} from "react-icons/lia";
 import {BookingModal} from "@/components/client/common/animated-modal";
+import PageLoading from "@/components/common/page-loading";
 
 // Dynamically load SideHeader without SSR
 const SiteHeader = dynamic(() => import('@/components/client/layouts/navbar/site-header'), {
@@ -24,15 +25,28 @@ export default function HomeLayout({
 }) {
     const dispatch = useDispatch();
     const isOpen = useSelector((state: RootState) => state.chat.isOpen);
+    const [isLoading, setIsLoading] = useState(true);
 
+    // Delay 5 giây
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 2000); // 5000ms = 5s
+
+        return () => clearTimeout(timer); // Dọn dẹp timer khi component unmount
+    }, []);
+
+    if (isLoading) {
+        return <PageLoading />; // Giao diện loading trong khi chờ
+    }
     return (
         <>
             <div className="">
                 <SiteHeader user={null}/>
                 <BreadcrumbClient/>
-                <div >
+                <Suspense fallback={<PageLoading/>} >
                 {children}
-                </div>
+                </Suspense>
                 <Map/>
                 <Contact/>
                 <Footer/>
