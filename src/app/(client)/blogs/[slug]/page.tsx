@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Service } from "@/types/service";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
-import dynamic from "next/dynamic";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
@@ -10,12 +9,6 @@ import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { Editor } from "react-draft-wysiwyg";
-
-// Dynamically import the Editor component to prevent SSR issues
-// const Editor = dynamic(
-//   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-//   { ssr: false }
-// );
 
 export default function Page({ params }: { params: { slug: string } }) {
   const [blog, setBlog] = useState<Blog | null>(null);

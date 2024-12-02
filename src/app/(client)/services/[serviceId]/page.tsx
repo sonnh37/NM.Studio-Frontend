@@ -8,12 +8,9 @@ import { serviceService } from "@/services/service-service";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
+import { Editor } from "react-draft-wysiwyg";
 
-// Dynamically import the Editor component to prevent SSR issues
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  { ssr: false }
-);
+
 
 export default function Page({ params }: { params: { serviceId: string } }) {
   const [service, setService] = useState<Service | null>(null);

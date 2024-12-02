@@ -86,7 +86,6 @@ export function Hero() {
 
   const [images, setImages] = useState<string[]>([]);
 
-  const [loading, setLoading] = useState<boolean>(true); // Thêm trạng thái loading
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,18 +105,12 @@ export function Hero() {
         setImages(photos_links);
       } catch (error) {
         console.error("Error fetching photos:", error);
-      } finally {
-        setLoading(false); // Dữ liệu đã tải xong, dừng trạng thái loading
       }
     };
 
     fetchData(); // Gọi hàm async
   }, []);
 
-  // Nếu đang tải dữ liệu, hiển thị loader
-  if (loading) {
-    return <div>Loading...</div>; // Bạn có thể thay thế bằng một component loading đẹp hơn
-  }
   return (
     <div className="">
       {/* <ImagesSlider className="h-screen" images={images} /> */}

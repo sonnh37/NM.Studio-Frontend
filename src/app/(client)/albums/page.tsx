@@ -1,12 +1,8 @@
 import {AlbumGallery} from "@/components/client/sections/albums/album-gallery";
 import {Metadata} from "next";
 
-
-
-const AlbumPage = () => {
+export default function Page() {
     return (
         <AlbumGallery/>
     );
 };
-
-export default AlbumPage;

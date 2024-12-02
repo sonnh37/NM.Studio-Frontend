@@ -17,8 +17,6 @@ export default function Gallery() {
   const { slug } = useParams();
 
   // This ref stores whether the image loading process has already occurred.
-  const imagesLoadedRef = useRef(false);
-
   useEffect(() => {
     const fetchPhotos = async () => {
       if (!slug) {
@@ -32,10 +30,12 @@ export default function Gallery() {
           isPagination: true,
           pageSize: 1,
           pageNumber: 1,
-          slug: slug.toString()
-        }
+          slug: slug.toString(),
+        };
         const response = await albumService.fetchAll(query);
-        const albumData = response.data?.results ? response.data?.results[0] : {} as Album;
+        const albumData = response.data?.results
+          ? response.data?.results[0]
+          : ({} as Album);
         if (albumData) {
           setAlbum(albumData);
           const albumXPhotos = albumData.albumXPhotos || [];
@@ -87,9 +87,7 @@ export default function Gallery() {
           slidesData.push(slide);
           setSlides_(slidesData);
         };
-
       }
-
     };
 
     validateImagesAndCreateSlides();
