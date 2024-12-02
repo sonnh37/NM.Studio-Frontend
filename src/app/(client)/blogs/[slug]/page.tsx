@@ -9,12 +9,13 @@ import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
+import { Editor } from "react-draft-wysiwyg";
 
 // Dynamically import the Editor component to prevent SSR issues
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  { ssr: false }
-);
+// const Editor = dynamic(
+//   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
+//   { ssr: false }
+// );
 
 export default function Page({ params }: { params: { slug: string } }) {
   const [blog, setBlog] = useState<Blog | null>(null);
