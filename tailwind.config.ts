@@ -2,7 +2,6 @@ import type {Config} from "tailwindcss";
 
 const svgToDataUri = require("mini-svg-data-uri");
 
-const colors = require("tailwindcss/colors");
 const {
     default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
@@ -14,7 +13,6 @@ const config = {
         "./components/**/*.{ts,tsx}",
         "./app/**/*.{ts,tsx}",
         "./src/**/*.{ts,tsx}",
-        "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
     ],
     prefix: "",
     theme: {
@@ -139,7 +137,6 @@ const config = {
                 {values: flattenColorPalette(theme("backgroundColor")), type: "color"}
             );
         },
-        //   nextui(),
     ],
 } satisfies Config;
 

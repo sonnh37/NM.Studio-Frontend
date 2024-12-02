@@ -103,8 +103,8 @@ export function ProductCards() {
                         "/image-notfound.jpg"
                       : "/image-notfound.jpg"
                   }
-                  width={500}
-                  height={500}
+                  width={9999}
+                  height={9999}
                 />
               </motion.div>
               <div className="absolute bottom-0 z-10 left-0 w-full bg-neutral-700 bg-opacity-70 py-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out">

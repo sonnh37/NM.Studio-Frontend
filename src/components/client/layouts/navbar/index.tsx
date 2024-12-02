@@ -7,7 +7,6 @@ import {useTheme} from "next-themes";
 import {AnimatePresence, motion, useMotionValueEvent, useScroll,} from "framer-motion";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
-import {Input} from "@nextui-org/react";
 import {SearchIcon} from "../../../ui/search-icon";
 import {Album} from "@/types/album";
 import {Service} from "@/types/service";
@@ -19,6 +18,7 @@ import {albumService} from "@/services/album-service";
 import {serviceService} from "@/services/service-service";
 import {categoryService} from "@/services/category-service";
 import {Category} from "@/types/category";
+import { Input } from "@/components/ui/input";
 
 // Define the type for the images
 type InstagramImage = {
@@ -292,7 +292,7 @@ function Navbar({className}: { className?: string }) {
                     </div>
 
                     <div>
-                        <Input
+                        {/* <Input
                             classNames={{
                                 base: "max-w-full sm:max-w-[10rem] h-10",
                                 mainWrapper: "h-full",
@@ -302,11 +302,10 @@ function Navbar({className}: { className?: string }) {
                             }}
                             color="default"
                             placeholder="Type to search..."
-                            size="sm"
                             radius="none"
                             startContent={<SearchIcon size={18}/>}
                             type="search"
-                        />
+                        /> */}
                     </div>
                 </Menu>
             </motion.div>
