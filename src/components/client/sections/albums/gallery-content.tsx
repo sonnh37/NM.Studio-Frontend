@@ -1,19 +1,20 @@
 import {Lightbox} from "yet-another-react-lightbox";
 import {RowsPhotoAlbum} from "react-photo-album";
 import {Slide} from "@/types/slide";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Counter, Download, Fullscreen, Thumbnails} from "yet-another-react-lightbox/plugins";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import "react-photo-album/rows.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
+import { Photo } from "@/types/photo";
 
 interface GalleryContentProps {
-    slides: Slide[];
+    photos: Photo[];
 }
 
-const GalleryContent = ({slides}: GalleryContentProps) => {
+const GalleryContent = ({photos}: GalleryContentProps) => {
     const [index, setIndex] = useState(-1);
     const [open, setOpen] = React.useState(false);
     const [position, setPosition] = React.useState<
@@ -39,10 +40,49 @@ const GalleryContent = ({slides}: GalleryContentProps) => {
     const [pinchZoomDistanceFactor, setPinchZoomDistanceFactor] =
         React.useState(100);
     const [scrollToZoom, setScrollToZoom] = React.useState(false);
+
+    const [slides_, setSlides_] = useState<Slide[]>([]);
+
+    useEffect(() => {
+        const validateImagesAndCreateSlides = async () => {
+          const slidesData: Slide[] = [];
+    
+          // Loop through the photos and process each image asynchronously.
+          for (const photo of photos) {
+            const imageSrc = photo.src ?? "/image-notfound.jpg";
+    
+            const img = new window.Image();
+            img.src = imageSrc;
+    
+            img.onload = () => {
+              const width = img.naturalWidth;
+              const height = img.naturalHeight;
+    
+              const slide: Slide = {
+                src: imageSrc,
+                width,
+                height,
+                srcSet: [
+                  {
+                    src: imageSrc,
+                    width,
+                    height,
+                  },
+                ],
+              };
+    
+              slidesData.push(slide);
+              setSlides_(slidesData);
+            };
+          }
+        };
+    
+        validateImagesAndCreateSlides();
+      }, [photos]);
     return (
         <div>
             <RowsPhotoAlbum
-                photos={slides}
+                photos={slides_}
                 targetRowHeight={150}
                 onClick={({index: current}) => setIndex(current)}
             />
@@ -50,7 +90,7 @@ const GalleryContent = ({slides}: GalleryContentProps) => {
             <Lightbox
                 styles={{ root: { "--yarl__color_backdrop": "rgba(0, 0, 0, .8)" } }}
                 index={index}
-                slides={slides}
+                slides={slides_}
                 open={index >= 0}
                 carousel={{preload}}
                 plugins={[Counter, Download, Fullscreen, Thumbnails, Zoom]}

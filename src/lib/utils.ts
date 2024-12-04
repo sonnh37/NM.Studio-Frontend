@@ -93,3 +93,18 @@ export const convertJsonToPlainText = (description: string) => {
     return ""; // Trả về chuỗi rỗng nếu có lỗi
   }
 };
+
+export const createEditorState = (content: string): EditorState => {
+  let contentState: ContentState;
+
+  try {
+    // Kiểm tra và chuyển đổi chuỗi JSON thành ContentState nếu có thể
+    contentState = content ? convertFromRaw(JSON.parse(content)) : ContentState.createFromText('');
+  } catch (error) {
+    // Nếu không phải JSON hợp lệ, tạo ContentState từ văn bản thuần túy
+    contentState = ContentState.createFromText(content || '');
+  }
+
+  return EditorState.createWithContent(contentState);
+};
+

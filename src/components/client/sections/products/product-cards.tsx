@@ -10,22 +10,14 @@ import { Pagination } from "@/components/client/common/pagination";
 import { Button } from "@/components/ui/button";
 import Example from "./dialog";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 
 export function ProductCards() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [queryProduct, setQueryProduct] = useState<ProductGetAllQuery>({
-    isPagination: true,
-    isDeleted: [false],
-    pageSize: 12,
-    pageNumber: 1,
-    isNotNullSlug: true,
-  });
-  const [totalPages, setTotalPages] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [open, setOpen] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
 
   const categoryName = searchParams.get("categoryName");
   const subCategoryName = searchParams.get("subCategoryName");
@@ -35,43 +27,36 @@ export function ProductCards() {
   const sortOrder = parseInt(searchParams.get("sortOrder") || "0", 10);
   const pageNumber = parseInt(searchParams.get("page") || "1", 10);
 
-  useEffect(() => {
-    setQueryProduct((prev) => ({
-      ...prev,
-      categoryName: categoryName || undefined,
-      subCategoryName: subCategoryName || undefined,
-      sizes: sizes.length > 0 ? sizes : undefined,
-      colors: colors.length > 0 ? colors : undefined,
-      sortOrder: sortOrder !== 0 ? sortOrder : undefined,
-      sortField: sortBy || undefined,
-      pageNumber: pageNumber,
-    }));
-  }, [
-    categoryName,
-    subCategoryName,
-    JSON.stringify(sizes),
-    JSON.stringify(colors),
-    sortBy,
-    sortOrder,
-    pageNumber,
-  ]);
+  // Tạo đối tượng queryProduct
+  const queryProduct: ProductGetAllQuery = {
+    isPagination: true,
+    isDeleted: [false],
+    pageSize: 12,
+    pageNumber: pageNumber,
+    isNotNullSlug: true,
+    categoryName: categoryName || undefined,
+    subCategoryName: subCategoryName || undefined,
+    sizes: sizes.length > 0 ? sizes : undefined,
+    colors: colors.length > 0 ? colors : undefined,
+    sortOrder: sortOrder !== 0 ? sortOrder : undefined,
+    sortField: sortBy || undefined,
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!queryProduct) return;
-      try {
-        const response = await productService.fetchAll(queryProduct);
+  const { data, isError, error } = useQuery({
+    queryKey: ["fetchProducts", queryProduct], // Dùng queryKey bao gồm queryProduct để đảm bảo query được tái sử dụng khi queryProduct thay đổi
+    queryFn: async () => {
+      const response = await productService.fetchAll(queryProduct);
+      return response.data; // Giả sử API trả về kiểu dữ liệu như bạn mong muốn
+    },
+  });
 
-        console.log("check_", response);
-        setProducts(response.data!.results || []);
-        setTotalPages(response.data!.totalPages || 1);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
+  // Cập nhật sản phẩm và tổng số trang
+  const products = data?.results || [];
+  const totalPages = data?.totalPages || 1;
 
-    fetchData();
-  }, [queryProduct]);
+  if (isError) {
+    return <div>Error: {error?.message}</div>;
+  }
 
   function handleOpenDialog(pr: Product) {
     setOpen(true);

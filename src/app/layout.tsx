@@ -10,12 +10,15 @@ import store, { RootState } from "@/lib/store";
 import { toggleChat } from "@/lib/slices/chatSlice";
 import { Suspense } from "react";
 import PageLoading from "@/components/common/page-loading";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const queryClient = new QueryClient();
+
   return (
     <html suppressHydrationWarning={true} lang="en">
       <head>
@@ -35,7 +38,11 @@ export default function RootLayout({
             defaultTheme="light"
           >
             <Provider store={store}>
-              <Suspense fallback={<PageLoading />}>{children} </Suspense>
+              <Suspense fallback={<PageLoading />}>
+                <QueryClientProvider client={queryClient}>
+                  {children}
+                </QueryClientProvider>
+              </Suspense>
             </Provider>
           </ThemeProvider>
         </SessionProvider>
@@ -45,4 +52,3 @@ export default function RootLayout({
     </html>
   );
 }
-

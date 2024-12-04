@@ -7,14 +7,14 @@ import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { serviceService } from "@/services/service-service";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Image from "next/image";
-import { formatDate } from "@/lib/utils";
+import { createEditorState, formatDate } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import ErrorPage from "../../error/page";
 const Editor = dynamic(() => import("react-draft-wysiwyg").then(mod => mod.Editor), {
   ssr: false, // Disable SSR for this component
 });
 
 export default function Page({ params }: { params: { serviceId: string } }) {
-  const [service, setService] = useState<Service | null>(null);
-  const [editorState, setEditorState] = useState<EditorState | null>(null);
   const { serviceId } = params;
   const query: ServiceGetAllQuery = {
     isNotNullSlug: true,
@@ -25,46 +25,20 @@ export default function Page({ params }: { params: { serviceId: string } }) {
     slug: serviceId,
   };
 
-  useEffect(() => {
-    const fetchService = async () => {
-      if (!serviceId) {
-        console.error("Title is null or undefined");
-        return;
-      }
-      try {
-        const response = await serviceService.fetchAll(query);
-        console.log("check_service", response);
-        if (response && response.data) {
-          const fetchedService = response.data!.results![0] as Service;
-          setService(fetchedService);
+  const { data: service, error } = useQuery({
+    queryKey: ["fetchService"],
+    queryFn: async () => {
+      const response = await serviceService.fetchAll(query);
+      return response.data?.results?.[0] as Service;
+    },
+  });
 
-          let contentState;
+  const editorState = createEditorState(service?.description ?? "");
 
-          try {
-            // Attempt to parse description as JSON
-            contentState = fetchedService.description
-              ? convertFromRaw(JSON.parse(fetchedService.description))
-              : ContentState.createFromText("");
-          } catch (error) {
-            // Fallback to plain text if description is not valid JSON
-            contentState = ContentState.createFromText(
-              fetchedService.description || ""
-            );
-          }
-
-          // Create editor state for the service description
-          const editorState = EditorState.createWithContent(contentState);
-          setEditorState(editorState);
-        } else {
-          console.error("No service found with the given name");
-        }
-      } catch (error) {
-        console.error("Failed to fetch service:", error);
-      }
-    };
-
-    fetchService();
-  }, [serviceId]);
+  if (error) {
+    console.log("Error fetching:", error);
+    return <ErrorPage/>; 
+  }
 
   return (
     <>

@@ -7,49 +7,43 @@ import { convertJsonToPlainText, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import ErrorPage from "../error/page";
 
 export default function AlbumPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [query, SetQuery] = useState<BlogGetAllQuery>({
+  
+  const pageNumber = parseInt(searchParams.get("page") || "1", 10);
+
+  const query: BlogGetAllQuery = ({
     isPagination: true,
     pageSize: 6,
-    pageNumber: 1,
+    pageNumber: pageNumber,
     isFeatured: false,
     isDeleted: [false],
     isNotNullSlug: true,
   });
-  const [totalPages, setTotalPages] = useState(1);
-  const pageNumber = parseInt(searchParams.get("page") || "1", 10);
-  const [blogs, setBlogs] = useState<Blog[]>([]);
 
-  useEffect(() => {
-    SetQuery((prev) => ({
-      ...prev,
-      pageNumber: pageNumber,
-    }));
-  }, [pageNumber]);
+  const {data: result, error } = useQuery({
+    queryKey: ["fetchBlogs", query],
+    queryFn: async () => {
+      const response = await blogService.fetchAll(query);
+      return response;
+    }
+  })
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!query) return;
-      try {
-        const response = await blogService.fetchAll(query);
+  if (error) {
+    console.log("Error fetching:", error);
+    return <ErrorPage/>; 
+  }
 
-        console.log("check_", response);
-        setBlogs(response.data!.results || []);
-        setTotalPages(response.data!.totalPages || 1);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
-
-    fetchData();
-  }, [query]);
+  const blogs = result?.data?.results ?? [];
+  const totalPages = result?.data?.totalPages ?? 1
 
   const pathname = usePathname();
   return (

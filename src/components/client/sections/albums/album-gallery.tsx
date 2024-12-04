@@ -6,62 +6,46 @@ import type { Album } from "@/types/album";
 import { AlbumGetAllQuery } from "@/types/queries/album-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import React from "react";
+import ErrorPage from "@/app/(client)/error/page";
 
 export function AlbumGallery() {
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [queryAlbum, setQueryAlbum] = useState<AlbumGetAllQuery>();
-  const router = useRouter();
   const pathName = usePathname();
-  useEffect(() => {
-    if (pathName == `/${Const.ALBUM}`) {
-      setQueryAlbum((prev) => ({
-        ...prev,
-        isNotNullSlug: true,
-        isPagination: true,
-        isDeleted: [false],
-        pageSize: 60,
-      }));
-    } else {
-      setQueryAlbum((prev) => ({
-        ...prev,
-        isNotNullSlug: true,
-        isPagination: true,
-        isDeleted: [false],
-        pageSize: 12,
-      }));
-    }
-  }, [pathName]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!queryAlbum) return; // Kiểm tra nếu queryAlbum không tồn tại
+  const queryAlbum: AlbumGetAllQuery = {
+    isNotNullSlug: true,
+    isPagination: true,
+    isDeleted: [false],
+    pageSize: pathName === `/${Const.ALBUM}` ? 60 : 12,
+  };
 
-      try {
-        const response = await albumService.fetchAll(queryAlbum);
-        const albums_ = response.data!.results;
-        const albums_checked = albums_?.filter((m) => m.slug != null);
-        setAlbums(albums_checked ?? []);
-      } catch (error) {
-        console.error("Failed to fetch images:", error);
-      }
-    };
+  const { data: albums = [], error } = useQuery({
+    queryKey: ["fetchAlbums", queryAlbum],
+    queryFn: async () => {
+      const response = await albumService.fetchAll(queryAlbum);
+      const result = response.data?.results ?? [];
+      return result;
+    },
+  });
 
-    fetchData();
-  }, [queryAlbum]);
+  if (error) {
+    console.log("Error fetching:", error);
+    return <ErrorPage/>; 
+  }
 
   return (
     <div className="py-16 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
-      {albums.map((album) => {
+      {albums!.map((album) => {
         const path = "/albums/" + album.slug;
         return (
-          <Link href={path}>
+          <Link href={path} key={album.slug}>
             <div className="relative h-[400px] isolate flex flex-col justify-end overflow-hidden rounded-md px-8 pb-8 pt-40">
               <motion.div
-                className="absolute inset-0 w-full overflow-hidden" // Đặt full kích thước và vị trí
-                whileHover={{ scale: 1.1 }} // Hiệu ứng zoom khi hover
+                className="absolute inset-0 w-full overflow-hidden"
+                whileHover={{ scale: 1.1 }}
                 transition={{
                   duration: 0.3,
                   ease: "easeOut",
@@ -69,7 +53,7 @@ export function AlbumGallery() {
               >
                 <Image
                   alt="image"
-                  src={album.background ?? "/image-notfound.jpg"} // Hình ảnh nền
+                  src={album.background ?? "/image-notfound.jpg"}
                   width={2000}
                   height={2000}
                   className="w-full h-full object-cover"
@@ -77,10 +61,10 @@ export function AlbumGallery() {
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
               </motion.div>
 
-              <h3 className=" z-10 mt-3 text-3xl font-bold text-white">
+              <h3 className="z-10 mt-3 text-3xl font-bold text-white">
                 {album.title}
               </h3>
-              <div className=" z-10 bottom-8 truncate gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+              <div className="z-10 bottom-8 truncate gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
                 {album.description}
               </div>
             </div>

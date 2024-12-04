@@ -5,8 +5,9 @@ import Map from "@/components/client/layouts/map";
 import BreadcrumbClient from "@/components/client/layouts/navbar/breadcrumb";
 import SiteHeader from "@/components/client/layouts/navbar/site-header";
 import Contact from "@/components/client/sections/home/contact";
+import PageLoading from "@/components/common/page-loading";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { Suspense } from "react";
 
 export default function HomeLayout({
   children,
@@ -19,12 +20,11 @@ export default function HomeLayout({
     <>
       <SiteHeader user={null} />
       <BreadcrumbClient />
-      {children}
-      {/* <Map /> */}
+      <Suspense fallback={<PageLoading />}>{children}</Suspense>
       <Contact />
       <Footer />
 
-      <InformationChat/>
+      <InformationChat />
     </>
   );
 }
