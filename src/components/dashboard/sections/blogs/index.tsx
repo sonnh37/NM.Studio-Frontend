@@ -27,7 +27,9 @@ export default function DataTableBlogs() {
 
     return (
         <DataTable
-            deleteData={blogService.delete}
+            deleteAll={blogService.delete}
+            deletePermanent={blogService.deletePermanent}
+            update={blogService.update}
             columns={columns}
             fetchData={blogService.fetchAll}
             columnSearch="code"

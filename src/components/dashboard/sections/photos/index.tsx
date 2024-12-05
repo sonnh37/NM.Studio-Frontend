@@ -26,7 +26,9 @@ export default function DataTablePhotos() {
     ];
     return (
         <DataTable
-            deleteData={photoService.delete}
+            deleteAll={photoService.delete}
+            deletePermanent={photoService.deletePermanent}
+            update={photoService.update}
             columns={columns}
             fetchData={photoService.fetchAll}
             columnSearch="title"

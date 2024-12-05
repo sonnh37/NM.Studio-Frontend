@@ -77,13 +77,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
-
-  const [sizes, setSizes] = useState<Size[]>([]);
-  const [colors, setColors] = useState<Color[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-
   const previousPath = usePreviousPath();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {

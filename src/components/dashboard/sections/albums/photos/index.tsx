@@ -161,7 +161,7 @@ export default function DataTablePhotos({
         />
     ) : (
         <DataTable
-            deleteData={photoService.delete}
+            deleteAll={photoService.delete}
             columns={columns_tab1}
             fetchData={photoService.fetchAll}
             columnSearch="name"

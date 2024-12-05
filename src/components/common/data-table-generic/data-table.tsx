@@ -22,13 +22,16 @@ import {useForm, useWatch} from "react-hook-form";
 import {z, ZodObject, ZodType} from "zod";
 import {DataTableToolbar} from "./data-table-toolbar";
 import {DataTableComponent} from "./data-table-component";
+import { UpdateCommand } from "@/types/commands/base-command";
 
 interface DataTableProps<TData> {
     columns: ColumnDef<TData>[];
     fetchData: (
         queryParams: BaseQueryableQuery
     ) => Promise<BusinessResult<PagedResponse<TData>>>;
-    deleteData?: (id: string) => Promise<BusinessResult<null>>;
+    deleteAll?: (id: string) => Promise<BusinessResult<null>>;
+    update?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
+    deletePermanent?: (id: string) => Promise<BusinessResult<null>>;
     columnSearch: string;
     filterEnums?: FilterEnum[];
     formSchema?: ZodObject<any>;
@@ -41,7 +44,9 @@ export function DataTable<TData>({
                                      columns,
                                      fetchData,
                                      filterEnums = [],
-                                     deleteData,
+                                     deleteAll,
+                                     update,
+                                     deletePermanent,
                                      columnSearch,
                                      formSchema,
                                      formFilterAdvanceds = [],
@@ -241,7 +246,7 @@ export function DataTable<TData>({
                 form={form}
                 table={table}
                 filterEnums={filterEnums}
-                deleteData={deleteData}
+                deleteAll={deleteAll}
                 isFiltered={isFiltered}
                 isSheetOpen={isSheetOpen}
                 columnSearch={columnSearch}
@@ -260,8 +265,9 @@ export function DataTable<TData>({
                 />
             ) : (
                 <DataTableComponent
-                    renderFormFields={renderFormFields}
                     className={className}
+                    deletePermanent={deletePermanent}
+                    update={update}
                     table={table}
                 />
             )}

@@ -66,7 +66,7 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
                 </DropdownMenuContent>
             </DropdownMenu>
             <DeleteBaseEntitysDialog
-                deleteData={colorService.delete}
+                deleteById={colorService.delete}
                 open={showDeleteTaskDialog}
                 onOpenChange={setShowDeleteTaskDialog}
                 list={[model]}

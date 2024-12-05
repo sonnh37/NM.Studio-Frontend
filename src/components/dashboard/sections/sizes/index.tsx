@@ -27,7 +27,9 @@ export default function DataTableSizes() {
 
     return (
         <DataTable
-            deleteData={sizeService.delete}
+            deleteAll={sizeService.delete}
+            deletePermanent={sizeService.deletePermanent}
+            update={sizeService.update}
             columns={columns}
             fetchData={sizeService.fetchAll}
             columnSearch="name"

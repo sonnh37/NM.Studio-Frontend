@@ -59,9 +59,11 @@ export default function DataTableProducts() {
                 <AccordionTrigger>List</AccordionTrigger>
                 <AccordionContent>
                     <DataTable
-                        deleteData={productService.delete}
-                        columns={columns}
+                        deleteAll={productService.delete}
+                        deletePermanent={productService.deletePermanent}
                         fetchData={productService.fetchAll}
+                        update={productService.update}
+                        columns={columns}
                         columnSearch="name"
                         filterEnums={filterEnums}
                         formSchema={formFilterAdvancedSchema}

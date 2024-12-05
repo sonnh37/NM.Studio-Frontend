@@ -59,6 +59,13 @@ export class BaseService<T> {
             .catch(error => this.handleError(error)); // Xử lý lỗi
     }
 
+    public deletePermanent = (id: string): Promise<BusinessResult<null>> => {
+        return axiosInstance
+            .delete<BusinessResult<null>>(`${this.endpoint}?id=${id}&isPermanent=true`)
+            .then(response => response.data)
+            .catch(error => this.handleError(error)); // Xử lý lỗi
+    }
+
     protected handleError(error: any) {
         console.error(`${this.endpoint} API Error:`, error);
         return Promise.reject(error);

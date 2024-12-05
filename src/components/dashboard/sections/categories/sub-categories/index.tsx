@@ -124,7 +124,7 @@ export default function DataTableSubCategorys({
         />
     ) : (
         <DataTable
-            deleteData={subCategoryService.delete}
+            deleteAll={subCategoryService.delete}
             columns={columns_tab1}
             fetchData={subCategoryService.fetchAll}
             columnSearch="name"

@@ -27,7 +27,9 @@ export default function DataTableColors() {
 
     return (
         <DataTable
-            deleteData={colorService.delete}
+            deleteAll={colorService.delete}
+            deletePermanent={colorService.deletePermanent}
+            update={colorService.update}
             columns={columns}
             fetchData={colorService.fetchAll}
             columnSearch="name"

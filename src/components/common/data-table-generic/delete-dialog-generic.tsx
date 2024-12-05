@@ -31,24 +31,20 @@ import { BusinessResult } from "@/types/response/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 import { Icons } from "../icons";
-import {
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-} from "@/components/ui/dropdown-menu";
 
 interface DeleteBaseEntitysDialogProps<TData>
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   showTrigger?: boolean;
   list: Row<TData>["original"][];
   onSuccess?: () => void;
-  deleteData?: (id: string) => Promise<BusinessResult<null>>;
+  deleteById?: (id: string) => Promise<BusinessResult<null>>;
 }
 
 export function DeleteBaseEntitysDialog<TData>({
   showTrigger = true,
   list,
   onSuccess,
-  deleteData,
+  deleteById,
   ...props
 }: DeleteBaseEntitysDialogProps<TData>) {
   const [isDeletePending, startDeleteTransition] = React.useTransition();
@@ -61,15 +57,15 @@ export function DeleteBaseEntitysDialog<TData>({
 
   function onDelete() {
     startDeleteTransition(async () => {
-      if (!deleteData) {
+      if (!deleteById) {
         toast.error("Delete function is not defined.");
-        return; // Early return if deleteData is undefined
+        return; // Early return if deleteById is undefined
       }
 
       try {
         for (const task of list) {
           if (hasId(task)) {
-            const response = await deleteData(task.id);
+            const response = await deleteById(task.id);
             if (response.status === 1) {
               toast.success(response.message);
             } else {
@@ -106,7 +102,7 @@ export function DeleteBaseEntitysDialog<TData>({
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your{" "}
+              This action cannot be undone. This will permanently deleteById your{" "}
               <span className="font-medium">{list.length}</span>
               {list.length === 1 ? " task" : " list"} from our servers.
             </DialogDescription>
@@ -138,7 +134,7 @@ export function DeleteBaseEntitysDialog<TData>({
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your{" "}
+              This action cannot be undone. This will permanently deleteById your{" "}
               <span className="font-medium">{list.length}</span>
               {list.length === 1 ? " task" : " list"} from our servers.
             </DialogDescription>
@@ -181,7 +177,7 @@ export function DeleteBaseEntitysDialog<TData>({
         <DrawerHeader>
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
-            This action cannot be undone. This will permanently delete your{" "}
+            This action cannot be undone. This will permanently deleteById your{" "}
             <span className="font-medium">{list.length}</span>
             {list.length === 1 ? " task" : " list"} from our servers.
           </DrawerDescription>

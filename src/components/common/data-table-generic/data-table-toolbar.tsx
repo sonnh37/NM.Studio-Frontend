@@ -46,7 +46,7 @@ interface DataTableToolbarProps<TData> {
     >;
     table: Table<TData>;
     filterEnums: FilterEnum[];
-    deleteData?: (id: string) => Promise<BusinessResult<null>>;
+    deleteAll?: (id: string) => Promise<BusinessResult<null>>;
     isFiltered: boolean;
     isSheetOpen: boolean;
     columnSearch: string;
@@ -100,7 +100,7 @@ export function DataTableToolbar<TData>({
                                             filterEnums,
                                             isFiltered,
                                             columnSearch,
-                                            deleteData,
+                                            deleteAll,
                                             isSheetOpen,
                                             handleFilterClick,
                                             handleSheetChange,
@@ -209,12 +209,12 @@ export function DataTableToolbar<TData>({
             </div>
             <div className="ml-auto flex items-center gap-2 ">
                 {/* Hand by hand */}
-                {table.getFilteredSelectedRowModel().rows.length > 0 && deleteData ? (
+                {table.getFilteredSelectedRowModel().rows.length > 0 && deleteAll ? (
                     <DeleteBaseEntitysDialog
                         list={table
                             .getFilteredSelectedRowModel()
                             .rows.map((row) => row.original)}
-                        deleteData={deleteData}
+                        deleteById={deleteAll}
                         onSuccess={() => table.toggleAllRowsSelected(false)}
                     />
                 ) : null}
