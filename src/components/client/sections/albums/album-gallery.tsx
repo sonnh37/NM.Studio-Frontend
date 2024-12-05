@@ -37,12 +37,12 @@ export function AlbumGallery() {
   }
 
   return (
-    <div className="py-16 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
+    <div className="py-16 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-1">
       {albums!.map((album) => {
         const path = "/albums/" + album.slug;
         return (
           <Link href={path} key={album.slug}>
-            <div className="relative h-[400px] isolate flex flex-col justify-end overflow-hidden rounded-md px-8 pb-8 pt-40">
+            <div className="relative h-[600px] isolate flex flex-col justify-end overflow-hidden rounded-none px-8 pb-8 pt-40">
               <motion.div
                 className="absolute inset-0 w-full overflow-hidden"
                 whileHover={{ scale: 1.1 }}
