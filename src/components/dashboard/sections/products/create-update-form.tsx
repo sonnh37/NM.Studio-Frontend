@@ -70,7 +70,7 @@ const formSchema = z.object({
   subCategoryId: z.string().nullable(),
   name: z.string().min(1, "Name is required"),
   sku: z.string(),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   price: z.number().default(0),
   status: z.nativeEnum(ProductStatus),
   createdDate: z

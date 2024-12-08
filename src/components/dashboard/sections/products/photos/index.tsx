@@ -15,6 +15,7 @@ import {productXPhotoService} from "@/services/product-x-photo-service";
 import {ProductXPhoto} from "@/types/product-x-photo";
 import {toast} from "sonner";
 import {useQueryClient} from "@tanstack/react-query";
+import { DataTablePhotosInProduct } from "./data-table-photos";
 
 interface DataTablePhotosProps {
     productId?: string;
@@ -150,8 +151,9 @@ export default function DataTablePhotos({
     ];
 
     return tab == 0 ? (
-        <DataOnlyTable
+        <DataTablePhotosInProduct
             columns={columns_tab0}
+            productId={productId ?? ""}
             data={
                 productXPhotos!
                     .map((m) => m.photo)
@@ -163,8 +165,17 @@ export default function DataTablePhotos({
             deleteAll={photoService.delete}
             columns={columns_tab1}
             fetchData={photoService.fetchAll}
-            columnSearch="title"
+            columnSearch="href"
             defaultValues={getQueryParams}
+            filterEnums={[
+                {columnId: "isActive", title: "Is Active", options: isActive_options},
+                {
+                    columnId: "isDeleted",
+                    title: "Is deleted",
+                    options: isDeleted_options,
+                },
+            ]}
+            // formFilterAdvanceds={formFilterAdvanceds}
         />
     );
 }

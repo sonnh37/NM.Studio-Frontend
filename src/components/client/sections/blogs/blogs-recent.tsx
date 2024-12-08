@@ -3,6 +3,8 @@ import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function BlogsRecent() {
@@ -28,6 +30,8 @@ export function BlogsRecent() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const pathname = usePathname();
   return (
     <div>
       <p className="font-bold h-fit">Các bài bào gần đây</p>
@@ -35,6 +39,7 @@ export function BlogsRecent() {
         {blogs.map((blog) => (
           <div className="grid gap-4 grid-cols-3 max-h-[5rem]">
             <div className="grid col-span-1">
+            <Link href={pathname+"/"+blog.slug}>
               <Image
                 alt={blog.title ?? ""}
                 className="h-[5rem] object-cover"
@@ -42,6 +47,7 @@ export function BlogsRecent() {
                 height={9999}
                 width={9999}
               />
+              </Link>
             </div>
             <div className="grid max-h-[5rem] col-span-2 overflow-hidden">
               <div className="flex flex-col justify-between ">
@@ -52,7 +58,7 @@ export function BlogsRecent() {
                   className="line-clamp-2 text-base text-gray-700 font-extralight"
                   title={blog.title}
                 >
-                  {blog.title ?? "N/A"}
+                  <Link href={pathname+"/"+blog.slug}>{blog.title ?? "N/A"}</Link>
                 </p>
               </div>
             </div>

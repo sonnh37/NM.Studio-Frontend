@@ -17,6 +17,7 @@ import { BusinessResult } from "@/types/response/business-result";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 interface TableComponentProps<TData> {
   table: ReactTable<TData>;
@@ -32,6 +33,9 @@ export function DataTableComponent<TData>({
   deletePermanent,
 }: TableComponentProps<TData>) {
   const queryClient = useQueryClient();
+
+  const searchParams = useSearchParams();
+  const q = searchParams.get("q");
   const columnsLength = table
     .getHeaderGroups()
     .flatMap((group) => group.headers).length;
@@ -111,6 +115,7 @@ export function DataTableComponent<TData>({
             table.getRowModel().rows.map((row) => {
               const model = row.original as any;
               const isDeleted = model.isDeleted;
+              const id = model.id as string;
               return (
                 <TableRow
                   key={row.id}
@@ -130,17 +135,29 @@ export function DataTableComponent<TData>({
                         opacity: isDeleted ? 0.5 : 1,
                       }}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                   {isDeleted && (
-                    <div
-                      className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center gap-1 bg-white/50 opacity-0 hover:opacity-100 dark:bg-black/50"
-                    >
-                      <Button onClick={() => handleRestore(model)}>Restore</Button>
-                      <Button variant={"destructive"} onClick={() => handleDeletePermanently(model.id)}>
+                    <div className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center gap-1 bg-white/50 opacity-0 hover:opacity-100 dark:bg-black/50">
+                      <Button onClick={() => handleRestore(model)}>
+                        Restore
+                      </Button>
+                      <Button
+                        variant={"destructive"}
+                        onClick={() => handleDeletePermanently(model.id)}
+                      >
                         Delete Permanently
                       </Button>
+                    </div>
+                  )}
+
+                  {id.toLocaleLowerCase() == q?.toLocaleLowerCase() && (
+                    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-1 bg-neutral-500 opacity-50 dark:bg-black/50">
+                     
                     </div>
                   )}
                 </TableRow>

@@ -34,7 +34,7 @@ export function Gallery() {
 
   if (error) {
     console.log("Error fetching:", error);
-    return <ErrorPage/>; 
+    return <ErrorPage />;
   }
 
   const photos = album?.albumXPhotos
@@ -43,18 +43,17 @@ export function Gallery() {
         .filter((photo): photo is Photo => photo !== undefined)
     : [];
 
-  
   return (
     <div className="container py-16 mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="grid content-center">
-          <h2 className="text-4xl text-end relative z-20">{album?.title}</h2>
-          <p className="text-end w-full text-base md:text-xs font-normal text-neutral-500 dark:text-neutral-200 mt-2 mx-auto pb-5">
-            Created date: {convertToISODate(album?.createdDate!)?.toString()}
+      <div className="flex flex-col justify-center mx-auto pb-8 gap-4">
+        <div className="flex flex-col mx-auto justify-center">
+          <h2 className="text-4xl text-center relative z-20">{album?.title}</h2>
+          <p className="w-full text-center text-base md:text-xs font-normal text-neutral-500 dark:text-neutral-200 mt-2 mx-auto pb-5">
+            Ngày tạo: {convertToISODate(album?.createdDate!)?.toString()}
           </p>
         </div>
 
-        <div className="col-span-4">
+        <div className="">
           <AnimatedTestimonialsPhotos autoplay={false} photos={photos} />
         </div>
       </div>
