@@ -37,7 +37,7 @@ export function AlbumGallery() {
   }
 
   return (
-    <div className="py-16 container relative mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-1">
+    <div className="my-6 grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
       {albums!.map((album) => {
         const path = "/albums/" + album.slug;
         return (
@@ -58,7 +58,7 @@ export function AlbumGallery() {
                   height={2000}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/5"></div>
               </motion.div>
 
               <h3 className="z-10 mt-3 text-3xl font-bold text-white">

@@ -3,6 +3,7 @@ import { AlbumHome } from "@/components/client/sections/home/album";
 import Introduce from "@/components/client/sections/home/introduce";
 import { Hero } from "@/components/client/sections/home/hero";
 import ProductHome from "@/components/client/sections/home/product";
+import { Feature } from "@/components/client/sections/home/feature";
 
 export default function HomePage() {
   // Home page
@@ -14,6 +15,7 @@ export default function HomePage() {
       <div className="w-full">
         <Hero />
         <Introduce />
+        <Feature/>
         <AlbumHome />
         <ProductHome />
       </div>
