@@ -24,6 +24,7 @@ export class BaseService<T> {
         return axiosInstance
             .get<BusinessResult<PagedResponse<T>>>(`${this.endpoint}?${cleanedQuery}`)
             .then(response => {
+                console.log("check_result", response.data)
                 return response.data; // Đảm bảo rằng nó trả về dữ liệu
             })
             .catch(error => {

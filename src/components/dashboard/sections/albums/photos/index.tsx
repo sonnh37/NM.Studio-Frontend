@@ -16,6 +16,7 @@ import {AlbumXPhoto} from "@/types/album-x-photo";
 import {toast} from "sonner";
 import {useQueryClient} from "@tanstack/react-query";
 import {formFilterAdvanceds} from "@/components/dashboard/sections/photos/filter-advanced-form";
+import { DataTablePhotosInAlbum } from "./data-table-photos";
 
 interface DataTablePhotosProps {
     albumId?: string;
@@ -151,8 +152,9 @@ export default function DataTablePhotos({
     ];
 
     return tab == 0 ? (
-        <DataOnlyTable
+        <DataTablePhotosInAlbum
             columns={columns_tab0}
+            albumId={albumId ?? ""}
             data={
                 albumXPhotos!
                     .map((m) => m.photo)
@@ -164,7 +166,7 @@ export default function DataTablePhotos({
             deleteAll={photoService.delete}
             columns={columns_tab1}
             fetchData={photoService.fetchAll}
-            columnSearch="name"
+            columnSearch="href"
             defaultValues={getQueryParams}
             filterEnums={[
                 {columnId: "isActive", title: "Is Active", options: isActive_options},
