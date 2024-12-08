@@ -100,12 +100,14 @@ const GalleryContent = ({ photos }: GalleryContentProps) => {
         
       >
         <Image
-          fill
+          // fill
           src={photo}
           className="rounded-xl"
           alt={alt}
           title={title}
-          sizes={sizes}
+          width={9999}
+          height={9999}
+          // sizes={sizes}
           placeholder={"blurDataURL" in photo ? "blur" : undefined}
         />
       </div>
@@ -119,7 +121,7 @@ const GalleryContent = ({ photos }: GalleryContentProps) => {
         //targetRowHeight={350}
         columns={3}
         padding={0}
-        spacing={10}
+        spacing={12}
         defaultContainerWidth={1200}
         sizes={{
           size: "1168px",
