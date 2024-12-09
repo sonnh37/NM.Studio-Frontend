@@ -276,7 +276,7 @@ export default function SidebarProductCards() {
         >
           <DialogBackdrop
             transition
-            className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
+            className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-out data-[closed]:opacity-0"
           />
 
           <div className="fixed inset-0 z-40 flex">

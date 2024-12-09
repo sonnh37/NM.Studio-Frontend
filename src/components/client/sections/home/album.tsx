@@ -52,6 +52,7 @@ export function AlbumHome() {
             }}
             transition={{
               duration: 1,
+              ease: "easeOut"
             }}
             className="div"
           >

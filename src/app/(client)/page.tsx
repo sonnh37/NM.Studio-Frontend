@@ -4,6 +4,7 @@ import Introduce from "@/components/client/sections/home/introduce";
 import { Hero } from "@/components/client/sections/home/hero";
 import ProductHome from "@/components/client/sections/home/product";
 import { Feature } from "@/components/client/sections/home/feature";
+import { Service } from "@/components/client/sections/home/service";
 
 export default function HomePage() {
   // Home page
@@ -17,6 +18,7 @@ export default function HomePage() {
         <Introduce />
         <Feature/>
         <AlbumHome />
+        <Service/>
         <ProductHome />
       </div>
     </main>

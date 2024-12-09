@@ -45,7 +45,7 @@ export function ProductCardsHome() {
               whileHover={{ scale: 1.1 }}
               transition={{
                 duration: 0.3,
-                ease: "linear",
+                ease: "easeOut",
               }}
             >
               <Image

@@ -40,6 +40,7 @@ export function Feature() {
             }}
             transition={{
               duration: 1,
+              ease: "easeOut"
             }}
             className="div"
           >
@@ -56,19 +57,19 @@ export function Feature() {
           </motion.div>
           <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
             {studio.map((product) => (
-              <div className="relative hover:shadow-lg">
-                <div className="overflow-hidden rounded-md">
+              <div className="relative hover:shadow-xl rounded-xl">
+                <div className="overflow-hidden rounded-xl">
                   <motion.div
                     className=""
                     whileHover={{ scale: 1.1 }}
                     transition={{
                       duration: 0.3,
-                      ease: "linear",
+                      ease: "easeOut",
                     }}
                   >
                     <Link href={product.href ?? ""}>
                       <Image
-                        className="aspect-square w-full bg-gray-200 rounded-md object-cover lg:aspect-auto lg:h-96"
+                        className="aspect-square w-full bg-gray-200 rounded-xl object-cover lg:aspect-auto lg:h-96"
                         alt={""}
                         src={product.src ? product.src : "/image-notfound.jpg"}
                         width={9999}

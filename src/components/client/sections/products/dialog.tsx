@@ -32,15 +32,15 @@ async function mapProductToProductDetail(
   product: Product
 ): Promise<ProductDetail> {
   const colors = [] as Color[];
-  colors.push(product.color!)
-  const sizes = [] as Size[]; 
+  colors.push(product.color!);
+  const sizes = [] as Size[];
   sizes.push(product.size!);
   const srcList: string[] =
-  product.productXPhotos.length > 0
-    ? product.productXPhotos
-        .map(m => m.photo?.src) // Map từng item thành `src` hoặc `undefined`
-        .filter(src => src !== undefined) // Lọc bỏ các giá trị `undefined`
-    : ["/image-notfound.jpg"];
+    product.productXPhotos.length > 0
+      ? product.productXPhotos
+          .map((m) => m.photo?.src) // Map từng item thành `src` hoặc `undefined`
+          .filter((src) => src !== undefined) // Lọc bỏ các giá trị `undefined`
+      : ["/image-notfound.jpg"];
   return {
     name: product.name ?? "N/A",
     price: product.price?.toString() ?? "Liên hệ",
@@ -118,11 +118,12 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
       return;
     }
 
-    async function fetchProductDetail() {
-      const product_ = await mapProductToProductDetail(product);
-      setProductDetail(product_);
-      setSelectedColor(product_.colors[0]);
-      setSelectedSize(product_.sizes[0]);
+    function fetchProductDetail() {
+      mapProductToProductDetail(product).then((product_) => {
+        setProductDetail(product_);
+        setSelectedColor(product_.colors[0]);
+        setSelectedSize(product_.sizes[0]);
+      });
     }
 
     fetchProductDetail();
@@ -165,17 +166,17 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                     <CarouselContent>
                       {productDetail.src.map((pic, index) => (
                         <CarouselItem key={index}>
-                            <Card className="border-none">
-                              <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
-                                <Image
-                                  className="aspect-[2/3]  w-full"
-                                  width={500}
-                                  height={500}
-                                  alt={productDetail.name}
-                                  src={pic}
-                                />
-                              </CardContent>
-                            </Card>
+                          <Card className="border-none">
+                            <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
+                              <Image
+                                className="aspect-[2/3]  w-full"
+                                width={9999}
+                                height={9999}
+                                alt={productDetail.name}
+                                src={pic}
+                              />
+                            </CardContent>
+                          </Card>
                         </CarouselItem>
                       ))}
                     </CarouselContent>

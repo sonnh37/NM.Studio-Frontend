@@ -1,8 +1,13 @@
 "use client";
 
+import ErrorPage from "@/app/(client)/error/page";
 import { ProductCardsHome } from "@/components/client/sections/products/product-cards-home";
 import { Const } from "@/lib/const";
+import { productService } from "@/services/product-service";
+import { ProductGetAllQuery } from "@/types/queries/product-query";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // export const metadata: Metadata = {
@@ -13,44 +18,149 @@ import { useRouter } from "next/navigation";
 const ProductHome = () => {
   const router = useRouter();
 
-  return (
-    <div className="py-20 bg-neutral-100">
-      <div className="flex flex-row items-center justify-center  relative w-full">
-        <div className="container mx-auto w-full relative overflow-hidden">
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 0,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 1,
-            }}
-            className="div"
-          >
-            <p className="text-4xl text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-              Product
-            </p>
-            <p className="text-start sp text-base md:text-md font-[100] text-neutral-700 dark:text-neutral-200 mt-2">
-             
-            </p>
-          </motion.div>
+  const { data: productRepresentatives = [], error } = useQuery({
+    queryKey: ["fetchRepresentativeByCategory"],
+    queryFn: async () => {
+      const res = await productService.fetchRepresentativeByCategory();
+      console.log("check_result_fetchRepresentativeByCategory", res);
 
-          <ProductCardsHome />
-          <div className="flex pt-5 justify-center">
-            <button
-              onClick={() => router.push(Const.PRODUCT)}
-              className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200"
+      return res.data?.results;
+    },
+  });
+
+  if (error) {
+    return <ErrorPage />;
+  }
+
+  return (
+    <section className="container mx-auto bg-white">
+      <div className="py-4 sm:py-4 lg:py-20">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 0,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 1,
+            ease: "easeOut",
+          }}
+          className="div"
+        >
+          <p className="text-4xl text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
+            Trang phục cưới
+          </p>
+        </motion.div>
+        <div className="grid my-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 h-full">
+          <div className="col-span-2 sm:col-span-1 md:col-span-2 bg-gray-50 h-auto md:h-full flex flex-col">
+            <a
+              href={`/products?categoryName=${productRepresentatives[0]?.category?.name}`}
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 flex-grow"
             >
-              Xem thêm
-            </button>
+              <Image
+                width={9999}
+                height={9999}
+                src={
+                  productRepresentatives[0]?.product?.src ||
+                  "/image-notfound.jpg"
+                }
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+              <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
+                {productRepresentatives[0]?.category?.name || "N/A"}
+              </h3>
+            </a>
+          </div>
+          <div className="col-span-2 sm:col-span-1 md:col-span-2 bg-stone-50">
+            <a
+              href={`/products?categoryName=${productRepresentatives[1]?.category?.name}`}
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 mb-4"
+            >
+              <Image
+                width={9999}
+                height={9999}
+                src={
+                  productRepresentatives[1]?.product?.src ||
+                  "/image-notfound.jpg"
+                }
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+              <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
+                {productRepresentatives[1]?.category?.name || "N/A"}
+              </h3>
+            </a>
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-2">
+              <a
+              href={`/products?categoryName=${productRepresentatives[2]?.category?.name}`}
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40"
+              >
+                <Image
+                  width={9999}
+                  height={9999}
+                  src={
+                    productRepresentatives[2]?.product?.src ||
+                    "/image-notfound.jpg"
+                  }
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+                <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
+                  {productRepresentatives[2]?.category?.name || "N/A"}
+                </h3>
+              </a>
+              <a
+              href={`/products?categoryName=${productRepresentatives[3]?.category?.name}`}
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40"
+              >
+                <Image
+                  width={9999}
+                  height={9999}
+                  src={
+                    productRepresentatives[3]?.product?.src ||
+                    "/image-notfound.jpg"
+                  }
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+                <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
+                  {productRepresentatives[3]?.category?.name || "N/A"}
+                </h3>
+              </a>
+            </div>
+          </div>
+          <div className="col-span-2 sm:col-span-1 md:col-span-1 bg-sky-50 h-auto md:h-full flex flex-col">
+            <a
+              href={`/products?categoryName=${productRepresentatives[4]?.category?.name}`}
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 flex-grow"
+            >
+              <Image
+                width={9999}
+                height={9999}
+                src={
+                  productRepresentatives[4]?.product?.src ||
+                  "/image-notfound.jpg"
+                }
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+              <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
+                {productRepresentatives[4]?.category?.name || "N/A"}
+              </h3>
+            </a>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
