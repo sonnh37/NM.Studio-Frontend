@@ -47,7 +47,15 @@ export default function RootLayout({
           </ThemeProvider>
         </SessionProvider>
 
-        <Toaster position="top-center" />
+        <Toaster
+          position="top-center"
+          richColors
+          icons={{
+            success: "🎉",
+            error: "🚨",
+            warning: "⚠️",
+          }}
+        />
       </body>
     </html>
   );

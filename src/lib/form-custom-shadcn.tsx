@@ -1,5 +1,5 @@
 // TextInputField.tsx
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   FormControl,
   FormDescription,
@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FormInputProps<TFieldValues extends FieldValues> {
   label: string;
@@ -226,7 +227,7 @@ export const FormInputNumber = <TFieldValues extends FieldValues>({
 export const FormSwitch = <TFieldValues extends FieldValues>({
   label,
   name,
-  description= "",
+  description = "",
   control,
 }: FormInputProps<TFieldValues>) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -240,9 +241,7 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
               <FormLabel className="text-base">{label}</FormLabel>
-              <FormDescription>
-                {description}
-              </FormDescription>
+              <FormDescription>{description}</FormDescription>
             </div>
             <FormControl>
               <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -369,6 +368,7 @@ export const FormInputDate = <TFieldValues extends FieldValues>({
   label,
   name,
   control,
+  placeholder = "",
   disabled = false,
 }: FormInputProps<TFieldValues>) => {
   return (
@@ -417,6 +417,247 @@ export const FormInputDate = <TFieldValues extends FieldValues>({
   );
 };
 
+export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  control,
+  placeholder = "",
+  disabled = false,
+}: FormInputProps<TFieldValues>) => {
+  const [time, setTime] = useState<string>("05:00");
+  const [date, setDate] = useState<Date | null>(null);
+  return (
+    <div className="flex justify-start gap-3">
+      <FormField
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel>{label}</FormLabel>
+            <Popover>
+              <PopoverTrigger asChild>
+                <FormControl>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full font-normal",
+                      !field.value && "text-muted-foreground"
+                    )}
+                  >
+                    {field.value ? (
+                      `${format(field.value, "PPP")}, ${time}`
+                    ) : (
+                      <span>{placeholder}</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  captionLayout="dropdown"
+                  selected={field.value}
+                  onSelect={(selectedDate) => {
+                    const [hours, minutes] = time?.split(":")!;
+                    selectedDate?.setHours(parseInt(hours), parseInt(minutes));
+                    field.onChange(selectedDate);
+                  }}
+                  initialFocus
+                  //onDayClick={() => setIsOpen(false)}
+                  fromYear={2000}
+                  toYear={new Date().getFullYear()}
+                  // disabled={(date) =>
+                  //   Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
+                  //   Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+                  // }
+                  defaultMonth={field.value}
+                />
+              </PopoverContent>
+            </Popover>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <FormItem className="flex flex-col justify-end">
+            <FormLabel>{""}</FormLabel>
+            <FormControl>
+              <Select
+                defaultValue={time!}
+                onValueChange={(e) => {
+                  setTime(e);
+                  if (date) {
+                    const [hours, minutes] = e.split(":");
+                    const newDate = new Date(date.getTime());
+                    newDate.setHours(parseInt(hours), parseInt(minutes));
+                    setDate(newDate);
+                    field.onChange(newDate);
+                  }
+                }}
+              >
+                <SelectTrigger className="font-normal focus:ring-0 w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <ScrollArea className="h-[15rem]">
+                    {Array.from({ length: 96 }).map((_, i) => {
+                      const hour = Math.floor(i / 4)
+                        .toString()
+                        .padStart(2, "0");
+                      const minute = ((i % 4) * 15).toString().padStart(2, "0");
+                      return (
+                        <SelectItem key={i} value={`${hour}:${minute}`}>
+                          {hour}:{minute}
+                        </SelectItem>
+                      );
+                    })}
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+};
+export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  control,
+  placeholder = "",
+  disabled = false,
+}: FormInputProps<TFieldValues>) => {
+  const [time, setTime] = useState<string>("05:00");
+  const [date, setDate] = useState<Date | null>(null);
+  return (
+    <div className="flex justify-start gap-3">
+      <Calendar
+        mode="single"
+        captionLayout="dropdown"
+        // selected={date || field.value}
+        // onSelect={(selectedDate) => {
+        //   const [hours, minutes] = time?.split(":")!;
+        //   selectedDate?.setHours(
+        //     parseInt(hours),
+        //     parseInt(minutes)
+        //   );
+        //   setDate(selectedDate!);
+        //   field.onChange(selectedDate);
+        // }}
+        // onDayClick={() => setIsOpen(false)}
+        fromYear={2000}
+        toYear={new Date().getFullYear()}
+        disabled={(date) =>
+          Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
+          Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+        }
+      />
+      <FormField
+        control={control}
+        name={name}
+        render={({ field }) => {
+          const [time, setTime] = useState<string>("05:00");
+          const [date, setDate] = useState<Date | null>(null);
+
+          return (
+            <FormItem className="flex flex-col">
+              <FormLabel>Datetime</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        `${format(field.value, "PPP")}, ${time}`
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto p-0 flex items-start"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    captionLayout="dropdown"
+                    selected={date || field.value}
+                    onSelect={(selectedDate) => {
+                      const [hours, minutes] = time.split(":");
+                      selectedDate?.setHours(
+                        parseInt(hours),
+                        parseInt(minutes)
+                      );
+                      setDate(selectedDate!);
+                      field.onChange(selectedDate);
+                    }}
+                    fromYear={2000}
+                    toYear={new Date().getFullYear()}
+                    disabled={(date) =>
+                      Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
+                      Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+                    }
+                  />
+                  <Select
+                    defaultValue={time}
+                    onValueChange={(newTime) => {
+                      setTime(newTime);
+                      if (date) {
+                        const [hours, minutes] = newTime.split(":");
+                        const newDate = new Date(date.getTime());
+                        newDate.setHours(parseInt(hours), parseInt(minutes));
+                        setDate(newDate);
+                        field.onChange(newDate);
+                      }
+                    }}
+                    open={true}
+                  >
+                    <SelectTrigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="border-none shadow-none mr-2 fixed top-2 left-0">
+                      <ScrollArea className="h-[15rem]">
+                        {Array.from({ length: 96 }).map((_, i) => {
+                          const hour = Math.floor(i / 4)
+                            .toString()
+                            .padStart(2, "0");
+                          const minute = ((i % 4) * 15)
+                            .toString()
+                            .padStart(2, "0");
+                          return (
+                            <SelectItem key={i} value={`${hour}:${minute}`}>
+                              {hour}:{minute}
+                            </SelectItem>
+                          );
+                        })}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
+                </PopoverContent>
+              </Popover>
+              <FormDescription>Set your date and time.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
+    </div>
+  );
+};
+
 interface ConfirmationDialogProps {
   isOpen: boolean;
   onConfirm: () => void;
@@ -442,7 +683,7 @@ const ConfirmationDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open}>
-      <DialogContent className="overflow-hidden z-[1001] shadow-lg">
+      <DialogContent className="overflow-hidden shadow-lg">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
         <DialogFooter>

@@ -3,6 +3,7 @@ export class Const {
     static readonly CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID_GOOGLE;
     static readonly API_BASE = `${process.env.NEXT_PUBLIC_API_BASE}`;
     //#endregion
+    static readonly BOOKING = "bookings";
     static readonly ALBUM = "albums";
     static readonly ALBUM_X_PHOTO = "albums/albumXPhotos";
     static readonly PRODUCT = "products";
@@ -18,6 +19,9 @@ export class Const {
     static readonly DASHBOARD = "dashboard";
     static readonly DASHBOARD_URL = "/dashboard";
     static readonly NEW = "new";
+    static readonly DASHBOARD_BOOKING_URL = `/${Const.DASHBOARD}/${Const.BOOKING}`;
+    static readonly DASHBOARD_BOOKING_NEW_URL = `${Const.DASHBOARD_BOOKING_URL}/${Const.NEW}`;
+
     static readonly DASHBOARD_ALBUM_URL = `/${Const.DASHBOARD}/${Const.ALBUM}`;
     static readonly DASHBOARD_ALBUM_NEW_URL = `${Const.DASHBOARD_ALBUM_URL}/${Const.NEW}`;
 

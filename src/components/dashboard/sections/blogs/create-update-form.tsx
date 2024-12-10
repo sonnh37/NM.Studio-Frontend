@@ -287,7 +287,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                                   <DialogTrigger asChild>
                                     <Button variant="outline">Content</Button>
                                   </DialogTrigger>
-                                  <DialogContent className="w-full h-full max-w-[90%] max-h-[90%] overflow-y-auto z-[1001]">
+                                  <DialogContent className="w-full h-full max-w-[90%] max-h-[90%] overflow-y-auto">
                                     <RichEditor
                                       description={field.value || ""} // Pass the current value from form field
                                       onChange={field.onChange} // Pass the onChange handler

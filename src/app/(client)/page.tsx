@@ -10,7 +10,7 @@ export default function HomePage() {
   // Home page
   return (
     <main
-      className="relative flex justify-center items-center flex-col overflow-hidden
+      className="relative flex justify-center items-center flex-col
    "
     >
       <div className="w-full">

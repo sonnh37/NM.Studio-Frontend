@@ -98,7 +98,7 @@ export function DeleteBaseEntitysDialog<TData>({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="z-[1001] shadow-lg">
+        <DialogContent className="shadow-lg">
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
@@ -130,7 +130,7 @@ export function DeleteBaseEntitysDialog<TData>({
       </Dialog>
     ) : 
     <Dialog {...props}>
-        <DialogContent className="z-[1001] shadow-lg">
+        <DialogContent className="shadow-lg">
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
