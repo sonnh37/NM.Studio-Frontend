@@ -1,7 +1,5 @@
 "use client";
-import {
-  CarouselApi
-} from "@/components/ui/carousel";
+import { CarouselApi } from "@/components/ui/carousel";
 import { photoService } from "@/services/photo-service";
 import { PhotoGetAllQuery } from "@/types/queries/photo-query";
 import Image from "next/image";
@@ -9,7 +7,14 @@ import React, { CSSProperties, useEffect, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Autoplay, Navigation, Pagination, Zoom } from "swiper/modules";
+import "swiper/css/scrollbar";
+import {
+  Autoplay,
+  Navigation,
+  Pagination,
+  Scrollbar,
+  Zoom,
+} from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 export function Hero() {
   const [api, setApi] = React.useState<CarouselApi>();
@@ -102,27 +107,28 @@ export function Hero() {
     <div className="">
       {/* <ImagesSlider className="h-screen" images={images} /> */}
       <Swiper
-     
         spaceBetween={2}
         slidesPerView={1}
-        centeredSlides={true}
+        //centeredSlides={true}
         zoom={true}
         autoplay={{
           delay: 5000,
-         disableOnInteraction: false,
         }}
         loop={true}
         pagination={{
           clickable: true,
         }}
         navigation={true}
-        modules={[Zoom, Autoplay, Pagination, Navigation]}
+        modules={[Zoom, Autoplay, Scrollbar, Pagination, Navigation]}
         className="mySwiper"
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
         style={{
-          '--swiper-navigation-color': '#525252',
-          '--swiper-pagination-color': '#525252',
+          "--swiper-navigation-color": "#000", // Màu nút điều hướng
+          "--swiper-pagination-color": "#000", // Màu chấm phân trang
+          "--swiper-pagination-bullet-size": "14px", // Kích thước chấm
+          "--swiper-pagination-bullet-horizontal-gap": "8px", // Khoảng cách giữa các chấm
+          "--swiper-navigation-size": "20px", // Kích thước mũi tên
         } as CSSProperties}
       >
         {images.map((pic, index) => (
@@ -139,38 +145,6 @@ export function Hero() {
           </SwiperSlide>
         ))}
       </Swiper>
-      {/* <Carousel 
-      setApi={setApi}
-      plugins={[
-        Autoplay({
-          delay: 3000,
-        }),
-      ]}
-      opts={{
-        align: "start",
-        loop: true,
-      }}
-      >
-        <CarouselContent>
-          {images.map((pic, index) => (
-            <CarouselItem key={index}>
-              <Card className="border-none">
-                <CardContent className="flex p-0 m-0 border-none">
-                  <Image
-                    className="h-[calc(100vh-80px)] w-full object-cover"
-                    width={9999}
-                    height={9999}
-                    alt={""}
-                    src={pic}
-                  />
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-neutral-100 bg-opacity-40 rounded-lg border-none shadow-lg z-10" />
-        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-neutral-100 bg-opacity-40 rounded-lg border-none shadow-lg z-10" />
-      </Carousel> */}
     </div>
   );
 }

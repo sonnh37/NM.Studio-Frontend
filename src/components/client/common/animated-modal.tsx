@@ -45,13 +45,16 @@ import ErrorPage from "@/app/(client)/error/page";
 import { bookingService } from "@/services/booking-service";
 import { BookingCreateCommand } from "@/types/commands/booking-command";
 import { BookingStatus } from "@/types/booking";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ButtonLoading } from "@/components/common/button-loading";
+
 const formSchema = z.object({
   email: z.string().email().nullable().optional(),
   fullName: z.string().min(1, "Họ và tên không được để trống"),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
   userId: z.string().nullable().optional(),
   serviceId: z.string().min(1, "Service ID is required").nullable().optional(),
-  bookingDate: z.date().default(() => new Date()),
+  bookingDate: z.date(),
 });
 
 export function BookingModal() {
@@ -84,7 +87,7 @@ export function BookingModal() {
       setLoading(true);
       console.log("check_form", values);
       const updatedValues = {
-        status: BookingStatus.Pending, 
+        status: BookingStatus.Pending,
         ...values,
       };
       console.log("check_output", updatedValues);
@@ -126,7 +129,7 @@ export function BookingModal() {
                   control={form.control}
                   disabled={false}
                   name="bookingDate"
-                  label="Ngày đến Nhu My Studio"
+                  label="Ngày hẹn"
                   placeholder="Chọn ngày"
                 />
 
@@ -176,9 +179,13 @@ export function BookingModal() {
                   Đóng
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Processing..." : "Booking"}
-              </Button>
+              {loading ? (
+                <ButtonLoading />
+              ) : (
+                <Button type="submit" disabled={loading}>
+                  Booking
+                </Button>
+              )}
             </DialogFooter>
           </form>
         </Form>
