@@ -108,3 +108,8 @@ export const createEditorState = (content: string): EditorState => {
   return EditorState.createWithContent(contentState);
 };
 
+export function toLocalISOString(date: Date) {
+  const tzOffset = date.getTimezoneOffset() * 60000; // Chuyển phút lệch sang milliseconds
+  return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+}
+

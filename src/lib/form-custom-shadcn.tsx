@@ -537,27 +537,6 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
   const [date, setDate] = useState<Date | null>(null);
   return (
     <div className="flex justify-start gap-3">
-      <Calendar
-        mode="single"
-        captionLayout="dropdown"
-        // selected={date || field.value}
-        // onSelect={(selectedDate) => {
-        //   const [hours, minutes] = time?.split(":")!;
-        //   selectedDate?.setHours(
-        //     parseInt(hours),
-        //     parseInt(minutes)
-        //   );
-        //   setDate(selectedDate!);
-        //   field.onChange(selectedDate);
-        // }}
-        // onDayClick={() => setIsOpen(false)}
-        fromYear={2000}
-        toYear={new Date().getFullYear()}
-        disabled={(date) =>
-          Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-          Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
-        }
-      />
       <FormField
         control={control}
         name={name}
@@ -566,7 +545,7 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
           const [date, setDate] = useState<Date | null>(null);
 
           return (
-            <FormItem className="flex flex-col">
+            <FormItem className="flex flex-col w-full">
               <FormLabel>Datetime</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>

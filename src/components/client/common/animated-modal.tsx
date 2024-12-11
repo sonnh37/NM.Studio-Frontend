@@ -47,6 +47,7 @@ import { BookingCreateCommand } from "@/types/commands/booking-command";
 import { BookingStatus } from "@/types/booking";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ButtonLoading } from "@/components/common/button-loading";
+import { toLocalISOString } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email().nullable().optional(),
@@ -86,9 +87,10 @@ export function BookingModal() {
     try {
       setLoading(true);
       console.log("check_form", values);
+      const date = toLocalISOString(values.bookingDate)
       const updatedValues = {
-        status: BookingStatus.Pending,
         ...values,
+        bookingDate: date
       };
       console.log("check_output", updatedValues);
       const response = await bookingService.create(updatedValues);
@@ -125,7 +127,7 @@ export function BookingModal() {
 
             <div className="mx-auto w-full">
               <div className="grid gap-1">
-                <FormInputDateTimePicker
+                <FormInputDateTimePickerV2
                   control={form.control}
                   disabled={false}
                   name="bookingDate"
