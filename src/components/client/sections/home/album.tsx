@@ -40,7 +40,7 @@ export function AlbumHome() {
   return (
     <div className="py-20 ">
       <div className="flex flex-row items-center justify-center  relative w-full">
-        <div className="container mx-auto w-full relative overflow-hidden">
+        <div className="mx-auto w-full relative overflow-hidden">
           <motion.div
             initial={{
               opacity: 0,
@@ -52,21 +52,23 @@ export function AlbumHome() {
             }}
             transition={{
               duration: 1,
-              ease: "easeOut"
+              ease: "easeOut",
             }}
-            className="div"
+            className="container mx-auto"
           >
-            <p className="text-4xl text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-              Album
+            <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
+              Album các concept
+            </h2>
+            <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
+            ĐA SỐ KHÁCH HÀNG Như My LÀ CẶP ĐÔI CÁC TRẺ CÓ PHONG CÁCH THẨM MỸ HIỆN ĐẠI.
             </p>
-            <p className="text-start sp text-base md:text-md font-[100] text-neutral-700 dark:text-neutral-200 mt-2"></p>
           </motion.div>
 
           <AlbumGallery />
           <div className="flex pt-5 justify-center">
             <button
               onClick={() => router.push(Const.ALBUM)}
-              className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200"
+              className="border-2 border-neutral-300 text-neutral-500 px-12 py-4 rounded-none tracking-widest uppercase bg-transparent hover:bg-neutral-500 hover:text-white dark:text-neutral-200 transition duration-200"
             >
               Xem thêm
             </button>

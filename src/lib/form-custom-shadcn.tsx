@@ -546,7 +546,7 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
 
           return (
             <FormItem className="flex flex-col w-full">
-              <FormLabel>Datetime</FormLabel>
+              <FormLabel>{label}</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -627,7 +627,7 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
                   </Select>
                 </PopoverContent>
               </Popover>
-              <FormDescription>Set your date and time.</FormDescription>
+              {/* <FormDescription>Set your date and time.</FormDescription> */}
               <FormMessage />
             </FormItem>
           );

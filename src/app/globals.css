@@ -42,6 +42,20 @@ body {
   font-style: normal;
 }
 
+.swiper-pagination-bullet {
+  background-color: #7e7e7e !important; /* Màu của chấm chưa active */
+  border-radius: 50% !important; /* Border radius cho chấm */
+  transition: all 0.3s ease-out !important; /* Hiệu ứng chuyển đổi mượt mà */
+}
+
+/* Định nghĩa kiểu cho chấm active */
+.swiper-pagination-bullet-active {
+  background-color: #717271 !important; /* Màu nền khi active */
+  width: 20px !important; /* Độ rộng chấm khi active */
+  border-radius: 14px !important;
+  transition: all 0.3s ease-out !important; /* Hiệu ứng chuyển đổi mượt mà */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

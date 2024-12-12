@@ -123,13 +123,18 @@ export function Hero() {
         className="mySwiper"
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
-        style={{
-          "--swiper-navigation-color": "#000", // Màu nút điều hướng
-          "--swiper-pagination-color": "#000", // Màu chấm phân trang
-          "--swiper-pagination-bullet-size": "14px", // Kích thước chấm
-          "--swiper-pagination-bullet-horizontal-gap": "8px", // Khoảng cách giữa các chấm
-          "--swiper-navigation-size": "20px", // Kích thước mũi tên
-        } as CSSProperties}
+        style={
+          {
+            "--swiper-navigation-color": "#000", // Màu nút điều hướng
+            "--swiper-pagination-color": "#000", // Màu chấm phân trang
+            // "--swiper-pagination-bullet-size": "14px", // Kích thước chấm
+            // "--swiper-pagination-bullet-horizontal-gap": "8px", // Khoảng cách giữa các chấm
+            "--swiper-navigation-size": "20px",
+            // "--swiper-pagination-bullet-active-background": "#717271", // Màu nền khi active
+            // "--swiper-pagination-bullet-active-width": "36px", // Độ rộng chấm khi active
+            // "--swiper-pagination-bullet-radius": "14px", // Border radius cho bullet (chấm tròn)
+          } as React.CSSProperties
+        }
       >
         {images.map((pic, index) => (
           <SwiperSlide key={index}>

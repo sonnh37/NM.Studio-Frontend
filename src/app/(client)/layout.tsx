@@ -21,7 +21,7 @@ export default function HomeLayout({
       <SiteHeader user={null} />
       <BreadcrumbClient />
       <Suspense fallback={<PageLoading />}>{children}</Suspense>
-      <Contact />
+      
       <Footer />
 
       <InformationChat />

@@ -41,10 +41,11 @@ export default function Introduce() {
             <div
                 className="absolute inset-0 pointer-events-none flex items-center justify-center dark:bg-black bg-white opacity-50"></div>
             <div className="container mx-auto py-10 z-10 ">
-                <p className="text-4xl text-center relative z-20 bg-clip-text text-transparent bg-neutral-500 py-8">
-                    CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-4 text-center">
+                
+                <h2 className="text-center text-4xl relative z-20 tracking-wide uppercase text-neutral-700 py-8">
+                CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?
+            </h2>
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-4 text-center">
                     {steps.map((step, index) => (
                         <div
                             className="flex flex-col items-center justify-between space-y-10 h-full"

@@ -40,19 +40,19 @@ export function Feature() {
             }}
             transition={{
               duration: 1,
-              ease: "easeOut"
+              ease: "easeOut",
             }}
             className="div"
           >
-            <p className="text-4xl text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
+            <h2 className="text-center text-4xl tracking-wide uppercase text-neutral-700 my-2">
               Tại Như My Wedding, bạn hoàn toàn yên tâm với các dịch vụ cưới
-            </p>
-            <p className="text-start sp text-base md:text-md font-[100] text-neutral-700 dark:text-neutral-200 mt-2">
+            </h2>
+            <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
               THÀNH LẬP VÀO NĂM 2017, TONY WEDDING ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI
               VÀ TRỞ THÀNH THƯƠNG HIỆU HÀNG ĐẦU VỀ CHỤP ẢNH CƯỚI TPHCM VÀ CÁC
               TỈNH LÂN CẬN VỚI 10 CHI NHÁNH. TONY WEDDING LUÔN TỰ HÀO MANG ĐẾN
               CHO BẠN SỰ TIN TƯỞNG BẰNG TRẢI NGHIỆM DỊCH VỤ CƯỚI TỐT NHẤT VỚI
-              CHI PHÍ ĐÁM CƯỚI VỪA PHẢI.
+              CHI PHÍ ĐÁM CƯỚI VỪA PHẢI.{" "}
             </p>
           </motion.div>
           <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">

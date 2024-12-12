@@ -50,9 +50,16 @@ const ProductHome = () => {
           }}
           className="div"
         >
-          <p className="text-4xl text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-            Trang phục cưới
-          </p>
+          <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
+              Váy cưới
+            </h2>
+            <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
+            THÀNH LẬP VÀO NĂM 2017, Như My ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI
+              VÀ TRỞ THÀNH THƯƠNG HIỆU HÀNG ĐẦU VỀ CHỤP ẢNH CƯỚI TPHCM VÀ CÁC
+              TỈNH LÂN CẬN VỚI 10 CHI NHÁNH. TONY WEDDING LUÔN TỰ HÀO MANG ĐẾN
+              CHO BẠN SỰ TIN TƯỞNG BẰNG TRẢI NGHIỆM DỊCH VỤ CƯỚI TỐT NHẤT VỚI
+              CHI PHÍ ĐÁM CƯỚI VỪA PHẢI.
+            </p>
         </motion.div>
         <div className="grid my-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 h-full">
           <div className="col-span-2 sm:col-span-1 md:col-span-2 bg-gray-50 h-auto md:h-full flex flex-col">

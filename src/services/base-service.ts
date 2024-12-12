@@ -47,6 +47,7 @@ export class BaseService<T> {
     }
 
     public update = (command: UpdateCommand): Promise<BusinessResult<T>> => {
+        command.isDeleted = undefined;
         return axiosInstance
             .put<BusinessResult<T>>(this.endpoint, command)
             .then(response => response.data)

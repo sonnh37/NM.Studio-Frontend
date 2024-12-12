@@ -4,7 +4,7 @@ import { RootState } from "@/lib/store";
 import { BsTelephone } from "react-icons/bs";
 import { SiZalo } from "react-icons/si";
 import { LiaFacebookMessenger } from "react-icons/lia";
-import { BookingModal } from "@/components/client/common/animated-modal";
+import { BookingDialog } from "@/components/client/common/booking-dialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalProvider } from "@/components/ui/animated-modal";
 
@@ -23,7 +23,7 @@ const InformationChat = () => {
         >
           <div className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] flex items-center justify-center">
             <a className="btn-gallery" target="_blank">
-              <BookingModal />
+              <BookingDialog />
             </a>
           </div>
           <div className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] flex items-center justify-center">

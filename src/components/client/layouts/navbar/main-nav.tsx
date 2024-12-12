@@ -85,6 +85,8 @@ export function MainNav({ items }: MainNavProps) {
 
     loadAlbumsAndServices();
   }, []);
+
+  
   return (
     <div className="hidden gap-6 lg:flex">
       <Link href="/" className="hidden items-center space-x-2 lg:flex">
@@ -149,12 +151,11 @@ export function MainNav({ items }: MainNavProps) {
                     <ListItem
                       key={service.id}
                       title={service.name}
-                      className="p-2 text-neutral-500 hover:bg-transparent"
+                      className="p-2 text-neutral-500 "
                       href={`/services/${service.slug}`}
                     >
                       {/*{service.description}*/}
                     </ListItem>
-                    <hr className="border-t border-neutral-300 my-1" />{" "}
                   </div>
                 ))}
               </ul>
@@ -189,7 +190,7 @@ export function MainNav({ items }: MainNavProps) {
           {/* Categories Section */}
           <NavigationMenuItem>
             <NavigationMenuTrigger className="text-neutral-500">
-              Trang phục cưới
+              Váy cưới
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px] max-h-[480px] overflow-y-auto">
@@ -207,10 +208,10 @@ export function MainNav({ items }: MainNavProps) {
                         <div key={subCategory.id}>
                           <ListItem
                             title={subCategory.name}
-                            className="p-2 text-neutral-500 text-sm hover:bg-transparent"
+                            className="p-2 text-neutral-500 text-sm"
                             href={`${path}&subCategoryName=${subCategory.name}`}
                           ></ListItem>
-                          <hr className="border-t border-neutral-300 my-1" />{" "}
+                          {/* <hr className="border-t border-neutral-300 my-1" />{" "} */}
                           {/* Thanh line mỏng */}
                         </div>
                       ))}
@@ -271,3 +272,32 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
+
+const ListItemV2 = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, href, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <Link
+          ref={ref}
+          href={String(href)}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <p className="text-lg group relative w-max">
+            <span className="px-1 relative z-10 ">
+              {title}
+            </span>
+            <span className="absolute left-0 bottom-0 w-full h-[0.25px] bg-neutral-300 transition-transform duration-300 scale-x-0 origin-left group-hover:scale-x-100 z-0 group-hover:bg-neutral-300 group-hover:h-full"></span>
+          </p>
+        </Link>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItemV2.displayName = "ListItemV2";
