@@ -130,6 +130,7 @@ export function Hero() {
             // "--swiper-pagination-bullet-size": "14px", // Kích thước chấm
             // "--swiper-pagination-bullet-horizontal-gap": "8px", // Khoảng cách giữa các chấm
             "--swiper-navigation-size": "20px",
+            "--swiper-pagination-bottom": "20px"
             // "--swiper-pagination-bullet-active-background": "#717271", // Màu nền khi active
             // "--swiper-pagination-bullet-active-width": "36px", // Độ rộng chấm khi active
             // "--swiper-pagination-bullet-radius": "14px", // Border radius cho bullet (chấm tròn)
