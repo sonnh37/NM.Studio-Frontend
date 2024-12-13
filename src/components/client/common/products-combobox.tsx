@@ -1,82 +1,95 @@
 "use client";
 
 import * as React from "react";
-import {useRouter} from "next/navigation";
-import {MagnifyingGlassIcon} from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
-import {cn, isMacOs} from "@/lib/utils";
-import {useDebounce} from "@/hooks/use-debounce";
-import {Button} from "@/components/ui/button";
-import {CommandDialog, CommandEmpty, CommandInput, CommandList,} from "@/components/ui/command";
-import {Kbd} from "./kbd";
+import { cn, isMacOs } from "@/lib/utils";
+import { useDebounce } from "@/hooks/use-debounce";
+import { Button } from "@/components/ui/button";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandInput,
+  CommandList,
+} from "@/components/ui/command";
+import { Kbd } from "./kbd";
 
 export function ProductsCombobox() {
-    const router = useRouter();
-    const [open, setOpen] = React.useState(false);
-    const [query, setQuery] = React.useState("");
-    const debouncedQuery = useDebounce(query, 300);
-    const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [query, setQuery] = React.useState("");
+  const debouncedQuery = useDebounce(query, 300);
+  const [loading, setLoading] = React.useState(false);
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((open) => !open);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
-    React.useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault();
-                setOpen((open) => !open);
-            }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, []);
+  const onSelect = React.useCallback((callback: () => unknown) => {
+    setOpen(false);
+    callback();
+  }, []);
 
-    const onSelect = React.useCallback((callback: () => unknown) => {
-        setOpen(false);
-        callback();
-    }, []);
-
-    return (
-        <>
-            <Button
-                variant="outline"
-                className="relative bg-transparent size-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
-                onClick={() => {
-                    setOpen(true);
-                }}
-            >
-                <MagnifyingGlassIcon className="size-4 xl:mr-2" aria-hidden="true"/>
-                <span className="hidden xl:inline-flex">Search products...</span>
+  return (
+    <>
+      <Button
+        variant="link"
+        onClick={() => {
+          setOpen(true);
+        }}
+        className="p-0 m-0"
+      >
+        <MagnifyingGlassIcon/>
+        <span className="sr-only">Search</span>
+      </Button>
+      {/* <Button
+        variant="outline"
+        onClick={() => {
+          setOpen(true);
+        }}
+        className="relative bg-transparent size-9 p-0 xl:h-full xl:w-full xl:justify-center xl:py-2"
+      >
+        <span className="hidden xl:inline-flex">Search products...</span>
                 <span className="sr-only">Search products</span>
-                <Kbd
+        <Kbd
                     title={isMacOs() ? "Command" : "Control"}
-                    className="pointer-events-none absolute right-1.5 top-1.5 hidden xl:block"
+                    className="pointer-events-none  hidden xl:block"
                 >
                     {isMacOs() ? "⌘" : "Ctrl"} K
                 </Kbd>
-            </Button>
-            <CommandDialog
-                open={open}
-                onOpenChange={(open) => {
-                    setOpen(open);
-                    if (!open) {
-                        setQuery("");
-                    }
-                }}
-            >
-                <CommandInput
-                    placeholder="Search products..."
-                    value={query}
-                    className="border-0 hover:border-0 focus:outline-0 focus:ring-0"
-                    onValueChange={setQuery}
-                />
-                <CommandList>
-                    <CommandEmpty
-                        className={cn(loading ? "hidden" : "py-6 text-center text-sm")}
-                    >
-                        No products found.
-                    </CommandEmpty>
-                    {/* {loading ? (
+      </Button> */}
+      <CommandDialog
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          if (!open) {
+            setQuery("");
+          }
+        }}
+      >
+        <CommandInput
+          placeholder="Search products..."
+          value={query}
+          className="border-0 hover:border-0 focus:outline-0 focus:ring-0"
+          onValueChange={setQuery}
+        />
+        <CommandList>
+          <CommandEmpty
+            className={cn(loading ? "hidden" : "py-6 text-center text-sm")}
+          >
+            No products found.
+          </CommandEmpty>
+          {/* {loading ? (
             <div className="space-y-1 overflow-hidden px-1 py-2">
               <Skeleton className="h-4 w-10 rounded" />
               <Skeleton className="h-8 rounded-sm" />
@@ -112,8 +125,8 @@ export function ProductsCombobox() {
               </CommandGroup>
             ))
           )} */}
-                </CommandList>
-            </CommandDialog>
-        </>
-    );
+        </CommandList>
+      </CommandDialog>
+    </>
+  );
 }

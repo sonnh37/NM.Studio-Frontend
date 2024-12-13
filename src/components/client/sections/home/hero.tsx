@@ -140,7 +140,7 @@ export function Hero() {
           <SwiperSlide key={index}>
             <div className="swiper-zoom-container">
               <Image
-                className="h-[calc(100vh-100px)] w-full"
+                className="h-[calc(100vh-96px)] w-full"
                 width={9999}
                 height={9999}
                 alt={""}

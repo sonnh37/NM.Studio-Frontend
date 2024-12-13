@@ -26,6 +26,9 @@ import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { Service } from "@/types/service";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "./mode-toggle";
+import { ProductsCombobox } from "../../common/products-combobox";
+import { CartSheet } from "../../common/cart-sheet";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -86,9 +89,9 @@ export function MainNav({ items }: MainNavProps) {
     loadAlbumsAndServices();
   }, []);
 
-  
   return (
-    <div className="hidden gap-6 lg:flex">
+    <>
+    <div className="hidden gap-6 lg:flex justify-between mx-auto w-full">
       <Link href="/" className="hidden items-center space-x-2 lg:flex">
         <Icons.logo aria-hidden="true" />
         {/* <span className="hidden font-bold lg:inline-block">NHU MY</span> */}
@@ -232,7 +235,10 @@ export function MainNav({ items }: MainNavProps) {
           <NavigationMenuItem>
             <Link href="/blogs" legacyBehavior passHref>
               <NavigationMenuLink
-                className={cn(navigationMenuTriggerStyle(), "text-neutral-500 bg-transparent uppercase")}
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "text-neutral-500 bg-transparent uppercase"
+                )}
               >
                 Tin tức
               </NavigationMenuLink>
@@ -240,7 +246,16 @@ export function MainNav({ items }: MainNavProps) {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+
+      <nav className="hidden lg:flex items-center justify-end space-x-4 w-[255px] max-w-[255px]">
+        <ModeToggle />
+        <ProductsCombobox />
+        <CartSheet />
+        {/* <LocaleSwitcher /> */}
+        {/* <AuthDropdown user={user} /> */}
+      </nav>
     </div>
+    </>
   );
 }
 
@@ -290,9 +305,7 @@ const ListItemV2 = React.forwardRef<
           {...props}
         >
           <p className="text-lg group relative w-max">
-            <span className="px-1 relative z-10 ">
-              {title}
-            </span>
+            <span className="px-1 relative z-10 ">{title}</span>
             <span className="absolute left-0 bottom-0 w-full h-[0.25px] bg-neutral-300 transition-transform duration-300 scale-x-0 origin-left group-hover:scale-x-100 z-0 group-hover:bg-neutral-300 group-hover:h-full"></span>
           </p>
         </Link>

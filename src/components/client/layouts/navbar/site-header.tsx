@@ -53,9 +53,9 @@ export default function SiteHeader({ user }: SiteHeaderProps) {
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     // Kiểm tra độ dài của trang
     const scrollHeight = document.body.scrollHeight;
-  const innerHeight = window.innerHeight;
+    const innerHeight = window.innerHeight;
 
-  const isScrollable = scrollHeight - innerHeight > 50; // Ngưỡng 50px
+    const isScrollable = scrollHeight - innerHeight > 50; // Ngưỡng 50px
 
     if (!isScrollable) {
       setVisible(true);
@@ -67,7 +67,7 @@ export default function SiteHeader({ user }: SiteHeaderProps) {
       const direction = current! - scrollYProgress.getPrevious()!;
       const currentScroll = scrollYProgress.get();
       const velocityScroll = scrollYProgress.getVelocity();
-console.log("check_ve", velocityScroll)
+      console.log("check_ve", velocityScroll);
       if (currentScroll < 0.05) {
         setVisible(true);
         setIsTop(true);
@@ -122,7 +122,7 @@ console.log("check_ve", velocityScroll)
                 <ChatButton />
               </div>
 
-              <div className="flex space-x-4 items-center">
+              <div className="flex space-x-4 justify-end w-[327px] max-w-[327px] items-center">
                 <div>
                   <a href="/about">ABOUT NHUMY</a>
                 </div>
@@ -136,11 +136,11 @@ console.log("check_ve", velocityScroll)
         </div>
 
         <div className="w-full flex justify-center">
-          <div className="container flex h-16 items-center">
+          <div className="container flex h-14 items-center justify-between mx-auto">
             <MainNav items={siteConfig.mainNav} />
             <MobileNav items={siteConfig.mainNav} />
-            <div className="flex flex-1 items-center justify-end space-x-4">
-              <nav className="flex items-center space-x-2">
+            <div className="flex lg:hidden flex-1 items-center justify-end space-x-4">
+              <nav className="flex items-center space-x-4">
                 <ModeToggle />
                 <ProductsCombobox />
                 <CartSheet />

@@ -14,7 +14,7 @@ const ChatButton = memo(() => {
   return (
     <button onClick={handleClick} className="relative rounded-full">
       <span className="z-10">Chat with me</span>
-      <span className="absolute inline-flex h-full w-full rounded-full inset-0 bg-accent animate-ping z-0"></span>
+      <span className="absolute inline-flex h-full w-full rounded-full inset-0 bg-accent motion-safe:animate-ping scale-50 opacity-75 z-0"></span>
     </button>
   );
 });
