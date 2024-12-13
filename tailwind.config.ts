@@ -24,10 +24,12 @@ const config = {
     	},
     	extend: {
     		fontFamily: {
-    			montserrat: ["Montserrat", "sans-serif"],
-    			greatvibes: ["Great Vibes", "cursive"],
-    			waterfall: ['Waterfall', 'cursive']
-    		},
+				waterfall: ['Waterfall', 'sans-serif'],
+				spectral: ['Spectral', 'serif'],
+				birthstone: ['Birthstone', 'sans-serif'],
+				raleway: ['Raleway', 'sans-serif'],
+				lato: ['Lato', 'sans-serif'],
+			  },
     		colors: {
     			border: 'hsl(var(--border))',
     			input: 'hsl(var(--input))',

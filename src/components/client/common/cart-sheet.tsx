@@ -14,7 +14,7 @@ export async function CartSheet() {
                     aria-label="Open cart"
                     variant="outline"
                     size="icon"
-                    className="relative"
+                    className="relative bg-transparent"
                 >
                     {/* {itemCount > 0 && (
             <Badge

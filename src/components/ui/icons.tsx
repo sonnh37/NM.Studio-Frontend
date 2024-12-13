@@ -6,13 +6,14 @@ export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const Icons = {
     logo: ({ className = "", ...props }: IconProps) => (
-        <Image
-            src="/2.png"
-            width={500}
-            height={500}
-            alt="Nhu My Studio"
-            className={cn("size-11 rounded-lg", className)}
-        />
+        // <Image
+        //     src="/2.png"
+        //     width={500}
+        //     height={500}
+        //     alt="Nhu My Studio"
+        //     className={cn("size-11 rounded-lg", className)}
+        // />
+<p className="font-spectral font-normal text-2xl">NHU MY STUDIO</p>
     ),
     menu: ({...props}: IconProps) => (
         <svg

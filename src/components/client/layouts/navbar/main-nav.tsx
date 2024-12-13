@@ -96,7 +96,7 @@ export function MainNav({ items }: MainNavProps) {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="text-neutral-500">
+            <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
               Thông tin
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -141,7 +141,7 @@ export function MainNav({ items }: MainNavProps) {
             </NavigationMenuContent>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="text-neutral-500">
+            <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
               Dịch vụ
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -163,7 +163,7 @@ export function MainNav({ items }: MainNavProps) {
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="text-neutral-500">
+            <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
               Albums
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -189,7 +189,7 @@ export function MainNav({ items }: MainNavProps) {
 
           {/* Categories Section */}
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="text-neutral-500">
+            <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
               Váy cưới
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -232,7 +232,7 @@ export function MainNav({ items }: MainNavProps) {
           <NavigationMenuItem>
             <Link href="/blogs" legacyBehavior passHref>
               <NavigationMenuLink
-                className={cn(navigationMenuTriggerStyle(), "text-neutral-500")}
+                className={cn(navigationMenuTriggerStyle(), "text-neutral-500 bg-transparent uppercase")}
               >
                 Tin tức
               </NavigationMenuLink>
