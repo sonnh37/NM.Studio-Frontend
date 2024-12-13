@@ -11,6 +11,7 @@ import { createEditorState, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../error/page";
+import { TinyMCEReadOnly } from "@/components/client/common/tinymce-readonly";
 
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
@@ -71,9 +72,10 @@ export default function Page() {
             </div>
           </div>
           <div className="container">
-            {editorState && (
+            <TinyMCEReadOnly value={blogData.content ?? ""}/>
+            {/* {editorState && (
               <Editor editorState={editorState} readOnly={true} toolbarHidden />
-            )}
+            )} */}
           </div>
         </div>
       )}

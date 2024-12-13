@@ -38,6 +38,7 @@ import { useRouter } from "next/navigation";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
+  FormInputEditTinyMCE,
   FormInputNumber,
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
@@ -84,7 +85,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log("check_file", URL.createObjectURL(file))
+      console.log("check_file", URL.createObjectURL(file));
       setFirebaseLink(URL.createObjectURL(file));
       setSelectedFile(file);
     }
@@ -261,46 +262,22 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                      <div className="grid gap-3">
-                        <FormSwitch
-                          control={form.control}
-                          name="isFeatured"
-                          label="Featured"
-                          description="This is your public about home."
-                        />
+                    <div className="grid gap-3">
+                      <FormSwitch
+                        control={form.control}
+                        name="isFeatured"
+                        label="Featured"
+                        description="This is your public about home."
+                      />
 
-                        <FormInput
-                          control={form.control}
-                          name="title"
-                          label="Title"
-                          description="This is your public display title."
-                          placeholder="Enter title"
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="content"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button variant="outline">Content</Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="w-full h-full max-w-[90%] max-h-[90%] overflow-y-auto">
-                                    <RichEditor
-                                      description={field.value || ""} // Pass the current value from form field
-                                      onChange={field.onChange} // Pass the onChange handler
-                                    />
-                                  </DialogContent>
-                                </Dialog>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                      </div>
+                      <FormInput
+                        control={form.control}
+                        name="title"
+                        label="Title"
+                        description="This is your public display title."
+                        placeholder="Enter title"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
                 <Card
@@ -411,6 +388,26 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                 </Card>
               </div>
             </div>
+          </div>
+          <div className="grid auto-rows-max items-start">
+            <Card>
+              <CardHeader>
+                <CardTitle>Service Edit</CardTitle>
+                <CardDescription>
+                  Lipsum dolor sit amet, consectetur adipiscing elit
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-6">
+                  <div className="grid gap-3">
+                    <FormInputEditTinyMCE
+                      control={form.control}
+                      name="content"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </form>
       </Form>

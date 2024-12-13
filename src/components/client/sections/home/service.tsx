@@ -1,6 +1,6 @@
 import ErrorPage from "@/app/(client)/error/page";
 import { Const } from "@/lib/const";
-import { convertJsonToPlainText } from "@/lib/utils";
+import { convertHtmlToPlainText, convertJsonToPlainText } from "@/lib/utils";
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { useQuery } from "@tanstack/react-query";
@@ -155,7 +155,7 @@ export function Service() {
                     >
                       <Link href={"/services/" + ser.slug}>
                         <Image
-                          className="aspect-square w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
+                          className="aspect-square h-[300px] w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
                           alt={""}
                           src={ser.src ? ser.src : "/image-notfound.jpg"}
                           width={9999}
@@ -171,7 +171,7 @@ export function Service() {
                     <hr className="border-t border-neutral-300 my-1" />{" "}
                     <p className="text-sm line-clamp-2 w-full text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
                       {ser.description
-                        ? convertJsonToPlainText(ser.description)
+                        ? convertHtmlToPlainText(ser.description)
                         : "N/A"}
                     </p>
                   </div>

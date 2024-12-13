@@ -3,7 +3,7 @@
 import { Pagination } from "@/components/client/common/pagination";
 import { BlogsRecent } from "@/components/client/sections/blogs/blogs-recent";
 import { Button } from "@/components/ui/button";
-import { convertJsonToPlainText, formatDate } from "@/lib/utils";
+import { convertHtmlToPlainText, convertJsonToPlainText, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
@@ -78,7 +78,7 @@ export default function AlbumPage() {
                     </p>
                     <p className="line-clamp-5 leading-7 text-gray-500 inset-4">
                       {blog.content
-                        ? convertJsonToPlainText(blog.content)
+                        ? convertHtmlToPlainText(blog.content)
                         : "N/A"}
                     </p>
                     <p>

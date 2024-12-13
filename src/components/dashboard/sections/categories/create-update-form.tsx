@@ -51,7 +51,7 @@ interface CategoryFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required"),
+  name: z.string().min(1, "Name is required"),
   description: z.string().nullable().optional(),
   background: z.string().nullable().optional(),
   createdDate: z
@@ -272,88 +272,17 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                       <div className="grid gap-3">
                         <FormInput
                           control={form.control}
-                          name="title"
-                          label="Title"
-                          description="This is your public display title."
-                          placeholder="Enter title"
+                          name="name"
+                          label="Name"
+                          description="This is your public display name."
+                          placeholder="Enter name"
                         />
 
-                        <FormInputTextArea
-                          control={form.control}
-                          name="description"
-                          label="Description"
-                          description="This is your public display description."
-                          placeholder="Enter description"
-                        />
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card
-                  className="overflow-hidden"
-                  x-chunk="dashboard-07-chunk-2"
-                >
-                  <CardHeader>
-                    <CardTitle>Category Background</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="background"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Service Background</FormLabel>
-                          <FormControl>
-                            <div className="grid gap-2">
-                              {firebaseLink ? (
-                                <>
-                                  <Image
-                                    alt="Category Background"
-                                    className="aspect-square w-full rounded-md object-cover"
-                                    height={300}
-                                    src={firebaseLink}
-                                    width={300}
-                                  />
-                                  <Button
-                                    onClick={handleImageDelete}
-                                    variant="destructive"
-                                  >
-                                    Delete Image
-                                  </Button>
-                                </>
-                              ) : (
-                                <div className="grid grid-cols-3 gap-2">
-                                  <button
-                                    type="button"
-                                    className="flex aspect-square w-full items-center justify-center rounded-md bcategory bcategory-dashed"
-                                    onClick={() =>
-                                      fileInputRef.current?.click()
-                                    }
-                                  >
-                                    <Upload className="h-4 w-4 text-muted-foreground" />
-                                    <span className="sr-only">Upload</span>
-                                  </button>
-                                </div>
-                              )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                className="hidden"
-                                onChange={handleImageChange}
-                              />
-                              <FormMessage />
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
               </div>
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-3">

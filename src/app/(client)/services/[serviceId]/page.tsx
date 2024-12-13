@@ -10,6 +10,7 @@ import Image from "next/image";
 import { createEditorState, formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../error/page";
+import { TinyMCEReadOnly } from "@/components/client/common/tinymce-readonly";
 const Editor = dynamic(() => import("react-draft-wysiwyg").then(mod => mod.Editor), {
   ssr: false, // Disable SSR for this component
 });
@@ -60,7 +61,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
           </div>
           <div className="container">
             {editorState && (
-              <Editor editorState={editorState} readOnly={true} toolbarHidden />
+             <TinyMCEReadOnly value={service.description ?? ""}/>
             )}
           </div>
         </div>

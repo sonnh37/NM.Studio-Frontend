@@ -38,11 +38,13 @@ import { useRouter } from "next/navigation";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
+  FormInputEditTinyMCE,
   FormInputNumber,
 } from "@/lib/form-custom-shadcn";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
 import { usePreviousPath } from "@/hooks/use-previous-path";
+import { TinyMCE } from "../../common/tinymce";
 
 interface ServiceFormProps {
   initialData: any | null;
@@ -250,7 +252,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
             </div>
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-0">
+                <Card>
                   <CardHeader>
                     <CardTitle>Service Details</CardTitle>
                     <CardDescription>
@@ -266,29 +268,6 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                           label="Name"
                           description="This is your public display name."
                           placeholder="Enter name"
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="description"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button variant="outline">Content</Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="w-full h-full max-w-[90%] max-h-[90%] overflow-y-auto">
-                                    <RichEditor
-                                      description={field.value || ""} // Pass the current value from form field
-                                      onChange={field.onChange} // Pass the onChange handler
-                                    />
-                                  </DialogContent>
-                                </Dialog>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
                         />
 
                         <FormInputNumber
@@ -368,7 +347,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                 </Card>
               </div>
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
+                <Card>
                   <CardHeader>
                     <CardTitle>Information</CardTitle>
                   </CardHeader>
@@ -394,7 +373,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                     </div>
                   </CardContent>
                 </Card>
-                <Card x-chunk="dashboard-07-chunk-5">
+                <Card>
                   <CardHeader>
                     <CardTitle>Archive Service</CardTitle>
                     <CardDescription>
@@ -410,6 +389,26 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                 </Card>
               </div>
             </div>
+          </div>
+          <div className="grid auto-rows-max items-start">
+            <Card>
+              <CardHeader>
+                <CardTitle>Service Edit</CardTitle>
+                <CardDescription>
+                  Lipsum dolor sit amet, consectetur adipiscing elit
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-6">
+                  <div className="grid gap-3">
+                    <FormInputEditTinyMCE
+                      control={form.control}
+                      name="description"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </form>
       </Form>

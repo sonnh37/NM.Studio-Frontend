@@ -35,13 +35,15 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { TinyMCE } from "@/components/dashboard/common/tinymce";
 
 interface FormInputProps<TFieldValues extends FieldValues> {
-  label: string;
+  label?: string;
   name: FieldPath<TFieldValues>;
   placeholder?: string;
   description?: string;
@@ -105,6 +107,31 @@ export const FormInputTextArea = <TFieldValues extends FieldValues>({
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export const FormInputEditTinyMCE = <TFieldValues extends FieldValues>({
+  name,
+  control,
+  label = "",
+  className = "",
+}: FormInputProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <TinyMCE
+              description={field.value || ""} // Pass the current value from form field
+              onChange={field.onChange} // Pass the onChange handler
+            />
+          </FormControl>
           <FormMessage />
         </FormItem>
       )}

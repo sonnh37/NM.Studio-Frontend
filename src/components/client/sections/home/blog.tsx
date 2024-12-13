@@ -1,7 +1,7 @@
 import ErrorPage from "@/app/(client)/error/page";
 import { Button } from "@/components/ui/button";
 import { Const } from "@/lib/const";
-import { convertJsonToPlainText } from "@/lib/utils";
+import { convertHtmlToPlainText, convertJsonToPlainText } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
@@ -92,7 +92,7 @@ export function Blog() {
                   </p>
                   <hr className="border-t border-neutral-300 my-1" />{" "}
                   <p className="text-sm line-clamp-2 w-full text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-                    {ser.content ? convertJsonToPlainText(ser.content) : "N/A"}
+                    {ser.content ? convertHtmlToPlainText(ser.content) : "N/A"}
                   </p>
                   <p className="text-end">
                   <Link href={"/blogs/" + ser.slug}>  <Button variant="link">Đọc tiếp</Button>
