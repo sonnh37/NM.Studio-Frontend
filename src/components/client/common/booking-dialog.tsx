@@ -128,7 +128,7 @@ export function BookingDialog() {
             <div className="mx-auto w-full">
               <div className="grid gap-1">
                 <FormInputDateTimePickerV2
-                  control={form.control}
+                  form={form}
                   disabled={false}
                   name="bookingDate"
                   label="Ngày hẹn"
@@ -136,7 +136,7 @@ export function BookingDialog() {
                 />
 
                 {/* <FormInputDateTimePickerV2
-                  control={form.control}
+                  form={form}
                   disabled={false}
                   name="bookingDate"
                   label="Ngày đến Nhu My Studio"
@@ -144,28 +144,28 @@ export function BookingDialog() {
                 /> */}
 
                 <FormInput
-                  control={form.control}
+                  form={form}
                   name="fullName"
                   label="Họ và tên"
                   placeholder="Nhập họ và tên"
                 />
 
                 <FormInput
-                  control={form.control}
+                  form={form}
                   name="email"
                   label="Email (Nếu có)"
                   placeholder=""
                 />
 
                 <FormInput
-                  control={form.control}
+                  form={form}
                   name="phone"
                   label="Số điện thoại"
                   placeholder="Nhập số điện thoại"
                 />
 
                 <FormSelectObject
-                  control={form.control}
+                  form={form}
                   name="serviceId"
                   label="Dịch vụ"
                   options={services}

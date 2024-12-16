@@ -271,7 +271,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="name"
                           label="Name"
                           description="This is your public display name."
@@ -293,7 +293,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -302,7 +302,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}
@@ -327,7 +327,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
               {/*    </CardHeader>*/}
               {/*    <CardContent>*/}
               {/*        <FormField*/}
-              {/*            control={form.control}*/}
+              {/*            form={form}*/}
               {/*            name="categoryXPhotos"*/}
               {/*            render={({field}) => (*/}
               {/*                <FormItem>*/}

@@ -1,5 +1,5 @@
 // TextInputField.tsx
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   FormControl,
   FormDescription,
@@ -9,7 +9,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input"; // Đảm bảo đúng đường dẫn
-import { Control, FieldPath, FieldValues } from "react-hook-form";
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  UseFormReturn,
+} from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -41,13 +46,15 @@ import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TinyMCE } from "@/components/dashboard/common/tinymce";
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
+import { Editor } from "@tiptap/react";
 
 interface FormInputProps<TFieldValues extends FieldValues> {
   label?: string;
   name: FieldPath<TFieldValues>;
   placeholder?: string;
   description?: string;
-  control: Control<TFieldValues>;
+  form: UseFormReturn<TFieldValues>;
   className?: string;
   disabled?: boolean;
 }
@@ -57,13 +64,13 @@ export const FormInput = <TFieldValues extends FieldValues>({
   name,
   placeholder = "",
   description,
-  control,
+  form,
   className = "",
   disabled = false,
 }: FormInputProps<TFieldValues>) => {
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
@@ -89,12 +96,12 @@ export const FormInputTextArea = <TFieldValues extends FieldValues>({
   name,
   placeholder = "",
   description,
-  control,
+  form,
   className = "",
 }: FormInputProps<TFieldValues>) => {
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
@@ -114,27 +121,64 @@ export const FormInputTextArea = <TFieldValues extends FieldValues>({
   );
 };
 
-export const FormInputEditTinyMCE = <TFieldValues extends FieldValues>({
+export const FormInputEditor = <TFieldValues extends FieldValues>({
   name,
-  control,
+  form,
   label = "",
   className = "",
 }: FormInputProps<TFieldValues>) => {
+  const editorRef = useRef<Editor | null>(null);
+
+  const handleCreate = useCallback(
+    ({ editor }: { editor: Editor }) => {
+      const initialValue = form.getValues(name); // Lấy giá trị từ form
+      if (initialValue && editor.isEmpty) {
+        editor.commands.setContent(initialValue); // Đặt nội dung khởi tạo
+      }
+      editorRef.current = editor;
+    },
+    [form, name]
+  );
+  
+  // #IMPORTANT Thêm useEffect để đồng bộ giá trị từ form với editor khi có sự thay đổi
+  useEffect(() => {
+    if (editorRef.current && form.getValues(name) !== editorRef.current.getHTML()) {
+      editorRef.current.commands.setContent(form.getValues(name));
+    }
+  }, [form.getValues(name)]);
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
-      render={({ field }) => (
-        <FormItem>
+      render={({ field }) => {
+        console.log("check_input_des", field.value)
+        return (
+          <FormItem>
+          <FormLabel className="sr-only">{label}</FormLabel>
           <FormControl>
-            <TinyMCE
-              description={field.value || ""} // Pass the current value from form field
-              onChange={field.onChange} // Pass the onChange handler
+            <MinimalTiptapEditor
+              {...field}
+              //key={field.value}
+              throttleDelay={0}
+              className={cn("w-full", {
+                "border-destructive focus-within:border-destructive":
+                  form.formState.errors.description,
+              })}
+              editorContentClassName="some-class"
+              output="html"
+              placeholder="Type your description here..."
+              onCreate={handleCreate}
+              autofocus={true}
+              immediatelyRender={true}
+              editable={true}
+              injectCSS={true}
+              editorClassName="focus:outline-none p-5"
             />
           </FormControl>
           <FormMessage />
         </FormItem>
-      )}
+        )
+      }}
     />
   );
 };
@@ -143,7 +187,7 @@ interface FormSelectEnumProps<TFieldValues extends FieldValues> {
   label: string;
   name: FieldPath<TFieldValues>;
   description?: string;
-  control: Control<TFieldValues>;
+  form: UseFormReturn<TFieldValues>;
   enumOptions: { label: string; value: number | string }[]; // Các tùy chọn enum
   placeholder?: string;
   disabled?: boolean;
@@ -153,14 +197,14 @@ export const FormSelectEnum = <TFieldValues extends FieldValues>({
   label,
   name,
   description,
-  control,
+  form,
   enumOptions,
   placeholder = "Select an option",
   disabled = false,
 }: FormSelectEnumProps<TFieldValues>) => {
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
@@ -201,14 +245,14 @@ export const FormInputNumber = <TFieldValues extends FieldValues>({
   name,
   placeholder = "",
   description,
-  control,
+  form,
   className = "",
 }: FormInputProps<TFieldValues>) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
@@ -255,14 +299,14 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
   label,
   name,
   description = "",
-  control,
+  form,
 }: FormInputProps<TFieldValues>) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="space-y-4">
       <FormField
-        control={control}
+        control={form.control}
         name={name}
         render={({ field }) => (
           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
@@ -284,8 +328,8 @@ interface FormSelectObjectProps<TFieldValues extends FieldValues> {
   label: string;
   name: FieldPath<TFieldValues>;
   description?: string;
-  control: Control<TFieldValues>;
   options: any[];
+  form: UseFormReturn<TFieldValues>;
   selectValue: string;
   selectLabel: string;
   placeholder?: string;
@@ -295,7 +339,7 @@ export const FormSelectObject = <TFieldValues extends FieldValues>({
   label,
   name,
   description,
-  control,
+  form,
   options,
   selectLabel,
   selectValue,
@@ -303,7 +347,7 @@ export const FormSelectObject = <TFieldValues extends FieldValues>({
 }: FormSelectObjectProps<TFieldValues>) => {
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
@@ -340,7 +384,7 @@ export const FormSelectColor = <TFieldValues extends FieldValues>({
   label,
   name,
   description,
-  control,
+  form,
   options,
   selectLabel,
   selectValue,
@@ -348,7 +392,7 @@ export const FormSelectColor = <TFieldValues extends FieldValues>({
 }: FormSelectObjectProps<TFieldValues>) => {
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
@@ -394,13 +438,13 @@ export const FormSelectColor = <TFieldValues extends FieldValues>({
 export const FormInputDate = <TFieldValues extends FieldValues>({
   label,
   name,
-  control,
+  form,
   placeholder = "",
   disabled = false,
 }: FormInputProps<TFieldValues>) => {
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => {
         return (
@@ -447,7 +491,7 @@ export const FormInputDate = <TFieldValues extends FieldValues>({
 export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
   label,
   name,
-  control,
+  form,
   placeholder = "",
   disabled = false,
 }: FormInputProps<TFieldValues>) => {
@@ -456,7 +500,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
   return (
     <div className="flex justify-start gap-3">
       <FormField
-        control={control}
+        control={form.control}
         name={name}
         render={({ field }) => (
           <FormItem className="flex flex-col w-full">
@@ -507,7 +551,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
         )}
       />
       <FormField
-        control={control}
+        control={form.control}
         name={name}
         render={({ field }) => (
           <FormItem className="flex flex-col justify-end">
@@ -556,7 +600,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
 export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
   label,
   name,
-  control,
+  form,
   placeholder = "",
   disabled = false,
 }: FormInputProps<TFieldValues>) => {
@@ -565,7 +609,7 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
   return (
     <div className="flex justify-start gap-3">
       <FormField
-        control={control}
+        control={form.control}
         name={name}
         render={({ field }) => {
           const [time, setTime] = useState<string>("05:00");

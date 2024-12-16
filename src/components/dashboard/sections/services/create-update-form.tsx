@@ -38,13 +38,14 @@ import { useRouter } from "next/navigation";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
-  FormInputEditTinyMCE,
+  FormInputEditor,
   FormInputNumber,
 } from "@/lib/form-custom-shadcn";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import { TinyMCE } from "../../common/tinymce";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ServiceFormProps {
   initialData: any | null;
@@ -81,6 +82,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     typeof formSchema
   > | null>(null);
   const previousPath = usePreviousPath();
+  const queryClient = useQueryClient();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -167,9 +169,11 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
         const createdValues = {
           ...pendingValues,
         };
-        const response = await serviceService.create(createdValues);
-        if (response.status != 1) throw new Error(response.message);
-        toast.success(response.message);
+        serviceService.create(createdValues).then((response) => {
+          if (response.status != 1) throw new Error(response.message);
+          toast.success(response.message);
+        });
+        
       }
       setShowConfirmationDialog(false);
       setPendingValues(null);
@@ -263,7 +267,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="name"
                           label="Name"
                           description="This is your public display name."
@@ -271,7 +275,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                         />
 
                         <FormInputNumber
-                          control={form.control}
+                          form={form}
                           name="price"
                           label="Price"
                           placeholder="Enter price"
@@ -355,7 +359,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -364,7 +368,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}
@@ -391,7 +395,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
             </div>
           </div>
           <div className="grid auto-rows-max items-start">
-            <Card>
+            <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-2">
               <CardHeader>
                 <CardTitle>Service Edit</CardTitle>
                 <CardDescription>
@@ -399,14 +403,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6">
-                  <div className="grid gap-3">
-                    <FormInputEditTinyMCE
-                      control={form.control}
-                      name="description"
-                    />
-                  </div>
-                </div>
+                <FormInputEditor form={form} name="description" />
               </CardContent>
             </Card>
           </div>

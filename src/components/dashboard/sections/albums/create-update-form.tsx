@@ -264,7 +264,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="title"
                           label="Title"
                           description="This is your public display title."
@@ -272,7 +272,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                         />
 
                         <FormInputTextArea
-                          control={form.control}
+                          form={form}
                           name="description"
                           label="Description"
                           description="This is your public display description."
@@ -357,7 +357,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -366,7 +366,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}
@@ -391,7 +391,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
               {/*    </CardHeader>*/}
               {/*    <CardContent>*/}
               {/*        <FormField*/}
-              {/*            control={form.control}*/}
+              {/*            form={form}*/}
               {/*            name="albumXPhotos"*/}
               {/*            render={({field}) => (*/}
               {/*                <FormItem>*/}

@@ -216,7 +216,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="name"
                           label="Name"
                           description="This is your public display name."
@@ -236,7 +236,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -245,7 +245,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}

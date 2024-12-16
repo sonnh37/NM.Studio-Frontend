@@ -11,6 +11,8 @@ import { toggleChat } from "@/lib/slices/chatSlice";
 import { Suspense } from "react";
 import PageLoading from "@/components/common/page-loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { HelmetProvider } from "react-helmet-async";
 
 export default function RootLayout({
   children,
@@ -40,7 +42,11 @@ export default function RootLayout({
             <Provider store={store}>
               <Suspense fallback={<PageLoading />}>
                 <QueryClientProvider client={queryClient}>
-                  {children}
+                  <TooltipProvider delayDuration={0}>
+                    <HelmetProvider>
+                      {children}
+                    </HelmetProvider>
+                  </TooltipProvider>
                 </QueryClientProvider>
               </Suspense>
             </Provider>

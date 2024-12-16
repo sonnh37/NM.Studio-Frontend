@@ -10,10 +10,7 @@ import Image from "next/image";
 import { createEditorState, formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../error/page";
-import { TinyMCEReadOnly } from "@/components/client/common/tinymce-readonly";
-const Editor = dynamic(() => import("react-draft-wysiwyg").then(mod => mod.Editor), {
-  ssr: false, // Disable SSR for this component
-});
+import { DisplayContent } from "@/components/client/common/display-content";
 
 export default function Page({ params }: { params: { serviceId: string } }) {
   const { serviceId } = params;
@@ -34,11 +31,9 @@ export default function Page({ params }: { params: { serviceId: string } }) {
     },
   });
 
-  const editorState = createEditorState(service?.description ?? "");
-
   if (error) {
     console.log("Error fetching:", error);
-    return <ErrorPage/>; 
+    return <ErrorPage />;
   }
 
   return (
@@ -60,9 +55,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
             </div>
           </div>
           <div className="container">
-            {editorState && (
-             <TinyMCEReadOnly value={service.description ?? ""}/>
-            )}
+            <DisplayContent value={service.description ?? ""} />
           </div>
         </div>
       )}

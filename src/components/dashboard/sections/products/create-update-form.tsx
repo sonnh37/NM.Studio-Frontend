@@ -313,14 +313,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="name"
                           label="Name"
                           description="This is your public display name."
                           placeholder="Enter name"
                         />
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="sku"
                           label="Code"
                           description="This is your public display code."
@@ -328,7 +328,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                         />
 
                         <FormInputTextArea
-                          control={form.control}
+                          form={form}
                           name="description"
                           label="Description"
                           description="This is your public display description."
@@ -336,7 +336,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                         />
 
                         <FormSelectEnum
-                          control={form.control}
+                          form={form}
                           name="status"
                           label="Status"
                           description="Select the current status of the course."
@@ -345,7 +345,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                         />
 
                         <FormInputNumber
-                          control={form.control}
+                          form={form}
                           name="price"
                           label="Price"
                           placeholder="Enter price"
@@ -354,7 +354,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
                         <div className="grid grid-cols-2 gap-3">
                           <FormSelectObject
-                            control={form.control}
+                            form={form}
                             name="sizeId"
                             label="Size"
                             description="Select the size for this product."
@@ -365,7 +365,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                           />
 
                           <FormSelectColor
-                            control={form.control}
+                            form={form}
                             name="colorId"
                             label="Color"
                             description="Select the color for this product."
@@ -444,7 +444,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -453,7 +453,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}

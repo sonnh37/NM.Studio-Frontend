@@ -114,7 +114,7 @@ export function BookingModal() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-4">
             <FormInputDateTimePickerV2
-              control={form.control}
+              form={form}
               disabled={false}
               name="bookingDate"
               label="Ngày hẹn"
@@ -122,28 +122,28 @@ export function BookingModal() {
             />
 
             <FormInput
-              control={form.control}
+              form={form}
               name="fullName"
               label="Họ và tên"
               placeholder="Nhập họ và tên"
             />
 
             <FormInput
-              control={form.control}
+              form={form}
               name="email"
               label="Email (Nếu có)"
               placeholder=""
             />
 
             <FormInput
-              control={form.control}
+              form={form}
               name="phone"
               label="Số điện thoại"
               placeholder="Nhập số điện thoại"
             />
 
             <FormSelectObject
-              control={form.control}
+              form={form}
               name="serviceId"
               label="Dịch vụ"
               options={services}

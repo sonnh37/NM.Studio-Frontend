@@ -11,7 +11,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../error/page";
-import { TinyMCEReadOnly } from "@/components/client/common/tinymce-readonly";
+import { DisplayContent } from "@/components/client/common/display-content";
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
   {
@@ -74,7 +74,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         </div>
         <div className="container">
           {editorState && (
-            <TinyMCEReadOnly value={blog.content ?? ""}/>
+            <DisplayContent value={blog.content ?? ""}/>
           )}
         </div>
         {/* Render other service details here */}

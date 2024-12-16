@@ -38,7 +38,7 @@ import { useRouter } from "next/navigation";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
-  FormInputEditTinyMCE,
+  FormInputEditor,
   FormInputNumber,
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
@@ -264,14 +264,14 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                   <CardContent>
                     <div className="grid gap-3">
                       <FormSwitch
-                        control={form.control}
+                        form={form}
                         name="isFeatured"
                         label="Featured"
                         description="This is your public about home."
                       />
 
                       <FormInput
-                        control={form.control}
+                        form={form}
                         name="title"
                         label="Title"
                         description="This is your public display title."
@@ -354,7 +354,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -363,7 +363,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}
@@ -390,7 +390,10 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
             </div>
           </div>
           <div className="grid auto-rows-max items-start">
-            <Card>
+            <Card
+            className="overflow-hidden"
+                  x-chunk="dashboard-07-chunk-2"
+            >
               <CardHeader>
                 <CardTitle>Service Edit</CardTitle>
                 <CardDescription>
@@ -398,14 +401,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6">
-                  <div className="grid gap-3">
-                    <FormInputEditTinyMCE
-                      control={form.control}
-                      name="content"
-                    />
-                  </div>
-                </div>
+                <FormInputEditor form={form} name="content" />
               </CardContent>
             </Card>
           </div>

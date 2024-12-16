@@ -67,7 +67,6 @@ export default function SiteHeader({ user }: SiteHeaderProps) {
       const direction = current! - scrollYProgress.getPrevious()!;
       const currentScroll = scrollYProgress.get();
       const velocityScroll = scrollYProgress.getVelocity();
-      console.log("check_ve", velocityScroll);
       if (currentScroll < 0.05) {
         setVisible(true);
         setIsTop(true);

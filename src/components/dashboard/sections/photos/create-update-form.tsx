@@ -270,13 +270,13 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormSwitch
-                          control={form.control}
+                          form={form}
                           name="isFeatured"
                           label="Featured"
                           description="This is your public display."
                         />
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="title"
                           label="Title"
                           description="This is your public display title."
@@ -284,7 +284,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                         />
 
                         <FormInputTextArea
-                          control={form.control}
+                          form={form}
                           name="description"
                           label="Description"
                           description="This is your public display description."
@@ -292,7 +292,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                         />
 
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="href"
                           label="Link to (if has)"
                           description="This is your public display href."
@@ -300,7 +300,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                         />
 
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="tag"
                           label="Tag"
                           description="This is your public display tag."
@@ -385,7 +385,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                     <div className="grid gap-6">
                       <div className="grid gap-3">
                         <FormInput
-                          control={form.control}
+                          form={form}
                           name="createdBy"
                           label="Created By"
                           placeholder="N/A"
@@ -394,7 +394,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                       </div>
                       <div className="grid gap-3">
                         <FormInputDate
-                          control={form.control}
+                          form={form}
                           name="createdDate"
                           label="Created Date"
                           disabled={true}
@@ -419,7 +419,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
               {/*    </CardHeader>*/}
               {/*    <CardContent>*/}
               {/*        <FormField*/}
-              {/*            control={form.control}*/}
+              {/*            form={form}*/}
               {/*            name="photoXPhotos"*/}
               {/*            render={({field}) => (*/}
               {/*                <FormItem>*/}
