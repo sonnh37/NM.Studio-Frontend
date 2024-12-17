@@ -1,17 +1,15 @@
 "use client";
 import { siteConfig } from "@/config/site";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useLayoutEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   AnimatePresence,
   motion,
   useMotionValueEvent,
-  useScroll,
-  useTransform,
+  useScroll
 } from "framer-motion";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 const MainNav = dynamic(() => import("./main-nav").then((mod) => mod.MainNav), {
   ssr: true,
@@ -51,28 +49,19 @@ export default function SiteHeader({ user }: SiteHeaderProps) {
   const [isScrollable, setIsScrollable] = useState(false);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
-    // Kiểm tra độ dài của trang
     const scrollHeight = document.body.scrollHeight;
-    const innerHeight = window.innerHeight;
-
-    const isScrollable = scrollHeight - innerHeight > 50; // Ngưỡng 50px
-
-    if (!isScrollable) {
-      setVisible(true);
-      setIsTop(true);
-      return;
-    }
-    // Check if current is not undefined and is a number
+  
+    const fivePercentHeight = scrollHeight * 0.2;
     if (typeof current === "number") {
       const direction = current! - scrollYProgress.getPrevious()!;
-      const currentScroll = scrollYProgress.get();
-      const velocityScroll = scrollYProgress.getVelocity();
-      if (currentScroll < 0.05) {
+      const currentScroll = scrollYProgress.get() * scrollHeight;
+  
+      if (currentScroll < fivePercentHeight) {
         setVisible(true);
         setIsTop(true);
       } else {
         setIsTop(false);
-
+  
         if (direction < 0) {
           setVisible(true);
         } else {
@@ -84,6 +73,34 @@ export default function SiteHeader({ user }: SiteHeaderProps) {
 
   return (
     <AnimatePresence mode="wait">
+      <div className="bg-neutral-600 transition-colors duration-300 text-white font-extralight dark:text-white">
+        <div className="h-[40px] w-full flex justify-center">
+          <div className="container w-full flex justify-between items-center flex-row mx-auto">
+            <div className="hidden space-x-4 lg:flex">
+              <div>
+                <i className="fa-solid fa-phone"></i> 0908145344
+              </div>
+              <div>
+                <i className="fa-regular fa-envelope"></i> nhumystudio@gmail.com
+              </div>
+            </div>
+
+            <div className="flex space-x-4">
+              <ChatButton />
+            </div>
+
+            <div className="hidden sm:flex  space-x-4 justify-end w-[327px] max-w-[327px] items-center">
+              <div>
+                <a href="/about">ABOUT NHUMY</a>
+              </div>
+              <div>|</div>
+              <div>
+                <a href="">Liên hệ</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <motion.div
         initial={{
           opacity: 1,
@@ -94,49 +111,14 @@ export default function SiteHeader({ user }: SiteHeaderProps) {
           opacity: visible ? 1 : 0,
         }}
         transition={{
-          duration: 0.5,
-          // ease: "easeIn"
+          duration: isTop ? 0 : 0.5, 
         }}
         className={cn(
           "sticky top-0 z-[1000] w-full transition-colors duration-300",
           "bg-transparent hover:bg-white dark:hover:bg-slate-950",
-          "group backdrop-blur-3xl",
-          isTop ? "" : ""
+          "group backdrop-blur-3xl"
         )}
       >
-        <div className="bg-neutral-600 transition-colors duration-300 text-white font-extralight dark:text-white">
-        <div className="h-[40px] w-full flex justify-center">
-              {/* Content constrained to max-w-7xl */}
-              <div className="container w-full flex justify-between items-center flex-row mx-auto">
-                <div className="hidden space-x-4 lg:flex">
-                  <div>
-                    <i className="fa-solid fa-phone"></i> 0908145344
-                  </div>
-                  <div>
-                    <i className="fa-regular fa-envelope"></i>{" "}
-                    nhumystudio@gmail.com
-                  </div>
-                </div>
-
-                {/* ChatButton section */}
-                <div className="flex space-x-4">
-                  <ChatButton />
-                </div>
-
-                {/* Links section with responsive layout */}
-                <div className="hidden sm:flex  space-x-4 justify-end w-[327px] max-w-[327px] items-center">
-                  <div>
-                    <a href="/about">ABOUT NHUMY</a>
-                  </div>
-                  <div>|</div>
-                  <div>
-                    <a href="">Liên hệ</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
-
         <div className="w-full flex justify-center">
           <div className="container flex h-14 items-center justify-between mx-auto">
             <MainNav items={siteConfig.mainNav} />
