@@ -1,11 +1,12 @@
 "use client";
-import { ChevronLeft, Upload } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 
+import { FileUpload } from "@/components/custom/file-upload";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,34 +23,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { blogService } from "@/services/blog-service";
-import {
-  BlogCreateCommand,
-  BlogUpdateCommand,
-} from "@/types/commands/blog-command";
-import { Photo } from "@/types/photo";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { z } from "zod";
-import { storage } from "../../../../../firebase";
-import { useRouter } from "next/navigation";
+import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputEditor,
-  FormInputNumber,
-  FormSwitch,
+  FormSwitch
 } from "@/lib/form-custom-shadcn";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import RichEditor from "@/components/common/react-draft-wysiwyg";
-import { usePreviousPath } from "@/hooks/use-previous-path";
-import { FileUpload } from "@/components/custom/file-upload";
-import { convertUrlToFile } from "@/lib/utils";
+import { blogService } from "@/services/blog-service";
+import { Blog } from "@/types/blog";
 import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
 import { BusinessResult } from "@/types/response/business-result";
-import { Blog } from "@/types/blog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface BlogFormProps {
   initialData: any | null;

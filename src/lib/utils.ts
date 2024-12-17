@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import sizeOf from "image-size";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -82,17 +81,17 @@ export const formatDate = (date: Date | string | undefined | null) => {
   }).format(validDate);
 };
 
-export const convertJsonToPlainText = (description: string) => {
-  try {
-    const contentState = description
-      ? convertFromRaw(JSON.parse(description))
-      : ContentState.createFromText("");
-    const editorState = EditorState.createWithContent(contentState);
-    return editorState.getCurrentContent().getPlainText();
-  } catch {
-    return ""; // Trả về chuỗi rỗng nếu có lỗi
-  }
-};
+// export const convertJsonToPlainText = (description: string) => {
+//   try {
+//     const contentState = description
+//       ? convertFromRaw(JSON.parse(description))
+//       : ContentState.createFromText("");
+//     const editorState = EditorState.createWithContent(contentState);
+//     return editorState.getCurrentContent().getPlainText();
+//   } catch {
+//     return ""; // Trả về chuỗi rỗng nếu có lỗi
+//   }
+// };
 
 export const convertHtmlToPlainText = (description: string): string => {
   try {

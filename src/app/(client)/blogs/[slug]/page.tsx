@@ -1,8 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Service } from "@/types/service";
-import { ContentState, convertFromRaw, EditorState } from "draft-js";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
@@ -12,12 +9,6 @@ import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../error/page";
 import { DisplayContent } from "@/components/client/common/display-content";
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  {
-    ssr: false, // Disable SSR for this component
-  }
-);
 
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;

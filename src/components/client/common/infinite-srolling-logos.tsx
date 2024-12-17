@@ -14,7 +14,7 @@ const CompanyLogoData: Array<{ src: any; alt: string }> = [
 
 const InfiniteScrollingLogosAnimation = () => {
   return (
-    <div className="container p-5 mx-auto">
+    <div className="w-full mx-auto">
       <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
         Như My đồng hành cùng với các thương hiệu
       </h2>

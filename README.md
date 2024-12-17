@@ -3,7 +3,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [
 
 ## Getting Started
 
-rfc => create one component
+rfc => func page
+rafc => const page
 
 First, run the development server:
 

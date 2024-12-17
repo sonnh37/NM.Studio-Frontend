@@ -1,16 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Service } from "@/types/service";
-import { ContentState, convertFromRaw, EditorState } from "draft-js";
-import dynamic from "next/dynamic";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { DisplayContent } from "@/components/client/common/display-content";
+import { formatDate } from "@/lib/utils";
 import { serviceService } from "@/services/service-service";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import Image from "next/image";
-import { createEditorState, formatDate } from "@/lib/utils";
+import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { Service } from "@/types/service";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../error/page";
-import { DisplayContent } from "@/components/client/common/display-content";
 
 export default function Page({ params }: { params: { serviceId: string } }) {
   const { serviceId } = params;
