@@ -45,6 +45,11 @@ import ConfirmationDialog, {
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import RichEditor from "@/components/common/react-draft-wysiwyg";
 import { usePreviousPath } from "@/hooks/use-previous-path";
+import { FileUpload } from "@/components/custom/file-upload";
+import { convertUrlToFile } from "@/lib/utils";
+import { CreateCommand } from "@/types/commands/base-command";
+import { BusinessResult } from "@/types/response/business-result";
+import { Blog } from "@/types/blog";
 
 interface BlogFormProps {
   initialData: any | null;
@@ -69,10 +74,6 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const toastMessage = initialData ? "Blog updated." : "Blog created.";
   const action = initialData ? "Save changes" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [date, setDate] = useState<Date>();
-  const [photos, setPhotos] = useState<Photo[]>([]);
-  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -80,74 +81,17 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const previousPath = usePreviousPath();
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log("check_file", URL.createObjectURL(file));
-      setFirebaseLink(URL.createObjectURL(file));
-      setSelectedFile(file);
-    }
-  };
-
-  const handleImageDelete = () => {
-    setFirebaseLink("");
-    setSelectedFile(null);
-    form.setValue("thumbnail", "");
-  };
-
-  const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
-    if (selectedFile) {
-      const storageRef = ref(storage, `Blog/${selectedFile.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-
-      const uploadPromise = new Promise<string>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          null,
-          (error) => reject(error),
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
-          }
-        );
-      });
-
-      const downloadURL = await uploadPromise;
-      return { ...values, thumbnail: downloadURL };
-    }
-    return values;
-  };
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      const values_ = await uploadImageFirebase(values);
-      console.log("check_value_", values);
-      if (initialData) {
-        const updatedValues = {
-          ...values_,
-        };
-        const response = await blogService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
-
-        toast.success(response.message);
-        router.push(previousPath);
-      } else {
-        setPendingValues(values_);
-        setShowConfirmationDialog(true);
-      }
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+    console.log(file);
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -163,35 +107,81 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
   }, [initialData, form]);
 
-  const handleCreateConfirmation = async () => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      if (pendingValues) {
-        const createdValues = {
-          ...pendingValues,
-        };
-        const response = await blogService.create(createdValues);
+      setLoading(true);
+      if (initialData) {
+        const response = await blogService.update(values);
         if (response.status != 1) throw new Error(response.message);
+
         toast.success(response.message);
+        router.push(previousPath);
+      } else {
+        setPendingValues(values);
+        setShowConfirmationDialog(true);
       }
-      setShowConfirmationDialog(false);
-      setPendingValues(null);
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleCreateConfirmation = async (): Promise<BusinessResult<Blog>> => {
+    if (!pendingValues) {
+      toast.error("No pending values to create blog.");
+      return Promise.reject(new Error("No pending values"));
+    }
+
+    try {
+      const createdValues: CreateCommand = {
+        ...pendingValues,
+        file: file,
+      };
+      const response = await blogService.create(createdValues);
+      return response;
+    } catch (error: any) {
+      console.error("Error creating blog:", error);
+      toast.error(error.message || "Failed to create blog.");
+      return Promise.reject(error); // Trả về lỗi để xử lý tiếp
+    }
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
       <ConfirmationDialog
+        isLoading={isLoading}
         isOpen={showConfirmationDialog}
-        onConfirm={() => {
-          handleCreateConfirmation();
+        onConfirm={async () => {
+          setIsLoading(true);
+          const res = await handleCreateConfirmation();
+          if (res.status != 1) {
+            toast.error(res.message);
+            setIsLoading(false);
+            return;
+          }
+          toast.success(res.message);
           setShowConfirmationDialog(false);
+          setPendingValues(null);
+
+          setIsLoading(false);
         }} // Đóng modal
-        onClose={() => {
-          handleCreateConfirmation();
+        onClose={async () => {
+          setIsLoading(true);
+          const res = await handleCreateConfirmation();
+          if (res.status != 1) {
+            toast.error(res.message);
+            setIsLoading(false);
+            return;
+          }
+          toast.success(res.message);
           setShowConfirmationDialog(false);
+          setPendingValues(null);
+          setIsLoading(false);
+
           router.push(previousPath);
         }} // Đóng modal
         title="Do you want to continue adding this blog?"
@@ -256,7 +246,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-0">
                   <CardHeader>
-                    <CardTitle>Blog Details</CardTitle>
+                    <CardTitle>{title}</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
@@ -285,7 +275,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                   x-chunk="dashboard-07-chunk-2"
                 >
                   <CardHeader>
-                    <CardTitle>Course Background</CardTitle>
+                    <CardTitle>Picture</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
@@ -302,40 +292,19 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                               {firebaseLink ? (
                                 <>
                                   <Image
-                                    alt="Course Background"
+                                    alt="Picture"
                                     className="aspect-square w-full rounded-md object-cover"
                                     height={300}
                                     src={firebaseLink}
                                     width={300}
                                   />
-                                  <Button
-                                    onClick={handleImageDelete}
-                                    variant="destructive"
-                                  >
-                                    Delete Image
-                                  </Button>
                                 </>
                               ) : (
-                                <div className="grid grid-cols-3 gap-2">
-                                  <button
-                                    type="button"
-                                    className="flex aspect-square w-full items-center justify-center rounded-md bcourse bcourse-dashed"
-                                    onClick={() =>
-                                      fileInputRef.current?.click()
-                                    }
-                                  >
-                                    <Upload className="h-4 w-4 text-muted-foreground" />
-                                    <span className="sr-only">Upload</span>
-                                  </button>
-                                </div>
+                                <></>
                               )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                className="hidden"
-                                onChange={handleImageChange}
-                              />
+                              <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                                <FileUpload onChange={handleFileUpload} />
+                              </div>
                               <FormMessage />
                             </div>
                           </FormControl>
@@ -390,10 +359,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
             </div>
           </div>
           <div className="grid auto-rows-max items-start">
-            <Card
-            className="overflow-hidden"
-                  x-chunk="dashboard-07-chunk-2"
-            >
+            <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-2">
               <CardHeader>
                 <CardTitle>Service Edit</CardTitle>
                 <CardDescription>

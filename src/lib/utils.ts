@@ -106,15 +106,34 @@ export const convertHtmlToPlainText = (description: string): string => {
   }
 };
 
+export  const convertUrlToFile = async (url: string): Promise<File | null> => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    // Lấy tên file từ URL hoặc tạo tên ngẫu nhiên nếu không có
+    const urlParts = url.split('/');
+    const filename = urlParts[urlParts.length - 1] || `notfound_${Date.now()}.jpg`;
+
+    const file = new File([blob], filename, { type: blob.type });
+    return file;
+  } catch (error) {
+    console.error("Error converting URL to File:", error);
+    return null;
+  }
+};
+
 export const createEditorState = (content: string): EditorState => {
   let contentState: ContentState;
 
   try {
     // Kiểm tra và chuyển đổi chuỗi JSON thành ContentState nếu có thể
-    contentState = content ? convertFromRaw(JSON.parse(content)) : ContentState.createFromText('');
+    contentState = content
+      ? convertFromRaw(JSON.parse(content))
+      : ContentState.createFromText("");
   } catch (error) {
     // Nếu không phải JSON hợp lệ, tạo ContentState từ văn bản thuần túy
-    contentState = ContentState.createFromText(content || '');
+    contentState = ContentState.createFromText(content || "");
   }
 
   return EditorState.createWithContent(contentState);
@@ -124,4 +143,3 @@ export function toLocalISOString(date: Date) {
   const tzOffset = date.getTimezoneOffset() * 60000; // Chuyển phút lệch sang milliseconds
   return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
 }
-

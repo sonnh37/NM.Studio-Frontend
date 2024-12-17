@@ -139,10 +139,13 @@ export const FormInputEditor = <TFieldValues extends FieldValues>({
     },
     [form, name]
   );
-  
+
   // #IMPORTANT Thêm useEffect để đồng bộ giá trị từ form với editor khi có sự thay đổi
   useEffect(() => {
-    if (editorRef.current && form.getValues(name) !== editorRef.current.getHTML()) {
+    if (
+      editorRef.current &&
+      form.getValues(name) !== editorRef.current.getHTML()
+    ) {
       editorRef.current.commands.setContent(form.getValues(name));
     }
   }, [form.getValues(name)]);
@@ -151,33 +154,33 @@ export const FormInputEditor = <TFieldValues extends FieldValues>({
       control={form.control}
       name={name}
       render={({ field }) => {
-        console.log("check_input_des", field.value)
+        console.log("check_input_des", field.value);
         return (
           <FormItem>
-          <FormLabel className="sr-only">{label}</FormLabel>
-          <FormControl>
-            <MinimalTiptapEditor
-              {...field}
-              //key={field.value}
-              throttleDelay={0}
-              className={cn("w-full", {
-                "border-destructive focus-within:border-destructive":
-                  form.formState.errors.description,
-              })}
-              editorContentClassName="some-class"
-              output="html"
-              placeholder="Type your description here..."
-              onCreate={handleCreate}
-              autofocus={true}
-              immediatelyRender={true}
-              editable={true}
-              injectCSS={true}
-              editorClassName="focus:outline-none p-5"
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-        )
+            <FormLabel className="sr-only">{label}</FormLabel>
+            <FormControl>
+              <MinimalTiptapEditor
+                {...field}
+                //key={field.value}
+                throttleDelay={0}
+                className={cn("w-full", {
+                  "border-destructive focus-within:border-destructive":
+                    form.formState.errors.description,
+                })}
+                editorContentClassName="some-class"
+                output="html"
+                placeholder="Type your description here..."
+                onCreate={handleCreate}
+                autofocus={true}
+                immediatelyRender={true}
+                editable={true}
+                injectCSS={true}
+                editorClassName="focus:outline-none p-5"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
       }}
     />
   );
@@ -716,6 +719,7 @@ interface ConfirmationDialogProps {
   description: string;
   confirmText: string;
   cancelText: string;
+  isLoading?: boolean;
   redirectUrl?: string;
 }
 
@@ -727,6 +731,7 @@ const ConfirmationDialog = ({
   description,
   confirmText,
   cancelText,
+  isLoading = false,
   redirectUrl,
 }: ConfirmationDialogProps) => {
   const router = useRouter();
@@ -738,7 +743,7 @@ const ConfirmationDialog = ({
         <DialogDescription>{description}</DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
-            <Button onClick={onClose} variant="secondary">
+            <Button disabled={isLoading} onClick={onClose} variant="secondary">
               {cancelText}
             </Button>
           </DialogClose>
@@ -746,6 +751,7 @@ const ConfirmationDialog = ({
             onClick={() => {
               onConfirm();
             }}
+            disabled={isLoading}
           >
             {confirmText}
           </Button>

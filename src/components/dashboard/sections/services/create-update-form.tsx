@@ -1,11 +1,12 @@
 "use client";
-import { ChevronLeft, Upload } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 
+import { FileUpload } from "@/components/custom/file-upload";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,30 +23,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { serviceService } from "@/services/service-service";
-import {
-  ServiceCreateCommand,
-  ServiceUpdateCommand,
-} from "@/types/commands/service-command";
-import { Photo } from "@/types/photo";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { z } from "zod";
-import { storage } from "../../../../../firebase";
-import { useRouter } from "next/navigation";
+import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputEditor,
   FormInputNumber,
 } from "@/lib/form-custom-shadcn";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import RichEditor from "@/components/common/react-draft-wysiwyg";
-import { usePreviousPath } from "@/hooks/use-previous-path";
-import { TinyMCE } from "../../common/tinymce";
-import { useQueryClient } from "@tanstack/react-query";
+import { serviceService } from "@/services/service-service";
+import { CreateCommand } from "@/types/commands/base-command";
+import { BusinessResult } from "@/types/response/business-result";
+import { Service } from "@/types/service";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface ServiceFormProps {
   initialData: any | null;
@@ -65,15 +58,11 @@ const formSchema = z.object({
 export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
-  const name = initialData ? "Edit service" : "Create service";
-  const description = initialData ? "Edit a service." : "Add a new service";
+  const title = initialData ? "Edit service" : "Create service";
+  const content = initialData ? "Edit a service." : "Add a new service";
   const toastMessage = initialData ? "Service updated." : "Service created.";
   const action = initialData ? "Save changes" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [date, setDate] = useState<Date>();
-  const [photos, setPhotos] = useState<Photo[]>([]);
-  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -81,73 +70,17 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const previousPath = usePreviousPath();
-  const queryClient = useQueryClient();
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFirebaseLink(URL.createObjectURL(file));
-      setSelectedFile(file);
-    }
-  };
-
-  const handleImageDelete = () => {
-    setFirebaseLink("");
-    setSelectedFile(null);
-    form.setValue("src", "");
-  };
-
-  const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
-    if (selectedFile) {
-      const storageRef = ref(storage, `Service/${selectedFile.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-
-      const uploadPromise = new Promise<string>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          null,
-          (error) => reject(error),
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
-          }
-        );
-      });
-
-      const downloadURL = await uploadPromise;
-      return { ...values, src: downloadURL };
-    }
-    return values;
-  };
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      const values_ = await uploadImageFirebase(values);
-      if (initialData) {
-        const updatedValues = {
-          ...values_,
-        };
-        const response = await serviceService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
-
-        toast.success(response.message);
-        router.push(previousPath);
-      } else {
-        setPendingValues(values_);
-        setShowConfirmationDialog(true);
-      }
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+    console.log(file);
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -159,41 +92,87 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
       };
 
       form.reset(parsedInitialData);
-      setFirebaseLink(parsedInitialData.src || "");
+      setFirebaseLink(parsedInitialData.thumbnail || "");
     }
   }, [initialData, form]);
 
-  const handleCreateConfirmation = async () => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      if (pendingValues) {
-        const createdValues = {
-          ...pendingValues,
-        };
-        serviceService.create(createdValues).then((response) => {
-          if (response.status != 1) throw new Error(response.message);
-          toast.success(response.message);
-        });
-        
+      setLoading(true);
+      if (initialData) {
+        const response = await serviceService.update(values);
+        if (response.status != 1) throw new Error(response.message);
+
+        toast.success(response.message);
+        router.push(previousPath);
+      } else {
+        setPendingValues(values);
+        setShowConfirmationDialog(true);
       }
-      setShowConfirmationDialog(false);
-      setPendingValues(null);
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleCreateConfirmation = async (): Promise<
+    BusinessResult<Service>
+  > => {
+    if (!pendingValues) {
+      toast.error("No pending values to create service.");
+      return Promise.reject(new Error("No pending values"));
+    }
+
+    try {
+      const createdValues: CreateCommand = {
+        ...pendingValues,
+        file: file,
+      };
+      const response = await serviceService.create(createdValues);
+      return response;
+    } catch (error: any) {
+      console.error("Error creating service:", error);
+      toast.error(error.message || "Failed to create service.");
+      return Promise.reject(error); // Trả về lỗi để xử lý tiếp
+    }
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
       <ConfirmationDialog
+        isLoading={isLoading}
         isOpen={showConfirmationDialog}
-        onConfirm={() => {
-          handleCreateConfirmation();
+        onConfirm={async () => {
+          setIsLoading(true);
+          const res = await handleCreateConfirmation();
+          if (res.status != 1) {
+            toast.error(res.message);
+            setIsLoading(false);
+            return;
+          }
+          toast.success(res.message);
           setShowConfirmationDialog(false);
+          setPendingValues(null);
+
+          setIsLoading(false);
         }} // Đóng modal
-        onClose={() => {
-          handleCreateConfirmation();
+        onClose={async () => {
+          setIsLoading(true);
+          const res = await handleCreateConfirmation();
+          if (res.status != 1) {
+            toast.error(res.message);
+            setIsLoading(false);
+            return;
+          }
+          toast.success(res.message);
           setShowConfirmationDialog(false);
+          setPendingValues(null);
+          setIsLoading(false);
+
           router.push(previousPath);
         }} // Đóng modal
         title="Do you want to continue adding this service?"
@@ -290,7 +269,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                   x-chunk="dashboard-07-chunk-2"
                 >
                   <CardHeader>
-                    <CardTitle>Course Background</CardTitle>
+                    <CardTitle>Picture</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
@@ -301,46 +280,25 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                       name="src"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Service Background</FormLabel>
+                          <FormLabel>Blog Background</FormLabel>
                           <FormControl>
                             <div className="grid gap-2">
                               {firebaseLink ? (
                                 <>
                                   <Image
-                                    alt="Course Background"
+                                    alt="Picture"
                                     className="aspect-square w-full rounded-md object-cover"
                                     height={300}
                                     src={firebaseLink}
                                     width={300}
                                   />
-                                  <Button
-                                    onClick={handleImageDelete}
-                                    variant="destructive"
-                                  >
-                                    Delete Image
-                                  </Button>
                                 </>
                               ) : (
-                                <div className="grid grid-cols-3 gap-2">
-                                  <button
-                                    type="button"
-                                    className="flex aspect-square w-full items-center justify-center rounded-md bcourse bcourse-dashed"
-                                    onClick={() =>
-                                      fileInputRef.current?.click()
-                                    }
-                                  >
-                                    <Upload className="h-4 w-4 text-muted-foreground" />
-                                    <span className="sr-only">Upload</span>
-                                  </button>
-                                </div>
+                                <></>
                               )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                className="hidden"
-                                onChange={handleImageChange}
-                              />
+                              <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                                <FileUpload onChange={handleFileUpload} />
+                              </div>
                               <FormMessage />
                             </div>
                           </FormControl>
