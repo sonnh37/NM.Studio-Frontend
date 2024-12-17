@@ -3,8 +3,14 @@ import { cleanQueryParams } from "@/lib/clean-query-param";
 import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
 import { BaseQueryableQuery } from "@/types/queries/base-query";
 import { BusinessResult } from "@/types/response/business-result";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { storage } from "../../firebase";
+import { toast } from "sonner";
 export class BaseService<T> {
   public endpoint: string;
 
@@ -32,6 +38,20 @@ export class BaseService<T> {
         }
       );
     });
+  }
+
+  async deleteImage(link: string): Promise<boolean> {
+    if (!link) return false; 
+  
+    try {
+      const fileRef = ref(storage, link); 
+      await deleteObject(fileRef);
+      return true;
+    } catch (error: any) {
+      console.error("Failed to delete file:", error); 
+      toast.error("Failed to delete file:", error); 
+      return false;
+    }
   }
 
   // Lấy tất cả các mục với query params

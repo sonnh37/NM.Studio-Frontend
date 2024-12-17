@@ -157,7 +157,6 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
       const createdValues = {
         ...pendingValues,
       };
-
       const response = await photoService.create(createdValues);
       if (response.status != 1) throw new Error(response.message);
       toast.success(response.message);

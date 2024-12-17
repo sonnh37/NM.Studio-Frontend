@@ -47,7 +47,7 @@ import Image from "next/image";
 import { FileUpload } from "@/components/custom/file-upload";
 import { BusinessResult } from "@/types/response/business-result";
 import { Album } from "@/types/album";
-import { CreateCommand } from "@/types/commands/base-command";
+import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
 
 interface AlbumFormProps {
   initialData: any | null;
@@ -113,7 +113,11 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const response = await albumService.update(values);
+        const updatedValues: UpdateCommand = {
+          ...values,
+          file: file,
+        };
+        const response = await albumService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);

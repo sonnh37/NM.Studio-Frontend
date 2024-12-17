@@ -48,6 +48,9 @@ class BlogService extends BaseService<Blog> {
       ...command,
     } as BlogUpdateCommand;
 
+    if (link && command_.thumbnail) {
+      await this.deleteImage(command_.thumbnail);
+    }
     command_.thumbnail = link ?? command_.thumbnail;
     command_.isDeleted = undefined;
 

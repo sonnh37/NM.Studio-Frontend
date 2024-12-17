@@ -31,7 +31,7 @@ import ConfirmationDialog, {
   FormInputNumber,
 } from "@/lib/form-custom-shadcn";
 import { serviceService } from "@/services/service-service";
-import { CreateCommand } from "@/types/commands/base-command";
+import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
 import { BusinessResult } from "@/types/response/business-result";
 import { Service } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -100,7 +100,11 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const response = await serviceService.update(values);
+        const updatedValues: UpdateCommand = {
+          ...values,
+          file: file,
+        };
+        const response = await serviceService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);

@@ -47,7 +47,7 @@ import RichEditor from "@/components/common/react-draft-wysiwyg";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import { FileUpload } from "@/components/custom/file-upload";
 import { convertUrlToFile } from "@/lib/utils";
-import { CreateCommand } from "@/types/commands/base-command";
+import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
 import { BusinessResult } from "@/types/response/business-result";
 import { Blog } from "@/types/blog";
 
@@ -111,7 +111,11 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const response = await blogService.update(values);
+        const updatedValues: UpdateCommand = {
+          ...values,
+          file: file,
+        };
+        const response = await blogService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);
