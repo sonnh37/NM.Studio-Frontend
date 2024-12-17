@@ -56,6 +56,31 @@ class ServiceService extends BaseService<Service> {
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };
+
+  public deletePermanent = async (
+    id: string
+  ): Promise<BusinessResult<null>> => {
+    try {
+      const data = await this.fetchById(id);
+      const filePath = data.data?.src;
+
+      // Gọi API xóa trên backend
+      const response = await axiosInstance
+        .delete<BusinessResult<null>>(
+          `${this.endpoint}?id=${id}&isPermanent=true`
+        )
+        .then((res) => res.data);
+
+      // Nếu backend xóa thành công và có filePath, xóa file trên Firebase
+      if (response.status === 1 && filePath) {
+        await this.deleteImage(filePath);
+      }
+
+      return response;
+    } catch (error) {
+      return this.handleError(error); // Xử lý lỗi
+    }
+  };
 }
 
 export const serviceService = new ServiceService();
