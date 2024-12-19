@@ -1,6 +1,9 @@
+import userSerice from "@/services/user-serice";
 import { type ClassValue, clsx } from "clsx";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
+import { NextApiRequest } from "next";
 import { twMerge } from "tailwind-merge";
+var jwt = require('jsonwebtoken');
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -92,6 +95,57 @@ export const formatDate = (date: Date | string | undefined | null) => {
 //     return ""; // Trả về chuỗi rỗng nếu có lỗi
 //   }
 // };
+
+// export const getAccessToken = (): string | null => {
+//   if (typeof window !== "undefined") {
+//     return document.cookie
+//       .split("; ")
+//       .find((row) => row.startsWith("accessToken="))
+//       ?.split("=")[1] || null;
+//   }
+//   return null;
+// };
+
+// export const getRefreshToken = (): string | null => {
+//   if (typeof window !== "undefined") {
+//     return document.cookie
+//       .split("; ")
+//       .find((row) => row.startsWith("refreshToken="))
+//       ?.split("=")[1] || null;
+//   }
+//   return null;
+// };
+
+export const refreshAccessToken = async (refreshToken: string): Promise<string | null> => {
+  if (!refreshToken) {
+    return null;
+  }
+
+  // Gửi yêu cầu đến API để refresh token
+  const response = await userSerice.refreshToken(refreshToken);
+
+  if (response.status == 1) {
+    const data = response.data;
+    return data?.token ?? null;
+  }
+
+  return null;
+};
+
+export const getRefreshToken = (req: NextApiRequest): string | null => {
+  const cookies = req.cookies;
+  return cookies.refreshToken || null;
+};
+
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const decoded = jwt.decode(token) as { exp: number };
+    return Date.now() > decoded.exp * 1000;
+  } catch (error) {
+    return true;
+  }
+};
+
 
 export const convertHtmlToPlainText = (description: string): string => {
   try {

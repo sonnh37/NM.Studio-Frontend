@@ -3,9 +3,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    turbopack: true,  // Bật Turbopack
-  },
+  
   images: {
     remotePatterns: [
       {
@@ -17,14 +15,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Tắt ESLint trong build
   },
-  webpack: (config, { isServer }) => {
-    // Cấu hình alias cho yjs
-    if (!isServer) {
-      config.resolve.alias['yjs'] = path.resolve(__dirname, 'node_modules/yjs');
-    }
+  // webpack: (config, { isServer }) => {
+  //   // Cấu hình alias cho yjs
+  //   if (!isServer) {
+  //     config.resolve.alias['yjs'] = path.resolve(__dirname, 'node_modules/yjs');
+  //   }
     
-    return config;
-  },
+  //   return config;
+  // },
 };
 
 export default nextConfig;

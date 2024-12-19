@@ -1,24 +1,49 @@
-import type {MiddlewareConfig, NextFetchEvent, NextRequest,} from "next/server";
-import {NextResponse} from "next/server";
-import createMiddleware from "next-intl/middleware";
-import {routing} from "@/i18n/routing";
+import { NextRequest, NextResponse } from "next/server";
+import { decodeJwt } from "jose";
 
+export function middleware(req: NextRequest) {
+  try {
+    const accessToken = req.cookies.get("accessToken")?.value;
+    const refreshToken = req.cookies.get("refreshToken")?.value;
 
-const shouldUseClerk = true; // TODO: consider `const shouldUseClerk = Boolean(env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);`
-const shouldUseIntl = true;
+    if (!accessToken && refreshToken) {
+      return NextResponse.next();
+    }
 
-const createIntlMiddleware = createMiddleware(routing);
+    if (!accessToken && !refreshToken) {
+      const url = new URL("/login", req.url);
+      url.searchParams.set("message", "Vui lòng đăng nhập để tiếp tục.");
+      return NextResponse.redirect(url);
+    }
 
+    const decodedToken = decodeJwt(accessToken);
+    const { exp, Role } = decodedToken;
+    const currentTime = Math.floor(Date.now() / 1000);
 
-export function middleware(request: NextRequest, event: NextFetchEvent) {
+    if (exp && exp < currentTime) {
+      const url = new URL("/login", req.url);
+      url.searchParams.set("message", "Phiên đăng nhập đã hết hạn.");
+      return NextResponse.redirect(url);
+    }
+
+    if (
+      req.nextUrl.pathname.startsWith("/dashboard") &&
+      !["admin", "staff"].includes((Role as string)?.toLowerCase())
+    ) {
+      const url = new URL("/", req.url);
+      // url.searchParams.set("message", "Bạn không có quyền truy cập.");
+      return NextResponse.redirect(url);
+    }
+
     return NextResponse.next();
+  } catch (error) {
+    console.error("Error in middleware:", error);
+    const url = new URL("/error", req.url);
+    url.searchParams.set("message", "Đã xảy ra lỗi.");
+    return NextResponse.redirect(url);
+  }
 }
 
-export const config: MiddlewareConfig = {
-    matcher: [
-        "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-        "/(de-DE|en-US|es-ES|ms-MY|fr-FR|hi-IN|it-IT|pl-PL|tr-TR|uk-UA|zh-CN)/:path*",
-        "/(api|trpc)(.*)",
-    ],
+export const config = {
+  matcher: ["/dashboard", "/dashboard/:path*", "/profile", "/settings"],
 };
-  

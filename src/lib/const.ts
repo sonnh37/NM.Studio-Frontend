@@ -14,7 +14,8 @@ export class Const {
     static readonly SUBCATEGORY = "subcategories";
     static readonly COLOR = "colors";
     static readonly SIZE = "sizes";
-    static readonly BLOG = "blogs";
+    static readonly BLOG = "blogs"; 
+    static readonly USER = "users"; 
 
     static readonly DASHBOARD = "dashboard";
     static readonly DASHBOARD_URL = "/dashboard";
@@ -48,6 +49,9 @@ export class Const {
 
     static readonly DASHBOARD_CATEGORY_URL = `/${Const.DASHBOARD}/${Const.CATEGORY}`;
     static readonly DASHBOARD_CATEGORY_NEW_URL = `${Const.DASHBOARD_CATEGORY_URL}/${Const.NEW}`;
+
+    static readonly DASHBOARD_USER_URL = `/${Const.DASHBOARD}/${Const.USER}`;
+    static readonly DASHBOARD_USER_NEW_URL = `${Const.DASHBOARD_USER_URL}/${Const.NEW}`;
 
 
     static readonly FADE_BOTTOM_ANIMATION_VARIANTS = {

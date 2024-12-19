@@ -40,3 +40,5 @@ package-lock.json
 .idea/workspace.xml
 .idea/inspectionProfiles/Project_Default.xml
 package-lock.json
+
+certificates
