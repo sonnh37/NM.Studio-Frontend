@@ -16,10 +16,20 @@ class UserService extends BaseService<User> {
     password: string
   ): Promise<BusinessResult<LoginResponse>> => {
     try {
-      console.log("check_login", account + password);
       const response = await axiosInstance.post<BusinessResult<LoginResponse>>(
         `${this.endpoint}/login`,
         { account: account, password: password }
+      );
+      return response.data;
+    } catch (error) {
+      return this.handleError(error);
+    }
+  };
+
+  public logout = async (): Promise<BusinessResult<null>> => {
+    try {
+      const response = await axiosInstance.post<BusinessResult<null>>(
+        `${this.endpoint}/logout`
       );
       return response.data;
     } catch (error) {
@@ -63,6 +73,18 @@ class UserService extends BaseService<User> {
     try {
       const response = await axiosInstance.get<BusinessResult<User>>(
         `${this.endpoint}/${username}`
+      );
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      return Promise.reject(error);
+    }
+  };
+
+  public getCurrentUser = async (): Promise<BusinessResult<User>> => {
+    try {
+      const response = await axiosInstance.get<BusinessResult<User>>(
+        `${this.endpoint}/info`
       );
       return response.data;
     } catch (error) {

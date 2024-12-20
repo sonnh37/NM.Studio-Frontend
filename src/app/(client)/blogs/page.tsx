@@ -3,7 +3,7 @@
 import { Pagination } from "@/components/client/common/pagination";
 import { BlogsRecent } from "@/components/client/sections/blogs/blogs-recent";
 import { Button } from "@/components/ui/button";
-import { convertHtmlToPlainText, convertJsonToPlainText, formatDate } from "@/lib/utils";
+import { convertHtmlToPlainText, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";

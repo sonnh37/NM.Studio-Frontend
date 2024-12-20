@@ -16,7 +16,7 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    const decodedToken = decodeJwt(accessToken);
+    const decodedToken = decodeJwt(accessToken ?? "");
     const { exp, Role } = decodedToken;
     const currentTime = Math.floor(Date.now() / 1000);
 

@@ -8,19 +8,33 @@ import { SidebarToggle } from "@/components/dashboard/common/sidebar-toggle";
 import { Icons } from "@/components/ui/icons";
 import SidebarHeader from "./sidebar-header";
 import { SidebarFooter } from "./sidebar-footer";
+import { useQuery } from "@tanstack/react-query";
+import { User } from "@/types/user";
+import PageLoading from "@/components/common/page-loading";
+import NotFound from "@/components/client/not-found";
+import axiosInstance from "@/lib/axios-instance";
+import userSerice from "@/services/user-serice";
 
 export function Sidebar() {
+  
+
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchUserApi"],
+    queryFn: async () => {
+      const res = await userSerice.getCurrentUser();
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+  
   const sidebar = useStore(useSidebarToggle, (state) => state);
 
   if (!sidebar) return null;
-
-  const data = {
-    user: {
-      name: "shadcn",
-      email: "m@example.com",
-      avatar: "/avatars/shadcn.jpg",
-    },
-  }
   return (
     <aside
       className={cn(
@@ -30,9 +44,9 @@ export function Sidebar() {
     >
       {/* <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} /> */}
       <div className="relative h-full flex flex-col py-4 overflow-hidden ">
-        <SidebarHeader/>
+        <SidebarHeader />
         <Menu isOpen={sidebar?.isOpen} />
-        <SidebarFooter user={data.user}/>
+        <SidebarFooter user={user ?? {}} />
       </div>
     </aside>
   );
