@@ -10,10 +10,19 @@ export function middleware(req: NextRequest) {
       return NextResponse.next();
     }
 
-    if (!accessToken && !refreshToken) {
+    if (accessToken && !refreshToken) {
       const url = new URL("/login", req.url);
       url.searchParams.set("message", "Vui lòng đăng nhập để tiếp tục.");
       return NextResponse.redirect(url);
+    }
+
+    if (req.nextUrl.pathname.startsWith("/login")) {
+      const url = new URL("/", req.url);
+      if (accessToken && refreshToken)
+      {
+        return NextResponse.redirect(url);
+      }
+      return NextResponse.next();
     }
 
     const decodedToken = decodeJwt(accessToken ?? "");
@@ -45,5 +54,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/dashboard/:path*", "/profile", "/settings"],
+  matcher: ["/dashboard", "/dashboard/:path*", "/login", "/settings"],
 };
