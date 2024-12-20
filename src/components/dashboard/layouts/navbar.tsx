@@ -2,7 +2,7 @@ import { ModeToggle } from "@/components/common/mode-toggle";
 import { UserNav } from "@/components/dashboard/common/user-nav";
 import { SheetMenu } from "@/components/dashboard/common/sheet-menu";
 import DynamicBreadcrumbs from "@/components/common/dynamic-breadcrumbs";
-import { ProductsCombobox } from "@/components/client/common/products-combobox";
+import { ProductsCombobox } from "@/components/dashboard/common/products-combobox";
 import { SidebarToggle } from "@/components/common/sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";

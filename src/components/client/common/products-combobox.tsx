@@ -1,11 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 
-import { cn, isMacOs } from "@/lib/utils";
-import { useDebounce } from "@/hooks/use-debounce";
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -13,7 +11,8 @@ import {
   CommandInput,
   CommandList,
 } from "@/components/ui/command";
-import { Kbd } from "./kbd";
+import { useDebounce } from "@/hooks/use-debounce";
+import { cn } from "@/lib/utils";
 
 export function ProductsCombobox() {
   const router = useRouter();

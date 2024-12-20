@@ -36,7 +36,7 @@ export default function RootLayout({
 
         <title>Studio</title>
       </head>
-      <body className="overflow-hidden">
+      <body >
         <NextTopLoader
           color="#2299DD"
           initialPosition={0.08}
