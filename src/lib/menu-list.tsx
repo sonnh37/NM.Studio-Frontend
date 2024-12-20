@@ -47,7 +47,7 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: "Contents",
+      groupLabel: "Tables",
       menus: [
         {
           href: "",

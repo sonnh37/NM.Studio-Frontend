@@ -152,7 +152,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
+          <div className="grid flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <Link href={previousPath}>
                 <Button variant="outline" size="icon" className="h-7 w-7">

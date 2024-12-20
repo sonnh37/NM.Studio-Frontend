@@ -7,6 +7,7 @@ import {FilterEnum} from "@/types/filter-enum";
 import {formFilterAdvanceds} from "./filter-advanced-form";
 import {serviceService} from "@/services/service-service";
 import {z} from "zod";
+import { Card } from "@/components/ui/card";
 
 const formFilterAdvancedSchema = z.object({
     id: z.string().nullable().optional(),
@@ -37,7 +38,7 @@ export default function DataTableServices() {
     ];
 
     return (
-        <DataTable
+            <DataTable
             deleteAll={serviceService.delete}
             deletePermanent={serviceService.deletePermanent}
             update={serviceService.update}

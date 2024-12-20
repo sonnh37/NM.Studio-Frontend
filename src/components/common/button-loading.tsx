@@ -1,12 +1,12 @@
-import { Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button"
-
-export function ButtonLoading() {
+export const ButtonLoading = ({ className }: { className?: string }) => {
   return (
-    <Button disabled>
-      <Loader2 className="animate-spin" />
+    <Button disabled className={`${cn("animate-spin", className)}`}>
+      <Loader2  />
       Please wait
     </Button>
-  )
-}
+  );
+};

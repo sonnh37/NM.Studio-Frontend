@@ -48,6 +48,8 @@ import { FileUpload } from "@/components/custom/file-upload";
 import { BusinessResult } from "@/types/response/business-result";
 import { Album } from "@/types/album";
 import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
+import { ButtonLoading } from "@/components/common/button-loading";
+import { BsPlus } from "react-icons/bs";
 
 interface AlbumFormProps {
   initialData: any | null;
@@ -91,7 +93,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     setFile(file);
     console.log(file);
   };
-
 
   useEffect(() => {
     if (initialData) {
@@ -197,62 +198,36 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-            <div className="flex items-center gap-4">
-              <Link href={previousPath}>
-                <Button variant="outline" size="icon" className="h-7 w-7">
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="sr-only">Back</span>
-                </Button>
-              </Link>
-
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Album Controller
-              </h1>
-              <Badge variant="outline" className="ml-auto sm:ml-0">
-                <FormField
-                  control={form.control}
-                  name="isDeleted"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <p>
-                          {initialData
-                            ? field.value
-                              ? "Deleted"
-                              : "Last Updated: " + initialData.lastUpdatedDate
-                            : "New"}
-                        </p>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </Badge>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Link href="" passHref>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push(previousPath);
-                    }}
-                  >
-                    Discard
-                  </Button>
-                </Link>
-                <Button type="submit" size="sm" disabled={loading}>
-                  {loading ? "Processing..." : action}
-                </Button>
-              </div>
-            </div>
+          <div className="grid flex-1 auto-rows-max gap-4">
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-0">
+                <Card
+                  x-chunk="dashboard-07-chunk-0"
+                  className="shadow-lg drop-shadow-md"
+                >
                   <CardHeader>
-                    <CardTitle>Album Details</CardTitle>
+                    <CardTitle className="text-neutral-800">
+                      {title}
+                      <FormField
+                        control={form.control}
+                        name="isDeleted"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <p>
+                                {initialData
+                                  ? field.value
+                                    ? "Deleted"
+                                    : "Last Updated: " +
+                                      initialData.lastUpdatedDate
+                                  : null}
+                              </p>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
@@ -324,8 +299,45 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                   </CardContent>
                 </Card>
               </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
+              <div className="grid auto-rows-max items-start gap-4 lg:gap-4">
+                <Card className="p-2 gap-4 flex  shadow-sm drop-shadow-md">
+                  <div className="grid grid-cols-3 justify-between w-full gap-2">
+                    <div className="col-span-1">
+                      <Link href={previousPath}>
+                        <Button
+                          variant="outline"
+                          className="shadow-inner w-full text-neutral-700"
+                        >
+                          <ChevronLeft />
+                          Back
+                        </Button>
+                      </Link>
+                    </div>
+
+                    <div className="col-span-2">
+                      {loading ? (
+                        <ButtonLoading
+                          className={
+                            "shadow-inner w-full flex justify-center items-center"
+                          }
+                        />
+                      ) : (
+                        <Button
+                          className="shadow-inner w-full flex justify-center items-center"
+                          type="submit"
+                          disabled={loading}
+                        >
+                          <BsPlus />
+                          {action}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+                <Card
+                  x-chunk="dashboard-07-chunk-3"
+                  className="shadow-lg drop-shadow-md"
+                >
                   <CardHeader>
                     <CardTitle>Information</CardTitle>
                   </CardHeader>
@@ -353,74 +365,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                 </Card>
               </div>
             </div>
-            <div className="grid gap-4 grid-cols-1 lg:gap-8">
-              {/*<Card*/}
-              {/*    className="overflow-hidden"*/}
-              {/*    x-chunk="dashboard-07-chunk-2"*/}
-
-              {/*>*/}
-              {/*    <CardHeader>*/}
-              {/*        <CardTitle>Photos</CardTitle>*/}
-              {/*        <CardDescription>*/}
-              {/*            Lipsum dolor sit amet, consectetur adipiscing elit*/}
-              {/*        </CardDescription>*/}
-              {/*    </CardHeader>*/}
-              {/*    <CardContent>*/}
-              {/*        <FormField*/}
-              {/*            form={form}*/}
-              {/*            name="albumXPhotos"*/}
-              {/*            render={({field}) => (*/}
-              {/*                <FormItem>*/}
-              {/*                    <FormLabel>List</FormLabel>*/}
-              {/*                    <FormControl>*/}
-              {/*                        <div className="grid gap-2">*/}
-              {/*                            <Tabs defaultValue="selected" className="w-full">*/}
-              {/*                                <TabsList className="grid w-full grid-cols-2">*/}
-              {/*                                    <TabsTrigger value="selected">Selected</TabsTrigger>*/}
-              {/*                                    <TabsTrigger value="available">Available</TabsTrigger>*/}
-              {/*                                </TabsList>*/}
-              {/*                                <TabsContent value="selected">*/}
-              {/*                                    <Card>*/}
-              {/*                                        <DataTablePhotos*/}
-              {/*                                            albumId={*/}
-              {/*                                                initialData && initialData.id*/}
-              {/*                                                    ? initialData.id*/}
-              {/*                                                    : undefined*/}
-              {/*                                            }*/}
-              {/*                                            onChange={(pxcs) => {*/}
-              {/*                                                field.onChange(pxcs);*/}
-              {/*                                            }}*/}
-              {/*                                            albumXPhotos={field.value ?? []}*/}
-              {/*                                            tab={0}*/}
-              {/*                                        />*/}
-              {/*                                    </Card>*/}
-              {/*                                </TabsContent>*/}
-              {/*                                <TabsContent value="available">*/}
-              {/*                                    <Card>*/}
-              {/*                                        <DataTablePhotos*/}
-              {/*                                            albumId={*/}
-              {/*                                                initialData && initialData.id*/}
-              {/*                                                    ? initialData.id*/}
-              {/*                                                    : undefined*/}
-              {/*                                            }*/}
-              {/*                                            onChange={(pxcs) => {*/}
-              {/*                                                field.onChange(pxcs);*/}
-              {/*                                            }}*/}
-              {/*                                            albumXPhotos={field.value ?? []}*/}
-              {/*                                            tab={1}*/}
-              {/*                                        />*/}
-              {/*                                    </Card>*/}
-              {/*                                </TabsContent>*/}
-              {/*                            </Tabs>*/}
-              {/*                            <FormMessage/>*/}
-              {/*                        </div>*/}
-              {/*                    </FormControl>*/}
-              {/*                </FormItem>*/}
-              {/*            )}*/}
-              {/*        />*/}
-              {/*    </CardContent>*/}
-              {/*</Card>*/}
-            </div>
+          
           </div>
         </form>
       </Form>

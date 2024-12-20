@@ -7,18 +7,13 @@ import { FilterEnum } from "@/types/filter-enum";
 import { formFilterAdvanceds } from "./filter-advanced-form";
 import { categoryService } from "@/services/category-service";
 import { z } from "zod";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Card } from "@/components/ui/card";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import DataTableSubCategorys from "./sub-categories";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const formFilterAdvancedSchema = z.object({
   id: z.string().nullable().optional(),
@@ -55,14 +50,12 @@ export default function DataTableCategorys() {
     }
   }, [isLoading, queryParam]);
   return (
-    <Accordion
-      defaultValue={["item-1", "item-2"]}
-      type="multiple"
-      className="w-full"
-    >
-      <AccordionItem value="item-1">
-        <AccordionTrigger>List</AccordionTrigger>
-        <AccordionContent>
+      <Tabs defaultValue={"item-1"} className="w-full">
+        <TabsList>
+          <TabsTrigger value="item-1">List</TabsTrigger>
+          <TabsTrigger value="item-2">Sub-Categories</TabsTrigger>
+        </TabsList>
+        <TabsContent value="item-1">
           <DataTable
             deleteAll={categoryService.delete}
             deletePermanent={categoryService.deletePermanent}
@@ -74,11 +67,8 @@ export default function DataTableCategorys() {
             formSchema={formFilterAdvancedSchema}
             formFilterAdvanceds={formFilterAdvanceds}
           />
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Sub-Categories</AccordionTrigger>
-        <AccordionContent>
+        </TabsContent>
+        <TabsContent value="item-2">
           {isLoading || !category ? (
             <></>
           ) : (
@@ -108,8 +98,7 @@ export default function DataTableCategorys() {
               </TabsContent>
             </Tabs>
           )}
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        </TabsContent>
+      </Tabs>
   );
 }

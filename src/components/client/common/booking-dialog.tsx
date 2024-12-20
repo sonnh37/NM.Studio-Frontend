@@ -1,53 +1,47 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalProvider,
-  ModalTrigger,
-  useModal,
-} from "../../ui/animated-modal";
-import { zodResolver } from "@hookform/resolvers/zod";
+import ErrorPage from "@/app/(client)/error/page";
+import { ButtonLoading } from "@/components/common/button-loading";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/date/date-popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/date/date-select";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { IoCameraOutline } from "react-icons/io5";
-import { Form } from "@/components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   FormInput,
-  FormInputDate,
-  FormInputDateTimePicker,
   FormInputDateTimePickerV2,
-  FormInputTextArea,
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
-import { Service } from "@/types/service";
-import { useQuery } from "@tanstack/react-query";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
-import { serviceService } from "@/services/service-service";
-import ErrorPage from "@/app/(client)/error/page";
+import { cn, toLocalISOString } from "@/lib/utils";
 import { bookingService } from "@/services/booking-service";
-import { BookingCreateCommand } from "@/types/commands/booking-command";
-import { BookingStatus } from "@/types/booking";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ButtonLoading } from "@/components/common/button-loading";
-import { toLocalISOString } from "@/lib/utils";
+import { serviceService } from "@/services/service-service";
+import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { IoCameraOutline } from "react-icons/io5";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   email: z.string().email().nullable().optional(),
@@ -56,7 +50,7 @@ const formSchema = z.object({
   userId: z.string().nullable().optional(),
   serviceId: z.string().min(1, "Service ID is required").nullable().optional(),
   bookingDate: z.date(),
-}); 
+});
 
 export function BookingDialog() {
   const [loading, setLoading] = useState(false);
@@ -87,10 +81,10 @@ export function BookingDialog() {
     try {
       setLoading(true);
       console.log("check_form", values);
-      const date = toLocalISOString(values.bookingDate)
+      const date = toLocalISOString(values.bookingDate);
       const updatedValues = {
         ...values,
-        bookingDate: date
+        bookingDate: date,
       };
       console.log("check_output", updatedValues);
       const response = await bookingService.create(updatedValues);
@@ -104,6 +98,9 @@ export function BookingDialog() {
       setLoading(false);
     }
   };
+
+  const [time, setTime] = useState<string>("05:00");
+    const [date, setDate] = useState<Date | null>(null);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -127,14 +124,112 @@ export function BookingDialog() {
 
             <div className="mx-auto w-full">
               <div className="grid gap-1">
-                <FormInputDateTimePickerV2
-                  form={form}
-                  disabled={false}
-                  name="bookingDate"
-                  label="Ngày hẹn"
-                  placeholder="Chọn ngày"
-                />
+              <div className="flex justify-start gap-3">
+                  <FormField
+                    control={form.control}
+                    name="bookingDate"
+                    render={({ field }) => {
+                      const [time, setTime] = useState<string>("05:00");
+                      const [date, setDate] = useState<Date | null>(null);
 
+                      return (
+                        <FormItem className="flex flex-col w-full">
+                          <FormLabel>Ngày hẹn</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    `${format(field.value, "PPP")}, ${time}`
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0 flex items-start"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                captionLayout="dropdown"
+                                selected={date || field.value}
+                                onSelect={(selectedDate) => {
+                                  const [hours, minutes] = time.split(":");
+                                  selectedDate?.setHours(
+                                    parseInt(hours),
+                                    parseInt(minutes)
+                                  );
+                                  setDate(selectedDate!);
+                                  field.onChange(selectedDate);
+                                }}
+                                fromYear={2000}
+                                toYear={new Date().getFullYear()}
+                                disabled={(date) =>
+                                  Number(date) <
+                                    Date.now() - 1000 * 60 * 60 * 24 ||
+                                  Number(date) >
+                                    Date.now() + 1000 * 60 * 60 * 24 * 30
+                                }
+                              />
+                              <Select
+                                defaultValue={time}
+                                onValueChange={(newTime) => {
+                                  setTime(newTime);
+                                  if (date) {
+                                    const [hours, minutes] = newTime.split(":");
+                                    const newDate = new Date(date.getTime());
+                                    newDate.setHours(
+                                      parseInt(hours),
+                                      parseInt(minutes)
+                                    );
+                                    setDate(newDate);
+                                    field.onChange(newDate);
+                                  }
+                                }}
+                                open={true}
+                              >
+                                <SelectTrigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="border-none shadow-none mr-2 fixed top-2 left-0">
+                                  <ScrollArea className="h-[15rem]">
+                                    {Array.from({ length: 96 }).map((_, i) => {
+                                      const hour = Math.floor(i / 4)
+                                        .toString()
+                                        .padStart(2, "0");
+                                      const minute = ((i % 4) * 15)
+                                        .toString()
+                                        .padStart(2, "0");
+                                      return (
+                                        <SelectItem
+                                          key={i}
+                                          value={`${hour}:${minute}`}
+                                        >
+                                          {hour}:{minute}
+                                        </SelectItem>
+                                      );
+                                    })}
+                                  </ScrollArea>
+                                </SelectContent>
+                              </Select>
+                            </PopoverContent>
+                          </Popover>
+                          {/* <FormDescription>Set your date and time.</FormDescription> */}
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+                </div>
                 {/* <FormInputDateTimePickerV2
                   form={form}
                   disabled={false}
@@ -142,28 +237,24 @@ export function BookingDialog() {
                   label="Ngày đến Nhu My Studio"
                   placeholder="Chọn ngày"
                 /> */}
-
                 <FormInput
                   form={form}
                   name="fullName"
                   label="Họ và tên"
                   placeholder="Nhập họ và tên"
                 />
-
                 <FormInput
                   form={form}
                   name="email"
                   label="Email (Nếu có)"
                   placeholder=""
                 />
-
                 <FormInput
                   form={form}
                   name="phone"
                   label="Số điện thoại"
                   placeholder="Nhập số điện thoại"
                 />
-
                 <FormSelectObject
                   form={form}
                   name="serviceId"

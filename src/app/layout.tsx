@@ -21,6 +21,8 @@ export default function RootLayout({
 }) {
   const queryClient = new QueryClient();
 
+  if(!queryClient) return;
+
   return (
     <html suppressHydrationWarning={true} lang="en">
       <head>
@@ -43,7 +45,7 @@ export default function RootLayout({
             <Provider store={store}>
               <Suspense fallback={<PageLoading />}>
                 <QueryClientProvider client={queryClient}>
-                  <TooltipProvider delayDuration={0}>
+                  <TooltipProvider delayDuration={100}>
                     <HelmetProvider>
                       {children}
                     </HelmetProvider>

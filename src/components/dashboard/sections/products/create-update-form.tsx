@@ -2,6 +2,7 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { BsPlus } from "react-icons/bs";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ import ConfirmationDialog, {
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { usePreviousPath } from "@/hooks/use-previous-path";
+import { ButtonLoading } from "@/components/common/button-loading";
 
 interface ProductFormProps {
   initialData: any | null;
@@ -208,7 +210,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         setLoading_(false); // Kết thúc trạng thái loading
       }
     };
-  
+
     fetchData();
   }, [selectedCategoryId]);
 
@@ -249,62 +251,36 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-            <div className="flex items-center gap-4">
-              <Link href={previousPath}>
-                <Button variant="outline" size="icon" className="h-7 w-7">
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="sr-only">Back</span>
-                </Button>
-              </Link>
-
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Product Controller
-              </h1>
-              <Badge variant="outline" className="ml-auto sm:ml-0">
-                <FormField
-                  control={form.control}
-                  name="isDeleted"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <p>
-                          {initialData
-                            ? field.value
-                              ? "Deleted"
-                              : "Last Updated: " + initialData.lastUpdatedDate
-                            : "New"}
-                        </p>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </Badge>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Link href="" passHref>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push(previousPath);
-                    }}
-                  >
-                    Discard
-                  </Button>
-                </Link>
-                <Button type="submit" size="sm" disabled={loading}>
-                  {loading ? "Processing..." : action}
-                </Button>
-              </div>
-            </div>
+          <div className="grid flex-1 auto-rows-max gap-4">
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-0">
+                <Card
+                  x-chunk="dashboard-07-chunk-0"
+                  className="shadow-lg drop-shadow-md"
+                >
                   <CardHeader>
-                    <CardTitle>Product Details</CardTitle>
+                    <CardTitle className="text-neutral-800">
+                      {title}
+                      <FormField
+                        control={form.control}
+                        name="isDeleted"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <p>
+                                {initialData
+                                  ? field.value
+                                    ? "Deleted"
+                                    : "Last Updated: " +
+                                      initialData.lastUpdatedDate
+                                  : null}
+                              </p>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
@@ -435,8 +411,45 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                   </CardContent>
                 </Card>
               </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
+              <div className="grid auto-rows-max items-start gap-4 lg:gap-4">
+                <Card className="p-2 gap-4 flex  shadow-sm drop-shadow-md">
+                  <div className="grid grid-cols-3 justify-between w-full gap-2">
+                    <div className="col-span-1">
+                      <Link href={previousPath}>
+                        <Button
+                          variant="outline"
+                          className="shadow-inner text-neutral-700 w-full"
+                        >
+                          <ChevronLeft />
+                          Back
+                        </Button>
+                      </Link>
+                    </div>
+
+                    <div className="flex col-span-2 w-full">
+                      {loading ? (
+                        <ButtonLoading
+                          className={
+                            "shadow-inner w-full flex justify-center items-center"
+                          }
+                        />
+                      ) : (
+                        <Button
+                          className="shadow-inner w-full flex justify-center items-center"
+                          type="submit"
+                          disabled={loading}
+                        >
+                          <BsPlus />
+                          {action}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+                <Card
+                  x-chunk="dashboard-07-chunk-3"
+                  className="shadow-lg drop-shadow-md"
+                >
                   <CardHeader>
                     <CardTitle>Information</CardTitle>
                   </CardHeader>

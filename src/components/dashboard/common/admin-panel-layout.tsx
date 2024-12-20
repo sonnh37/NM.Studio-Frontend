@@ -1,39 +1,50 @@
 "use client";
 
-import {cn} from "@/lib/utils";
-import {useStore} from "@/hooks/use-store";
-import {Footer} from "@/components/dashboard/layouts/footer";
-import {Sidebar} from "@/components/dashboard/layouts/sidebar";
-import {useSidebarToggle} from "@/hooks/use-sidebar-toggle";
+import { cn } from "@/lib/utils";
+import { useStore } from "@/hooks/use-store";
+import { Footer } from "@/components/dashboard/layouts/footer";
+import { Sidebar } from "@/components/dashboard/layouts/sidebars/sidebar";
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 
 export default function AdminPanelLayout({
-                                             children
-                                         }: {
-    children: React.ReactNode;
+  children,
+}: {
+  children: React.ReactNode;
 }) {
-    const sidebar = useStore(useSidebarToggle, (state) => state);
+  const sidebar = useStore(useSidebarToggle, (state) => state);
 
-    if (!sidebar) return null;
+  if (!sidebar) return null;
 
-    return (
-        <>
-            <Sidebar/>
-            <main
-                className={cn(
-                    "min-h-[calc(100vh_-_56px)] bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300",
-                    sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72"
-                )}
-            >
-                {children}
-            </main>
-            <footer
+  return (
+    <div>
+      <Sidebar />
+      <main
+        className={cn(
+          "transition-[margin-left] ease-in-out bg-neutral-50 dark:bg-background duration-300",
+          sidebar?.isOpen === false
+            ? "lg:ml-[90px]"
+            : "lg:ml-64 "
+        )}
+      >
+        <div
+        className={cn(
+            "shadow-lg drop-shadow-2xl"
+            // sidebar?.isOpen === false
+            //   ? ""
+            //   : "shadow-xl drop-shadow-md"
+          )}
+        >
+        <div className="bg-background dark:bg-background">{children}</div>
+        </div>
+      </main>
+      {/* <footer
                 className={cn(
                     "transition-[margin-left] ease-in-out duration-300",
-                    sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72"
+                    sidebar?.isOpen === false ? "lg:ml-[60px]" : "lg:ml-64"
                 )}
             >
                 <Footer/>
-            </footer>
-        </>
-    );
+            </footer> */}
+    </div>
+  );
 }
