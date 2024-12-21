@@ -261,9 +261,9 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/account",
+          href: "/dashboard/settings",
           label: "Account",
-          active: pathname.includes("/account"),
+          active: pathname.includes("/dashboard/settings"),
           icon: Settings, // Component type
           submenus: [],
         },
