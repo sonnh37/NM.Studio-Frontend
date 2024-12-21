@@ -5,11 +5,49 @@ import { Const } from "@/lib/const";
 import axiosInstance from "@/lib/axios-instance";
 import { BaseService } from "./base-service";
 import axios from "axios";
+import { UpdateCommand } from "@/types/commands/base-command";
+import {
+  UserUpdateCommand,
+  UserUpdatePasswordCommand,
+} from "@/types/commands/user-command";
 
 class UserService extends BaseService<User> {
   constructor() {
     super(Const.USER);
   }
+
+  public update = async (
+    command: UpdateCommand
+  ): Promise<BusinessResult<User>> => {
+    let link = null;
+    if (command.file) {
+      link = await this.uploadImage(command.file, "User");
+    }
+
+    const command_ = {
+      ...command,
+    } as UserUpdateCommand;
+
+    if (link && command_.imageUrl) {
+      await this.deleteImage(command_.imageUrl); // Không cần xử lý lỗi ở đây
+    }
+
+    command_.imageUrl = link ?? command_.imageUrl;
+
+    return axiosInstance
+      .put<BusinessResult<User>>(this.endpoint, command_)
+      .then((response) => response.data)
+      .catch((error) => this.handleError(error)); // Xử lý lỗi
+  };
+
+  public updatePassword = async (
+    command: UserUpdatePasswordCommand
+  ): Promise<BusinessResult<null>> => {
+    return axiosInstance
+      .put<BusinessResult<null>>(`${this.endpoint}/password`, command)
+      .then((response) => response.data)
+      .catch((error) => this.handleError(error)); // Xử lý lỗi
+  };
 
   public login = async (
     account: string,

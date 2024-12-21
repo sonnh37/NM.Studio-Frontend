@@ -14,24 +14,26 @@ import PageLoading from "@/components/common/page-loading";
 import NotFound from "@/components/client/not-found";
 import axiosInstance from "@/lib/axios-instance";
 import userSerice from "@/services/user-serice";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/lib/slices/userSlice";
 
 export function Sidebar() {
-  
-
+  const dispatch = useDispatch();
   const {
     data: user,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["fetchUserApi"],
+    queryKey: ["fetchUser"],
     queryFn: async () => {
       const res = await userSerice.getCurrentUser();
+      dispatch(setUser(res.data ?? ({} as User)));
       return res.data;
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
-  
+
   const sidebar = useStore(useSidebarToggle, (state) => state);
 
   if (!sidebar) return null;
@@ -46,7 +48,7 @@ export function Sidebar() {
       <div className="relative h-full flex flex-col py-4 overflow-hidden ">
         <SidebarHeader />
         <Menu isOpen={sidebar?.isOpen} />
-        <SidebarFooter user={user ?? {}} />
+        <SidebarFooter user={user ?? {} as User} />
       </div>
     </aside>
   );

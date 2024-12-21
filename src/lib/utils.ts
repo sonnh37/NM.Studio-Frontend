@@ -73,6 +73,14 @@ export function getEnumOptions(enumObject: any) {
     }));
 }
 
+type EnumType = { [key: string]: string | number };
+
+export function getEnumLabel<T extends EnumType>(enumObj: T, value?: T[keyof T]): string {
+  const enumValues = Object.entries(enumObj).filter(([key]) => isNaN(Number(key))); // Lấy các giá trị không phải số
+  const found = enumValues.find(([_, enumValue]) => enumValue === value);
+  return found ? found[0] : "Unknown";
+}
+
 export const formatDate = (date: Date | string | undefined | null) => {
   if (!date) return "Không có ngày"; // Xử lý khi giá trị không tồn tại
   const validDate = typeof date === "string" ? new Date(date) : date;

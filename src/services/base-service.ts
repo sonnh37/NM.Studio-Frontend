@@ -41,19 +41,17 @@ export class BaseService<T> {
   }
 
   async deleteImage(link: string): Promise<boolean> {
-    if (!link) return false; 
+    if (!link) return false;
   
     try {
-      const fileRef = ref(storage, link); 
+      const fileRef = ref(storage, link);
       await deleteObject(fileRef);
       return true;
     } catch (error: any) {
-      console.error("Failed to delete file:", error); 
-      toast.error("Failed to delete file:", error); 
-      return false;
+      console.warn("Failed to delete file. Proceeding anyway:", error); // Chỉ cảnh báo lỗi, không throw
+      return false; // Vẫn trả về false để báo hiệu việc xóa không thành công
     }
   }
-
   // Lấy tất cả các mục với query params
   public fetchAll = (
     query?: BaseQueryableQuery
@@ -92,7 +90,6 @@ export class BaseService<T> {
   };
 
   public update = (command: UpdateCommand): Promise<BusinessResult<T>> => {
-    command.isDeleted = undefined;
     return axiosInstance
       .put<BusinessResult<T>>(this.endpoint, command)
       .then((response) => response.data)

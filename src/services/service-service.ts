@@ -49,7 +49,6 @@ class ServiceService extends BaseService<Service> {
       await this.deleteImage(command_.src);
     }
     command_.src = link ?? command_.src;
-    command_.isDeleted = undefined;
 
     return axiosInstance
       .put<BusinessResult<Service>>(this.endpoint, command_)

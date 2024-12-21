@@ -1,158 +1,208 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { FileUpload } from "@/components/custom/file-upload";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/hooks/use-toast"
+  FormInput,
+  FormInputDateTimePicker,
+  FormRadioGroup,
+} from "@/lib/form-custom-shadcn";
+import { getEnumOptions } from "@/lib/utils";
+import { Gender, Role, User } from "@/types/user";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { UpdateCommand } from "@/types/commands/base-command";
+import userSerice from "@/services/user-serice";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const profileFormSchema = z.object({
+  id: z.string().optional(),
+  firstName: z
+    .string()
+    .min(1, { message: "First name is required." })
+    .max(50, { message: "First name must not exceed 50 characters." })
+    .nullable()
+    .optional(),
+
+  lastName: z
+    .string()
+    .min(1, { message: "Last name is required." })
+    .max(50, { message: "Last name must not exceed 50 characters." })
+    .nullable()
+    .optional(),
+
+  imageUrl: z.string().nullable().optional(),
+
+  email: z
+    .string()
+    .email({ message: "Please enter a valid email address." })
+    .optional(),
+
+  dob: z
+    .union([z.string(), z.date()]) // Chấp nhận cả string và Date
+    .nullable()
+    .optional(),
+
+  address: z
+    .string()
+    .max(255, { message: "Address must not exceed 255 characters." })
+    .nullable()
+    .optional(),
+
+  gender: z.nativeEnum(Gender).nullable().optional(),
+
+  phone: z
+    .string()
+    .regex(/^[0-9]{10,15}$/, { message: "Please enter a valid phone number." })
+    .nullable()
+    .optional(),
+
   username: z
     .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    }),
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
+    .min(2, { message: "Username must be at least 2 characters." })
+    .max(30, { message: "Username must not exceed 30 characters." })
     .optional(),
-})
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters." })
+    .optional(),
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I own a computer.",
-  urls: [
-    { value: "https://shadcn.com" },
-    { value: "http://twitter.com/shadcn" },
-  ],
-}
+  role: z
+    .nativeEnum(Role) // Thay thế các giá trị phù hợp với Role ở backend
+    .nullable()
+    .optional(),
+});
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-export function ProfileForm() {
+export function ProfileForm({ user }: { user?: User }) {
+  const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+    console.log(file);
+  };
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
     mode: "onChange",
-  })
+  });
 
-  const { fields, append } = useFieldArray({
-    name: "urls",
-    control: form.control,
-  })
+  useEffect(() => {
+    if (user) {
+      form.reset(user);
+      setFirebaseLink(user.imageUrl || "");
+    }
+  }, [user, form]);
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  // const { fields, append } = useFieldArray({
+  //   name: "urls",
+  //   control: form.control,
+  // });
+  const queryClient = useQueryClient();
+
+  async function onSubmit(data: ProfileFormValues) {
+    // toast({
+    //   title: "You submitted the following values:",
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
+
+    const updatedValues: UpdateCommand = {
+      ...data,
+      file: file,
+    };
+    console.log("check_updatedValues", updatedValues);
+    const response = await userSerice.update(updatedValues);
+    if (response.status != 1) throw new Error(response.message);
+
+    // toast.success(
+    //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //     <code className="text-white">{JSON.stringify(updatedValues, null, 2)}</code>
+    //   </pre>
+    // );
+    toast.success("Thay đổi của bạn đã lưu.")
+    queryClient.invalidateQueries({
+      queryKey: ["fetchUser"],
+    });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* first last */}
+        <div className="grid grid-cols-2">
+          <div className="col-span-1">
+            <FormInput label="First name" name="firstName" form={form} />
+          </div>
+          <div className="col-span-1">
+            <FormInput label="Last name" name="lastName" form={form} />
+          </div>
+        </div>
+        {/* email */}
+        <FormInput label="Email" name="email" form={form} />
+        {/* picture */}
         <FormField
           control={form.control}
-          name="username"
+          name="imageUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Picture</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <div className="grid gap-2">
+                  {firebaseLink ? (
+                    <>
+                      <Image
+                        alt="Picture"
+                        className="aspect-square size-16 rounded-md object-cover"
+                        height={9999}
+                        src={firebaseLink}
+                        width={9999}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                  <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                    <FileUpload onChange={handleFileUpload} />
+                  </div>
+                  <FormMessage />
+                </div>
               </FormControl>
-              <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
-              </FormDescription>
-              <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can manage verified email addresses in your{" "}
-                <Link href="/examples/forms">email settings</Link>.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
+        {/* Date */}
+        <FormInputDateTimePicker label="Date" name="dob" form={form} />
+        {/* Phone */}
+        <FormInput label="Phone" name="phone" form={form} />
+        {/* Sex */}
+        <FormRadioGroup
+          label="Sex"
+          name="gender"
+          form={form}
+          enumOptions={getEnumOptions(Gender)}
         />
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div>
+        {/* Address */}
+        <FormInput label="Address" name="address" form={form} />
+
+        {/* <div>
           {fields.map((field, index) => (
             <FormField
               control={form.control}
@@ -183,9 +233,9 @@ export function ProfileForm() {
           >
             Add URL
           </Button>
-        </div>
+        </div> */}
         <Button type="submit">Update profile</Button>
       </form>
     </Form>
-  )
+  );
 }

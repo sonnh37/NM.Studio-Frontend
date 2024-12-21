@@ -52,7 +52,6 @@ class BlogService extends BaseService<Blog> {
       await this.deleteImage(command_.thumbnail);
     }
     command_.thumbnail = link ?? command_.thumbnail;
-    command_.isDeleted = undefined;
 
     return axiosInstance
       .put<BusinessResult<Blog>>(this.endpoint, command_)

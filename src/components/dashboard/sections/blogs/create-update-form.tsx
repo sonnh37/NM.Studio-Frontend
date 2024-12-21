@@ -81,7 +81,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
 
   const handleFileUpload = (file: File | null) => {
     setFile(file);
-    console.log(file);
+    console.log("check_file",file);
   };
 
   useEffect(() => {

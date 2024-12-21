@@ -1,6 +1,7 @@
+import { BaseEntity } from "./base";
 import { Booking } from "./booking";
 
-export interface User {
+export interface User extends BaseEntity {
   firstName?: string;
   lastName?: string;
   imageUrl?: string;
@@ -10,7 +11,6 @@ export interface User {
   gender?: Gender; // Gender là một enum, sẽ cần được định nghĩa
   phone?: string;
   username?: string;
-  password?: string;
   role?: Role; // Role là một enum, sẽ cần được định nghĩa
   avatar?: string;
   status?: UserStatus; // UserStatus là một enum, sẽ cần được định nghĩa

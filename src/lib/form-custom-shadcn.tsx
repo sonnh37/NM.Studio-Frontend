@@ -48,6 +48,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { TinyMCE } from "@/components/dashboard/common/tinymce";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { Editor } from "@tiptap/react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { string } from "zod";
 
 interface FormInputProps<TFieldValues extends FieldValues> {
   label?: string;
@@ -236,6 +238,52 @@ export const FormSelectEnum = <TFieldValues extends FieldValues>({
             </Select>
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export const FormRadioGroup = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  placeholder = "",
+  description,
+  form,
+  enumOptions,
+  disabled = false,
+}: FormSelectEnumProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="space-y-3">
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <RadioGroup
+              onValueChange={(value) => {
+                field.onChange(Number(value));
+              }}
+              value={field.value?.toString()}
+              className="flex flex-col space-y-1"
+            >
+              {enumOptions.map((option) => {
+                const value_ = option.value.toString();
+                return (
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value={value_} />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      {option.label}
+                    </FormLabel>
+                  </FormItem>
+                );
+              })}
+            </RadioGroup>
+          </FormControl>
           <FormMessage />
         </FormItem>
       )}
@@ -498,7 +546,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
   placeholder = "",
   disabled = false,
 }: FormInputProps<TFieldValues>) => {
-  const [time, setTime] = useState<string>("05:00");
+  const [time, setTime] = useState<string>("00:00");
   const [date, setDate] = useState<Date | null>(null);
   return (
     <div className="flex justify-start gap-3">
@@ -519,7 +567,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
                     )}
                   >
                     {field.value ? (
-                      `${format(field.value, "PPP")}, ${time}`
+                      `${format(field.value, "PPP")}`
                     ) : (
                       <span>{placeholder}</span>
                     )}
@@ -531,7 +579,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
                 <Calendar
                   mode="single"
                   captionLayout="dropdown"
-                  selected={field.value}
+                  selected={date || field.value}
                   onSelect={(selectedDate) => {
                     const [hours, minutes] = time?.split(":")!;
                     selectedDate?.setHours(parseInt(hours), parseInt(minutes));
@@ -549,50 +597,6 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
                 />
               </PopoverContent>
             </Popover>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name={name}
-        render={({ field }) => (
-          <FormItem className="flex flex-col justify-end">
-            <FormLabel>{""}</FormLabel>
-            <FormControl>
-              <Select
-                defaultValue={time!}
-                onValueChange={(e) => {
-                  setTime(e);
-                  if (date) {
-                    const [hours, minutes] = e.split(":");
-                    const newDate = new Date(date.getTime());
-                    newDate.setHours(parseInt(hours), parseInt(minutes));
-                    setDate(newDate);
-                    field.onChange(newDate);
-                  }
-                }}
-              >
-                <SelectTrigger className="font-normal focus:ring-0 w-[120px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <ScrollArea className="h-[15rem]">
-                    {Array.from({ length: 96 }).map((_, i) => {
-                      const hour = Math.floor(i / 4)
-                        .toString()
-                        .padStart(2, "0");
-                      const minute = ((i % 4) * 15).toString().padStart(2, "0");
-                      return (
-                        <SelectItem key={i} value={`${hour}:${minute}`}>
-                          {hour}:{minute}
-                        </SelectItem>
-                      );
-                    })}
-                  </ScrollArea>
-                </SelectContent>
-              </Select>
-            </FormControl>
             <FormMessage />
           </FormItem>
         )}

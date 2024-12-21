@@ -29,15 +29,19 @@ import { User } from "@/types/user";
 import userSerice from "@/services/user-serice";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/lib/slices/userSlice";
 
 export function SidebarFooter({ user }: { user: User }) {
   const { isMobile } = useSidebar();
-
+  const dispatch = useDispatch();
   const router = useRouter();
   const handleLogout = () => {
     userSerice.logout().then((res) => {
       if (res.status != 1) return;
-      toast.success(res.message)
+      toast.success(res.message);
+      dispatch(logout());
       router.push("/login");
     });
   };
@@ -91,7 +95,9 @@ export function SidebarFooter({ user }: { user: User }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
+              <DropdownMenuItem
+                onClick={() => router.push("/dashboard/settings")}
+              >
                 <BadgeCheck />
                 Settings
               </DropdownMenuItem>

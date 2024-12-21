@@ -52,7 +52,6 @@ class AlbumService extends BaseService<Album> {
       await this.deleteImage(command_.background);
     }
     command_.background = link ?? command_.background;
-    command_.isDeleted = undefined;
 
     return axiosInstance
       .put<BusinessResult<Album>>(this.endpoint, command_)
