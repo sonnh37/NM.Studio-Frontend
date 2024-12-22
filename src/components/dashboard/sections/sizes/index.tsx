@@ -29,7 +29,7 @@ export default function DataTableSizes() {
         <DataTable
             deleteAll={sizeService.delete}
             deletePermanent={sizeService.deletePermanent}
-            update={sizeService.update}
+            restore={sizeService.restore}
             columns={columns}
             fetchData={sizeService.fetchAll}
             columnSearch="name"

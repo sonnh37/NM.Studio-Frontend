@@ -1,19 +1,19 @@
-import {CreateCommand, UpdateCommand} from "@/types/commands/base-command";
+import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
 
 export interface PhotoCreateCommand extends CreateCommand {
-    title?: string;
-    description?: string;
-    isFeatured: boolean;
-    src?: string;
-    href?: string;
-    tag?: string;
+  title?: string | null | undefined;
+  description?: string | null | undefined;
+  isFeatured?: boolean;
+  src?: string | null | undefined;
+  href?: string | null | undefined;
+  tag?: string | null | undefined;
 }
 
 export interface PhotoUpdateCommand extends UpdateCommand {
-    title?: string;
-    description?: string;
-    isFeatured: boolean;
-    src?: string;
-    href?: string;
-    tag?: string;
+  title?: string | null | undefined;
+  description?: string | null | undefined;
+  isFeatured?: boolean;
+  src?: string | null | undefined;
+  href?: string | null | undefined;
+  tag?: string | null | undefined;
 }

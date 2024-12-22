@@ -1,9 +1,8 @@
 "use client";
-import { ChevronLeft, Upload } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,26 +26,22 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useRouter } from "next/navigation";
-import {
-  PhotoCreateCommand,
-  PhotoUpdateCommand,
-} from "@/types/commands/photo-command";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
-import { Category, SubCategory } from "@/types/category";
+import { ButtonLoading } from "@/components/common/button-loading";
+import { FileUpload } from "@/components/custom/file-upload";
+import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputTextArea,
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
-import { usePreviousPath } from "@/hooks/use-previous-path";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../../../../../firebase";
+import {
+  PhotoCreateCommand,
+  PhotoUpdateCommand,
+} from "@/types/commands/photo-command";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { BsPlus } from "react-icons/bs";
-import { ButtonLoading } from "@/components/common/button-loading";
 
 interface PhotoFormProps {
   initialData: any | null;
@@ -54,9 +49,9 @@ interface PhotoFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, "Title is required").nullable(),
   description: z.string().nullable().optional(),
-  src: z.string().nullable().optional(),
+  src: z.string().nullable(),
   href: z.string().nullable().optional(),
   tag: z.string().nullable().optional(),
   createdDate: z
@@ -83,60 +78,24 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
-
-  const [sizes, setSizes] = useState<Size[]>([]);
-  const [colors, setColors] = useState<Color[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [file, setFile] = useState<File | null>(null);
 
   const previousPath = usePreviousPath();
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFirebaseLink(URL.createObjectURL(file));
-      setSelectedFile(file);
-    }
-  };
-
-  const handleImageDelete = () => {
-    setFirebaseLink("");
-    setSelectedFile(null);
-    form.setValue("src", "");
-  };
-
-  const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
-    if (selectedFile) {
-      const storageRef = ref(storage, `Photo/${selectedFile.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-
-      const uploadPromise = new Promise<string>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          null,
-          (error) => reject(error),
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
-          }
-        );
-      });
-
-      const downloadURL = await uploadPromise;
-      return { ...values, src: downloadURL };
-    }
-    return values;
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+    console.log(file);
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const values_ = await uploadImageFirebase(values);
+      const values_ = values;
       if (initialData) {
-        const updatedValues = {
+        const updatedValues: PhotoUpdateCommand = {
           ...values_,
+          file: file,
         };
-        console.log("check_output", updatedValues);
         const response = await photoService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
 
@@ -156,7 +115,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
 
   const handleCreateConfirmation = async () => {
     if (pendingValues) {
-      const createdValues = {
+      const createdValues: PhotoCreateCommand = {
         ...pendingValues,
       };
       const response = await photoService.create(createdValues);
@@ -173,7 +132,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: PhotoUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)
@@ -291,7 +250,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                   x-chunk="dashboard-07-chunk-2"
                 >
                   <CardHeader>
-                    <CardTitle>Photo Src</CardTitle>
+                    <CardTitle>Picture</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
@@ -302,46 +261,25 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
                       name="src"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Service Src</FormLabel>
+                          <FormLabel>Blog Background</FormLabel>
                           <FormControl>
                             <div className="grid gap-2">
                               {firebaseLink ? (
                                 <>
                                   <Image
-                                    alt="Photo Src"
+                                    alt="Picture"
                                     className="aspect-square w-full rounded-md object-cover"
                                     height={300}
                                     src={firebaseLink}
                                     width={300}
                                   />
-                                  <Button
-                                    onClick={handleImageDelete}
-                                    variant="destructive"
-                                  >
-                                    Delete Image
-                                  </Button>
                                 </>
                               ) : (
-                                <div className="grid grid-cols-3 gap-2">
-                                  <button
-                                    type="button"
-                                    className="flex aspect-square w-full items-center justify-center rounded-md bphoto bphoto-dashed"
-                                    onClick={() =>
-                                      fileInputRef.current?.click()
-                                    }
-                                  >
-                                    <Upload className="h-4 w-4 text-muted-foreground" />
-                                    <span className="sr-only">Upload</span>
-                                  </button>
-                                </div>
+                                <></>
                               )}
-                              <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                className="hidden"
-                                onChange={handleImageChange}
-                              />
+                              <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                                <FileUpload onChange={handleFileUpload} />
+                              </div>
                               <FormMessage />
                             </div>
                           </FormControl>

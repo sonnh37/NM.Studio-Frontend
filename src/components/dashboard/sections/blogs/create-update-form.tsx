@@ -41,6 +41,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { BsPlus } from "react-icons/bs";
 import { ButtonLoading } from "@/components/common/button-loading";
+import { BlogCreateCommand, BlogUpdateCommand } from "@/types/commands/blog-command";
 
 interface BlogFormProps {
   initialData: any | null;
@@ -48,9 +49,9 @@ interface BlogFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required").default(""),
-  content: z.string().optional().default(""),
-  thumbnail: z.string().nullable().optional().default(""),
+  title: z.string().min(1, "Title is required").nullable(),
+  content: z.string().nullable().optional(),
+  thumbnail: z.string().nullable().optional(),
   createdDate: z.date().optional().default(new Date()),
   createdBy: z.string().nullable().optional().default(null),
   isDeleted: z.boolean().default(false),
@@ -86,7 +87,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: BlogUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)
@@ -102,7 +103,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: UpdateCommand = {
+        const updatedValues: BlogUpdateCommand = {
           ...values,
           file: file,
         };
@@ -130,7 +131,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
 
     try {
-      const createdValues: CreateCommand = {
+      const createdValues: BlogCreateCommand = {
         ...pendingValues,
         file: file,
       };

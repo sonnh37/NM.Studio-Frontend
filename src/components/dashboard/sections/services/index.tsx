@@ -41,7 +41,7 @@ export default function DataTableServices() {
             <DataTable
             deleteAll={serviceService.delete}
             deletePermanent={serviceService.deletePermanent}
-            update={serviceService.update}
+            restore={serviceService.restore}
             columns={columns}
             fetchData={serviceService.fetchAll}
             columnSearch="code"

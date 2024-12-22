@@ -29,7 +29,7 @@ export default function DataTableColors() {
         <DataTable
             deleteAll={colorService.delete}
             deletePermanent={colorService.deletePermanent}
-            update={colorService.update}
+            restore={colorService.restore}
             columns={columns}
             fetchData={colorService.fetchAll}
             columnSearch="name"

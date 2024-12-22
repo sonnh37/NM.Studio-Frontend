@@ -3,7 +3,6 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,14 +25,15 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ButtonLoading } from "@/components/common/button-loading";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import { Const } from "@/lib/const";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate
 } from "@/lib/form-custom-shadcn";
+import { ColorCreateCommand, ColorUpdateCommand } from "@/types/commands/color-command";
 import { useRouter } from "next/navigation";
-import { ButtonLoading } from "@/components/common/button-loading";
 import { BsPlus } from "react-icons/bs";
 
 interface ColorFormProps {
@@ -42,7 +42,7 @@ interface ColorFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Name is required").nullable(),
   createdDate: z
     .date()
     .optional()
@@ -72,7 +72,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
       setLoading(true);
       const values_ = values;
       if (initialData) {
-        const updatedValues = {
+        const updatedValues: ColorUpdateCommand = {
           ...values_,
         };
         console.log("check_output", updatedValues);
@@ -97,7 +97,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
     try {
       console.log("check_pend", pendingValues);
       if (pendingValues) {
-        const createdValues = {
+        const createdValues: ColorCreateCommand = {
           ...pendingValues,
         };
 
@@ -119,7 +119,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: ColorUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)

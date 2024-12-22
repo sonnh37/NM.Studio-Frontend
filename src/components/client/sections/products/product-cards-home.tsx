@@ -13,8 +13,8 @@ export function ProductCardsHome() {
   useEffect(() => {
     setQueryProduct((prev) => ({
       ...prev,
-      isDeleted: [false],
-      isNotNullSlug: true,
+      isDeleted: false,
+      
       isPagination: true,
       pageSize: 8,
     }));

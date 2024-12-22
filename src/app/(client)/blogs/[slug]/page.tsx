@@ -13,8 +13,8 @@ import { DisplayContent } from "@/components/client/common/display-content";
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const query: BlogGetAllQuery = {
-    isNotNullSlug: true,
-    isDeleted: [false],
+    
+    isDeleted: false,
     isFeatured: false,
     isPagination: true,
     pageSize: 1,

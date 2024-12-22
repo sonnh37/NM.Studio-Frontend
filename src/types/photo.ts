@@ -3,12 +3,12 @@ import {BaseEntity} from "./base";
 import {ProductXPhoto} from "@/types/product-x-photo";
 
 export interface Photo extends BaseEntity {
-    title?: string;
-    description?: string;
+    title?: string | null | undefined;
+    description?: string | null | undefined;
     isFeatured: boolean;
-    src?: string;
-    href?: string;
-    tag?: string;
+    src?: string | null | undefined;
+    href?: string | null | undefined;
+    tag?: string | null | undefined;
     albumXPhotos?: AlbumXPhoto[];
     productXPhotos?: ProductXPhoto[];
 }

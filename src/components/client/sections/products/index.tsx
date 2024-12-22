@@ -27,11 +27,11 @@ import { categoryService } from "@/services/category-service";
 import { Color } from "@/types/color";
 import { Category, SubCategory } from "@/types/category";
 import { Size } from "@/types/size";
-import { CategoryGetAllQuery } from "@/types/queries/product-query";
 import { Button } from "@/components/ui/button";
 import { SizeGetAllQuery } from "@/types/queries/size-query";
 import { ColorGetAllQuery } from "@/types/queries/color-query";
 import { useQuery } from "@tanstack/react-query";
+import { CategoryGetAllQuery } from "@/types/queries/category-query";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -207,7 +207,7 @@ export default function SidebarProductCards() {
     queryFn: async () => {
       const response = await colorService.fetchAll({
         isPagination: false,
-        isDeleted: [false],
+        isDeleted: false,
       });
       return response.data?.results as Color[];
     },
@@ -219,7 +219,7 @@ export default function SidebarProductCards() {
     queryFn: async () => {
       const response = await sizeService.fetchAll({
         isPagination: false,
-        isDeleted: [false],
+        isDeleted: false,
       });
       return response.data?.results as Size[];
     },
@@ -231,7 +231,7 @@ export default function SidebarProductCards() {
     queryFn: async () => {
       const response = await categoryService.fetchAll({
         isPagination: false,
-        isDeleted: [false],
+        isDeleted: false,
       });
       return response.data?.results as Category[];
     },
@@ -243,7 +243,7 @@ export default function SidebarProductCards() {
       queryFn: async () => {
         const response = await categoryService.fetchAll({
           isPagination: true,
-          isDeleted: [false],
+          isDeleted: false,
           pageSize: 1,
           name: searchParams.get("categoryName") ?? undefined,
         } as CategoryGetAllQuery);

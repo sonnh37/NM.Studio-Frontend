@@ -8,9 +8,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Pagination } from "@/components/client/common/pagination";
 import { Button } from "@/components/ui/button";
-import Example from "./dialog";
+import DialogProductDetailQuickly from "./dialog";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function ProductCards() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -30,10 +31,10 @@ export function ProductCards() {
   // Tạo đối tượng queryProduct
   const queryProduct: ProductGetAllQuery = {
     isPagination: true,
-    isDeleted: [false],
+    isDeleted: false,
     pageSize: 12,
     pageNumber: pageNumber,
-    isNotNullSlug: true,
+
     categoryName: categoryName || undefined,
     subCategoryName: subCategoryName || undefined,
     sizes: sizes.length > 0 ? sizes : undefined,
@@ -82,9 +83,9 @@ export function ProductCards() {
                   className="aspect-[2/3] bg-gray-200 rounded-md object-cover"
                   alt={product.name!}
                   src={
-                    product.productXPhotos.length > 0 &&
-                    product.productXPhotos[0].photo
-                      ? product.productXPhotos[0].photo.src ??
+                    product.productXPhotos!.length > 0 &&
+                    product.productXPhotos![0].photo
+                      ? product.productXPhotos![0].photo.src ??
                         "/image-notfound.jpg"
                       : "/image-notfound.jpg"
                   }
@@ -110,17 +111,30 @@ export function ProductCards() {
                     {product.name}
                   </a>
                 </h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  {product.color?.name}
-                </p>
+                <p className="mt-1 text-sm text-gray-500"></p>
               </div>
               <p className="text-sm font-medium text-gray-900">
                 {product.price}
               </p>
             </div>
+            <div className="flex">
+              <RadioGroup className="flex flex-row space-x-1" disabled>
+                {product.productXColors?.map((pxc) => (
+                  <div key={pxc.id}>
+                    <RadioGroupItem
+                      value={pxc.color?.name as string}
+                      id={pxc.color?.id}
+                      className="h-4 w-4 border-none rounded-full pointer-events-none"
+                      style={{ backgroundColor: pxc.color?.name as string }}
+                      disabled
+                    />
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
           </div>
         ))}
-        <Example
+        <DialogProductDetailQuickly
           product={selectedProduct as Product}
           open={open}
           setOpen={setOpen}

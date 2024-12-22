@@ -14,8 +14,8 @@ import ErrorPage from "@/app/(client)/error/page";
 export function Gallery() {
   const { slug } = useParams();
   const query: AlbumGetAllQuery = {
-    isNotNullSlug: true,
-    isDeleted: [false],
+    
+    isDeleted: false,
     isPagination: true,
     pageSize: 1,
     pageNumber: 1,

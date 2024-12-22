@@ -55,7 +55,7 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
                         Copy model ID
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleProductsClick}>
-                        View photos
+                        View features
                     </DropdownMenuItem>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>

@@ -63,8 +63,8 @@ export function BookingModal() {
 
   const query: ServiceGetAllQuery = {
     isPagination: false,
-    isNotNullSlug: true,
-    isDeleted: [false],
+    
+    isDeleted: false,
   };
 
   const { data: services = [], error } = useQuery({

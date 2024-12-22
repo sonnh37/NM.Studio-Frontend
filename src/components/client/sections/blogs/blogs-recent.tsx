@@ -16,8 +16,8 @@ export function BlogsRecent() {
         pageSize: 5,
         pageNumber: 1,
         isFeatured: false,
-        isNotNullSlug: true,
-        isDeleted: [false],
+        
+        isDeleted: false,
       };
       console.log("check_in", request);
       const res = await blogService.fetchAll(request);

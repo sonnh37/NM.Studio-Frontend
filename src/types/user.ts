@@ -2,36 +2,39 @@ import { BaseEntity } from "./base";
 import { Booking } from "./booking";
 
 export interface User extends BaseEntity {
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  email?: string;
-  dob?: string | null; // DateTime sẽ được chuyển thành string (ISO string format)
-  address?: string;
-  gender?: Gender; // Gender là một enum, sẽ cần được định nghĩa
-  phone?: string;
-  username?: string;
-  role?: Role; // Role là một enum, sẽ cần được định nghĩa
-  avatar?: string;
-  status?: UserStatus; // UserStatus là một enum, sẽ cần được định nghĩa
-  bookings?: Booking[]; // Bookings là mảng các đối tượng Booking, sẽ cần được định nghĩa
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
+  avatar?: string | null | undefined;
+  email?: string | null | undefined;
+  dob?: string | null | undefined;
+  address?: string | null | undefined;
+  gender?: Gender | null | undefined;
+  phone?: string | null | undefined;
+  username?: string | null | undefined;
+  password?: string | null | undefined;
+  role?: Role | null | undefined;
+  status?: UserStatus | null | undefined;
+  preferences?: string | null | undefined;
+  bookings?: Booking[];
 }
+
 export enum Gender {
-  Male,   // 0
-  Female, // 1
-  Other,  // 2
+  Male,
+  Female,
+  Other,
 }
 
 export enum Role {
-  Admin,  // 0
-  Staff,  // 1
-  Customer, // 2
+  Admin,
+  Staff,
+  Customer,
 }
 
 export enum UserStatus {
-  Active,    // 0
-  Inactive,  // 1
-  Suspended, // 2
+  Active,
+  Inactive,
+  Suspended,
 }
+
 
 

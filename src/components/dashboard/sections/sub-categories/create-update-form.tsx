@@ -36,6 +36,7 @@ import ConfirmationDialog, {
 import { useRouter } from "next/navigation";
 import { Category } from "@/types/category";
 import { categoryService } from "@/services/category-service";
+import { SubCategoryCreateCommand, SubCategoryUpdateCommand } from "@/types/commands/category-command";
 
 interface SubCategoryFormProps {
   initialData: any | null;
@@ -43,8 +44,8 @@ interface SubCategoryFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
-  categoryId: z.string().nullable().optional(),
+  name: z.string().min(1, "Name is required").nullable(),
+  categoryId: z.string().nullable(),
   createdDate: z
     .date()
     .optional()
@@ -82,7 +83,7 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
       setLoading(true);
       const values_ = values;
       if (initialData) {
-        const updatedValues = {
+        const updatedValues: SubCategoryUpdateCommand = {
           ...values_,
         };
         console.log("check_output", updatedValues);
@@ -107,7 +108,7 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
     try {
       console.log("check_pend", pendingValues);
       if (pendingValues) {
-        const createdValues = {
+        const createdValues: SubCategoryCreateCommand = {
           ...pendingValues,
         };
 
@@ -134,7 +135,7 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: SubCategoryUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)

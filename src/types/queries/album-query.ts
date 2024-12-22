@@ -1,9 +1,8 @@
-import {BaseQueryableQuery} from "./base-query";
+import { BaseQueryableQuery } from "./base-query";
 
 export interface AlbumGetAllQuery extends BaseQueryableQuery {
-    title?: string;
-    slug?: string;
-    description?: string;
-    background?: string;
-    isNotNullSlug: boolean;
+  title?: string | null | undefined;
+  slug?: string | null | undefined;
+  description?: string | null | undefined;
+  background?: string | null | undefined;
 }

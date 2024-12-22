@@ -1,25 +1,24 @@
-import {columns} from "./columns";
-import {isActive_options, isDeleted_options,} from "@/components/common/filters";
-import {DataTable} from "@/components/common/data-table-generic/data-table";
-import {useEffect, useState} from "react";
-import {PhotoGetAllQuery} from "@/types/queries/photo-query";
-import {Photo} from "@/types/photo";
-import {ColumnDef} from "@tanstack/react-table";
-import {ProductXPhotoCreateCommand, ProductXPhotoUpdateCommand} from "@/types/commands/product-x-photo-command";
-import {photoService} from "@/services/photo-service";
-import {DataOnlyTable} from "@/components/common/data-table-origin/data-only-table";
-import {GrSubtract} from "react-icons/gr";
-import {HiOutlinePlus} from "react-icons/hi";
-import {Button} from "@/components/ui/button";
-import {productXPhotoService} from "@/services/product-x-photo-service";
-import {ProductXPhoto} from "@/types/product-x-photo";
-import {toast} from "sonner";
-import {useQueryClient} from "@tanstack/react-query";
+import { DataTable } from "@/components/common/data-table-generic/data-table";
+import { isActive_options, isDeleted_options, } from "@/components/common/filters";
+import { Button } from "@/components/ui/button";
+import { photoService } from "@/services/photo-service";
+import { productXPhotoService } from "@/services/product-x-photo-service";
+import { ProductXPhotoCreateCommand, ProductXPhotoUpdateCommand } from "@/types/commands/product-x-photo-command";
+import { Photo } from "@/types/photo";
+import { ProductXPhoto } from "@/types/product-x-photo";
+import { PhotoGetAllQuery } from "@/types/queries/photo-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import { GrSubtract } from "react-icons/gr";
+import { HiOutlinePlus } from "react-icons/hi";
+import { toast } from "sonner";
+import { columns } from "./columns";
 import { DataTablePhotosInProduct } from "./data-table-photos";
 
 interface DataTablePhotosProps {
     productId?: string;
-    productXPhotos?: ProductXPhotoUpdateCommand[];
+    productXPhotos?: ProductXPhoto[];
     tab?: number;
 }
 
@@ -33,7 +32,7 @@ export default function DataTablePhotos({
     useEffect(() => {
         const defaultQueryParams: PhotoGetAllQuery = {
             isPagination: true,
-            isDeleted: [false],
+            isDeleted: false,
             productId: productId,
         };
 
@@ -47,7 +46,7 @@ export default function DataTablePhotos({
         // const allSelectedProductXPhotos: ProductXPhotoUpdateCommand[] = allSelected_.map((photo) => ({
         //   photoId: photo.id,
         //   productId,
-        //   isDeleted: [false],
+        //   isDeleted: false,
         // }));
 
         // if (value) {

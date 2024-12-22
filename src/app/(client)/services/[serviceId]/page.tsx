@@ -10,8 +10,8 @@ import ErrorPage from "../../error/page";
 export default function Page({ params }: { params: { serviceId: string } }) {
   const { serviceId } = params;
   const query: ServiceGetAllQuery = {
-    isNotNullSlug: true,
-    isDeleted: [false],
+    
+    isDeleted: false,
     isPagination: true,
     pageSize: 1,
     pageNumber: 1,

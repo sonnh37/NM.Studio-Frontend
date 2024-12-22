@@ -28,6 +28,7 @@ export function Sidebar() {
     queryKey: ["fetchUser"],
     queryFn: async () => {
       const res = await userSerice.getCurrentUser();
+      console.log("check_user", res)
       dispatch(setUser(res.data ?? ({} as User)));
       return res.data;
     },

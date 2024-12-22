@@ -16,9 +16,9 @@ export function AlbumGallery() {
   const pathName = usePathname();
 
   const queryAlbum: AlbumGetAllQuery = {
-    isNotNullSlug: true,
+    
     isPagination: true,
-    isDeleted: [false],
+    isDeleted: false,
     pageSize: pathName === `/${Const.ALBUM}` ? 60 : 16,
   };
 

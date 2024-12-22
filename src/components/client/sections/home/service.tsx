@@ -29,8 +29,8 @@ interface Studio {
 export function Service() {
   const router = useRouter();
   const query: ServiceGetAllQuery = {
-    isNotNullSlug: true,
-    isDeleted: [false],
+    
+    isDeleted: false,
     isPagination: true,
     pageSize: 6,
     pageNumber: 1,

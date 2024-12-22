@@ -30,7 +30,7 @@ export default function DataTableBlogs() {
       <DataTable
         deleteAll={blogService.delete}
         deletePermanent={blogService.deletePermanent}
-        update={blogService.update}
+        restore={blogService.restore}
         columns={columns}
         fetchData={blogService.fetchAll}
         columnSearch="code"

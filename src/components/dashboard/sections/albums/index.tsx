@@ -70,7 +70,7 @@ export default function DataTableAlbums() {
         <DataTable
           deleteAll={albumService.delete}
           deletePermanent={albumService.deletePermanent}
-          update={albumService.update}
+          restore={albumService.restore}
           columns={columns}
           fetchData={albumService.fetchAll}
           columnSearch="name"

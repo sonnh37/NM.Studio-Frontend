@@ -33,6 +33,7 @@ import ConfirmationDialog, {
   FormInputDate
 } from "@/lib/form-custom-shadcn";
 import { useRouter } from "next/navigation";
+import { SizeCreateCommand, SizeUpdateCommand } from "@/types/commands/size-command";
 
 interface SizeFormProps {
   initialData: any | null;
@@ -40,7 +41,7 @@ interface SizeFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Name is required").nullable(),
   createdDate: z
     .date()
     .optional()
@@ -70,7 +71,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
       setLoading(true);
       const values_ = values;
       if (initialData) {
-        const updatedValues = {
+        const updatedValues: SizeUpdateCommand = {
           ...values_,
         };
         console.log("check_output", updatedValues);
@@ -95,7 +96,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
     try {
       console.log("check_pend", pendingValues);
       if (pendingValues) {
-        const createdValues = {
+        const createdValues: SizeCreateCommand = {
           ...pendingValues,
         };
 
@@ -117,7 +118,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: SizeUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)

@@ -1,39 +1,38 @@
-import { Gender, Role, User, UserStatus } from "@/types/user";
-import { Photo } from "@/types/photo";
 import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
+import { Gender, Role, UserStatus } from "@/types/user";
 
 export interface UserCreateCommand extends CreateCommand {
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  email?: string;
-  dob?: string | null; // DateTime sẽ được chuyển thành string (ISO string format)
-  address?: string;
-  gender?: Gender; // Gender là một enum, sẽ cần được định nghĩa
-  phone?: string;
-  username?: string;
-  password?: string;
-  role?: Role; // Role là một enum, sẽ cần được định nghĩa
-  avatar?: string;
-  status?: UserStatus;
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
+  avatar?: string | null | undefined;
+  email?: string | null | undefined;
+  dob?: string | null | undefined;
+  address?: string | null | undefined;
+  gender?: Gender | null | undefined;
+  phone?: string | null | undefined;
+  username?: string | null | undefined;
+  password?: string | null | undefined;
+  role?: Role | null | undefined;
+  status?: UserStatus | null | undefined;
+  preferences?: string | null | undefined;
 }
 
 export interface UserUpdateCommand extends UpdateCommand {
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  email?: string;
-  dob?: string | null; // DateTime sẽ được chuyển thành string (ISO string format)
-  address?: string;
-  gender?: Gender; // Gender là một enum, sẽ cần được định nghĩa
-  phone?: string;
-  username?: string;
-  password?: string;
-  role?: Role; // Role là một enum, sẽ cần được định nghĩa
-  avatar?: string;
-  status?: UserStatus;
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
+  avatar?: string | null | undefined;
+  email?: string | null | undefined;
+  dob?: string | null | undefined;
+  address?: string | null | undefined;
+  gender?: Gender | null | undefined;
+  phone?: string | null | undefined;
+  username?: string | null | undefined;
+  password?: string | null | undefined;
+  role?: Role | null | undefined;
+  status?: UserStatus | null | undefined;
+  preferences?: string | null | undefined;
 }
 
-export interface UserUpdatePasswordCommand{
-  password?: string;
+export interface UserUpdatePasswordCommand {
+  password?: string | null | undefined;
 }

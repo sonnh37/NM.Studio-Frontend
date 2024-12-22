@@ -1,18 +1,18 @@
-import {columns} from "./columns";
-import {isActive_options, isDeleted_options,} from "@/components/common/filters";
-import {DataTable} from "@/components/common/data-table-generic/data-table";
-import {useEffect, useState} from "react";
-import {SubCategoryGetAllQuery} from "@/types/queries/category-query";
-import {SubCategory} from "@/types/category";
-import {ColumnDef} from "@tanstack/react-table";
-import {DataOnlyTable} from "@/components/common/data-table-origin/data-only-table";
-import {GrSubtract} from "react-icons/gr";
-import {HiOutlinePlus} from "react-icons/hi";
-import {Button} from "@/components/ui/button";
-import {toast} from "sonner";
-import {useQueryClient} from "@tanstack/react-query";
-import { SubCategoryUpdateCommand } from "@/types/commands/category-command";
+import { DataTable } from "@/components/common/data-table-generic/data-table";
+import { DataOnlyTable } from "@/components/common/data-table-origin/data-only-table";
+import { isActive_options, isDeleted_options, } from "@/components/common/filters";
+import { Button } from "@/components/ui/button";
 import { subCategoryService } from "@/services/sub-category-service";
+import { SubCategory } from "@/types/category";
+import { SubCategoryUpdateCommand } from "@/types/commands/category-command";
+import { SubCategoryGetAllQuery } from "@/types/queries/category-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import { GrSubtract } from "react-icons/gr";
+import { HiOutlinePlus } from "react-icons/hi";
+import { toast } from "sonner";
+import { columns } from "./columns";
 
 interface DataTableSubCategorysProps {
     categoryId?: string;
@@ -31,7 +31,7 @@ export default function DataTableSubCategorys({
         const defaultQueryParams: SubCategoryGetAllQuery = {
             isPagination: true,
             isNullCategoryId: true,
-            isDeleted: [false],
+            isDeleted: false,
         };
 
         setGetQueryParams(defaultQueryParams);

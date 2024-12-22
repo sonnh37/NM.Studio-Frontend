@@ -14,44 +14,37 @@ class ServiceService extends BaseService<Service> {
     super(`${Const.SERVICE}`);
   }
   public create = async (
-    command: CreateCommand
+    command: ServiceCreateCommand
   ): Promise<BusinessResult<Service>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "Service");
     }
 
-    const command_ = {
-      ...command,
-    } as ServiceCreateCommand;
-
-    command_.src = link ?? undefined;
+    command.src = link ?? undefined;
 
     return axiosInstance
-      .post<BusinessResult<Service>>(this.endpoint, command_)
+      .post<BusinessResult<Service>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };
 
   public update = async (
-    command: UpdateCommand
+    command: ServiceUpdateCommand
   ): Promise<BusinessResult<Service>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "Service");
     }
 
-    const command_ = {
-      ...command,
-    } as ServiceUpdateCommand;
-
-    if (link && command_.src) {
-      await this.deleteImage(command_.src);
+    if (link && command.src) {
+      await this.deleteImage(command.src);
     }
-    command_.src = link ?? command_.src;
+
+    command.src = link ?? command.src;
 
     return axiosInstance
-      .put<BusinessResult<Service>>(this.endpoint, command_)
+      .put<BusinessResult<Service>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };

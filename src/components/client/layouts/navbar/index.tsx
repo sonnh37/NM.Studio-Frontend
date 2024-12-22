@@ -121,7 +121,7 @@ function Navbar({className}: { className?: string }) {
         pageNumber: 1,
         pageSize: 10,
         sortOrder: 1,
-        isNotNullSlug: true,
+        
         isPagination: true,
     };
 
@@ -129,7 +129,7 @@ function Navbar({className}: { className?: string }) {
         pageNumber: 1,
         pageSize: 8,
         sortOrder: 1,
-        isNotNullSlug: true,
+        
         isPagination: true,
     };
 

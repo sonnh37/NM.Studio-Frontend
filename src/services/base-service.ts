@@ -10,7 +10,6 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "../../firebase";
-import { toast } from "sonner";
 export class BaseService<T> {
   public endpoint: string;
 
@@ -94,6 +93,13 @@ export class BaseService<T> {
       .put<BusinessResult<T>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
+  };
+
+  public restore = (command: UpdateCommand): Promise<BusinessResult<T>> => {
+    return axiosInstance
+      .put<BusinessResult<T>>(`${this.endpoint}/restore`, command)
+      .then((response) => response.data)
+      .catch((error) => this.handleError(error));
   };
 
   public delete = (id: string): Promise<BusinessResult<null>> => {

@@ -21,7 +21,6 @@ import { serviceService } from "@/services/service-service";
 import { Album } from "@/types/album";
 import { Category } from "@/types/category";
 import { AlbumGetAllQuery } from "@/types/queries/album-query";
-import { CategoryGetAllQuery } from "@/types/queries/product-query";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { Service } from "@/types/service";
 import { usePathname } from "next/navigation";
@@ -29,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
 import { ProductsCombobox } from "../../common/products-combobox";
 import { CartSheet } from "../../common/cart-sheet";
+import { CategoryGetAllQuery } from "@/types/queries/category-query";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -45,23 +45,23 @@ export function MainNav({ items }: MainNavProps) {
     pageNumber: 1,
     pageSize: 10,
     sortOrder: 1,
-    isDeleted: [false],
+    isDeleted: false,
     isPagination: true,
-    isNotNullSlug: true,
+    
   };
 
   const albumGetAllQuery: AlbumGetAllQuery = {
     pageNumber: 1,
     pageSize: 8,
     sortOrder: 1,
-    isDeleted: [false],
+    isDeleted: false,
     isPagination: true,
-    isNotNullSlug: true,
+    
   };
 
   const categoryGetAllQuery: CategoryGetAllQuery = {
     isPagination: false,
-    isDeleted: [false],
+    isDeleted: false,
   };
 
   useEffect(() => {

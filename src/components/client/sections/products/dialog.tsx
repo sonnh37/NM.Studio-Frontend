@@ -1,23 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  Radio,
-  RadioGroup,
-} from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/20/solid";
-import { Product } from "@/types/product";
-import { colorService } from "@/services/color-service";
-import { sizeService } from "@/services/size-service";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -25,80 +9,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { Color } from "@/types/color";
+import { Product } from "@/types/product";
+import { Size } from "@/types/size";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { StarIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-
-async function mapProductToProductDetail(
-  product: Product
-): Promise<ProductDetail> {
-  const colors = [] as Color[];
-  colors.push(product.color!);
-  const sizes = [] as Size[];
-  sizes.push(product.size!);
-  const srcList: string[] =
-    product.productXPhotos.length > 0
-      ? product.productXPhotos
-          .map((m) => m.photo?.src) // Map từng item thành `src` hoặc `undefined`
-          .filter((src) => src !== undefined) // Lọc bỏ các giá trị `undefined`
-      : ["/image-notfound.jpg"];
-  return {
-    name: product.name ?? "N/A",
-    price: product.price?.toString() ?? "Liên hệ",
-    rating: 5,
-    reviewCount: 9999,
-    src: srcList,
-    colors: mapColorToColorDetail(colors ?? []),
-    sizes: mapSizeToSizeDetail(sizes ?? []),
-  };
-}
-
-function mapColorToColorDetail(colors: Color[]): ColorDetail[] {
-  if (colors.length == 0) {
-    return [];
-  }
-  return colors.map(
-    (color) =>
-      ({
-        name: color.name,
-        class: `${color.name}`,
-        selectedClass: "ring-gray-700",
-      } as ColorDetail)
-  );
-}
-
-function mapSizeToSizeDetail(sizes: Size[]): SizeDetail[] {
-  if (sizes.length == 0) {
-    return [];
-  }
-  return sizes.map(
-    (size) =>
-      ({
-        name: size.name,
-        inStock: true,
-      } as SizeDetail)
-  );
-}
-
-interface ProductDetail {
-  name: string;
-  price: string;
-  rating: number;
-  reviewCount: number;
-  src: string[];
-  colors: ColorDetail[];
-  sizes: SizeDetail[];
-}
-
-interface ColorDetail {
-  name: string;
-  class: string;
-  selectedClass: string;
-}
-
-interface SizeDetail {
-  name: string;
-  inStock: boolean;
-}
+import Link from "next/link";
+import { useState } from "react";
 
 interface ExampleProps {
   product: Product;
@@ -106,30 +26,32 @@ interface ExampleProps {
   setOpen: (open: boolean) => void;
 }
 
-export default function Example({ product, open, setOpen }: ExampleProps) {
-  const [productDetail, setProductDetail] = useState<ProductDetail | null>(
-    null
-  );
-  const [selectedColor, setSelectedColor] = useState<ColorDetail | null>(null);
-  const [selectedSize, setSelectedSize] = useState<SizeDetail | null>(null);
-
-  useEffect(() => {
-    if (!product) {
-      return;
+export default function DialogProductDetailQuickly({
+  product,
+  open,
+  setOpen,
+}: ExampleProps) {
+  const [selectedColor, setSelectedColor] = useState<Color | null>(null);
+  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
+  const handleSizeChange = (sizeName: string) => {
+    const size = product.productXSizes?.find(
+      (pxc) => pxc.size?.name === sizeName
+    );
+    if (size) {
+      setSelectedSize(size.size ?? null);
     }
+  };
 
-    function fetchProductDetail() {
-      mapProductToProductDetail(product).then((product_) => {
-        setProductDetail(product_);
-        setSelectedColor(product_.colors[0]);
-        setSelectedSize(product_.sizes[0]);
-      });
+  const handleColorChange = (colorName: string) => {
+    const color = product.productXColors?.find(
+      (pxc) => pxc.color?.name === colorName
+    );
+    if (color) {
+      setSelectedColor(color.color ?? null);
     }
+  };
 
-    fetchProductDetail();
-  }, [product]);
-
-  if (!productDetail) {
+  if (!product) {
     return;
   }
 
@@ -164,7 +86,7 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                 <div className="aspect-[2/3] p-0 w-full rounded-none border-none bg-gray-100 object-cover sm:col-span-6">
                   <Carousel className="w-full">
                     <CarouselContent>
-                      {productDetail.src.map((pic, index) => (
+                      {product.productXPhotos?.map((pic, index) => (
                         <CarouselItem key={index}>
                           <Card className="border-none">
                             <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
@@ -172,8 +94,8 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                                 className="aspect-[2/3]  w-full"
                                 width={9999}
                                 height={9999}
-                                alt={productDetail.name}
-                                src={pic}
+                                alt={pic.photo?.title ?? ""}
+                                src={pic.photo?.src ?? ""}
                               />
                             </CardContent>
                           </Card>
@@ -190,7 +112,7 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                 /> */}
                 <div className="sm:col-span-6 m-8">
                   <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">
-                    {productDetail.name}
+                    {product.name}
                   </h2>
 
                   <section
@@ -198,12 +120,10 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                     className="mt-2"
                   >
                     <h3 id="information-heading" className="sr-only">
-                      productDetail information
+                      ProductDetail information
                     </h3>
 
-                    <p className="text-2xl text-gray-900">
-                      {productDetail.price}
-                    </p>
+                    <p className="text-2xl text-gray-900">{product.price}</p>
 
                     {/* Reviews */}
                     <div className="mt-6">
@@ -215,22 +135,18 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                               key={rating}
                               aria-hidden="true"
                               className={cn(
-                                productDetail.rating > rating
-                                  ? "text-gray-900"
-                                  : "text-gray-200",
+                                true ? "text-gray-900" : "text-gray-200",
                                 "size-5 shrink-0"
                               )}
                             />
                           ))}
                         </div>
-                        <p className="sr-only">
-                          {productDetail.rating} out of 5 stars
-                        </p>
+                        <p className="sr-only">{`4.8`} out of 5 stars</p>
                         <a
                           href="#"
                           className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
                         >
-                          {productDetail.reviewCount} reviews
+                          {`6834`} reviews
                         </a>
                       </div>
                     </div>
@@ -247,35 +163,38 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                         <legend className="text-sm font-medium text-gray-900">
                           Color
                         </legend>
-
-                        <RadioGroup
-                          value={selectedColor}
-                          onChange={setSelectedColor}
-                          className="mt-4 flex items-center space-x-3"
-                        >
-                          {productDetail.colors.map((color) => (
-                            <Radio
-                              key={color.name}
-                              value={color}
-                              aria-label={color.name}
-                              className={cn(
-                                color.selectedClass,
-                                "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none data-[checked]:ring-2 data-[focus]:data-[checked]:ring data-[focus]:data-[checked]:ring-offset-1"
-                              )}
+                        <div className="flex flex-row space-x-2 mt-4">
+                          {product.productXColors?.map((pxc) => (
+                            <div
+                              key={pxc.id}
+                              className="flex flex-col items-center"
                             >
-                              <span
-                                aria-hidden="true"
-                                className={cn(
-                                  "size-8 rounded-full border border-black/10"
-                                )}
-                                style={{ backgroundColor: color.class }}
-                              />
-                            </Radio>
+                              <Button
+                                variant="outline"
+                                type="button"
+                                className={`h-10 w-10 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all duration-200 ease-in-out
+          ${
+            pxc.isActive
+              ? selectedColor?.name === pxc.color?.name // Sử dụng đúng trạng thái để so sánh
+                ? "border-indigo-600 ring-2 ring-indigo-500"
+                : ""
+              : "opacity-50 cursor-not-allowed"
+          }`}
+                                onClick={() =>
+                                  handleColorChange(pxc.color?.name ?? "")
+                                } // Đúng hàm xử lý
+                                disabled={!pxc.isActive}
+                                style={{
+                                  backgroundColor: pxc.color?.name ?? "#fff",
+                                }} // Sử dụng style để đặt màu động
+                              >
+                                {/* Bạn có thể thêm nội dung nếu cần */}
+                              </Button>
+                            </div>
                           ))}
-                        </RadioGroup>
+                        </div>
                       </fieldset>
 
-                      {/* Sizes */}
                       <fieldset aria-label="Choose a size" className="mt-10">
                         <div className="flex items-center justify-between">
                           <div className="text-sm font-medium text-gray-900">
@@ -289,53 +208,34 @@ export default function Example({ product, open, setOpen }: ExampleProps) {
                           </a>
                         </div>
 
-                        <RadioGroup
-                          value={selectedSize}
-                          onChange={setSelectedSize}
-                          className="mt-4 grid grid-cols-4 gap-4"
-                        >
-                          {productDetail.sizes.map((size) => (
-                            <Radio
-                              key={size.name}
-                              value={size}
-                              disabled={!size.inStock}
-                              className={cn(
-                                size.inStock
-                                  ? "cursor-pointer bg-white text-gray-900 shadow-sm"
-                                  : "cursor-not-allowed bg-gray-50 text-gray-200",
-                                "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-[focus]:ring-2 data-[focus]:ring-indigo-500 sm:flex-1"
-                              )}
+                        <div className="flex flex-row space-x-2 mt-4">
+                          {product.productXSizes?.map((pxc) => (
+                            <div
+                              key={pxc.id}
+                              className="flex flex-col items-center"
                             >
-                              <span>{size.name}</span>
-                              {size.inStock ? (
-                                <span
-                                  aria-hidden="true"
-                                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-[focus]:border group-data-[checked]:border-indigo-500"
-                                />
-                              ) : (
-                                <span
-                                  aria-hidden="true"
-                                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                                >
-                                  <svg
-                                    stroke="currentColor"
-                                    viewBox="0 0 100 100"
-                                    preserveAspectRatio="none"
-                                    className="absolute inset-0 size-full stroke-2 text-gray-200"
-                                  >
-                                    <line
-                                      x1={0}
-                                      x2={100}
-                                      y1={100}
-                                      y2={0}
-                                      vectorEffect="non-scaling-stroke"
-                                    />
-                                  </svg>
-                                </span>
-                              )}
-                            </Radio>
+                              <Button
+                                variant="outline"
+                                type="button"
+                                className={`h-10 w-10 rounded-full border-2 
+                ${
+                  pxc.isActive
+                    ? selectedSize?.name === pxc.size?.name
+                      ? "bg-indigo-600 text-white border-indigo-600"
+                      : "bg-white text-gray-900 border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-indigo-500"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                } 
+                flex items-center justify-center text-sm font-medium transition-all duration-200 ease-in-out`}
+                                onClick={() =>
+                                  handleSizeChange(pxc.size?.name ?? "")
+                                }
+                                disabled={!pxc.isActive}
+                              >
+                                {pxc.size?.name}
+                              </Button>
+                            </div>
                           ))}
-                        </RadioGroup>
+                        </div>
                       </fieldset>
 
                       <Button

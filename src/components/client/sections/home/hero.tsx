@@ -88,7 +88,7 @@ export function Hero() {
           pageSize: 100,
           pageNumber: 1,
           isFeatured: true,
-          isDeleted: [false],
+          isDeleted: false,
         };
         const response = await photoService.fetchAll(query);
         const photos = response.data?.results ?? [];

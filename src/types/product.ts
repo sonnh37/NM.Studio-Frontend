@@ -1,34 +1,32 @@
 import { BaseEntity } from "./base";
 import { Category, SubCategory } from "./category";
-import { Color } from "./color";
+import { ProductXColor } from "./product-x-color";
 import { ProductXPhoto } from "./product-x-photo";
-import { Size } from "./size";
+import { ProductXSize } from "./product-x-size";
 
 export interface Product extends BaseEntity {
-  sku?: string;
-  slug?: string;
-  subCategoryId?: string;
-  sizeId?: string;
-  colorId?: string;
-  name?: string;
-  price?: number;
-  description?: string;
-  color?: Color; // Định nghĩa Color nếu cần
-  subCategory?: SubCategory;
-  size?: Size; // Định nghĩa Size nếu cần
-  status: ProductStatus; // Định nghĩa ProductStatus nếu cần
-  productXPhotos: ProductXPhoto[];
+  sku?: string | null | undefined;
+  slug?: string | null | undefined;
+  subCategoryId?: string | null | undefined;
+  name?: string | null | undefined;
+  price?: number | null | undefined;
+  description?: string | null | undefined;
+  subCategory?: SubCategory | null | undefined;
+  status: ProductStatus | null | undefined;
+  productXPhotos?: ProductXPhoto[];
+  productXColors?: ProductXColor[];
+  productXSizes?: ProductXSize[];
 }
 
 export interface ProductRepresentativeByCategory {
-  category?: Category;
-  product?: ProductRepresentative;
+  category?: Category | null | undefined;
+  product?: ProductRepresentative | null | undefined;
 }
 
 export interface ProductRepresentative {
-  sku?: string;
-  slug?: string;
-  src?: string;
+  sku?: string | null | undefined;
+  slug?: string | null | undefined;
+  src?: string | null | undefined;
 }
 
 export enum ProductStatus {

@@ -44,7 +44,7 @@ const profileFormSchema = z.object({
     .nullable()
     .optional(),
 
-  imageUrl: z.string().nullable().optional(),
+  avatar: z.string().nullable().optional(),
 
   email: z
     .string()
@@ -104,7 +104,7 @@ export function ProfileForm({ user }: { user?: User }) {
   useEffect(() => {
     if (user) {
       form.reset(user);
-      setFirebaseLink(user.imageUrl || "");
+      setFirebaseLink(user.avatar || "");
     }
   }, [user, form]);
 
@@ -160,7 +160,7 @@ export function ProfileForm({ user }: { user?: User }) {
         {/* picture */}
         <FormField
           control={form.control}
-          name="imageUrl"
+          name="avatar"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Picture</FormLabel>

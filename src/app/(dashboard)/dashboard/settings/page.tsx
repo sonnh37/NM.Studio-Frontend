@@ -20,7 +20,7 @@ export default function SettingsProfilePage() {
         <div className="flex flex-row items-center gap-3">
           <h3 className="text-lg font-medium">Profile</h3>
           <Badge className="!rounded-2xl">
-            {getEnumLabel(Role, user?.role)}
+            {getEnumLabel(Role, user?.role!)}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground">

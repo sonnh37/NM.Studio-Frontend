@@ -1,9 +1,8 @@
 "use client";
-import { ChevronLeft, Upload } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,28 +26,19 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useRouter } from "next/navigation";
-import {
-  AlbumCreateCommand,
-  AlbumUpdateCommand,
-} from "@/types/commands/album-command";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
-import { Category, SubCategory } from "@/types/category";
+import { ButtonLoading } from "@/components/common/button-loading";
+import { FileUpload } from "@/components/custom/file-upload";
+import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputTextArea,
 } from "@/lib/form-custom-shadcn";
-import { usePreviousPath } from "@/hooks/use-previous-path";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../../../../../firebase";
-import Image from "next/image";
-import { FileUpload } from "@/components/custom/file-upload";
-import { BusinessResult } from "@/types/response/business-result";
 import { Album } from "@/types/album";
-import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
-import { ButtonLoading } from "@/components/common/button-loading";
+import { AlbumCreateCommand, AlbumUpdateCommand } from "@/types/commands/album-command";
+import { BusinessResult } from "@/types/response/business-result";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { BsPlus } from "react-icons/bs";
 
 interface AlbumFormProps {
@@ -57,7 +47,7 @@ interface AlbumFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, "Title is required").nullable(),
   description: z.string().nullable().optional(),
   background: z.string().nullable().optional(),
   createdDate: z
@@ -96,7 +86,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: AlbumUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)
@@ -114,7 +104,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: UpdateCommand = {
+        const updatedValues: AlbumUpdateCommand = {
           ...values,
           file: file,
         };
@@ -142,7 +132,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     }
 
     try {
-      const createdValues: CreateCommand = {
+      const createdValues: AlbumCreateCommand = {
         ...pendingValues,
         file: file,
       };

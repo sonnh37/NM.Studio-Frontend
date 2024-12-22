@@ -12,8 +12,7 @@ import { DisplayContent } from "@/components/client/common/display-content";
 
 export default function Page() {
   const query: BlogGetAllQuery = {
-    isNotNullSlug: true,
-    isDeleted: [false],
+    isDeleted: false,
     isFeatured: true,
     isPagination: true,
     pageSize: 1,

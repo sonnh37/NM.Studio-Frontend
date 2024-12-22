@@ -1,26 +1,24 @@
-import {columns} from "./columns";
-import {isActive_options, isDeleted_options,} from "@/components/common/filters";
-import {DataTable} from "@/components/common/data-table-generic/data-table";
-import {useEffect, useState} from "react";
-import {PhotoGetAllQuery} from "@/types/queries/photo-query";
-import {Photo} from "@/types/photo";
-import {ColumnDef} from "@tanstack/react-table";
-import {AlbumXPhotoCreateCommand, AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
-import {photoService} from "@/services/photo-service";
-import {DataOnlyTable} from "@/components/common/data-table-origin/data-only-table";
-import {GrSubtract} from "react-icons/gr";
-import {HiOutlinePlus} from "react-icons/hi";
-import {Button} from "@/components/ui/button";
-import {albumXPhotoService} from "@/services/album-x-photo-service";
-import {AlbumXPhoto} from "@/types/album-x-photo";
-import {toast} from "sonner";
-import {useQueryClient} from "@tanstack/react-query";
-import {formFilterAdvanceds} from "@/components/dashboard/sections/photos/filter-advanced-form";
+import { DataTable } from "@/components/common/data-table-generic/data-table";
+import { isActive_options, isDeleted_options, } from "@/components/common/filters";
+import { Button } from "@/components/ui/button";
+import { albumXPhotoService } from "@/services/album-x-photo-service";
+import { photoService } from "@/services/photo-service";
+import { AlbumXPhoto } from "@/types/album-x-photo";
+import { AlbumXPhotoCreateCommand, AlbumXPhotoUpdateCommand } from "@/types/commands/album-x-photo-command";
+import { Photo } from "@/types/photo";
+import { PhotoGetAllQuery } from "@/types/queries/photo-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import { GrSubtract } from "react-icons/gr";
+import { HiOutlinePlus } from "react-icons/hi";
+import { toast } from "sonner";
+import { columns } from "./columns";
 import { DataTablePhotosInAlbum } from "./data-table-photos";
 
 interface DataTablePhotosProps {
     albumId?: string;
-    albumXPhotos?: AlbumXPhotoUpdateCommand[];
+    albumXPhotos?: AlbumXPhoto[];
     tab?: number;
 }
 
@@ -34,7 +32,7 @@ export default function DataTablePhotos({
     useEffect(() => {
         const defaultQueryParams: PhotoGetAllQuery = {
             isPagination: true,
-            isDeleted: [false],
+            isDeleted: false,
             albumId: albumId,
         };
 
@@ -48,7 +46,7 @@ export default function DataTablePhotos({
         // const allSelectedAlbumXPhotos: AlbumXPhotoUpdateCommand[] = allSelected_.map((photo) => ({
         //   photoId: photo.id,
         //   albumId,
-        //   isDeleted: [false],
+        //   isDeleted: false,
         // }));
 
         // if (value) {

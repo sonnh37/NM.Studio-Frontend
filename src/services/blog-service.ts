@@ -17,44 +17,37 @@ class BlogService extends BaseService<Blog> {
   }
 
   public create = async (
-    command: CreateCommand
+    command: BlogCreateCommand
   ): Promise<BusinessResult<Blog>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "Blog");
     }
 
-    const command_ = {
-      ...command,
-    } as BlogCreateCommand;
-
-    command_.thumbnail = link ?? undefined;
+    command.thumbnail = link ?? undefined;
 
     return axiosInstance
-      .post<BusinessResult<Blog>>(this.endpoint, command_)
+      .post<BusinessResult<Blog>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };
 
   public update = async (
-    command: UpdateCommand
+    command: BlogUpdateCommand
   ): Promise<BusinessResult<Blog>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "Blog");
     }
 
-    const command_ = {
-      ...command,
-    } as BlogUpdateCommand;
-
-    if (link && command_.thumbnail) {
-      await this.deleteImage(command_.thumbnail);
+    if (link && command.thumbnail) {
+      await this.deleteImage(command.thumbnail);
     }
-    command_.thumbnail = link ?? command_.thumbnail;
+
+    command.thumbnail = link ?? command.thumbnail;
 
     return axiosInstance
-      .put<BusinessResult<Blog>>(this.endpoint, command_)
+      .put<BusinessResult<Blog>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };

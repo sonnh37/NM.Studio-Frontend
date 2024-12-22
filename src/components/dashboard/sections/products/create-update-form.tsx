@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { BsPlus } from "react-icons/bs";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,8 +27,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useRouter } from "next/navigation";
-import { Const } from "@/lib/const";
+import { ButtonLoading } from "@/components/common/button-loading";
 import {
   Select,
   SelectContent,
@@ -37,29 +35,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getEnumOptions } from "@/lib/utils";
-import { ProductStatus } from "@/types/product";
-import {
-  ProductCreateCommand,
-  ProductUpdateCommand,
-} from "@/types/commands/product-command";
-import { colorService } from "@/services/color-service";
-import { sizeService } from "@/services/size-service";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
-import { Category, SubCategory } from "@/types/category";
-import { categoryService } from "@/services/category-service";
+import { usePreviousPath } from "@/hooks/use-previous-path";
+import { Const } from "@/lib/const";
 import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputNumber,
   FormInputTextArea,
-  FormSelectColor,
-  FormSelectEnum,
-  FormSelectObject,
+  FormSelectEnum
 } from "@/lib/form-custom-shadcn";
-import { usePreviousPath } from "@/hooks/use-previous-path";
-import { ButtonLoading } from "@/components/common/button-loading";
+import { getEnumOptions } from "@/lib/utils";
+import { categoryService } from "@/services/category-service";
+import { colorService } from "@/services/color-service";
+import { sizeService } from "@/services/size-service";
+import { Category, SubCategory } from "@/types/category";
+import { Color } from "@/types/color";
+import {
+  ProductCreateCommand,
+  ProductUpdateCommand,
+} from "@/types/commands/product-command";
+import { ProductStatus } from "@/types/product";
+import { Size } from "@/types/size";
+import { useRouter } from "next/navigation";
 
 interface ProductFormProps {
   initialData: any | null;
@@ -67,18 +64,13 @@ interface ProductFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  sizeId: z.string().nullable().optional(),
-  colorId: z.string().nullable().optional(),
-  subCategoryId: z.string().nullable(),
-  name: z.string().min(1, "Name is required"),
-  sku: z.string(),
+  subCategoryId: z.string().nullable().optional(),
+  name: z.string().min(1, "Name is required").nullable(),
+  sku: z.string().nullable(),
   description: z.string().nullable().optional(),
-  price: z.number().default(0),
-  status: z.nativeEnum(ProductStatus),
-  createdDate: z
-    .date()
-    .optional()
-    .default(() => new Date()),
+  price: z.number().nullable().default(0),
+  status: z.nativeEnum(ProductStatus).nullable(),
+  createdDate: z.date().optional().default(new Date()),
   createdBy: z.string().nullable().optional().default(null),
   isDeleted: z.boolean().default(false),
 });
@@ -113,7 +105,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       setLoading(true);
       const values_ = values;
       if (initialData) {
-        const updatedValues = {
+        const updatedValues: ProductUpdateCommand = {
           ...values_,
         };
         console.log("check_output", updatedValues);
@@ -138,7 +130,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     try {
       console.log("check_pend", pendingValues);
       if (pendingValues) {
-        const createdValues = {
+        const createdValues: ProductCreateCommand = {
           ...pendingValues,
         };
 
@@ -160,7 +152,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: ProductUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)
@@ -328,7 +320,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                           className="mt-2 w-full"
                         />
 
-                        <div className="grid grid-cols-2 gap-3">
+                        {/* <div className="grid grid-cols-2 gap-3">
                           <FormSelectObject
                             form={form}
                             name="sizeId"
@@ -350,7 +342,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                             selectValue="id"
                             placeholder="Select color"
                           />
-                        </div>
+                        </div> */}
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <Select

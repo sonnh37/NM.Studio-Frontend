@@ -30,7 +30,7 @@ interface DataTableProps<TData> {
         queryParams: BaseQueryableQuery
     ) => Promise<BusinessResult<PagedResponse<TData>>>;
     deleteAll?: (id: string) => Promise<BusinessResult<null>>;
-    update?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
+    restore?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
     deletePermanent?: (id: string) => Promise<BusinessResult<null>>;
     columnSearch: string;
     filterEnums?: FilterEnum[];
@@ -45,7 +45,7 @@ export function DataTable<TData>({
                                      fetchData,
                                      filterEnums = [],
                                      deleteAll,
-                                     update,
+                                     restore,
                                      deletePermanent,
                                      columnSearch,
                                      formSchema,
@@ -267,7 +267,7 @@ export function DataTable<TData>({
                 <DataTableComponent
                     className={className}
                     deletePermanent={deletePermanent}
-                    update={update}
+                    restore={restore}
                     table={table}
                 />
             )}

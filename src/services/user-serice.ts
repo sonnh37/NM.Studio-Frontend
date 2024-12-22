@@ -7,6 +7,7 @@ import { BaseService } from "./base-service";
 import axios from "axios";
 import { UpdateCommand } from "@/types/commands/base-command";
 import {
+  UserCreateCommand,
   UserUpdateCommand,
   UserUpdatePasswordCommand,
 } from "@/types/commands/user-command";
@@ -16,26 +17,38 @@ class UserService extends BaseService<User> {
     super(Const.USER);
   }
 
-  public update = async (
-    command: UpdateCommand
+  public create = async (
+    command: UserCreateCommand
   ): Promise<BusinessResult<User>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "User");
     }
 
-    const command_ = {
-      ...command,
-    } as UserUpdateCommand;
-
-    if (link && command_.imageUrl) {
-      await this.deleteImage(command_.imageUrl); // Không cần xử lý lỗi ở đây
-    }
-
-    command_.imageUrl = link ?? command_.imageUrl;
+    command.avatar = link ?? undefined;
 
     return axiosInstance
-      .put<BusinessResult<User>>(this.endpoint, command_)
+      .post<BusinessResult<User>>(this.endpoint, command)
+      .then((response) => response.data)
+      .catch((error) => this.handleError(error)); // Xử lý lỗi
+  };
+
+  public update = async (
+    command: UserUpdateCommand
+  ): Promise<BusinessResult<User>> => {
+    let link = null;
+    if (command.file) {
+      link = await this.uploadImage(command.file, "User");
+    }
+
+    if (link && command.avatar) {
+      await this.deleteImage(command.avatar);
+    }
+
+    command.avatar = link ?? command.avatar;
+
+    return axiosInstance
+      .put<BusinessResult<User>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };

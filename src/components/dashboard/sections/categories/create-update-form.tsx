@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft, Upload } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
@@ -17,7 +17,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { categoryService } from "@/services/category-service";
@@ -27,25 +26,19 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { usePreviousPath } from "@/hooks/use-previous-path";
+import { Const } from "@/lib/const";
+import ConfirmationDialog, {
+  FormInput,
+  FormInputDate,
+} from "@/lib/form-custom-shadcn";
 import { useRouter } from "next/navigation";
+import { ButtonLoading } from "@/components/common/button-loading";
+import { BsPlus } from "react-icons/bs";
 import {
   CategoryCreateCommand,
   CategoryUpdateCommand,
 } from "@/types/commands/category-command";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
-import { Category, SubCategory } from "@/types/category";
-import ConfirmationDialog, {
-  FormInput,
-  FormInputDate,
-  FormInputTextArea,
-} from "@/lib/form-custom-shadcn";
-import { usePreviousPath } from "@/hooks/use-previous-path";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../../../../../firebase";
-import Image from "next/image";
-import { ButtonLoading } from "@/components/common/button-loading";
-import { BsPlus } from "react-icons/bs";
 
 interface CategoryFormProps {
   initialData: any | null;
@@ -53,9 +46,7 @@ interface CategoryFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
-  description: z.string().nullable().optional(),
-  background: z.string().nullable().optional(),
+  name: z.string().min(1, "Name is required").nullable(),
   createdDate: z
     .date()
     .optional()
@@ -80,56 +71,12 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     typeof formSchema
   > | null>(null);
 
-  const [sizes, setSizes] = useState<Size[]>([]);
-  const [colors, setColors] = useState<Color[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-
-  const previousPath = usePreviousPath();
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFirebaseLink(URL.createObjectURL(file));
-      setSelectedFile(file);
-    }
-  };
-
-  const handleImageDelete = () => {
-    setFirebaseLink("");
-    setSelectedFile(null);
-    form.setValue("background", "");
-  };
-
-  const uploadImageFirebase = async (values: z.infer<typeof formSchema>) => {
-    if (selectedFile) {
-      const storageRef = ref(storage, `Category/${selectedFile.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-
-      const uploadPromise = new Promise<string>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          null,
-          (error) => reject(error),
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
-          }
-        );
-      });
-
-      const downloadURL = await uploadPromise;
-      return { ...values, background: downloadURL };
-    }
-    return values;
-  };
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const values_ = await uploadImageFirebase(values);
+      const values_ = values;
       if (initialData) {
-        const updatedValues = {
+        const updatedValues: CategoryUpdateCommand = {
           ...values_,
         };
         console.log("check_output", updatedValues);
@@ -137,7 +84,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);
-        router.push(previousPath);
+        router.push(Const.DASHBOARD_CATEGORY_URL);
       } else {
         setPendingValues(values_);
         setShowConfirmationDialog(true);
@@ -152,8 +99,9 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
 
   const handleCreateConfirmation = async () => {
     try {
+      console.log("check_pend", pendingValues);
       if (pendingValues) {
-        const createdValues = {
+        const createdValues: CategoryCreateCommand = {
           ...pendingValues,
         };
 
@@ -175,7 +123,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: CategoryUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)
@@ -185,9 +133,10 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       form.reset({
         ...parsedInitialData,
       });
-      setFirebaseLink(parsedInitialData.background || "");
     }
   }, [initialData, form]);
+
+  const previousPath = usePreviousPath();
 
   return (
     <>
@@ -323,74 +272,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                   </CardContent>
                 </Card>
               </div>
-            </div>
-            <div className="grid gap-4 grid-cols-1 lg:gap-8">
-              {/*<Card*/}
-              {/*    className="overflow-hidden"*/}
-              {/*    x-chunk="dashboard-07-chunk-2"*/}
-
-              {/*>*/}
-              {/*    <CardHeader>*/}
-              {/*        <CardTitle>Photos</CardTitle>*/}
-              {/*        <CardDescription>*/}
-              {/*            Lipsum dolor sit amet, consectetur adipiscing elit*/}
-              {/*        </CardDescription>*/}
-              {/*    </CardHeader>*/}
-              {/*    <CardContent>*/}
-              {/*        <FormField*/}
-              {/*            form={form}*/}
-              {/*            name="categoryXPhotos"*/}
-              {/*            render={({field}) => (*/}
-              {/*                <FormItem>*/}
-              {/*                    <FormLabel>List</FormLabel>*/}
-              {/*                    <FormControl>*/}
-              {/*                        <div className="grid gap-2">*/}
-              {/*                            <Tabs defaultValue="selected" className="w-full">*/}
-              {/*                                <TabsList className="grid w-full grid-cols-2">*/}
-              {/*                                    <TabsTrigger value="selected">Selected</TabsTrigger>*/}
-              {/*                                    <TabsTrigger value="available">Available</TabsTrigger>*/}
-              {/*                                </TabsList>*/}
-              {/*                                <TabsContent value="selected">*/}
-              {/*                                    <Card>*/}
-              {/*                                        <DataTablePhotos*/}
-              {/*                                            categoryId={*/}
-              {/*                                                initialData && initialData.id*/}
-              {/*                                                    ? initialData.id*/}
-              {/*                                                    : undefined*/}
-              {/*                                            }*/}
-              {/*                                            onChange={(pxcs) => {*/}
-              {/*                                                field.onChange(pxcs);*/}
-              {/*                                            }}*/}
-              {/*                                            categoryXPhotos={field.value ?? []}*/}
-              {/*                                            tab={0}*/}
-              {/*                                        />*/}
-              {/*                                    </Card>*/}
-              {/*                                </TabsContent>*/}
-              {/*                                <TabsContent value="available">*/}
-              {/*                                    <Card>*/}
-              {/*                                        <DataTablePhotos*/}
-              {/*                                            categoryId={*/}
-              {/*                                                initialData && initialData.id*/}
-              {/*                                                    ? initialData.id*/}
-              {/*                                                    : undefined*/}
-              {/*                                            }*/}
-              {/*                                            onChange={(pxcs) => {*/}
-              {/*                                                field.onChange(pxcs);*/}
-              {/*                                            }}*/}
-              {/*                                            categoryXPhotos={field.value ?? []}*/}
-              {/*                                            tab={1}*/}
-              {/*                                        />*/}
-              {/*                                    </Card>*/}
-              {/*                                </TabsContent>*/}
-              {/*                            </Tabs>*/}
-              {/*                            <FormMessage/>*/}
-              {/*                        </div>*/}
-              {/*                    </FormControl>*/}
-              {/*                </FormItem>*/}
-              {/*            )}*/}
-              {/*        />*/}
-              {/*    </CardContent>*/}
-              {/*</Card>*/}
             </div>
           </div>
         </form>

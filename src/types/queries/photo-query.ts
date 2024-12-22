@@ -1,12 +1,12 @@
 import {BaseQueryableQuery} from "./base-query";
 
 export interface PhotoGetAllQuery extends BaseQueryableQuery {
-    title?: string;
-    description?: string;
+    title?: string | null | undefined;
+    description?: string | null | undefined;
     isFeatured?: boolean;
-    src?: string;
-    href?: string;
-    tag?: string;
-    albumId?: string;
-    productId?: string;
+    src?: string | null | undefined;
+    href?: string | null | undefined;
+    tag?: string | null | undefined;
+    albumId?: string | null | undefined;
+    productId?: string | null | undefined;
 }

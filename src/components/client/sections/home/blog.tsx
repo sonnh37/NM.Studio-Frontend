@@ -17,8 +17,8 @@ interface Studio {
 export function Blog() {
   const router = useRouter();
   const query: BlogGetAllQuery = {
-    isNotNullSlug: true,
-    isDeleted: [false],
+    
+    isDeleted: false,
     isPagination: true,
     pageSize: 3,
     pageNumber: 1,

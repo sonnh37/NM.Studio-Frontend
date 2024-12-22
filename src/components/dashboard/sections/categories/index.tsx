@@ -59,7 +59,7 @@ export default function DataTableCategorys() {
           <DataTable
             deleteAll={categoryService.delete}
             deletePermanent={categoryService.deletePermanent}
-            update={categoryService.update}
+            restore={categoryService.restore}
             columns={columns}
             fetchData={categoryService.fetchAll}
             columnSearch="name"

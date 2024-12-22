@@ -22,14 +22,14 @@ import { useSearchParams } from "next/navigation";
 interface TableComponentProps<TData> {
   table: ReactTable<TData>;
   className?: string;
-  update?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
+  restore?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
   deletePermanent?: (id: string) => Promise<BusinessResult<null>>;
 }
 
 export function DataTableComponent<TData>({
   table,
   className,
-  update,
+  restore,
   deletePermanent,
 }: TableComponentProps<TData>) {
   const queryClient = useQueryClient();
@@ -45,14 +45,14 @@ export function DataTableComponent<TData>({
   );
 
   const handleRestore = async (model: any) => {
-    if (update) {
+    if (restore) {
       try {
-        const command: UpdateCommand = { id: model.id, isDeleted: false }; // Define your command structure
-        const result = await update(command);
+        const command: UpdateCommand = { id: model.id }; // Define your command structure
+        const result = await restore(command);
         if (result.status == 1) {
           queryClient.invalidateQueries({ queryKey: ["data"] });
           toast.success(`Row with id ${model.id} restored successfully.`);
-          // Optionally, update the local state or refetch data
+          // Optionally, restore the local state or refetch data
         } else {
           toast.error(`Failed to restore row with id ${model.id}:`);
         }
@@ -69,7 +69,7 @@ export function DataTableComponent<TData>({
         if (result.status == 1) {
           queryClient.invalidateQueries({ queryKey: ["data"] });
           toast.success(`Row with id ${id} deleted permanently.`);
-          // Optionally, update the local state or refetch data
+          // Optionally, restore the local state or refetch data
         } else {
           toast.error(`Failed to delete row with id ${id}:`);
         }

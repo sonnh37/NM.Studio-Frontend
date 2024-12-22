@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
 import { Icons } from "@/components/ui/icons";
+import { Separator } from "@/components/ui/separator";
 export default function SidebarHeader() {
   const sidebar = useStore(useSidebarToggle, (state) => state);
 
   if (!sidebar) return null;
   return (
+    <>
     <Button
       className={cn(
         "transition-transform ease-in-out duration-300 mb-1",
@@ -24,7 +26,7 @@ export default function SidebarHeader() {
           aria-hidden="true"
         />
         {/* <PanelsTopLeft className="w-6 h-6 mr-1" /> */}
-        <h1
+        {/* <h1
           className={cn(
             "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
             sidebar?.isOpen === false
@@ -33,8 +35,10 @@ export default function SidebarHeader() {
           )}
         >
           NM.Studio
-        </h1>
+        </h1> */}
       </Link>
     </Button>
+    <Separator/>
+    </>
   );
 }

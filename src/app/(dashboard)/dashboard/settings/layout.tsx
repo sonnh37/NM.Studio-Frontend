@@ -1,14 +1,8 @@
 // layouts/SettingsLayout.tsx
 'use client';
-import dynamic from 'next/dynamic';
 import { Separator } from "@/components/ui/separator";
-import { SidebarNav } from "./components/sidebar-nav";
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import userSerice from "@/services/user-serice";
-import PageLoading from "@/components/common/page-loading";
-import NotFound from "@/components/client/not-found";
-import { constant } from 'lodash';
+import { SidebarNav } from "./components/sidebar-nav";
 
 // Dữ liệu sidebar
 const sidebarNavItems = [

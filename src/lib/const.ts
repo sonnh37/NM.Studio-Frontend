@@ -8,6 +8,8 @@ export class Const {
     static readonly ALBUM_X_PHOTO = "albums/albumXPhotos";
     static readonly PRODUCT = "products";
     static readonly PRODUCT_X_PHOTO = "products/productXPhotos";
+    static readonly PRODUCT_X_SIZE = "products/productXSizes";
+    static readonly PRODUCT_X_COLOR = "products/productXColors";
     static readonly SERVICE = "services";
     static readonly PHOTO = "photos";
     static readonly CATEGORY = "categories";

@@ -17,44 +17,36 @@ class AlbumService extends BaseService<Album> {
   }
 
   public create = async (
-    command: CreateCommand
+    command: AlbumCreateCommand
   ): Promise<BusinessResult<Album>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "Album");
     }
 
-    const command_ = {
-      ...command,
-    } as AlbumCreateCommand;
-
-    command_.background = link ?? undefined;
+    command.background = link ?? undefined;
 
     return axiosInstance
-      .post<BusinessResult<Album>>(this.endpoint, command_)
+      .post<BusinessResult<Album>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };
 
   public update = async (
-    command: UpdateCommand
+    command: AlbumUpdateCommand
   ): Promise<BusinessResult<Album>> => {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "Album");
     }
 
-    const command_ = {
-      ...command,
-    } as AlbumUpdateCommand;
-
-    if (link && command_.background) {
-      await this.deleteImage(command_.background);
+    if (link && command.background) {
+      await this.deleteImage(command.background);
     }
-    command_.background = link ?? command_.background;
 
+    command.background = link ?? command.background;
     return axiosInstance
-      .put<BusinessResult<Album>>(this.endpoint, command_)
+      .put<BusinessResult<Album>>(this.endpoint, command)
       .then((response) => response.data)
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };

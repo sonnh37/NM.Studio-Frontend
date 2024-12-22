@@ -25,8 +25,7 @@ export default function AlbumPage() {
     pageSize: 6,
     pageNumber: pageNumber,
     isFeatured: false,
-    isDeleted: [false],
-    isNotNullSlug: true,
+    isDeleted: false,
   });
 
   const {data: result, error } = useQuery({

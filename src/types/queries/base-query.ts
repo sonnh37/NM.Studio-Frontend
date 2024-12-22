@@ -1,15 +1,15 @@
 export interface BaseQueryableQuery {
     isPagination: boolean;
-    pageNumber?: number;
-    pageSize?: number;
-    sortField?: string;
-    sortOrder?: SortOrder;
-    fromDate?: string;
-    toDate?: string;
-    id?: string;
-    createdBy?: string;
-    lastUpdatedBy?: string;
-    isDeleted?: boolean[];
+    pageNumber?: number | null | undefined;
+    pageSize?: number | null | undefined;
+    sortField?: string | null | undefined;
+    sortOrder?: SortOrder | null | undefined;
+    fromDate?: string | null | undefined;
+    toDate?: string | null | undefined;
+    id?: string | null | undefined;
+    createdBy?: string | null | undefined;
+    lastUpdatedBy?: string | null | undefined;
+    isDeleted?: boolean | null | undefined;
 }
 
 export enum SortOrder {

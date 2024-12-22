@@ -29,7 +29,7 @@ export default function DataTablePhotos() {
       <DataTable
         deleteAll={photoService.delete}
         deletePermanent={photoService.deletePermanent}
-        update={photoService.update}
+        restore={photoService.restore}
         columns={columns}
         fetchData={photoService.fetchAll}
         columnSearch="title"

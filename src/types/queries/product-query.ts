@@ -1,21 +1,17 @@
-import {BaseQueryableQuery} from "./base-query";
+import { ProductStatus } from "../product";
+import { BaseQueryableQuery } from "./base-query";
 
 export interface ProductGetAllQuery extends BaseQueryableQuery {
-    sku?: string;
-    categoryId?: string;
-    sizeId?: string;
-    colorId?: string;
-    name?: string;
-    price?: number;
-    slug?: string;
-    isNotNullSlug: boolean;
-    description?: string;
-    categoryName?: string;
-    subCategoryName?: string;
-    sizes?: string[];
-    colors?: string[];
-}
+  sku?: string | null | undefined;
+  slug?: string | null | undefined;
+  subCategoryId?: string | null | undefined;
+  name?: string | null | undefined;
+  price?: number | null | undefined;
+  description?: string | null | undefined;
+  status?: ProductStatus | null | undefined;
 
-export interface CategoryGetAllQuery extends BaseQueryableQuery {
-    name?: string;
+  categoryName?: string | null | undefined;
+  subCategoryName?: string | null | undefined;
+  sizes?: string[];
+  colors?: string[];
 }

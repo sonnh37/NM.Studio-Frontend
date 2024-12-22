@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
 
+import { ButtonLoading } from "@/components/common/button-loading";
 import { FileUpload } from "@/components/custom/file-upload";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,15 +32,15 @@ import ConfirmationDialog, {
 } from "@/lib/form-custom-shadcn";
 import { serviceService } from "@/services/service-service";
 import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
+import { ServiceCreateCommand, ServiceUpdateCommand } from "@/types/commands/service-command";
 import { BusinessResult } from "@/types/response/business-result";
 import { Service } from "@/types/service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { BsPlus } from "react-icons/bs";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ButtonLoading } from "@/components/common/button-loading";
-import { BsPlus } from "react-icons/bs";
 
 interface ServiceFormProps {
   initialData: any | null;
@@ -48,10 +48,10 @@ interface ServiceFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required").default(""),
-  description: z.string().optional().default(""),
-  src: z.string().nullable().optional().default(""),
-  price: z.number().optional().default(0),
+  name: z.string().min(1, "Name is required").nullable(),
+  description: z.string().nullable().optional(),
+  src: z.string().nullable().optional(),
+  price: z.number().nullable().default(0),
   createdDate: z.date().optional().default(new Date()),
   createdBy: z.string().nullable().optional().default(null),
   isDeleted: z.boolean().default(false),
@@ -86,7 +86,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
 
   useEffect(() => {
     if (initialData) {
-      const parsedInitialData = {
+      const parsedInitialData: ServiceUpdateCommand = {
         ...initialData,
         createdDate: initialData.createdDate
           ? new Date(initialData.createdDate)
@@ -94,7 +94,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
       };
 
       form.reset(parsedInitialData);
-      setFirebaseLink(parsedInitialData.thumbnail || "");
+      setFirebaseLink(parsedInitialData.src || "");
     }
   }, [initialData, form]);
 
@@ -102,7 +102,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: UpdateCommand = {
+        const updatedValues: ServiceUpdateCommand = {
           ...values,
           file: file,
         };
@@ -132,7 +132,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     }
 
     try {
-      const createdValues: CreateCommand = {
+      const createdValues: ServiceCreateCommand = {
         ...pendingValues,
         file: file,
       };
