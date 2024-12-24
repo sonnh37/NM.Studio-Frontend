@@ -47,7 +47,7 @@ export function middleware(req: NextRequest) {
     } catch (error) {
         console.error("Error in middleware:", error);
         const url = new URL("/error", req.url);
-        url.searchParams.set("message", "Đã xảy ra lỗi.");
+        url.searchParams.set("message", error as string);
         return NextResponse.redirect(url);
     }
 }
