@@ -139,6 +139,8 @@ class UserService extends BaseService<User> {
         }
     };
 
+
+
     public findAccountRegisteredByGoogle = async (
         token: string
     ): Promise<BusinessResult<null>> => {
@@ -194,10 +196,10 @@ class UserService extends BaseService<User> {
             .catch((error) => this.handleError(error)); // Xử lý lỗi
     };
 
-    public checkAccess = (): Promise<BusinessResult<null>> => {
+    public getToken = (): Promise<BusinessResult<any>> => {
         return axios
-            .get<BusinessResult<null>>(
-                `${process.env.NEXT_PUBLIC_API_BASE}/users/check-access`,
+            .get<BusinessResult<any>>(
+                `${process.env.NEXT_PUBLIC_API_BASE}/users/get-token`,
                 {withCredentials: true}
             )
             .then((response) => response.data)

@@ -60,12 +60,16 @@ export const LoginForm = () => {
                     return;
                 }
 
-                const tokenResult = res.data ?? {} as LoginResponse;
-                console.log("check_token", tokenResult.token)
-                // localStorage.setItem("role", tokenResult.token);
+                userSerice.getToken().then((res) => {
+                    console.log("check_token", res)
+                    const tokenResult = res.data ?? {} as LoginResponse;
+                    // localStorage.setItem("role", tokenResult.token);
+    
+                    router.push("/dashboard");
+                    toast.success("Chào mừng bạn đã đến với Như My Studio!");
+                });
 
-                router.push("/dashboard");
-                toast.success("Chào mừng bạn đã đến với Như My Studio!");
+               
             });
         } catch (error: any) {
             console.error(error);
