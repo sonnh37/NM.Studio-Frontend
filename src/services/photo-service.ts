@@ -20,6 +20,8 @@ class PhotoService extends BaseService<Photo> {
       }
   
       command.src = link ?? undefined;
+      command.title = command.title ?? (link ?? undefined);
+
   
       return axiosInstance
         .post<BusinessResult<Photo>>(this.endpoint, command)

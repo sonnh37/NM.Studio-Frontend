@@ -14,13 +14,13 @@ export const columns: ColumnDef<Photo>[] = [
         cell: ({row}) => {
             const backgroundUrl = row.getValue("src") as string;
             return (
-                <Link href={backgroundUrl}>
+                <Link href={backgroundUrl ?? ""}>
                     <Image
                         alt={`Photo background`}
                         className="aspect-square rounded-md object-cover"
                         height={64}
                         width={64}
-                        src={backgroundUrl}
+                        src={backgroundUrl ?? ""}
                     />
                 </Link>
             );

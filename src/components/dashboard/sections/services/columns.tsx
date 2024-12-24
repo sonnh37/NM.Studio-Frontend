@@ -39,6 +39,24 @@ export const columns: ColumnDef<Service>[] = [
         },
     },
     {
+        accessorKey: "src",
+        header: "Src Image",
+        cell: ({row}) => {
+            const backgroundUrl = row.getValue("src") as string; // Lấy URL của hình ảnh từ dữ liệu service
+            return (
+                <Link href={backgroundUrl ?? ""}>
+                    <Image
+                        alt={`Service background`}
+                        className="aspect-square size-[64px] rounded-md object-cover"
+                        height={9999}
+                        width={9999}
+                        src={backgroundUrl ?? "/image-notfound.jpg"} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+                    />
+                </Link>
+            );
+        },
+    },
+    {
         accessorKey: "name",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Name"/>
@@ -53,24 +71,7 @@ export const columns: ColumnDef<Service>[] = [
             return <div className="truncate max-w-xs">{row.getValue("description")}</div>
         }
     },
-    {
-        accessorKey: "src",
-        header: "Src Image",
-        cell: ({row}) => {
-            const backgroundUrl = row.getValue("src") as string; // Lấy URL của hình ảnh từ dữ liệu service
-            return (
-                <Link href={backgroundUrl}>
-                    <Image
-                        alt={`Service background`}
-                        className="aspect-square rounded-md object-cover"
-                        height={64}
-                        width={64}
-                        src={backgroundUrl} // Sử dụng đường dẫn hình ảnh từ dữ liệu
-                    />
-                </Link>
-            );
-        },
-    },
+    
     {
         accessorKey: "price",
         header: ({column}) => (

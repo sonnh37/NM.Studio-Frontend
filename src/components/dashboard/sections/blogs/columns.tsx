@@ -45,13 +45,13 @@ export const columns: ColumnDef<Blog>[] = [
         cell: ({row}) => {
             const backgroundUrl = row.getValue("thumbnail") as string; // Lấy URL của hình ảnh từ dữ liệu blog
             return (
-                <Link href={backgroundUrl}>
+                <Link href={backgroundUrl ?? ""}>
                     <Image
                         alt={`Blog background`}
-                        className="aspect-square rounded-md object-cover"
-                        height={64}
-                        width={64}
-                        src={backgroundUrl} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+                        className="aspect-square size-[64px] rounded-md object-cover"
+                        height={9999}
+                        width={9999}
+                        src={backgroundUrl ?? ""} // Sử dụng đường dẫn hình ảnh từ dữ liệu
                     />
                 </Link>
             );

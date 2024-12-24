@@ -62,7 +62,7 @@ export function DataTablePhotosInProduct<TData>({
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
@@ -142,54 +142,45 @@ export function DataTablePhotosInProduct<TData>({
   const handleAddPhoto = () => {
     setIsLoading(true);
     // upload image firebase
-    if(selectedFile) {
-      uploadImageFirebase().then((linkFireBase) => {
-        if (linkFireBase == null) {
-          toast.error("Ảnh bị lỗi, vui lòng thử lại.");
-          setIsLoading(false);
-          return;
-        }
-        // create photo to get PhotoId
-        const photo_: PhotoCreateCommand = {
-          isFeatured: false,
-          title: selectedFile?.name,
-          src: linkFireBase,
-          href: linkFireBase,
-        };
-        photoService.create(photo_).then((response) => {
-          if (response.status === 1) {
-            const photoId = response.data?.id;
-            if (photoId) {
-              const productXPhoto_: ProductXPhotoCreateCommand = {
-                photoId: photoId,
-                productId,
-              };
-              productXPhotoService.create(productXPhoto_).then((response) => {
-                if (response.status === 1) {
-                  queryClient.invalidateQueries({
-                    queryKey: ["product", productId],
-                  });
-  
-                  toast.success(response.message);
-                  setSelectedFile(null);
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = ""; // Reset giá trị của input file
-                  }
-                } else {
-                  toast.error(response.message);
-                }
-              });
-            }
-          } else {
-            toast.error(response.message);
-          }
-          setIsLoading(false);
-        });
-      });
-    } else {
-      toast.warning("Bạn chưa chọn file ảnh");
-      setIsLoading(false)
+
+    if(!selectedFile) {
+      setIsLoading(false);
+      return;
     }
+
+    const photo_: PhotoCreateCommand = {
+      file: selectedFile,
+    };
+    photoService.create(photo_).then((response) => {
+      if (response.status === 1) {
+        const photoId = response.data?.id;
+        if (photoId) {
+          const productXPhoto_: ProductXPhotoCreateCommand = {
+            photoId: photoId,
+            productId,
+          };
+          productXPhotoService.create(productXPhoto_).then((response) => {
+            if (response.status === 1) {
+              queryClient.invalidateQueries({
+                queryKey: ["product", productId],
+              });
+
+              toast.success(response.message);
+              setSelectedFile(null);
+              
+              if (fileInputRef.current) {
+                fileInputRef.current.value = ""; // Reset giá trị của input file
+              }
+            } else {
+              toast.error(response.message);
+            }
+          });
+        }
+      } else {
+        toast.error(response.message);
+      }
+      setIsLoading(false);
+    });
   };
   return (
     <div className="space-y-4">

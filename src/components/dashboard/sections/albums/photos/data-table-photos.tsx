@@ -39,9 +39,10 @@ import {
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { X } from "lucide-react";
 import * as React from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { storage } from "../../../../../../firebase";
+import { set } from "lodash";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -84,33 +85,12 @@ export function DataTablePhotosInAlbum<TData>({
   });
 
   const isFiltered = table.getState().columnFilters.length > 0;
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // Tạo tham chiếu cho input
 
   const queryClient = useQueryClient();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const uploadImageFirebase = async (): Promise<string | null> => {
-    if (selectedFile) {
-      const storageRef = ref(storage, `Photo/${selectedFile.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-
-      const uploadPromise = new Promise<string>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          null,
-          (error) => reject(error),
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => resolve(url));
-          }
-        );
-      });
-
-      const downloadURL = await uploadPromise;
-      return downloadURL;
-    }
-    return null;
-  };
 
   const handleRemovePhoto = (photoId: string) => {
     const albumXPhoto_: AlbumXPhotoUpdateCommand = {
@@ -137,65 +117,50 @@ export function DataTablePhotosInAlbum<TData>({
 
   const handleAddPhoto = () => {
     setIsLoading(true);
-    // upload image firebase
-    uploadImageFirebase().then((linkFireBase) => {
-      if (linkFireBase == null) {
-        toast.error("Ảnh bị lỗi, vui lòng thử lại.");
-        setIsLoading(false);
-        return;
-      }
-      // create photo to get PhotoId
-      const photo_: PhotoCreateCommand = {
-        isFeatured: false,
-        title: selectedFile?.name,
-        src: linkFireBase,
-        href: linkFireBase,
-      };
-      photoService.create(photo_).then((response) => {
-        if (response.status === 1) {
-          const photoId = response.data?.id;
-          if (photoId) {
-            const albumXPhoto_: AlbumXPhotoCreateCommand = {
-              photoId: photoId,
-              albumId,
-            };
-            albumXPhotoService.create(albumXPhoto_).then((response) => {
-              if (response.status === 1) {
-                queryClient.invalidateQueries({ queryKey: ["album", albumId] });
+    // create photo to get PhotoId
+    if(!selectedFile) {
+      setIsLoading(false);
+      return;
+    }
 
-                toast.success(response.message);
-              } else {
-                toast.error(response.message);
+    const photo_: PhotoCreateCommand = {
+      file: selectedFile,
+    };
+    photoService.create(photo_).then((response) => {
+      if (response.status === 1) {
+        const photoId = response.data?.id;
+        if (photoId) {
+          const albumXPhoto_: AlbumXPhotoCreateCommand = {
+            photoId: photoId,
+            albumId,
+          };
+          albumXPhotoService.create(albumXPhoto_).then((response) => {
+            if (response.status === 1) {
+              queryClient.invalidateQueries({ queryKey: ["album", albumId] });
+
+              toast.success(response.message);
+              setSelectedFile(null);
+              
+              if (fileInputRef.current) {
+                fileInputRef.current.value = "";
               }
-            });
-          }
-        } else {
-          toast.error(response.message);
+            } else {
+              toast.error(response.message);
+            }
+          });
         }
-        setIsLoading(false);
-      });
+      } else {
+        toast.error(response.message);
+      }
+      setIsLoading(false);
     });
-
-    // const albumXPhoto_: AlbumXPhotoCreateCommand = {
-    //   photoId: row.id,
-    //   albumId,
-    // };
-    // albumXPhotoService.create(albumXPhoto_).then((response) => {
-    //   if (response.status === 1) {
-    //     queryClient.invalidateQueries({ queryKey: ["album", albumId] });
-    //     queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
-    //     toast.success(response.message);
-    //   } else {
-    //     toast.error(response.message);
-    //   }
-    // });
   };
   return (
     <div className="space-y-4">
       <div className="flex flex-row gap-3 items-end">
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="picture">Picture</Label>
-          <Input id="picture" type="file" onChange={handleFileChange} />
+          <Input id="picture" type="file" ref={fileInputRef} onChange={handleFileChange} />
         </div>
 
         {isLoading ? (
