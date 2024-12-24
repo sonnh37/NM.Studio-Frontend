@@ -45,6 +45,15 @@ export function middleware(req: NextRequest) {
                 // url.searchParams.set("message", "Bạn không có quyền truy cập.");
                 return NextResponse.redirect(url);
             }
+
+            return NextResponse.next();
+        }
+
+        if (
+            req.nextUrl.pathname.startsWith("/dashboard")
+        ) {
+            const url = new URL("/", req.url);
+            return NextResponse.redirect(url);
         }
 
         return NextResponse.next();
