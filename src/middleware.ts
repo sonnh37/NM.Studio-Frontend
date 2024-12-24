@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
     try {
         const accessToken = req.cookies.get("accessToken")?.value;
         const refreshToken = req.cookies.get("refreshToken")?.value;
-
+        console.log("check_token", accessToken, refreshToken);
         // if(!accessToken && !refreshToken) { throw new Error("Not find token!"); }
 
         if (!accessToken && refreshToken) {
