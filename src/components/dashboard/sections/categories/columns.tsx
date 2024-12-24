@@ -6,7 +6,6 @@ import React from "react";
 import {Checkbox} from "@/components/ui/checkbox";
 import {DataTableColumnHeader} from "@/components/dashboard/common/data-table/data-table-column-header";
 import Image from "next/image";
-import Link from "next/link";
 import Actions from "./actions";
 
 

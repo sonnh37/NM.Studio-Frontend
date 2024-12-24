@@ -1,4 +1,4 @@
-import { BaseQueryableQuery } from "./base-query";
+import {BaseQueryableQuery} from "./base-query";
 
 export interface CategoryGetAllQuery extends BaseQueryableQuery {
     name?: string | null | undefined;

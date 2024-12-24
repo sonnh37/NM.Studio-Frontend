@@ -13,7 +13,6 @@ const transition = {
     restSpeed: 0.001,
 };
 
-// @ts-ignore
 export const MenuItem = ({
                              setActive,
                              active,

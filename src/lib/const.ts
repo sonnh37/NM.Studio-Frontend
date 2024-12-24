@@ -16,8 +16,8 @@ export class Const {
     static readonly SUBCATEGORY = "subcategories";
     static readonly COLOR = "colors";
     static readonly SIZE = "sizes";
-    static readonly BLOG = "blogs"; 
-    static readonly USER = "users"; 
+    static readonly BLOG = "blogs";
+    static readonly USER = "users";
 
     static readonly DASHBOARD = "dashboard";
     static readonly DASHBOARD_URL = "/dashboard";

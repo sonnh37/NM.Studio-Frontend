@@ -1,81 +1,75 @@
-import { Blog } from "@/types/blog";
-import { BaseService } from "./base-service";
-import { Const } from "@/lib/const";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../../firebase";
-import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
-import { BusinessResult } from "@/types/response/business-result";
+import {Blog} from "@/types/blog";
+import {BaseService} from "./base-service";
+import {Const} from "@/lib/const";
+import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/axios-instance";
-import {
-  BlogCreateCommand,
-  BlogUpdateCommand,
-} from "@/types/commands/blog-command";
+import {BlogCreateCommand, BlogUpdateCommand,} from "@/types/commands/blog-command";
 
 class BlogService extends BaseService<Blog> {
-  constructor() {
-    super(`${Const.BLOG}`);
-  }
-
-  public create = async (
-    command: BlogCreateCommand
-  ): Promise<BusinessResult<Blog>> => {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "Blog");
+    constructor() {
+        super(`${Const.BLOG}`);
     }
 
-    command.thumbnail = link ?? undefined;
+    public create = async (
+        command: BlogCreateCommand
+    ): Promise<BusinessResult<Blog>> => {
+        let link = null;
+        if (command.file) {
+            link = await this.uploadImage(command.file, "Blog");
+        }
 
-    return axiosInstance
-      .post<BusinessResult<Blog>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
+        command.thumbnail = link ?? undefined;
 
-  public update = async (
-    command: BlogUpdateCommand
-  ): Promise<BusinessResult<Blog>> => {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "Blog");
-    }
+        return axiosInstance
+            .post<BusinessResult<Blog>>(this.endpoint, command)
+            .then((response) => response.data)
+            .catch((error) => this.handleError(error)); // Xử lý lỗi
+    };
 
-    if (link && command.thumbnail) {
-      await this.deleteImage(command.thumbnail);
-    }
+    public update = async (
+        command: BlogUpdateCommand
+    ): Promise<BusinessResult<Blog>> => {
+        let link = null;
+        if (command.file) {
+            link = await this.uploadImage(command.file, "Blog");
+        }
 
-    command.thumbnail = link ?? command.thumbnail;
+        if (link && command.thumbnail) {
+            await this.deleteImage(command.thumbnail);
+        }
 
-    return axiosInstance
-      .put<BusinessResult<Blog>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
+        command.thumbnail = link ?? command.thumbnail;
 
-  public deletePermanent = async (
-    id: string
-  ): Promise<BusinessResult<null>> => {
-    try {
-      const data = await this.fetchById(id);
-      const filePath = data.data?.thumbnail;
+        return axiosInstance
+            .put<BusinessResult<Blog>>(this.endpoint, command)
+            .then((response) => response.data)
+            .catch((error) => this.handleError(error)); // Xử lý lỗi
+    };
 
-      // Gọi API xóa trên backend
-      const response = await axiosInstance
-        .delete<BusinessResult<null>>(
-          `${this.endpoint}?id=${id}&isPermanent=true`
-        )
-        .then((res) => res.data);
+    public deletePermanent = async (
+        id: string
+    ): Promise<BusinessResult<null>> => {
+        try {
+            const data = await this.fetchById(id);
+            const filePath = data.data?.thumbnail;
 
-      // Nếu backend xóa thành công và có filePath, xóa file trên Firebase
-      if (response.status === 1 && filePath) {
-        await this.deleteImage(filePath);
-      }
+            // Gọi API xóa trên backend
+            const response = await axiosInstance
+                .delete<BusinessResult<null>>(
+                    `${this.endpoint}?id=${id}&isPermanent=true`
+                )
+                .then((res) => res.data);
 
-      return response;
-    } catch (error) {
-      return this.handleError(error); // Xử lý lỗi
-    }
-  };
+            // Nếu backend xóa thành công và có filePath, xóa file trên Firebase
+            if (response.status === 1 && filePath) {
+                await this.deleteImage(filePath);
+            }
+
+            return response;
+        } catch (error) {
+            return this.handleError(error); // Xử lý lỗi
+        }
+    };
 }
 
 export const blogService = new BlogService();

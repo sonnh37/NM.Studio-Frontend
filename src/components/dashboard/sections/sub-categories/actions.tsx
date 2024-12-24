@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {subCategoryService} from "@/services/sub-category-service";
 import {SubCategory} from "@/types/category";
-import {useQueryClient} from "@tanstack/react-query";
 import {Row} from "@tanstack/react-table";
 import {MoreHorizontal} from "lucide-react";
 import {usePathname, useRouter} from "next/navigation";
@@ -37,7 +36,7 @@ const Actions: React.FC<ActionsProps> = ({row}) => {
         //row.toggleSelected();
         router.push(`${pathName}?q=${model.id}`);
     };
-    
+
     return (
         <>
             <DropdownMenu>

@@ -110,7 +110,6 @@ export const Header = () => {
     );
 };
 
-// @ts-ignore
 export const ProductCard = ({
                                 product,
                                 translate,

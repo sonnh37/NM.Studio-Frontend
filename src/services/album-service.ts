@@ -1,80 +1,74 @@
-import { Album } from "@/types/album";
-import { BaseService } from "./base-service";
-import { Const } from "@/lib/const";
-import { CreateCommand, UpdateCommand } from "@/types/commands/base-command";
-import { BusinessResult } from "@/types/response/business-result";
-import {
-  AlbumCreateCommand,
-  AlbumUpdateCommand,
-} from "@/types/commands/album-command";
+import {Album} from "@/types/album";
+import {BaseService} from "./base-service";
+import {Const} from "@/lib/const";
+import {BusinessResult} from "@/types/response/business-result";
+import {AlbumCreateCommand, AlbumUpdateCommand,} from "@/types/commands/album-command";
 import axiosInstance from "@/lib/axios-instance";
-import { deleteObject, ref } from "firebase/storage";
-import { storage } from "../../firebase";
 
 class AlbumService extends BaseService<Album> {
-  constructor() {
-    super(`${Const.ALBUM}`);
-  }
-
-  public create = async (
-    command: AlbumCreateCommand
-  ): Promise<BusinessResult<Album>> => {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "Album");
+    constructor() {
+        super(`${Const.ALBUM}`);
     }
 
-    command.background = link ?? undefined;
+    public create = async (
+        command: AlbumCreateCommand
+    ): Promise<BusinessResult<Album>> => {
+        let link = null;
+        if (command.file) {
+            link = await this.uploadImage(command.file, "Album");
+        }
 
-    return axiosInstance
-      .post<BusinessResult<Album>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
+        command.background = link ?? undefined;
 
-  public update = async (
-    command: AlbumUpdateCommand
-  ): Promise<BusinessResult<Album>> => {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "Album");
-    }
+        return axiosInstance
+            .post<BusinessResult<Album>>(this.endpoint, command)
+            .then((response) => response.data)
+            .catch((error) => this.handleError(error)); // Xử lý lỗi
+    };
 
-    if (link && command.background) {
-      await this.deleteImage(command.background);
-    }
+    public update = async (
+        command: AlbumUpdateCommand
+    ): Promise<BusinessResult<Album>> => {
+        let link = null;
+        if (command.file) {
+            link = await this.uploadImage(command.file, "Album");
+        }
 
-    command.background = link ?? command.background;
-    return axiosInstance
-      .put<BusinessResult<Album>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
+        if (link && command.background) {
+            await this.deleteImage(command.background);
+        }
 
-  public deletePermanent = async (
-    id: string
-  ): Promise<BusinessResult<null>> => {
-    try {
-      const data = await this.fetchById(id);
-      const filePath = data.data?.background;
+        command.background = link ?? command.background;
+        return axiosInstance
+            .put<BusinessResult<Album>>(this.endpoint, command)
+            .then((response) => response.data)
+            .catch((error) => this.handleError(error)); // Xử lý lỗi
+    };
 
-      // Gọi API xóa trên backend
-      const response = await axiosInstance
-        .delete<BusinessResult<null>>(
-          `${this.endpoint}?id=${id}&isPermanent=true`
-        )
-        .then((res) => res.data);
+    public deletePermanent = async (
+        id: string
+    ): Promise<BusinessResult<null>> => {
+        try {
+            const data = await this.fetchById(id);
+            const filePath = data.data?.background;
 
-      // Nếu backend xóa thành công và có filePath, xóa file trên Firebase
-      if (response.status === 1 && filePath) {
-        await this.deleteImage(filePath);
-      }
+            // Gọi API xóa trên backend
+            const response = await axiosInstance
+                .delete<BusinessResult<null>>(
+                    `${this.endpoint}?id=${id}&isPermanent=true`
+                )
+                .then((res) => res.data);
 
-      return response;
-    } catch (error) {
-      return this.handleError(error); // Xử lý lỗi
-    }
-  };
+            // Nếu backend xóa thành công và có filePath, xóa file trên Firebase
+            if (response.status === 1 && filePath) {
+                await this.deleteImage(filePath);
+            }
+
+            return response;
+        } catch (error) {
+            return this.handleError(error); // Xử lý lỗi
+        }
+    };
 }
 
 export const albumService = new AlbumService();

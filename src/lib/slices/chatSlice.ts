@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 interface ChatState {
     isOpen: boolean;
@@ -18,5 +18,5 @@ const chatSlice = createSlice({
     },
 });
 
-export const { toggleChat } = chatSlice.actions;
+export const {toggleChat} = chatSlice.actions;
 export default chatSlice.reducer;

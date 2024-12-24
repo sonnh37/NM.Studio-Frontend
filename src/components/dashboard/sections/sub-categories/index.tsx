@@ -7,7 +7,6 @@ import {FilterEnum} from "@/types/filter-enum";
 import {formFilterAdvanceds} from "./filter-advanced-form";
 import {subCategoryService} from "@/services/sub-category-service";
 import {z} from "zod";
-import { Card } from "@/components/ui/card";
 
 const formFilterAdvancedSchema = z.object({
     id: z.string().nullable().optional(),
@@ -27,7 +26,7 @@ export default function DataTableSubCategorys() {
     ];
 
     return (
-            <DataTable
+        <DataTable
             deleteAll={subCategoryService.delete}
             deletePermanent={subCategoryService.deletePermanent}
             restore={subCategoryService.restore}

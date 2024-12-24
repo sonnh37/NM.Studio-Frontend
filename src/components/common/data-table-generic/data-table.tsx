@@ -22,7 +22,7 @@ import {useForm, useWatch} from "react-hook-form";
 import {z, ZodObject, ZodType} from "zod";
 import {DataTableToolbar} from "./data-table-toolbar";
 import {DataTableComponent} from "./data-table-component";
-import { UpdateCommand } from "@/types/commands/base-command";
+import {UpdateCommand} from "@/types/commands/base-command";
 
 interface DataTableProps<TData> {
     columns: ColumnDef<TData>[];
@@ -136,10 +136,8 @@ export function DataTable<TData>({
             if (value !== undefined && value !== null) {
                 if (Array.isArray(value) && value.every(v => typeof v === 'boolean')) {
                     filterParams[key] = value;
-                } 
-                else
-                if (typeof value === 'object' && value !== null) {
-                    filterParams[key] = JSON.stringify(value); 
+                } else if (typeof value === 'object' && value !== null) {
+                    filterParams[key] = JSON.stringify(value);
                 } else {
                     filterParams[key] = value;
                 }

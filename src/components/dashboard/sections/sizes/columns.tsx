@@ -1,7 +1,6 @@
 "use client";
 
 import {DataTableColumnHeader} from "@/components/common/data-table-generic/data-table-column-header";
-import {Badge} from "@/components/ui/badge";
 import {Checkbox} from "@/components/ui/checkbox";
 import {Size} from "@/types/size";
 import {ColumnDef} from "@tanstack/react-table";

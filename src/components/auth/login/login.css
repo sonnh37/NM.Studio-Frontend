@@ -1,47 +1,47 @@
 @keyframes neon-pulse {
-  0%,
-  100% {
-    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de,
-      0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
-  }
+    0%,
+    100% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de,
+        0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
+    }
 
-  50% {
-    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #fff, 0 0 10px #ff00de,
-      0 0 17px #ff00de, 0 0 20px #ff00de, 0 0 25px #ff00de, 0 0 37px #ff00de;
-  }
+    50% {
+        text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #fff, 0 0 10px #ff00de,
+        0 0 17px #ff00de, 0 0 20px #ff00de, 0 0 25px #ff00de, 0 0 37px #ff00de;
+    }
 }
 
 @keyframes bg-shift {
-  0% {
-    background-position: 0% 50%;
-  }
+    0% {
+        background-position: 0% 50%;
+    }
 
-  50% {
-    background-position: 100% 50%;
-  }
+    50% {
+        background-position: 100% 50%;
+    }
 
-  100% {
-    background-position: 0% 50%;
-  }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
+    0%,
+    100% {
+        transform: translateY(0);
+    }
 
-  50% {
-    transform: translateY(-20px);
-  }
+    50% {
+        transform: translateY(-20px);
+    }
 }
 
 @keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
 
-  100% {
-    transform: rotate(360deg);
-  }
+    100% {
+        transform: rotate(360deg);
+    }
 }

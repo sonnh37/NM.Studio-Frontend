@@ -3,7 +3,7 @@ import {BaseService} from "./base-service";
 import {Const} from "@/lib/const";
 import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/axios-instance";
-import { AlbumXPhotoUpdateCommand } from "@/types/commands/album-x-photo-command";
+import {AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
 
 class AlbumXPhotoService extends BaseService<AlbumXPhoto> {
     constructor() {

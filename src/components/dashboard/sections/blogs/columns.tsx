@@ -8,7 +8,7 @@ import {DataTableColumnHeader} from "@/components/dashboard/common/data-table/da
 import Image from "next/image";
 import Link from "next/link";
 import Actions from "./actions";
-import { Badge } from "@/components/ui/badge";
+import {Badge} from "@/components/ui/badge";
 
 
 export const columns: ColumnDef<Blog>[] = [

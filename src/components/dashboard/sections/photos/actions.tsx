@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {photoService} from "@/services/photo-service";
 import {Photo} from "@/types/photo";
-import {useQueryClient} from "@tanstack/react-query";
 import {Row} from "@tanstack/react-table";
 import {MoreHorizontal} from "lucide-react";
 import {usePathname, useRouter} from "next/navigation";

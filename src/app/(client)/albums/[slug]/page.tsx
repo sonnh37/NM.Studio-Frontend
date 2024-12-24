@@ -1,6 +1,5 @@
 "use client"
-import { Gallery } from "@/components/client/sections/albums/gallery";
-import dynamic from "next/dynamic";
+import {Gallery} from "@/components/client/sections/albums/gallery";
 
 export default function Page() {
     return (

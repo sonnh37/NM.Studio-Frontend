@@ -1,4 +1,4 @@
-import { CreateCommand, UpdateCommand } from "./base-command";
+import {CreateCommand, UpdateCommand} from "./base-command";
 
 export interface CategoryCreateCommand extends CreateCommand {
     name?: string | null | undefined;

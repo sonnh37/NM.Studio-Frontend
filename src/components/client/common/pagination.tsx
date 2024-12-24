@@ -1,12 +1,12 @@
 import React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 interface PaginationProps {
     currentPage: number;
     totalPages: number;
 }
 
-export function Pagination({ currentPage, totalPages }: PaginationProps) {
+export function Pagination({currentPage, totalPages}: PaginationProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 

@@ -1,15 +1,12 @@
 "use client";
 
 import * as React from "react";
-import {useRouter} from "next/navigation";
 import {MagnifyingGlassIcon} from "@radix-ui/react-icons";
 
-import {cn, isMacOs} from "@/lib/utils";
-import {useDebounce} from "@/hooks/use-debounce";
+import {isMacOs} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
-import {CommandDialog, CommandEmpty, CommandInput, CommandList,} from "@/components/ui/command";
-import { Kbd } from "@/components/client/common/kbd";
-import { useKBar } from "kbar";
+import {Kbd} from "@/components/client/common/kbd";
+import {useKBar} from "kbar";
 
 export function ProductsCombobox() {
     // const router = useRouter();
@@ -37,7 +34,7 @@ export function ProductsCombobox() {
     //     callback();
     // }, []);
 
-    const { query } = useKBar();
+    const {query} = useKBar();
 
 
     return (
@@ -57,7 +54,7 @@ export function ProductsCombobox() {
                     {isMacOs() ? "⌘" : "Ctrl"} K
                 </Kbd>
             </Button>
-           
+
         </>
     );
 }

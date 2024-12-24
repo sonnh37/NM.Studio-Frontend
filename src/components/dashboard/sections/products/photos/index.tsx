@@ -1,20 +1,20 @@
-import { DataTable } from "@/components/common/data-table-generic/data-table";
-import { isActive_options, isDeleted_options, } from "@/components/common/filters";
-import { Button } from "@/components/ui/button";
-import { photoService } from "@/services/photo-service";
-import { productXPhotoService } from "@/services/product-x-photo-service";
-import { ProductXPhotoCreateCommand, ProductXPhotoUpdateCommand } from "@/types/commands/product-x-photo-command";
-import { Photo } from "@/types/photo";
-import { ProductXPhoto } from "@/types/product-x-photo";
-import { PhotoGetAllQuery } from "@/types/queries/photo-query";
-import { useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
-import { GrSubtract } from "react-icons/gr";
-import { HiOutlinePlus } from "react-icons/hi";
-import { toast } from "sonner";
-import { columns } from "./columns";
-import { DataTablePhotosInProduct } from "./data-table-photos";
+import {DataTable} from "@/components/common/data-table-generic/data-table";
+import {isActive_options, isDeleted_options,} from "@/components/common/filters";
+import {Button} from "@/components/ui/button";
+import {photoService} from "@/services/photo-service";
+import {productXPhotoService} from "@/services/product-x-photo-service";
+import {ProductXPhotoCreateCommand, ProductXPhotoUpdateCommand} from "@/types/commands/product-x-photo-command";
+import {Photo} from "@/types/photo";
+import {ProductXPhoto} from "@/types/product-x-photo";
+import {PhotoGetAllQuery} from "@/types/queries/photo-query";
+import {useQueryClient} from "@tanstack/react-query";
+import {ColumnDef} from "@tanstack/react-table";
+import {useEffect, useState} from "react";
+import {GrSubtract} from "react-icons/gr";
+import {HiOutlinePlus} from "react-icons/hi";
+import {toast} from "sonner";
+import {columns} from "./columns";
+import {DataTablePhotosInProduct} from "./data-table-photos";
 
 interface DataTablePhotosProps {
     productId?: string;

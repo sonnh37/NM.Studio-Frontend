@@ -71,7 +71,7 @@ export const columns: ColumnDef<Service>[] = [
             return <div className="truncate max-w-xs">{row.getValue("description")}</div>
         }
     },
-    
+
     {
         accessorKey: "price",
         header: ({column}) => (

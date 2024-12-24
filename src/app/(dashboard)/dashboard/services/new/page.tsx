@@ -1,7 +1,6 @@
 "use client";
 
-import { ServiceForm } from "@/components/dashboard/sections/services/create-update-form";
-import dynamic from "next/dynamic";
+import {ServiceForm} from "@/components/dashboard/sections/services/create-update-form";
 
 export default function Page() {
     return (

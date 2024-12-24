@@ -7,18 +7,16 @@ import {useTheme} from "next-themes";
 import {AnimatePresence, motion, useMotionValueEvent, useScroll,} from "framer-motion";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
-import {SearchIcon} from "../../../ui/search-icon";
 import {Album} from "@/types/album";
 import {Service} from "@/types/service";
 import {ServiceGetAllQuery} from "@/types/queries/service-query";
 import {AlbumGetAllQuery} from "@/types/queries/album-query";
-import {CategoryGetAllQuery} from "@/types/queries/product-query";
 import {toSlug} from "@/lib/slug-helper";
 import {albumService} from "@/services/album-service";
 import {serviceService} from "@/services/service-service";
 import {categoryService} from "@/services/category-service";
 import {Category} from "@/types/category";
-import { Input } from "@/components/ui/input";
+import {CategoryGetAllQuery} from "@/types/queries/category-query";
 
 // Define the type for the images
 type InstagramImage = {
@@ -116,12 +114,13 @@ function Navbar({className}: { className?: string }) {
 
     const [services, setServices] = useState<Service[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const serviceGetAllQuery: ServiceGetAllQuery = {
         pageNumber: 1,
         pageSize: 10,
         sortOrder: 1,
-        
+
         isPagination: true,
     };
 
@@ -129,7 +128,7 @@ function Navbar({className}: { className?: string }) {
         pageNumber: 1,
         pageSize: 8,
         sortOrder: 1,
-        
+
         isPagination: true,
     };
 
@@ -137,26 +136,21 @@ function Navbar({className}: { className?: string }) {
         isPagination: false,
     };
 
-    let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     useEffect(() => {
         const loadAlbumsAndServices = async () => {
             try {
-                const fetchedAlbums = await albumService.fetchAll(albumGetAllQuery);
-                const albums = fetchedAlbums.data?.results;
-                setAlbums(albums!);
+                const [fetchedAlbums, fetchedServices, fetchedCategories] = await Promise.all([
+                    albumService.fetchAll(albumGetAllQuery),
+                    serviceService.fetchAll(serviceGetAllQuery),
+                    categoryService.fetchAll(categoryGetAllQuery),
+                ]);
 
-                const fetchedServices = await serviceService.fetchAll(
-                    serviceGetAllQuery
-                );
-                setServices(fetchedServices.data?.results!);
-
-                const fetchedCategories = await categoryService.fetchAll(
-                    categoryGetAllQuery
-                );
-                setCategories(fetchedCategories.data?.results!);
+                setAlbums(fetchedAlbums.data?.results ?? []);
+                setServices(fetchedServices.data?.results ?? []);
+                setCategories(fetchedCategories?.data?.results ?? []);
             } catch (error) {
-                console.error("Failed to load albums and services:", error);
+                console.error("Error fetching data:", error);
             }
         };
 
@@ -166,7 +160,7 @@ function Navbar({className}: { className?: string }) {
     useMotionValueEvent(scrollYProgress, "change", (current) => {
         // Check if current is not undefined and is a number
         if (typeof current === "number") {
-            let direction = current! - scrollYProgress.getPrevious()!;
+            const direction = current! - scrollYProgress.getPrevious()!;
 
             if (scrollYProgress.get() < 0.05) {
                 setVisible(false);
@@ -212,9 +206,8 @@ function Navbar({className}: { className?: string }) {
                     <div className="flex gap-5">
                         <MenuItem
                             href="/"
-                            setActive={() => {
-                            }}
-                            active={null}
+                            setActive={setActive}
+                            active={active}
                             item="Home"
                         ></MenuItem>
                         <MenuItem

@@ -3,7 +3,7 @@ import {BaseService} from "./base-service";
 import {Const} from "@/lib/const";
 import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/axios-instance";
-import { ProductXSizeUpdateCommand } from "@/types/commands/product-x-size-command";
+import {ProductXSizeUpdateCommand} from "@/types/commands/product-x-size-command";
 
 class ProductXSizeService extends BaseService<ProductXSize> {
     constructor() {
