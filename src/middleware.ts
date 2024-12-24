@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
         const accessToken = req.cookies.get("accessToken")?.value;
         const refreshToken = req.cookies.get("refreshToken")?.value;
 
-        if(!accessToken && !refreshToken) { throw new Error("Not find token!"); }
+        // if(!accessToken && !refreshToken) { throw new Error("Not find token!"); }
 
         if (!accessToken && refreshToken) {
             return NextResponse.next();
