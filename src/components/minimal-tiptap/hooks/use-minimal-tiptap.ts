@@ -44,7 +44,7 @@ const createExtensions = (placeholder: string) => [
     Paragraph,
     Text,
     BubbleMenu.configure({
-        element: document.querySelector('.menu'),
+        // element: document.querySelector('.menu'),
     }),
     Youtube.configure({
         controls: true,
