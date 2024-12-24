@@ -40,11 +40,13 @@ export function middleware(req: NextRequest) {
 
       return NextResponse.next();
     } else {
+      if (req.nextUrl.pathname.startsWith("/login")) {
+        return NextResponse.next();
+      }
       const url = new URL("/", req.url);
-      
+
       return NextResponse.redirect(url);
     }
-    
   } catch (error) {
     console.error("Error in middleware:", error);
     const url = new URL("/error", req.url);
