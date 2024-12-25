@@ -14,11 +14,35 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  const dispatch: AppDispatch = useDispatch();
+//   const dispatch: AppDispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchToken());
-  }, [dispatch]);
+//   useEffect(() => {
+//     dispatch(fetchToken());
+//   }, [dispatch]);
+
+useEffect(() => {
+    //  fetch(process.env.NEXT_PUBLIC_API_BASE+"/users/get-token", {
+    //         method: "GET",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         credentials: "include",
+    //  }).then((res) => res.json())
+    //  .then((data) => {
+    //    console.log("check_token_home", data);
+    //    // Kiểm tra nội dung của phản hồi
+    //    if (data.status === 1) {
+    //         // Token hợp lệ
+    //         console.log("Token hợp lệ:", data);
+    //    } else {
+    //      // Token không hợp lệ hoặc có lỗi xảy ra
+    //      console.error("Token không hợp lệ hoặc có lỗi xảy ra:", data.message);
+    //    }
+    //  })
+    //  .catch((error) => {
+    //    console.error("Error fetching token:", error);
+    //  });
+}, [])
 
   return (
     <Suspense fallback={<PageLoading />}>
