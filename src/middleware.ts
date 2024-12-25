@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decodeJwt } from "jose";
-import { cookies } from "next/headers";
 
 export function middleware(req: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
-    console.log("check_token", accessToken);
+    const accessToken = req.cookies.get("accessToken");
+    console.log("check_token", req.cookies);
 
     if (accessToken) {
       const decodedToken = decodeJwt(accessToken ?? "");
