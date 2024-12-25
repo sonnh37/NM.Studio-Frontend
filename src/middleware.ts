@@ -3,7 +3,7 @@ import { decodeJwt } from "jose";
 
 export function middleware(req: NextRequest) {
   try {
-    const accessToken = req.cookies.get("accessToken");
+    const accessToken = req.cookies.get("accessToken")?.value;
     console.log("check_token", req.cookies);
 
     if (accessToken) {
