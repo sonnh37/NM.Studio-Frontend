@@ -1,6 +1,6 @@
 import userSerice from '@/services/user-serice';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import Cookies from 'js-cookie';
 
 interface TokenState {
   token: string | null;
@@ -30,12 +30,12 @@ const tokenSlice = createSlice({
     setToken: (state, action) => {
       state.token = action.payload ?? null;
       if (action.payload) {
-        localStorage.setItem('token', action.payload ?? '');
+        Cookies.set('token', action.payload ?? '', { expires: 7 });
       }
     },
     clearToken: (state) => {
       state.token = null;
-      localStorage.removeItem('token');
+      Cookies.remove('token');
     },
   },
   extraReducers: (builder) => {
@@ -46,11 +46,12 @@ const tokenSlice = createSlice({
       .addCase(fetchToken.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.token = action.payload ?? null;
-        localStorage.setItem('token', action.payload ?? '');
+        Cookies.set('token', action.payload ?? '');
       })
       .addCase(fetchToken.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch token';
+        Cookies.remove('token');
       });
   },
 });

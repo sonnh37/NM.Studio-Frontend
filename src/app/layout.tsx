@@ -10,12 +10,20 @@ import store from "@/lib/store";
 import { HelmetProvider } from "react-helmet-async";
 import NextTopLoader from "nextjs-toploader";
 import AppWrapper from "./app-wrapper";
+import { Suspense } from "react";
+import PageLoading from "@/components/common/page-loading";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const queryClient = new QueryClient();
+  if (!queryClient) {
+    return null;
+  }
   return (
     <html suppressHydrationWarning={true} lang="en">
       <head>
@@ -46,7 +54,15 @@ export default function RootLayout({
             defaultTheme="light"
           >
             <Provider store={store}>
-              <AppWrapper>{children}</AppWrapper>
+              <Suspense fallback={<PageLoading />}>
+                <QueryClientProvider client={queryClient}>
+                  <TooltipProvider delayDuration={100}>
+                    <HelmetProvider>
+                      <AppWrapper>{children}</AppWrapper>
+                    </HelmetProvider>
+                  </TooltipProvider>
+                </QueryClientProvider>
+              </Suspense>
             </Provider>
           </ThemeProvider>
         </SessionProvider>

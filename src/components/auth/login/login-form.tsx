@@ -68,6 +68,8 @@ export const LoginForm = () => {
           toast.warning(res.message);
           return;
         }        
+
+        dispatch(setToken(res.data!.token));
         
         router.push("/dashboard");
         toast.success("Chào mừng bạn đã đến với Như My Studio!");
