@@ -3,8 +3,9 @@ import { decodeJwt } from "jose";
 
 export function middleware(req: NextRequest) {
   try {
+    console.log("Request Headers:", req.headers);
+    console.log("All cookies:", req.cookies.getAll());
     const accessToken = req.cookies.get("accessToken")?.value;
-    console.log("check_token", req.cookies);
 
     if (accessToken) {
       const decodedToken = decodeJwt(accessToken ?? "");
@@ -23,7 +24,7 @@ export function middleware(req: NextRequest) {
       }
 
       if (req.nextUrl.pathname.startsWith("/dashboard")) {
-        if(!["admin", "staff"].includes((Role as string)?.toLowerCase()) ) {
+        if (!["admin", "staff"].includes((Role as string)?.toLowerCase())) {
           const url = new URL("/", req.url);
           return NextResponse.redirect(url);
         }
