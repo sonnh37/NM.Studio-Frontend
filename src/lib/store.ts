@@ -4,13 +4,15 @@ import widthsSlice from '@/lib/slices/widthsSlice';
 import photosSlice from "@/lib/slices/photosSlice";
 import chatSlice from "@/lib/slices/chatSlice";
 import userSlice from "@/lib/slices/userSlice";
+import tokenReducer from '@/lib/slices/tokenSlice';
 
 const store = configureStore({
     reducer: {
         widths: widthsSlice,
         photos: photosSlice,
         chat: chatSlice,
-        user: userSlice
+        user: userSlice,
+        token: tokenReducer
     },
 });
 

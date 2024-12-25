@@ -6,6 +6,7 @@ import axiosInstance from "@/lib/axios-instance";
 import {BaseService} from "./base-service";
 import axios from "axios";
 import {UserCreateCommand, UserUpdateCommand, UserUpdatePasswordCommand,} from "@/types/commands/user-command";
+import { TokenResponse } from "@/types/response/token-response";
 
 class UserService extends BaseService<User> {
     constructor() {
@@ -196,9 +197,9 @@ class UserService extends BaseService<User> {
             .catch((error) => this.handleError(error)); // Xử lý lỗi
     };
 
-    public getToken = (): Promise<BusinessResult<any>> => {
+    public getToken = (): Promise<BusinessResult<TokenResponse>> => {
         return axios
-            .get<BusinessResult<any>>(
+            .get<BusinessResult<TokenResponse>>(
                 `${process.env.NEXT_PUBLIC_API_BASE}/users/get-token`,
                 {withCredentials: true}
             )
