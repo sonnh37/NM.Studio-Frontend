@@ -3,6 +3,9 @@ import { LoginResponse } from "@/types/response/login-response";
 import axios from "axios";
 import store from "./store";
 import { fetchToken, setToken } from "./slices/tokenSlice";
+import userSerice from "@/services/user-serice";
+import { logout, setUser } from "./slices/userSlice";
+import { User } from "@/types/user";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE,
@@ -43,17 +46,22 @@ axiosInstance.interceptors.response.use(
         ).data as BusinessResult<LoginResponse>;
 
         if (refreshResponse.status !== 1) {
-          // Nếu refresh token đã hết hạn
-          window.location.href = "/login";
-          return Promise.reject(error); // Ngăn không gửi lại yêu cầu
+          // Nếu refresh token đã hết hạn tự đăng xuất ra ở frontend tránh còn lưu cache
+          axios
+            .post(
+              `${process.env.NEXT_PUBLIC_API_BASE}/users/logout`,
+              {},
+              { withCredentials: true }
+            )
+            .then((res) => {
+              window.location.href = "/login";
+              return Promise.reject(error);
+            });
         }
 
-        // Cập nhật token mới vào cookie
-        // store.dispatch(setToken(refreshResponse.data?.token));
-        // Refresh token thành công, sẽ tự động gửi lại yêu cầu ban đầu với token mới
         return axiosInstance(originalRequest); // Gửi lại yêu cầu ban đầu với token mới
       } catch (refreshError) {
-         // Nếu refresh thất bại, người dùng có thể cần đăng nhập lại
+        // Nếu refresh thất bại, người dùng có thể cần đăng nhập lại
         console.error("Refresh token failed:", refreshError);
         // store.dispatch(setToken(null));
       }
@@ -61,7 +69,7 @@ axiosInstance.interceptors.response.use(
 
     // Not access permission
     if (error.response?.status === 403) {
-      window.location.href = "/";
+      window.location.href = "/error/403";
       return Promise.reject(error); // Ngăn không gửi lại yêu cầu
     }
 

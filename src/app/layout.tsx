@@ -11,7 +11,7 @@ import { HelmetProvider } from "react-helmet-async";
 import NextTopLoader from "nextjs-toploader";
 import AppWrapper from "./app-wrapper";
 import { Suspense } from "react";
-import PageLoading from "@/components/common/page-loading";
+import LoadingPage from "@/components/common/loading-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -54,7 +54,7 @@ export default function RootLayout({
             defaultTheme="light"
           >
             <Provider store={store}>
-              <Suspense fallback={<PageLoading />}>
+              <Suspense fallback={<LoadingPage />}>
                 <QueryClientProvider client={queryClient}>
                   <TooltipProvider delayDuration={100}>
                     <HelmetProvider>

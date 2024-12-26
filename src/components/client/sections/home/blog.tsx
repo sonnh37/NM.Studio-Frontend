@@ -1,14 +1,15 @@
-import ErrorPage from "@/app/(client)/error/page";
-import {Button} from "@/components/ui/button";
-import {Const} from "@/lib/const";
-import {convertHtmlToPlainText} from "@/lib/utils";
-import {blogService} from "@/services/blog-service";
-import {BlogGetAllQuery} from "@/types/queries/blog-query";
-import {useQuery} from "@tanstack/react-query";
-import {motion} from "framer-motion";
+import ErrorSystem from "@/components/common/errors/error-system";
+import LoadingPage from "@/components/common/loading-page";
+import { Button } from "@/components/ui/button";
+import { Const } from "@/lib/const";
+import { convertHtmlToPlainText } from "@/lib/utils";
+import { blogService } from "@/services/blog-service";
+import { BlogGetAllQuery } from "@/types/queries/blog-query";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface Studio {
     title: string;
@@ -25,7 +26,7 @@ export function Blog() {
         pageSize: 3,
         pageNumber: 1,
     };
-    const {data: blogs = [], error} = useQuery({
+    const {data: blogs = [], isLoading, isError, error} = useQuery({
         queryKey: ["fetchBlogs", query],
         queryFn: async () => {
             const response = await blogService.fetchAll(query);
@@ -33,9 +34,11 @@ export function Blog() {
         },
     });
 
-    if (error) {
+if (isLoading) return <LoadingPage/>;
+
+    if (isError) {
         console.log("Error fetching:", error);
-        return <ErrorPage/>;
+        return <ErrorSystem/>;
     }
 
     return (

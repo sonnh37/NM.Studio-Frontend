@@ -2,7 +2,7 @@
 import InformationChat from "@/components/client/common/information-chat";
 import Footer from "@/components/client/layouts/footer";
 import BreadcrumbClient from "@/components/client/layouts/navbar/breadcrumb";
-import PageLoading from "@/components/common/page-loading";
+import LoadingPage from "@/components/common/loading-page";
 import dynamic from "next/dynamic";
 import React, {Suspense} from "react";
 
@@ -21,7 +21,7 @@ export default function HomeLayout({
         <>
             <SiteHeader user={null}/>
             <BreadcrumbClient/>
-            <Suspense fallback={<PageLoading/>}>{children}</Suspense>
+            <Suspense fallback={<LoadingPage/>}>{children}</Suspense>
             <Footer/>
             <InformationChat/>
         </>

@@ -36,20 +36,6 @@ export const LoginForm = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  useEffect(() => {
-    // Lấy thông báo từ query string
-    const message = searchParams.get("message");
-
-    if (message) {
-      // Hiển thị thông báo (thay alert bằng UI thực tế)
-      toast.warning(message);
-
-      // Xóa query string khỏi URL để tránh hiển thị lại thông báo khi tải lại trang
-      const currentUrl = window.location.pathname; // URL không có query string
-      router.replace(currentUrl); // Thay đổi URL mà không reload
-    }
-  }, []);
-
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -59,7 +45,6 @@ export const LoginForm = () => {
   });
 
   type FormSchema = z.infer<typeof loginSchema>;
-  const dispatch = useDispatch();
 
   const onSubmit = (data: FormSchema) => {
     try {
@@ -69,8 +54,6 @@ export const LoginForm = () => {
           return;
         }        
 
-        dispatch(setToken(res.data!.token));
-        
         router.push("/dashboard");
         toast.success("Chào mừng bạn đã đến với Như My Studio!");
       });

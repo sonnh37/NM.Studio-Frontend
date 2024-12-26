@@ -1,36 +1,19 @@
-import {cn} from "@/lib/utils";
-import {useStore} from "@/hooks/use-store";
-import {Menu} from "@/components/dashboard/common/menu";
-import {useSidebarToggle} from "@/hooks/use-sidebar-toggle";
+import { Menu } from "@/components/dashboard/common/menu";
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
+import { useStore } from "@/hooks/use-store";
+import { RootState } from "@/lib/store";
+import { cn } from "@/lib/utils";
+import { User } from "@/types/user";
+import { useSelector } from "react-redux";
+import { SidebarFooter } from "./sidebar-footer";
 import SidebarHeader from "./sidebar-header";
-import {SidebarFooter} from "./sidebar-footer";
-import {useQuery} from "@tanstack/react-query";
-import {User} from "@/types/user";
-import userSerice from "@/services/user-serice";
-import {useDispatch} from "react-redux";
-import {setUser} from "@/lib/slices/userSlice";
 
 export function Sidebar() {
-    const dispatch = useDispatch();
-    const {
-        data: user,
-        isLoading,
-        isError,
-        error,
-    } = useQuery({
-        queryKey: ["fetchUser"],
-        queryFn: async () => {
-            const res = await userSerice.getCurrentUser();
-            console.log("check_user", res)
-            dispatch(setUser(res.data ?? ({} as User)));
-            return res.data;
-        },
-        refetchOnWindowFocus: false,
-    });
-
+    const user = useSelector((state: RootState) => state.user.user);
     const sidebar = useStore(useSidebarToggle, (state) => state);
 
     if (!sidebar) return null;
+
     return (
         <aside
             className={cn(

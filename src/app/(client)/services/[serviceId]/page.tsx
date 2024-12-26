@@ -1,59 +1,66 @@
 "use client";
-import {DisplayContent} from "@/components/client/common/display-content";
-import {formatDate} from "@/lib/utils";
-import {serviceService} from "@/services/service-service";
-import {ServiceGetAllQuery} from "@/types/queries/service-query";
-import {Service} from "@/types/service";
-import {useQuery} from "@tanstack/react-query";
-import ErrorPage from "../../error/page";
+import { DisplayContent } from "@/components/client/common/display-content";
+import ErrorSystem from "@/components/common/errors/error-system";
+import LoadingPage from "@/components/common/loading-page";
+import { formatDate } from "@/lib/utils";
+import { serviceService } from "@/services/service-service";
+import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { Service } from "@/types/service";
+import { useQuery } from "@tanstack/react-query";
 
-export default function Page({params}: { params: { serviceId: string } }) {
-    const {serviceId} = params;
-    const query: ServiceGetAllQuery = {
+export default function Page({ params }: { params: { serviceId: string } }) {
+  const { serviceId } = params;
+  const query: ServiceGetAllQuery = {
+    isDeleted: false,
+    isPagination: true,
+    pageSize: 1,
+    pageNumber: 1,
+    slug: serviceId,
+  };
 
-        isDeleted: false,
-        isPagination: true,
-        pageSize: 1,
-        pageNumber: 1,
-        slug: serviceId,
-    };
+  const {
+    data: service,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchService"],
+    queryFn: async () => {
+      const response = await serviceService.fetchAll(query);
+      return response.data?.results?.[0] as Service;
+    },
+  });
 
-    const {data: service, error} = useQuery({
-        queryKey: ["fetchService"],
-        queryFn: async () => {
-            const response = await serviceService.fetchAll(query);
-            return response.data?.results?.[0] as Service;
-        },
-    });
+  if (isLoading) return <LoadingPage />;
 
-    if (error) {
-        console.log("Error fetching:", error);
-        return <ErrorPage/>;
-    }
+  if (isError) {
+    console.log("Error fetching:", error);
+    return <ErrorSystem />;
+  }
 
-    return (
-        <>
-            {service && (
-                <div className="service-details container mx-auto py-16 space-y-8">
-                    <div className="grid justify-center gap-8">
-                        <div className="grid justify-center gap-2 ">
-                            <h1 className="text-4xl text-center">{service.name}</h1>
-                            <div className="flex flex-row justify-center gap-4">
-                                <p className="text-gray-500 text-sm">
-                                    {service.createdBy ?? "Admin"}
-                                </p>
-                                <p className="text-gray-500 text-sm">|</p>
-                                <p className="text-gray-500 text-sm">
-                                    {formatDate(service.createdDate)}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="container">
-                        <DisplayContent value={service.description ?? ""}/>
-                    </div>
-                </div>
-            )}
-        </>
-    );
+  return (
+    <>
+      {service && (
+        <div className="service-details container mx-auto py-16 space-y-8">
+          <div className="grid justify-center gap-8">
+            <div className="grid justify-center gap-2 ">
+              <h1 className="text-4xl text-center">{service.name}</h1>
+              <div className="flex flex-row justify-center gap-4">
+                <p className="text-gray-500 text-sm">
+                  {service.createdBy ?? "Admin"}
+                </p>
+                <p className="text-gray-500 text-sm">|</p>
+                <p className="text-gray-500 text-sm">
+                  {formatDate(service.createdDate)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="container">
+            <DisplayContent value={service.description ?? ""} />
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
