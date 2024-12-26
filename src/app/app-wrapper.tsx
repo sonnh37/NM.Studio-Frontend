@@ -14,11 +14,11 @@ import { Suspense } from "react";
 import userSerice from "@/services/user-serice";
 
 const AppWrapper = ({ children }: { children: React.ReactNode }) => {
-    const dispatch: AppDispatch = useDispatch();
+    // const dispatch: AppDispatch = useDispatch();
 
-    useEffect(() => {
-      dispatch(fetchToken());
-    }, [dispatch]);
+    // useEffect(() => {
+    //   dispatch(fetchToken());
+    // }, [dispatch]);
 
   // const {
   //   data: result,

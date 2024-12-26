@@ -1,5 +1,8 @@
 import { BusinessResult } from "@/types/response/business-result";
+import { LoginResponse } from "@/types/response/login-response";
 import axios from "axios";
+import store from "./store";
+import { fetchToken, setToken } from "./slices/tokenSlice";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE,
@@ -37,21 +40,26 @@ axiosInstance.interceptors.response.use(
             {},
             { withCredentials: true }
           )
-        ).data as BusinessResult<null>;
+        ).data as BusinessResult<LoginResponse>;
 
         if (refreshResponse.status !== 1) {
           // Nếu refresh token đã hết hạn
           window.location.href = "/login";
           return Promise.reject(error); // Ngăn không gửi lại yêu cầu
         }
+
+        // Cập nhật token mới vào cookie
+        // store.dispatch(setToken(refreshResponse.data?.token));
         // Refresh token thành công, sẽ tự động gửi lại yêu cầu ban đầu với token mới
         return axiosInstance(originalRequest); // Gửi lại yêu cầu ban đầu với token mới
       } catch (refreshError) {
+         // Nếu refresh thất bại, người dùng có thể cần đăng nhập lại
         console.error("Refresh token failed:", refreshError);
-        // Nếu refresh thất bại, người dùng có thể cần đăng nhập lại
+        // store.dispatch(setToken(null));
       }
     }
 
+    // Not access permission
     if (error.response?.status === 403) {
       window.location.href = "/";
       return Promise.reject(error); // Ngăn không gửi lại yêu cầu
