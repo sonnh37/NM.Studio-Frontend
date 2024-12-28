@@ -6,7 +6,7 @@ import {Separator} from "@/components/ui/separator";
 import {Sheet, SheetContent, SheetHeader, SheetTrigger,} from "@/components/ui/sheet";
 import {Icons} from "@/components/ui/icons";
 
-export async function CartSheet() {
+export function CartSheet() {
     return (
         <Sheet>
             <SheetTrigger asChild>

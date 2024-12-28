@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from "react";
 import {HoveredLink, Menu, MenuItem, ProductItem} from "./navbar-menu";
 import {usePathname} from "next/navigation";
-import {useSession} from "next-auth/react";
 import {useTheme} from "next-themes";
 import {AnimatePresence, motion, useMotionValueEvent, useScroll,} from "framer-motion";
 import Link from "next/link";
@@ -100,7 +99,6 @@ export function NavbarHeader() {
 
 function Navbar({className}: { className?: string }) {
     const [active, setActive] = useState<string | null>(null);
-    const {data: session} = useSession();
     const [navbarOpen, setNavbarOpen] = useState(false);
     const navbarToggleHandler = () => setNavbarOpen(!navbarOpen);
     const {theme} = useTheme();

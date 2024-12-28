@@ -1,6 +1,4 @@
-"use client"
 import Link from "next/link";
-import * as React from "react";
 
 import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
 
@@ -23,6 +21,7 @@ import { User } from "@/types/user";
 import userSerice from "@/services/user-serice";
 import store from "@/lib/store";
 import { setUser } from "@/lib/slices/userSlice";
+import { Suspense } from "react";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
@@ -30,14 +29,12 @@ interface AuthDropdownProps
   user?: User | null;
 }
 
-export async function AuthDropdown({
+export function AuthDropdown({
   user = null,
-  className,
-  ...props
 }: AuthDropdownProps) {
   if (user == null) {
     return (
-      <Button size="sm" className={cn(className)} {...props} asChild>
+      <Button size="sm" asChild>
         <Link href="/login">
           Sign In
           <span className="sr-only">Sign In</span>
@@ -64,8 +61,7 @@ export async function AuthDropdown({
       <DropdownMenuTrigger asChild>
         <Button
           variant="secondary"
-          className={cn("size-8 rounded-full", className)}
-          {...props}
+          className={cn("size-8 rounded-full")}
         >
           <Avatar className="size-8">
             <AvatarImage src={user.avatar ?? ""} alt={user.username ?? ""} />
@@ -85,7 +81,7 @@ export async function AuthDropdown({
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {/* <React.Suspense
+        <Suspense
           fallback={
             <div className="flex flex-col space-y-1.5 p-1">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -93,9 +89,9 @@ export async function AuthDropdown({
               ))}
             </div>
           }
-        > */}
-        <AuthDropdownGroup link={user.id} />
-        {/* </React.Suspense> */}
+        >
+          <AuthDropdownGroup link={user.id} />
+        </Suspense>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <div onClick={handleLogout}>

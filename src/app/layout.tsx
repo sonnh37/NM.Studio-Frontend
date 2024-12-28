@@ -1,21 +1,17 @@
 "use client";
 
-import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import store from "@/lib/store";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
-import { Toaster } from "sonner";
-import { Provider } from "react-redux";
-import store from "@/lib/store";
-import { HelmetProvider } from "react-helmet-async";
 import NextTopLoader from "nextjs-toploader";
-import AppWrapper from "./app-wrapper";
-import { Suspense } from "react";
+import { HelmetProvider } from "react-helmet-async";
+import { Provider } from "react-redux";
+import { Toaster } from "sonner";
+import "./globals.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { UserAccessControl } from "@/components/common/user-access-control";
-import { LoadingPageComponent } from "@/components/common/loading-page";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function RootLayout({
   children,
@@ -36,7 +32,7 @@ export default function RootLayout({
         />
         <title>Studio</title>
       </head>
-      <body>
+      <body suppressHydrationWarning={true}>
         <NextTopLoader
           height={3}
           crawl={true}
@@ -49,23 +45,21 @@ export default function RootLayout({
           zIndex={1600}
           showAtBottom={false}
         />
-        <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            enableSystem={true}
-            defaultTheme="light"
-          >
-            <Provider store={store}>
-              <QueryClientProvider client={queryClient}>
-                <TooltipProvider delayDuration={100}>
-                  <HelmetProvider>
-                    <UserAccessControl>{children}</UserAccessControl>
-                  </HelmetProvider>
-                </TooltipProvider>
-              </QueryClientProvider>
-            </Provider>
-          </ThemeProvider>
-        </SessionProvider>
+        <ThemeProvider
+          attribute="class"
+          enableSystem={true}
+          defaultTheme="light"
+        >
+          <Provider store={store}>
+            <QueryClientProvider client={queryClient}>
+              <TooltipProvider delayDuration={100}>
+                <HelmetProvider>
+                  <UserAccessControl>{children}</UserAccessControl>
+                </HelmetProvider>
+              </TooltipProvider>
+            </QueryClientProvider>
+          </Provider>
+        </ThemeProvider>
         <Toaster
           position="top-center"
           richColors

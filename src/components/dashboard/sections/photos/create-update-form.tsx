@@ -30,7 +30,7 @@ const formSchema = z.object({
     id: z.string().optional(),
     title: z.string().min(1, "Title is required").nullable(),
     description: z.string().nullable().optional(),
-    src: z.string().nullable(),
+    src: z.string().nullable().optional(),
     href: z.string().nullable().optional(),
     tag: z.string().nullable().optional(),
     createdDate: z

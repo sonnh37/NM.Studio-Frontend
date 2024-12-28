@@ -1,0 +1,50 @@
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { useScrollVisibility } from "@/hooks/use-scroll-visibility";
+import { siteConfig } from "@/config/site";
+import { Category } from "@/types/category";
+import { Service } from "@/types/service";
+import { Album } from "@/types/album";
+import { User } from "@/types/user";
+
+// Dynamically import MainNav and MobileNav with React.memo
+const MainNav = dynamic(() => import("../main-nav").then(mod => mod.MainNav), { ssr: false });
+const MobileNav = dynamic(() => import("../mobile-nav").then(mod => mod.MobileNav), { ssr: false });
+
+interface HeaderMainProps {
+    categories: Category[];
+    services: Service[];
+    albums: Album[];
+    user?: User | null;
+}
+
+export const HeaderMain = ({ categories, services, albums, user }: HeaderMainProps) => {
+    const { visible, isTop } = useScrollVisibility();
+
+    return (
+        <motion.div
+          initial={{ opacity: 1, y: 0 }}
+          animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
+          transition={{ duration: isTop ? 0 : 0.5 }}
+          className={cn(
+            "sticky top-0 z-[1000] w-full transition-colors duration-300",
+            "bg-transparent hover:bg-white dark:hover:bg-slate-950",
+            "group backdrop-blur-3xl"
+          )}
+        >
+          <div className="w-full flex justify-center">
+            <div className="container flex h-14 items-center justify-between mx-auto">
+              <MainNav
+                categories={categories}
+                services={services}
+                albums={albums}
+                user={user}
+                items={siteConfig.mainNav}
+              />
+              <MobileNav items={siteConfig.mainNav} user={user} />
+            </div>
+          </div>
+        </motion.div>
+    );
+};

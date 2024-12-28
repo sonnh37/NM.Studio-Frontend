@@ -31,10 +31,7 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
     queryKey: ["getCurrentUser"],
     queryFn: async () => {
       const response = await axiosInstance.get<BusinessResult<User>>(
-        `${process.env.NEXT_PUBLIC_API_BASE}/users/info`,
-        {
-          withCredentials: true,
-        }
+        `${process.env.NEXT_PUBLIC_API_BASE}/users/info`
       );
 
       return response.data;

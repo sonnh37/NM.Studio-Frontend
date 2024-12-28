@@ -58,8 +58,8 @@ export function Feature() {
                         </p>
                     </motion.div>
                     <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-                        {studio.map((product) => (
-                            <div className="relative hover:shadow-xl rounded-xl">
+                        {studio.map((product, index) => (
+                            <div key={index} className="relative hover:shadow-xl rounded-xl">
                                 <div className="overflow-hidden rounded-xl">
                                     <motion.div
                                         className=""

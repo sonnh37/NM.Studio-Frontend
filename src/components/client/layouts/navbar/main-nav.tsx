@@ -1,7 +1,5 @@
-import * as React from "react";
-import { useEffect } from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/ui/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,28 +9,19 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Icons } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 import { MainNavItem } from "@/types";
-import { albumService } from "@/services/album-service";
-import { categoryService } from "@/services/category-service";
-import { serviceService } from "@/services/service-service";
 import { Album } from "@/types/album";
 import { Category } from "@/types/category";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { Service } from "@/types/service";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "./mode-toggle";
-import { ProductsCombobox } from "../../common/products-combobox";
-import { CartSheet } from "../../common/cart-sheet";
-import { CategoryGetAllQuery } from "@/types/queries/category-query";
-import { AuthDropdown } from "./auth-dropdown";
 import { User } from "@/types/user";
-import { useQuery } from "@tanstack/react-query";
-import userSerice from "@/services/user-serice";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import Link from "next/link";
+import * as React from "react";
+import { CartSheet } from "../../common/cart-sheet";
+import { ProductsCombobox } from "../../common/products-combobox";
 
+import { ModeToggle } from "./mode-toggle";
+import { AuthDropdown } from "./auth-dropdown";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -42,7 +31,13 @@ interface MainNavProps {
   albums: Album[];
 }
 
-export function MainNav({ items, user = null, categories = [], services = [], albums = [] }: MainNavProps) {
+export function MainNav({
+  items,
+  user = null,
+  categories = [],
+  services = [],
+  albums = [],
+}: MainNavProps) {
   return (
     <>
       <div className="hidden gap-6 lg:flex justify-between mx-auto w-full">

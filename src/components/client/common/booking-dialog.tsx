@@ -1,23 +1,23 @@
 "use client";
 import { ButtonLoading } from "@/components/common/button-loading";
 import ErrorSystem from "@/components/common/errors/error-system";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import { LoadingPageComponent } from "@/components/common/loading-page";
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import {
-    FormInput,
-    FormInputDateTimePickerV2,
-    FormSelectObject,
+  FormInput,
+  FormInputDateTimePickerV2,
+  FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { toLocalISOString } from "@/lib/utils";
 import { bookingService } from "@/services/booking-service";
@@ -55,7 +55,12 @@ export function BookingDialog() {
     resolver: zodResolver(formSchema),
   });
 
-  const { data: services = [], isLoading, isError, error } = useQuery({
+  const {
+    data: services = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["fetchServices", query],
     queryFn: async () => {
       const res = await serviceService.fetchAll(query);
@@ -92,21 +97,21 @@ export function BookingDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <IoCameraOutline className="text-[#FFF] cursor-pointer  text-[40px]" />
+        <span>
+          <IoCameraOutline className="text-[#FFF] cursor-pointer text-[40px]" />
+        </span>
       </DialogTrigger>
 
       <DialogContent className="shadow-lg sm:max-w-[425px] md:max-w-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <DialogHeader>
-              <DialogTitle>
-                <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center">
-                  Vui lòng điền thông tin của bạn để
-                  <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
-                    Như My
-                  </span>{" "}
-                  có thể liên hệ qua email và số điện thoại! ✈️
-                </h4>
+              <DialogTitle className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center">
+                Vui lòng điền thông tin của bạn để
+                <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
+                  Như My
+                </span>{" "}
+                có thể liên hệ qua email và số điện thoại! ✈️
               </DialogTitle>
             </DialogHeader>
 
