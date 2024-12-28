@@ -1,7 +1,8 @@
 "use client";
 import { DisplayContent } from "@/components/client/common/display-content";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
@@ -30,8 +31,6 @@ export default function Page() {
       return response.data?.results?.[0] as Blog;
     },
   });
-
-  if (isLoading) return <LoadingPage />;
 
   if (isError) {
     console.log("Error fetching:", error);

@@ -86,7 +86,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                 const updatedValues: ProductUpdateCommand = {
                     ...values_,
                 };
-                console.log("check_output", updatedValues);
                 const response = await productService.update(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
 
@@ -106,7 +105,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         try {
-            console.log("check_pend", pendingValues);
             if (pendingValues) {
                 const createdValues: ProductCreateCommand = {
                     ...pendingValues,
@@ -169,7 +167,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({initialData}) => {
                     fetchSizes(),
                     fetchCategories(),
                 ]);
-                console.log("check_color", colors);
                 setColors(colors!);
                 setSizes(sizes!);
                 setCategories(categories!);

@@ -1,5 +1,6 @@
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { Button } from "@/components/ui/button";
 import { Const } from "@/lib/const";
 import { convertHtmlToPlainText } from "@/lib/utils";
@@ -34,7 +35,7 @@ export function Blog() {
         },
     });
 
-if (isLoading) return <LoadingPage/>;
+if (isLoading) return <LoadingPageComponent/>;
 
     if (isError) {
         console.log("Error fetching:", error);

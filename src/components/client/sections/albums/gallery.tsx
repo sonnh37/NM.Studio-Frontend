@@ -1,6 +1,8 @@
+"use client"
 import { AnimatedTestimonialsPhotos } from "@/components/client/common/animated-testimonials-photos";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { convertToISODate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { Photo } from "@/types/photo";
@@ -34,7 +36,7 @@ export function Gallery() {
     enabled: !!slug,
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

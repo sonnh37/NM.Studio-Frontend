@@ -1,14 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { useStore } from "@/hooks/use-store";
 import { Sidebar } from "@/components/dashboard/layouts/sidebars/sidebar";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
-import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import userSerice from "@/services/user-serice";
-import LoadingPage from "@/components/common/loading-page";
-
+import { useStore } from "@/hooks/use-store";
+import { cn } from "@/lib/utils";
 export default function AdminPanelLayout({
   children,
 }: {

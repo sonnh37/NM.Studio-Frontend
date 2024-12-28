@@ -104,7 +104,6 @@ const createExtensions = (placeholder: string) => [
             );
         },
         onImageRemoved({id, src}) {
-            console.log("Image removed", {id, src});
         },
         onValidationError(errors) {
             errors.forEach((error) => {

@@ -47,11 +47,10 @@ export default function ResetPasswordForm({user}: { user?: User }) {
                 const updatedValues: UserUpdatePasswordCommand = {
                     password: hashedPassword,
                 };
-                console.log("check_updatedValues", values.password);
                 const response = await userSerice.updatePassword(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
                 queryClient.invalidateQueries({
-                    queryKey: ["fetchUser"],
+                    queryKey: ["getCurrentUser"],
                 });
                 toast.success(response.message);
             }

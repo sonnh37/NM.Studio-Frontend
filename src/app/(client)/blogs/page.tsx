@@ -3,7 +3,8 @@
 import { Pagination } from "@/components/client/common/pagination";
 import { BlogsRecent } from "@/components/client/sections/blogs/blogs-recent";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { Button } from "@/components/ui/button";
 import { convertHtmlToPlainText, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
@@ -40,7 +41,7 @@ export default function AlbumPage() {
     },
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

@@ -59,7 +59,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({initialData}) => {
                 const updatedValues: CategoryUpdateCommand = {
                     ...values_,
                 };
-                console.log("check_output", updatedValues);
                 const response = await categoryService.update(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
 
@@ -79,7 +78,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         try {
-            console.log("check_pend", pendingValues);
             if (pendingValues) {
                 const createdValues: CategoryCreateCommand = {
                     ...pendingValues,

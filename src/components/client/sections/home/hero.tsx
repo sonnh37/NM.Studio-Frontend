@@ -116,8 +116,6 @@ export function Hero() {
                 navigation={true}
                 modules={[Zoom, Autoplay, Scrollbar, Pagination, Navigation]}
                 className="mySwiper"
-                onSlideChange={() => console.log("slide change")}
-                onSwiper={(swiper) => console.log(swiper)}
                 style={
                     {
                         "--swiper-navigation-color": "#000", // Màu nút điều hướng

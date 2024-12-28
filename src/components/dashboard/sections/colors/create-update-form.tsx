@@ -60,7 +60,6 @@ export const ColorForm: React.FC<ColorFormProps> = ({initialData}) => {
                 const updatedValues: ColorUpdateCommand = {
                     ...values_,
                 };
-                console.log("check_output", updatedValues);
                 const response = await colorService.update(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
 
@@ -80,7 +79,6 @@ export const ColorForm: React.FC<ColorFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         try {
-            console.log("check_pend", pendingValues);
             if (pendingValues) {
                 const createdValues: ColorCreateCommand = {
                     ...pendingValues,

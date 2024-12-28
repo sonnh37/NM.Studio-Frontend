@@ -46,9 +46,6 @@ const features = [
                 className={cn('h-full min-h-56 w-full rounded-xl')}
                 editorContentClassName="overflow-auto h-full"
                 output="json"
-                onChange={value => {
-                    console.log(value)
-                }}
                 placeholder="This is your placeholder..."
                 editable={true}
                 editorClassName="focus:outline-none px-5 py-4 h-full"

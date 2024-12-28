@@ -1,7 +1,8 @@
 "use client";
 
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { productService } from "@/services/product-service";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -25,13 +26,12 @@ const ProductHome = () => {
     queryKey: ["fetchRepresentativeByCategory"],
     queryFn: async () => {
       const res = await productService.fetchRepresentativeByCategory();
-      console.log("check_result_fetchRepresentativeByCategory", res);
 
       return res.data?.results;
     },
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

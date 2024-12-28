@@ -57,13 +57,10 @@ export class BaseService<T> {
                 isPagination: false,
             };
         }
-        console.log("check_query", query);
         const cleanedQuery = cleanQueryParams(query!);
-        console.log("check_url", `${this.endpoint}?${cleanedQuery}`);
         return axiosInstance
             .get<BusinessResult<PagedResponse<T>>>(`${this.endpoint}?${cleanedQuery}`)
             .then((response) => {
-                console.log("check_result", response.data);
                 return response.data; // Đảm bảo rằng nó trả về dữ liệu
             })
             .catch((error) => {

@@ -11,7 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import ErrorPage from "@/app/error/404/page";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { isError } from "util";
 
 export function AlbumGallery() {
@@ -36,7 +37,7 @@ export function AlbumGallery() {
       return result;
     },
   });
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

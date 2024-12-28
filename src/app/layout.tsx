@@ -11,9 +11,11 @@ import { HelmetProvider } from "react-helmet-async";
 import NextTopLoader from "nextjs-toploader";
 import AppWrapper from "./app-wrapper";
 import { Suspense } from "react";
-import LoadingPage from "@/components/common/loading-page";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { UserAccessControl } from "@/components/common/user-access-control";
+import { LoadingPageComponent } from "@/components/common/loading-page";
 
 export default function RootLayout({
   children,
@@ -54,15 +56,13 @@ export default function RootLayout({
             defaultTheme="light"
           >
             <Provider store={store}>
-              <Suspense fallback={<LoadingPage />}>
-                <QueryClientProvider client={queryClient}>
-                  <TooltipProvider delayDuration={100}>
-                    <HelmetProvider>
-                      <AppWrapper>{children}</AppWrapper>
-                    </HelmetProvider>
-                  </TooltipProvider>
-                </QueryClientProvider>
-              </Suspense>
+              <QueryClientProvider client={queryClient}>
+                <TooltipProvider delayDuration={100}>
+                  <HelmetProvider>
+                    <UserAccessControl>{children}</UserAccessControl>
+                  </HelmetProvider>
+                </TooltipProvider>
+              </QueryClientProvider>
             </Provider>
           </ThemeProvider>
         </SessionProvider>

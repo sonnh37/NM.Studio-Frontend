@@ -97,7 +97,6 @@ export function DataTableSizesInProduct<TData>({
             const updatedValues: SizeCreateCommand = {
                 name: data.name,
             };
-            console.log("check_output", data);
             sizeService.create(updatedValues).then((response) => {
                 if (response.status === 1) {
                     const sizeId = response.data?.id;

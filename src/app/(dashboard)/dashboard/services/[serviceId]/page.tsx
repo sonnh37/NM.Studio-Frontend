@@ -5,7 +5,8 @@ import { serviceService } from "@/services/service-service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import ErrorPage from "@/app/error/404/page";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import ErrorSystem from "@/components/common/errors/error-system";
 
 export default function Page() {
@@ -26,7 +27,7 @@ export default function Page() {
     enabled: !!params.serviceId,
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

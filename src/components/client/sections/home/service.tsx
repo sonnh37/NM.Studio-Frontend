@@ -1,5 +1,6 @@
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { convertHtmlToPlainText } from "@/lib/utils";
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
@@ -37,7 +38,7 @@ export function Service() {
     },
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);
@@ -121,8 +122,6 @@ export function Service() {
             //navigation={true}
             modules={[Scrollbar, Pagination, Navigation]}
             className="service-swiper"
-            onSlideChange={() => console.log("slide change")}
-            onSwiper={(swiper) => console.log(swiper)}
             style={
               {
                 "--swiper-navigation-color": "#000", // Màu nút điều hướng

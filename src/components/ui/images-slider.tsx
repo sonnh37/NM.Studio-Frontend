@@ -48,11 +48,9 @@ export const ImagesSlider = ({
                 img.onerror = reject;
             });
         });
-        console.log("check_loaded", loadPromises)
 
         Promise.all(loadPromises)
             .then((loadedImages) => {
-                console.log("check_loadedImages", loadedImages)
                 setLoadedImages(loadedImages as string[]);
                 setLoading(false);
             })

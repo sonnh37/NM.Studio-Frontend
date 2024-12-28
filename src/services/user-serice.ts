@@ -11,6 +11,8 @@ import {
   UserUpdatePasswordCommand,
 } from "@/types/commands/user-command";
 import { TokenResponse } from "@/types/response/token-response";
+import store from "@/lib/store";
+import { logout, setUser } from "@/lib/slices/userSlice";
 
 class UserService extends BaseService<User> {
   constructor() {
@@ -79,11 +81,15 @@ class UserService extends BaseService<User> {
 
   public logout = async (): Promise<BusinessResult<null>> => {
     try {
+      console.log("check_logout_client", true)
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE}/users/logout`,
         {},
         { withCredentials: true }
       );
+      if(response.data.status === 1) {
+        store.dispatch(logout());
+      }
       return response.data;
     } catch (error) {
       return this.handleError(error);
@@ -139,6 +145,11 @@ class UserService extends BaseService<User> {
       const response = await axiosInstance.get<BusinessResult<User>>(
         `${this.endpoint}/info`
       );
+      if(response.data.status === 1) {
+        store.dispatch(setUser(response.data.data ?? null));
+      } else {
+        store.dispatch(logout());
+      }
       return response.data;
     } catch (error) {
       this.handleError(error);

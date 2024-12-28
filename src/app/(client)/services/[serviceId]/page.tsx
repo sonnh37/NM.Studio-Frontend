@@ -1,7 +1,8 @@
 "use client";
 import { DisplayContent } from "@/components/client/common/display-content";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { formatDate } from "@/lib/utils";
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
@@ -31,7 +32,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
     },
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

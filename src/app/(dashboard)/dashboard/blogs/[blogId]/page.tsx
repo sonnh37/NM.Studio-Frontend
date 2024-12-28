@@ -1,6 +1,7 @@
 "use client";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { BlogForm } from "@/components/dashboard/sections/blogs/create-update-form";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/blog";
@@ -25,7 +26,7 @@ export default function Page() {
         enabled: !!params.blogId,
     });
 
-    if (isLoading) return <LoadingPage/>;
+    if (isLoading) return <LoadingPageComponent/>;
 
     if (isError) {
         console.log("Error fetching:", error);

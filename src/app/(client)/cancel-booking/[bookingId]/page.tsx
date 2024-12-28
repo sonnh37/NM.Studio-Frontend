@@ -1,6 +1,7 @@
 "use client"
 
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import SuccessBooking from "@/components/common/success-booking";
 import {bookingService} from "@/services/booking-service";
 import {useQuery} from "@tanstack/react-query";
@@ -16,7 +17,7 @@ const CancelBooking: React.FC = () => {
         refetchOnWindowFocus: false
     });
 
-    if (isLoading) return <LoadingPage/>;
+    if (isLoading) return <LoadingPageComponent/>;
     if (isError)
         return (
             <p>

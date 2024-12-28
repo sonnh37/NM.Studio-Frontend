@@ -131,7 +131,6 @@ export const FormInputEditor = <TFieldValues extends FieldValues>({
             control={form.control}
             name={name}
             render={({field}) => {
-                console.log("check_input_des", field.value);
                 return (
                     <FormItem>
                         <FormLabel className="sr-only">{label}</FormLabel>

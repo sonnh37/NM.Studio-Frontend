@@ -54,7 +54,7 @@ export const LoginForm = () => {
           return;
         }        
 
-        router.push("/dashboard");
+        window.location.reload();
         toast.success("Chào mừng bạn đã đến với Như My Studio!");
       });
     } catch (error: any) {

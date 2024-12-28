@@ -1,7 +1,8 @@
 "use client";
 import { ButtonLoading } from "@/components/common/button-loading";
 import ErrorSystem from "@/components/common/errors/error-system";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -57,7 +58,7 @@ export function BookingModal() {
     },
   });
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);
@@ -67,13 +68,11 @@ export function BookingModal() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      console.log("check_form", values);
       const date = toLocalISOString(values.bookingDate);
       const updatedValues: BookingCreateCommand = {
         ...values,
         bookingDate: date,
       };
-      console.log("check_output", updatedValues);
       const response = await bookingService.create(updatedValues);
       if (response.status != 1) throw new Error(response.message);
 

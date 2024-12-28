@@ -8,7 +8,8 @@ import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../../error/404/page";
 import { DisplayContent } from "@/components/client/common/display-content";
-import LoadingPage from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/common/loading-page";
+
 import ErrorSystem from "@/components/common/errors/error-system";
 
 export default function Page({ params }: { params: { slug: string } }) {
@@ -37,7 +38,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   const editorState = createEditorState(blog?.content ?? "");
 
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
     console.log("Error fetching:", error);

@@ -97,7 +97,6 @@ export function DataTableColorsInProduct<TData>({
             const updatedValues: ColorCreateCommand = {
                 name: data.name,
             };
-            console.log("check_output", data);
             colorService.create(updatedValues).then((response) => {
                 if (response.status === 1) {
                     const colorId = response.data?.id;

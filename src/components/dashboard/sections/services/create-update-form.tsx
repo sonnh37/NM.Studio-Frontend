@@ -67,7 +67,6 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({initialData}) => {
 
     const handleFileUpload = (file: File | null) => {
         setFile(file);
-        console.log(file);
     };
 
     useEffect(() => {

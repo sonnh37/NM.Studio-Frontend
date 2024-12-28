@@ -144,8 +144,6 @@ export function DataTable<TData>({
             }
         });
 
-        console.log("filter", filterParams)
-
         return {
             pageNumber: pagination.pageIndex + 1,
             pageSize: pagination.pageSize,

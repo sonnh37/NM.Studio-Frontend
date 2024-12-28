@@ -59,7 +59,6 @@ export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
                 const updatedValues: SizeUpdateCommand = {
                     ...values_,
                 };
-                console.log("check_output", updatedValues);
                 const response = await sizeService.update(updatedValues);
                 if (response.status != 1) throw new Error(response.message);
 
@@ -79,7 +78,6 @@ export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
 
     const handleCreateConfirmation = async () => {
         try {
-            console.log("check_pend", pendingValues);
             if (pendingValues) {
                 const createdValues: SizeCreateCommand = {
                     ...pendingValues,

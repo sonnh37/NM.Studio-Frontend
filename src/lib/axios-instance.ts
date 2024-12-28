@@ -1,11 +1,6 @@
 import { BusinessResult } from "@/types/response/business-result";
 import { LoginResponse } from "@/types/response/login-response";
 import axios from "axios";
-import store from "./store";
-import { fetchToken, setToken } from "./slices/tokenSlice";
-import userSerice from "@/services/user-serice";
-import { logout, setUser } from "./slices/userSlice";
-import { User } from "@/types/user";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE,
@@ -13,20 +8,6 @@ const axiosInstance = axios.create({
   //timeout: 10000,
 });
 
-// Thêm một interceptor để set header Authorization cho mọi yêu cầu
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem("token");
-//     if (token) {
-//       config.headers["Authorization"] = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-// Not yet
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -47,23 +28,24 @@ axiosInstance.interceptors.response.use(
 
         if (refreshResponse.status !== 1) {
           // Nếu refresh token đã hết hạn tự đăng xuất ra ở frontend tránh còn lưu cache
-          axios
-            .post(
-              `${process.env.NEXT_PUBLIC_API_BASE}/users/logout`,
-              {},
-              { withCredentials: true }
-            )
-            .then((res) => {
-              window.location.href = "/login";
-              return Promise.reject(error);
-            });
+
+          if (window.location.pathname.startsWith("/dashboard")) {
+            // admin, staff
+            window.location.href = "/login";
+          }
+          return Promise.reject(error);
         }
 
         return axiosInstance(originalRequest); // Gửi lại yêu cầu ban đầu với token mới
       } catch (refreshError) {
         // Nếu refresh thất bại, người dùng có thể cần đăng nhập lại
         console.error("Refresh token failed:", refreshError);
-        // store.dispatch(setToken(null));
+        // if (window.location.pathname.startsWith("/dashboard")) {
+        //   window.location.href = "/login";
+        // } else {
+        //   window.location.href = "/";
+        // }
+        return Promise.reject(refreshError);
       }
     }
 

@@ -35,7 +35,6 @@ export const FileUpload = ({
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (newFile: File[]) => {
-        console.log("check_file", newFile)
 
         if (newFile.length > 0 && newFile[0].type.startsWith("image/")) {
 
