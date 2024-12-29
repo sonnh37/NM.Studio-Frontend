@@ -1,42 +1,41 @@
-"use client";
-
-import { Const } from "@/lib/const";
-import { albumService } from "@/services/album-service";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import ErrorPage from "@/app/error/404/page";
+"use client"
+import { AnimatedTestimonialsPhotos } from "@/components/client/common/animated-testimonials-photos";
 import ErrorSystem from "@/components/common/errors/error-system";
 import {LoadingPageComponent} from "@/components/common/loading-page";
 
-import { isError } from "util";
+import { convertToISODate } from "@/lib/utils";
+import { albumService } from "@/services/album-service";
+import { Photo } from "@/types/photo";
+import { AlbumGetAllQuery } from "@/types/queries/album-query";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import AlbumImageGallery from "./album-image-gallery";
 
 export function AlbumGallery() {
-  const pathName = usePathname();
-
-  const queryAlbum: AlbumGetAllQuery = {
-    isPagination: true,
+  const { slug } = useParams();
+  const query: AlbumGetAllQuery = {
     isDeleted: false,
-    pageSize: pathName === `/${Const.ALBUM}` ? 60 : 16,
+    isPagination: true,
+    pageSize: 1,
+    pageNumber: 1,
+    slug: slug.toString(),
   };
 
   const {
-    data: albums = [],
+    data: album,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["fetchAlbums", queryAlbum],
+    queryKey: ["fetchAlbum", query],
     queryFn: async () => {
-      const response = await albumService.fetchAll(queryAlbum);
+      const response = await albumService.fetchAll(query);
       const result = response.data?.results ?? [];
-      return result;
+      return result[0];
     },
+    enabled: !!slug,
   });
+
   if (isLoading) return <LoadingPageComponent />;
 
   if (isError) {
@@ -44,41 +43,27 @@ export function AlbumGallery() {
     return <ErrorSystem />;
   }
 
-  return (
-    <div className="my-3 grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-4">
-      {albums!.map((album) => {
-        const path = "/albums/" + album.slug;
-        return (
-          <Link href={path} key={album.slug}>
-            <div className="relative h-[400px] isolate flex flex-col justify-end overflow-hidden rounded-none px-8 pb-8 pt-40">
-              <motion.div
-                className="absolute inset-0 w-full overflow-hidden"
-                whileHover={{ scale: 1.1 }}
-                transition={{
-                  duration: 0.3,
-                  ease: "easeOut",
-                }}
-              >
-                <Image
-                  alt="image"
-                  src={album.background ?? "/image-notfound.jpg"}
-                  width={9999}
-                  height={9999}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/5"></div>
-              </motion.div>
+  const photos = album?.albumXPhotos
+    ? album.albumXPhotos
+        .map((x) => x.photo)
+        .filter((photo): photo is Photo => photo !== undefined)
+    : [];
 
-              <h3 className="z-10 mt-3 text-3xl font-bold text-white">
-                {album.title}
-              </h3>
-              <div className="z-10 bottom-8 truncate gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
-                {album.description}
-              </div>
-            </div>
-          </Link>
-        );
-      })}
+  return (
+    <div className="container py-16 mx-auto">
+      <div className="flex flex-col justify-center mx-auto pb-8 gap-4">
+        <div className="flex flex-col mx-auto justify-center">
+          <h2 className="text-4xl text-center relative z-20">{album?.title}</h2>
+          <p className="w-full text-center text-base md:text-xs font-normal text-neutral-500 dark:text-neutral-200 mt-2 mx-auto pb-5">
+            Ngày tạo: {convertToISODate(album?.createdDate!)?.toString()}
+          </p>
+        </div>
+
+        <div className="">
+          <AnimatedTestimonialsPhotos autoplay={false} photos={photos} />
+        </div>
+      </div>
+      <AlbumImageGallery photos={photos} />
     </div>
   );
 }

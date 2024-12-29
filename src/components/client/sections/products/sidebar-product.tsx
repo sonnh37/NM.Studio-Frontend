@@ -19,7 +19,6 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import { ProductCards } from "@/components/client/sections/products/product-cards";
 import { useRouter, useSearchParams } from "next/navigation";
 import { colorService } from "@/services/color-service";
 import { sizeService } from "@/services/size-service";
@@ -31,12 +30,13 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { CategoryGetAllQuery } from "@/types/queries/category-query";
 import { TitleProvider } from "@/components/common/title-component";
+import { ProductList } from "./product-list";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function SidebarProductCards() {
+export function SidebarProduct() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -210,6 +210,7 @@ export default function SidebarProductCards() {
       });
       return response.data?.results as Color[];
     },
+    refetchOnWindowFocus: false,
   });
 
   // Fetch Sizes
@@ -222,6 +223,7 @@ export default function SidebarProductCards() {
       });
       return response.data?.results as Size[];
     },
+    refetchOnWindowFocus: false,
   });
 
   // Fetch Categories
@@ -234,6 +236,7 @@ export default function SidebarProductCards() {
       });
       return response.data?.results as Category[];
     },
+    refetchOnWindowFocus: false,
   });
 
   const { data: selectedCategory, isLoading: selectedCategoryLoading } =
@@ -248,6 +251,7 @@ export default function SidebarProductCards() {
         } as CategoryGetAllQuery);
         return response.data?.results?.[0] as Category;
       },
+      refetchOnWindowFocus: false,
       enabled: !!searchParams.get("categoryName"),
     });
 
@@ -568,7 +572,7 @@ export default function SidebarProductCards() {
 
             {/* Product grid */}
             <div className="lg:col-span-3">
-              <ProductCards />
+              <ProductList />
             </div>
           </div>
         </section>

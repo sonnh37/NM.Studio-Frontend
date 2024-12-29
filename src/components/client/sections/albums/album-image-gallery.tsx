@@ -11,11 +11,11 @@ import "yet-another-react-lightbox/plugins/counter.css";
 import {Photo} from "@/types/photo";
 import Image from "next/image";
 
-interface GalleryContentProps {
+interface AlbumImageGalleryProps {
     photos: Photo[];
 }
 
-const GalleryContent = ({photos}: GalleryContentProps) => {
+const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {
     const [index, setIndex] = useState(-1);
     const [open, setOpen] = React.useState(false);
     const [position, setPosition] = React.useState<
@@ -163,4 +163,4 @@ const GalleryContent = ({photos}: GalleryContentProps) => {
     );
 };
 
-export default GalleryContent;
+export default AlbumImageGallery;

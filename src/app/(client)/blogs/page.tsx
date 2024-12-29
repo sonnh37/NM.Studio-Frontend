@@ -4,6 +4,7 @@ import { Pagination } from "@/components/client/common/pagination";
 import { BlogsRecent } from "@/components/client/sections/blogs/blogs-recent";
 import ErrorSystem from "@/components/common/errors/error-system";
 import {LoadingPageComponent} from "@/components/common/loading-page";
+import { TitleProvider } from "@/components/common/title-component";
 
 import { Button } from "@/components/ui/button";
 import { convertHtmlToPlainText, formatDate } from "@/lib/utils";
@@ -52,7 +53,7 @@ export default function AlbumPage() {
   const totalPages = result?.data?.totalPages ?? 1;
 
   return (
-    <>
+    <TitleProvider title="Kinh nghiệm cưới" className="text-center">
       <div className="container mx-auto py-16 grid gap-8 grid-cols-3 ">
         <div className="grid col-span-2 ">
           {/* Nội dung bên trái */}
@@ -108,6 +109,6 @@ export default function AlbumPage() {
           <BlogsRecent />
         </div>
       </div>
-    </>
+    </TitleProvider>
   );
 }

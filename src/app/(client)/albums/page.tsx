@@ -1,8 +1,8 @@
 "use client"
-import {AlbumGallery} from "@/components/client/sections/albums/album-gallery";
+import {AlbumList} from "@/components/client/sections/albums/album-list";
 
 export default function Page() {
     return (
-        <AlbumGallery/>
+        <AlbumList/>
     );
 }

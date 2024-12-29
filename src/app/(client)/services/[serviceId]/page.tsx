@@ -42,7 +42,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
   return (
     <>
       {service && (
-        <div className="service-details container mx-auto py-16 space-y-8">
+        <div className="service-details container mx-auto py-8 space-y-8">
           <div className="grid justify-center gap-8">
             <div className="grid justify-center gap-2 ">
               <h1 className="text-4xl text-center">{service.name}</h1>
