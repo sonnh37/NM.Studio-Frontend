@@ -17,7 +17,7 @@ export default function HomePage() {
             className="relative flex justify-center items-center flex-col
    "
         >
-            <div className="w-full">
+            <div className="h-full w-full">
                 <Hero/>
                 <Introduce/>
                 <Feature/>

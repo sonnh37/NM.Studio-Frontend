@@ -76,39 +76,5 @@ export function AlbumHome() {
                 </div>
             </div>
         </div>
-        // <div className="py-20">
-        //     <div className="flex flex-row h-[50px] items-center justify-center  relative w-full">
-        //         <div className="container mx-auto w-full relative overflow-hidden px-4">
-        //             <motion.div
-        //                 initial={{
-        //                     opacity: 0,
-        //                     y: 0,
-        //                 }}
-        //                 animate={{
-        //                     opacity: 1,
-        //                     y: 0,
-        //                 }}
-        //                 transition={{
-        //                     duration: 1,
-        //                 }}
-        //                 className="div"
-        //             >
-        //                 <p className="text-4xl text-center relative z-20 bg-clip-text text-transparent bg-neutral-500 py-0">
-        //                     Album
-        //                 </p>
-        //                 <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
-
-        //                 </p>
-        //             </motion.div>
-        //         </div>
-        //     </div>
-        //     <AlbumGallery/>
-        //     <div className="flex pt-10 justify-center">
-        //         <button onClick={() => router.push(Const.ALBUM)}
-        //                 className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200">
-        //             Xem thêm
-        //         </button>
-        //     </div>
-        // </div>
     );
 }

@@ -27,6 +27,9 @@ import { Icons } from "@/components/ui/icons";
 import dynamic from "next/dynamic";
 import { User } from "@/types/user";
 import { AuthDropdown } from "./auth-dropdown";
+import { Category } from "@/types/category";
+import { Album } from "@/types/album";
+import { Service } from "@/types/service";
 const ModeToggle = dynamic(
   () => import("./mode-toggle").then((mod) => mod.ModeToggle),
   { ssr: true }
@@ -46,14 +49,63 @@ const CartSheet = dynamic(
 interface MobileNavProps {
   items?: MainNavItem[];
   user?: User | null;
+  categories: Category[];
+  services: Service[];
+  albums: Album[];
 }
 
-export function MobileNav({ items, user = null }: MobileNavProps) {
+export function MobileNav({
+  items,
+  user = null,
+  categories = [],
+  services = [],
+  albums = [],
+}: MobileNavProps) {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const segment = useSelectedLayoutSegment();
   const [open, setOpen] = React.useState(false);
 
   if (isDesktop) return null;
+
+  const updatedItems = [...(items || [])];
+
+  updatedItems.push({
+    title: "Danh mục",
+    items: categories.map((category) => ({
+      title: category.name ?? "N/A",
+      href: `/products?categoryName=${category.name}`,
+      items:
+        category.subCategories?.map((subCategory) => ({
+          title: subCategory.name ?? "N/A",
+          href: `/products?categoryName=${category.name}&subCategoryName=${subCategory.name}`,
+          items: [],
+        })) ?? [],
+    })),
+  });
+
+  updatedItems.push({
+    title: "Dịch vụ",
+    items: services.map((service) => ({
+      title: service.name ?? "N/A",
+      href: `/services/${service.slug}`,
+      items: [],
+    })),
+  });
+
+  updatedItems.push({
+    title: "Albums",
+    items: albums.map((album) => ({
+      title: album.title ?? "N/A",
+      href: `/albums/${album.slug}`,
+      items: [],
+    })),
+  });
+
+  updatedItems.push({
+    title: "Kinh nghiệm cưới",
+    href: "/blogs",
+    items: [],
+  });
 
   return (
     <>
@@ -81,14 +133,14 @@ export function MobileNav({ items, user = null }: MobileNavProps) {
               }}
             >
               <Icons.logo className="mr-2 size-4" aria-hidden="true" />
-              <span className="font-bold">{siteConfig.name}</span>
-              <span className="sr-only">Home</span>
+              {/* <span className="font-bold">{siteConfig.name}</span>
+              <span className="sr-only">Home</span> */}
             </Link>
           </div>
           <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
             <div className="pl-1 pr-7">
               <Accordion type="multiple" className="w-full">
-                {items?.map((item, index) => (
+                {updatedItems?.map((item, index) => (
                   <AccordionItem value={item.title} key={index}>
                     <AccordionTrigger className="text-sm capitalize">
                       {item.title}

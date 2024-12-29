@@ -44,6 +44,7 @@ export function Service() {
     console.log("Error fetching:", error);
     return <ErrorSystem />;
   }
+  
 
   return (
     <div className="py-20 bg-neutral-100">
@@ -75,46 +76,9 @@ export function Service() {
               PHÍ ĐÁM CƯỚI VỪA PHẢI.
             </p>
           </motion.div>
-          {/* <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            {services.map((ser) => (
-              <div className="relative bg-white rounded-none hover:shadow-lg">
-                <div className="overflow-hidden rounded-none">
-                  <motion.div
-                    className=""
-                    whileHover={{ scale: 1.1 }}
-                    transition={{
-                      duration: 0.3,
-                      ease: "easeOut",
-                    }}
-                  >
-                    <Link href={"/services/" + ser.slug}>
-                      <Image
-                        className="aspect-square w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
-                        alt={""}
-                        src={ser.src ? ser.src : "/image-notfound.jpg"}
-                        width={9999}
-                        height={9999}
-                      />
-                    </Link>
-                  </motion.div>
-                </div>
-                <div className="m-4 flex flex-col gap-1 justify-between">
-                  <p className="text-lg font-medium w-full text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-                    <Link href={"/services/" + ser.slug}>{ser.name}</Link>
-                  </p>
-                  <hr className="border-t border-neutral-300 my-1" />{" "}
-                  <p className="text-sm line-clamp-2 w-full text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-                    {ser.description
-                      ? convertJsonToPlainText(ser.description)
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div> */}
           <Swiper
-            spaceBetween={2}
-            slidesPerView={4}
+            spaceBetween={15}
+            slidesPerView={1}
             loop={true}
             pagination={{
               clickable: true,
@@ -135,10 +99,24 @@ export function Service() {
                 // "--swiper-pagination-bullet-radius": "14px", // Border radius cho bullet (chấm tròn)
               } as React.CSSProperties
             }
+            breakpoints={{
+              640: {
+                slidesPerView: 1, // Mobile
+              },
+              768: {
+                slidesPerView: 2, // Tablet
+              },
+              1024: {
+                slidesPerView: 3, // Desktop nhỏ
+              },
+              1280: {
+                slidesPerView: 4, // Desktop lớn
+              },
+            }}
           >
             {services.map((ser, index) => (
               <SwiperSlide key={index}>
-                <div className="relative bg-white rounded-none hover:shadow-lg">
+                <div className="relative bg-white pb-10 rounded-none hover:shadow-lg">
                   <div className="overflow-hidden rounded-none">
                     <motion.div
                       className=""

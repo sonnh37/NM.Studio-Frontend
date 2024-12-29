@@ -1,10 +1,14 @@
 "use client";
 
 import SidebarProductCards from "@/components/client/sections/products";
+import { TitleProvider } from "@/components/common/title-component";
 
+import React from "react";
 
-const ProductPage = () => {
-    return <SidebarProductCards/>;
-};
-
-export default ProductPage;
+export default function Page() {
+  return (
+    <TitleProvider title="Sản phẩm" className="text-center">
+      <SidebarProductCards />
+    </TitleProvider>
+  );
+}
