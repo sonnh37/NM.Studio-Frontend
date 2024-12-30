@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../../../error/404/page";
 import { DisplayContent } from "@/components/client/common/display-content";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import { LoadingPageComponent } from "@/components/common/loading-page";
 
 import ErrorSystem from "@/components/common/errors/error-system";
 
@@ -47,21 +47,17 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      <div className="service-details container mx-auto space-y-8 py-16">
-        <div className="grid justify-center gap-8">
-          <div className="grid justify-center gap-2 ">
-            <h1 className="text-4xl text-center">{blog.title}</h1>
-            <div className="flex flex-row justify-center gap-4">
-              <p className="text-gray-500 text-sm">
-                {blog.createdBy ?? "Admin"}
-              </p>
-              <p className="text-gray-500 text-sm">|</p>
-              <p className="text-gray-500 text-sm">
-                {formatDate(blog.createdDate)}
-              </p>
-            </div>
+      <div className="container mx-auto space-y-8 py-16">
+        <div className="grid justify-center gap-2">
+          <h1 className="text-4xl text-center">{blog.title}</h1>
+          <div className="flex flex-row justify-center gap-4">
+            <p className="text-gray-500 text-sm">{blog.createdBy ?? "Admin"}</p>
+            <p className="text-gray-500 text-sm">|</p>
+            <p className="text-gray-500 text-sm">
+              {formatDate(blog.createdDate)}
+            </p>
           </div>
-          <div>
+          {/* <div>
             <Image
               alt={blog.title ?? ""}
               className="object-cover"
@@ -69,9 +65,9 @@ export default function Page({ params }: { params: { slug: string } }) {
               height={9999}
               width={9999}
             />
-          </div>
+          </div> */}
         </div>
-        <div className="container">
+        <div className="md:px-56">
           {editorState && <DisplayContent value={blog.content ?? ""} />}
         </div>
         {/* Render other service details here */}

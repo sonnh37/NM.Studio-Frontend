@@ -47,7 +47,9 @@ export function Feature() {
             className="div"
           >
             <h2 className="text-center text-4xl tracking-wide uppercase text-neutral-700 my-2">
-              Tại Như My Wedding, bạn hoàn toàn yên tâm với các dịch vụ cưới
+              <span className="border-b">
+                Tại Như My Wedding, bạn hoàn toàn yên tâm với các dịch vụ cưới
+              </span>
             </h2>
             <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
               THÀNH LẬP VÀO NĂM 2017, TONY WEDDING ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI

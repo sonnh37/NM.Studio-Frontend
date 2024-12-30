@@ -26,11 +26,7 @@ interface ExampleProps {
   setOpen: (open: boolean) => void;
 }
 
-export const ProductDialog = ({
-  product,
-  open,
-  setOpen,
-}: ExampleProps) => {
+export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const handleSizeChange = (sizeName: string) => {

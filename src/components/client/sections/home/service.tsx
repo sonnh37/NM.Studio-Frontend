@@ -66,7 +66,7 @@ export function Service() {
             className="div"
           >
             <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
-              Dịch vụ
+            <span className="border-b">Dịch vụ</span>
             </h2>
             <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
               THÀNH LẬP VÀO NĂM 2017, Như My ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI VÀ
@@ -78,6 +78,7 @@ export function Service() {
           </motion.div>
           <Swiper
             spaceBetween={15}
+            slidesPerGroup={1}
             slidesPerView={1}
             loop={true}
             pagination={{
@@ -101,16 +102,20 @@ export function Service() {
             }
             breakpoints={{
               640: {
-                slidesPerView: 1, // Mobile
+                slidesPerView: 1,
+                slidesPerGroup: 1,
               },
               768: {
-                slidesPerView: 2, // Tablet
+                slidesPerView: 2,
+                slidesPerGroup: 2,
               },
               1024: {
-                slidesPerView: 3, // Desktop nhỏ
+                slidesPerView: 3, 
+                slidesPerGroup: 3,
               },
               1280: {
-                slidesPerView: 4, // Desktop lớn
+                slidesPerView: 4, 
+                slidesPerGroup: 4,
               },
             }}
           >

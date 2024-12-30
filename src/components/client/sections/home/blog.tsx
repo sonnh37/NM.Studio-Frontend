@@ -43,7 +43,7 @@ if (isLoading) return <LoadingPageComponent/>;
     }
 
     return (
-        <div className="py-20 bg-neutral-100">
+        <div className="py-20">
             <div className="flex flex-row items-center justify-center  relative w-full">
                 <div className="container mx-auto w-full relative overflow-hidden">
                     <motion.div
@@ -62,7 +62,7 @@ if (isLoading) return <LoadingPageComponent/>;
                         className="div"
                     >
                         <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
-                            Kinh nghiệm cưới
+                        <span className="border-b">Kinh nghiệm cưới</span>
                         </h2>
                         <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
                         </p>

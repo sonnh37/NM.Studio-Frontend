@@ -1,7 +1,7 @@
 "use client";
 
 import ErrorSystem from "@/components/common/errors/error-system";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import { LoadingPageComponent } from "@/components/common/loading-page";
 
 import { productService } from "@/services/product-service";
 import { useQuery } from "@tanstack/react-query";
@@ -57,7 +57,7 @@ const ProductHome = () => {
           className="div"
         >
           <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
-            Váy cưới
+            <span className="border-b">Váy cưới</span>
           </h2>
           <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
             THÀNH LẬP VÀO NĂM 2017, Như My ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI VÀ TRỞ

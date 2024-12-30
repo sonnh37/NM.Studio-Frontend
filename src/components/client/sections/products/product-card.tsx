@@ -12,6 +12,11 @@ import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ProductDialog } from "./product-dialog";
+import Link from "next/link";
+import { TypographyP } from "@/components/common/typography/typography-p";
+import { TypographySmall } from "@/components/common/typography/typography-small";
+import { formatPrice } from "@/lib/utils";
+import { TypographyMuted } from "@/components/common/typography/typography-muted";
 
 interface ProductCardProps {
   product: Product;
@@ -24,6 +29,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     setOpen(true);
     setSelectedProduct(pr);
   };
+
+  const productLink = `/products/${product.slug}`;
+
   return (
     <>
       <div className="grid grid-cols-1 overflow-hidden">
@@ -37,19 +45,21 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               ease: "easeOut",
             }}
           >
-            <Image
-              className="aspect-[2/3] bg-gray-200 rounded-md object-cover"
-              alt={product.name!}
-              src={
-                product.productXPhotos!.length > 0 &&
-                product.productXPhotos![0].photo
-                  ? product.productXPhotos![0].photo.src ??
-                    "/image-notfound.jpg"
-                  : "/image-notfound.jpg"
-              }
-              width={9999}
-              height={9999}
-            />
+            <Link href={productLink}>
+              <Image
+                className="aspect-[2/3] bg-gray-200 rounded-md object-cover"
+                alt={product.name!}
+                src={
+                  product.productXPhotos!.length > 0 &&
+                  product.productXPhotos![0].photo
+                    ? product.productXPhotos![0].photo.src ??
+                      "/image-notfound.jpg"
+                    : "/image-notfound.jpg"
+                }
+                width={9999}
+                height={9999}
+              />
+            </Link>
           </motion.div>
           <div className="absolute bottom-0 z-10 left-0 w-full bg-neutral-700 bg-opacity-70 py-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out">
             <Button
@@ -61,17 +71,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </Button>
           </div>
         </div>
-        <div className="mt-4 flex justify-between">
-          <div>
-            <h3 className="text-sm text-gray-700">
-              <a>
-                <span className="inset-0" />
-                {product.name}
-              </a>
-            </h3>
-            <p className="mt-1 text-sm text-gray-500"></p>
-          </div>
-          <p className="text-sm font-medium text-gray-900">{product.price}</p>
+        <div className="mt-4 flex justify-between items-center">
+          <TypographyP>{product.name}</TypographyP>
+
+          <TypographyMuted>
+            {product.price ? formatPrice(product.price) : "Đang cập nhật"}
+          </TypographyMuted>
         </div>
         <div className="flex">
           <RadioGroup className="flex flex-row space-x-1" disabled>

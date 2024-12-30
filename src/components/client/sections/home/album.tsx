@@ -56,8 +56,8 @@ export function AlbumHome() {
             }}
             className="container mx-auto"
           >
-            <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
-              Album các concept
+            <h2 className="text-center  tracking-wide uppercase text-2xl text-neutral-700 my-2">
+              <span className="border-b">Album các concept</span>
             </h2>
             <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
               ĐA SỐ KHÁCH HÀNG Như My LÀ CẶP ĐÔI CÁC TRẺ CÓ PHONG CÁCH THẨM MỸ

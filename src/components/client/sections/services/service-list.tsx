@@ -5,14 +5,7 @@ import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
-import { Navigation, Pagination, Scrollbar } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { ServiceCard } from "./service-card";
-import { TitleProvider } from "@/components/common/title-component";
 
 export function ServiceList() {
   const router = useRouter();
