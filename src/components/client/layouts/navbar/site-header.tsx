@@ -1,5 +1,5 @@
-import { HeaderMain } from "./header/header-top";
-import { HeaderTop } from "./header/header-main";
+import { HeaderMain } from "./header/header-main";
+import { HeaderTop } from "./header/header-top";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { LoadingPage } from "@/components/common/loading-page";

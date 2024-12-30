@@ -11,7 +11,7 @@ export const TypographyMuted = ({
 }: TypographyMutedProps) => {
   return (
     <p
-    className={cn("text-sm inline-block text-muted-foreground", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     >
       {children}
     </p>

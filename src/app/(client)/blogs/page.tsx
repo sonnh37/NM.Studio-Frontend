@@ -54,20 +54,20 @@ export default function AlbumPage() {
 
   return (
     <TitleProvider title="Kinh nghiệm cưới" className="text-center">
-      <div className="container mx-auto py-16 grid gap-8 grid-cols-3 ">
-        <div className="grid col-span-2 ">
+      <div className="container mx-auto py-16 grid gap-8 md:grid-cols-3 ">
+        <div className="grid md:col-span-2 ">
           {/* Nội dung bên trái */}
-          <div className="space-y-8">
+          <div className="space-y-4 md:space-y-8">
             {blogs.map((blog) => (
               <div
                 key={blog.id}
-                className="grid grid-cols-5 max-h-[25rem] bg-neutral-100"
+                className="grid grid-cols-5 max-h-[10rem] md:max-h-full overflow-hidden bg-neutral-100"
               >
-                <div className="grid col-span-3 max-h-[25rem]">
+                <div className="grid col-span-3 max-h-[10rem] md:max-h-full overflow-hidden">
                   <Link href={pathname + "/" + blog.slug}>
                     <Image
                       alt={blog.title ?? ""}
-                      className="h-[25rem] object-cover"
+                      className="h-full w-full object-cover"
                       src={blog.thumbnail ?? "/image-notfound.jpg"}
                       height={9999}
                       width={9999}
@@ -75,7 +75,7 @@ export default function AlbumPage() {
                   </Link>
                 </div>
                 <div className="grid col-span-2 overflow-hidden">
-                  <div className="flex flex-col justify-start space-y-4 p-8">
+                  <div className="flex flex-col justify-start space-y-4 p-4 md:p-8">
                     <p className="text-gray-500 text-sm">
                       {formatDate(blog.createdDate)}
                     </p>
@@ -104,7 +104,7 @@ export default function AlbumPage() {
           </div>
           <Pagination currentPage={pageNumber} totalPages={totalPages} />
         </div>
-        <div className="grid col-span-1 ">
+        <div className="hidden md:grid md:col-span-1 ">
           {/* Nội dung bên phải */}
           <BlogsRecent />
         </div>

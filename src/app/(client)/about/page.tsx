@@ -1,7 +1,7 @@
 "use client";
 import { DisplayContent } from "@/components/client/common/display-content";
 import ErrorSystem from "@/components/common/errors/error-system";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import { LoadingPageComponent } from "@/components/common/loading-page";
 
 import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
@@ -39,31 +39,30 @@ export default function Page() {
   return (
     <>
       {blogData && (
-        <div className="service-details container mx-auto space-y-8 py-16">
-          <div className="grid justify-center gap-8">
-            <div className="grid justify-center gap-2 ">
-              <h1 className="text-4xl text-center">{blogData.title}</h1>
-              <div className="flex flex-row justify-center gap-4">
-                <p className="text-gray-500 text-sm">
-                  {blogData.createdBy ?? "Admin"}
-                </p>
-                <p className="text-gray-500 text-sm">|</p>
-                <p className="text-gray-500 text-sm">
-                  {formatDate(blogData.createdDate)}
-                </p>
-              </div>
-            </div>
-            <div>
-              <Image
-                alt={blogData.title ?? ""}
-                className="object-cover"
-                src={blogData.thumbnail ?? "/image-notfound.jpg"}
-                height={9999}
-                width={9999}
-              />
+        <div className="container mx-auto space-y-8 py-16">
+          <div className="grid justify-center gap-2 ">
+            <h1 className="text-4xl text-center">{blogData.title}</h1>
+            <div className="flex flex-row justify-center gap-4">
+              <p className="text-gray-500 text-sm">
+                {blogData.createdBy ?? "Admin"}
+              </p>
+              <p className="text-gray-500 text-sm">|</p>
+              <p className="text-gray-500 text-sm">
+                {formatDate(blogData.createdDate)}
+              </p>
             </div>
           </div>
-          <div className="container">
+          <div>
+            <Image
+              alt={blogData.title ?? ""}
+              className="object-cover"
+              src={blogData.thumbnail ?? "/image-notfound.jpg"}
+              height={9999}
+              width={9999}
+            />
+          </div>
+
+          <div className="md:px-56">
             <DisplayContent value={blogData.content ?? ""} />
             {/* {editorState && (
               <Editor editorState={editorState} readOnly={true} toolbarHidden />

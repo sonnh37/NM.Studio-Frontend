@@ -8,7 +8,7 @@ interface TypographyLeadProps {
   export const TypographyLead = ({ children, className }: TypographyLeadProps) => {
     return (
       <p
-      className={cn("text-xl inline-block text-muted-foreground", className)}
+      className={cn("text-xl text-muted-foreground", className)}
       >
         {children}
       </p>

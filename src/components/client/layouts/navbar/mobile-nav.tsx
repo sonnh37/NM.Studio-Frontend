@@ -71,6 +71,7 @@ export function MobileNav({
 
   updatedItems.push({
     title: "Danh mục",
+    href: "/products",
     items: categories.map((category) => ({
       title: category.name ?? "N/A",
       href: `/products?categoryName=${category.name}`,
@@ -85,6 +86,7 @@ export function MobileNav({
 
   updatedItems.push({
     title: "Dịch vụ",
+    href: "/services",
     items: services.map((service) => ({
       title: service.name ?? "N/A",
       href: `/services/${service.slug}`,
@@ -94,6 +96,7 @@ export function MobileNav({
 
   updatedItems.push({
     title: "Albums",
+    href: "/albums",
     items: albums.map((album) => ({
       title: album.title ?? "N/A",
       href: `/albums/${album.slug}`,
@@ -142,8 +145,8 @@ export function MobileNav({
               <Accordion type="multiple" className="w-full">
                 {updatedItems?.map((item, index) => (
                   <AccordionItem value={item.title} key={index}>
-                    <AccordionTrigger className="text-sm capitalize">
-                      {item.title}
+                    <AccordionTrigger  className="text-sm capitalize">
+                      <Link href={String(item.href)}>{item.title}</Link>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="flex flex-col space-y-2">

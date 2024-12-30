@@ -10,7 +10,7 @@ export const TypographyLarge = ({
   className,
 }: TypographyLargeProps) => {
   return (
-    <div className={cn("text-lg inline-block font-semibold", className)}>
+    <div className={cn("text-lg font-semibold", className)}>
       {children}
     </div>
   );
