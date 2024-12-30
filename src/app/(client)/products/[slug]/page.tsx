@@ -28,9 +28,9 @@ import { FreeMode, Navigation, Scrollbar, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./style.css";
 import { Separator } from "@/components/ui/separator";
-
+import type { Swiper as SwiperType} from 'swiper';
 export default function Page() {
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const { slug } = useParams();
