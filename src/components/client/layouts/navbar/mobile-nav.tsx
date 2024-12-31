@@ -107,7 +107,6 @@ export function MobileNav({
   updatedItems.push({
     title: "Kinh nghiệm cưới",
     href: "/blogs",
-    items: [],
   });
 
   return (

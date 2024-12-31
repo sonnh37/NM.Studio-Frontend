@@ -3,6 +3,7 @@ import { TypographyH4 } from "@/components/common/typography/typography-h4";
 import { TypographyLarge } from "@/components/common/typography/typography-large";
 import { TypographyList } from "@/components/common/typography/typography-list";
 import { TypographyP } from "@/components/common/typography/typography-p";
+import { Const } from "@/lib/const";
 import Link from "next/link";
 
 function Footer() {
@@ -15,21 +16,21 @@ function Footer() {
           </TypographyH2>
           <TypographyList className="text-white mb-4">
             <li>
-              <Link href="https://www.facebook.com/NhuMyMakeUp">
+              <Link href={`${Const.SOCIAL_FACEBOOK}`}>
                 <span className="text-neutral-300 hover:text-white">
                   Facebook
                 </span>
               </Link>
             </li>
             <li>
-              <Link href="https://www.instagram.com/nhumystudio">
+              <Link href={`${Const.SOCIAL_INSTAGRAM}`}>
                 <span className="text-neutral-300 hover:text-white">
                   Instagram
                 </span>
               </Link>
             </li>
             <li>
-              <Link href="https://www.tiktok.com/@nhumystudio?lang=vi-VN">
+              <Link href={`${Const.SOCIAL_TIKTOK}`}>
                 <span className="text-neutral-300 hover:text-white">
                   Tiktok
                 </span>

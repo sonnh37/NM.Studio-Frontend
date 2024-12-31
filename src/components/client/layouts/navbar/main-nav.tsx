@@ -22,6 +22,7 @@ import { ProductsCombobox } from "../../common/products-combobox";
 
 import { ModeToggle } from "./mode-toggle";
 import { AuthDropdown } from "./auth-dropdown";
+import { Const } from "@/lib/const";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -64,30 +65,26 @@ export function MainNav({
                           Studio and Academic
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">
-                          Beautifully designed components that you can copy and
-                          paste into your apps. Accessible. Customizable. Open
-                          Source.
+                          Chúng tôi cung cấp các dịch vụ studio chuyên nghiệp
+                          cho sự kiện cưới, chụp ảnh và các dự án học thuật.
                         </p>
                       </a>
                     </NavigationMenuLink>
                   </li>
                   <ListItem
-                    href="https://www.instagram.com/nhumystudio/"
+                    href={`${Const.SOCIAL_INSTAGRAM}`}
                     title="Instagram"
                   >
-                    Re-usable components built using Radix UI and Tailwind CSS.
+                    Theo dõi chúng tôi trên Instagram để cập nhật các bức ảnh
+                    mới nhất và các sự kiện thú vị.
                   </ListItem>
-                  <ListItem
-                    href="https://www.facebook.com/NhuMyMakeUp"
-                    title="Facebook"
-                  >
-                    How to install dependencies and structure your app.
+                  <ListItem href={`${Const.SOCIAL_FACEBOOK}`} title="Facebook">
+                    Kết nối với chúng tôi trên Facebook để nhận thông tin và sự
+                    kiện hấp dẫn.
                   </ListItem>
-                  <ListItem
-                    href="https://www.tiktok.com/@nhumystudio?lang=vi-VN"
-                    title="Tiktok"
-                  >
-                    Styles for headings, paragraphs, lists...etc
+                  <ListItem href={`${Const.SOCIAL_TIKTOK}`} title="Tiktok">
+                    Xem các video thú vị của chúng tôi trên Tiktok, từ các buổi
+                    chụp ảnh đến các dự án sáng tạo.
                   </ListItem>
                 </ul>
               </NavigationMenuContent>

@@ -1,4 +1,10 @@
 export class Const {
+    // information
+    static readonly TELEPHONE = "0908173841";
+    static readonly GMAIL = "nhumystudio@gmail.com";
+    static readonly SOCIAL_FACEBOOK = "https://www.facebook.com/NhuMyMakeUp";
+    static readonly SOCIAL_INSTAGRAM = "https://www.instagram.com/nhumystudio";
+    static readonly SOCIAL_TIKTOK = "https://www.tiktok.com/@nhumystudio?lang=vi-VN";
     //#region Environment Variables
     static readonly CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID_GOOGLE;
     static readonly API_BASE = `${process.env.NEXT_PUBLIC_API_BASE}`;

@@ -1,3 +1,4 @@
+import { Const } from "@/lib/const";
 import type { FooterItem, MainNavItem } from "@/types";
 
 export type SiteConfig = typeof siteConfig;
@@ -20,23 +21,24 @@ export const siteConfig = {
   mainNav: [
     {
       title: "Thông tin Như My Studio",
+      href: "/about",
       items: [
         {
           title: "Instagram",
-          href: "https://www.instagram.com/nhumystudio",
-          description: "All the products we have to offer.",
+          href: `${Const.SOCIAL_INSTAGRAM}`,
+          description: "",
           items: [],
         },
         {
           title: "Facebook",
-          href: "https://www.facebook.com/NhuMyMakeUp",
-          description: "Discover our stores and their products",
+          href: `${Const.SOCIAL_FACEBOOK}`,
+          description: "",
           items: [],
         },
         {
           title: "Tiktok",
-          href: "https://www.tiktok.com/@nhumystudio?lang=vi-VN",
-          description: "Build your own custom skateboard.",
+          href: `${Const.SOCIAL_TIKTOK}`,
+          description: "",
           items: [],
         },
       ],
