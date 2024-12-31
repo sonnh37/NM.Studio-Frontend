@@ -31,7 +31,6 @@ export default function RootLayout({
           strategy="lazyOnload"
           crossOrigin="anonymous"
         />
-        <title>Studio</title>
       </head>
       <body suppressHydrationWarning={true}>
         <NextTopLoader
