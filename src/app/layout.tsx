@@ -25,6 +25,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning={true} lang="en">
       <head>
+      <meta name="google-site-verification" content="M91G1IRhV2E2PMjOSxZ8bJTGa53ff9WM3xkHpPPlXZM" />
         <Script
           src="https://kit.fontawesome.com/b08cef85f4.js"
           strategy="lazyOnload"
