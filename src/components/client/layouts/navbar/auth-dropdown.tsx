@@ -50,7 +50,6 @@ export function AuthDropdown({
   const handleLogout = () => {
     userSerice.logout().then((res) => {
       if (res.status == 1) {
-        store.dispatch(setUser(null));
         window.location.href = "/";
       }
     });

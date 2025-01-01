@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import ErrorSystem from "./errors/error-system";
+import axios from "axios";
 
 interface UserAccessControlProps {
   children: React.ReactNode;
@@ -30,7 +31,7 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
   } = useQuery({
     queryKey: ["getCurrentUser"],
     queryFn: async () => {
-      const response = await axiosInstance.get<BusinessResult<User>>(
+      const response = await axios.get<BusinessResult<User>>(
         `${process.env.NEXT_PUBLIC_API_BASE}/users/info`
       );
 
