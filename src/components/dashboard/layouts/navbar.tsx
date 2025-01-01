@@ -18,7 +18,7 @@ export function Navbar() {
         <>
             <header
                 className={cn(
-                    "sticky top-0 z-20 w-full bg-background  ",
+                    "block top-0 z-20 w-full bg-transparent",
                     sidebar?.isOpen === false ? "" : ""
                 )}
             >
@@ -49,7 +49,6 @@ export function Navbar() {
                         <UserNav/>
                     </div>
                 </div>
-                <Separator/>
             </header>
         </>
     );

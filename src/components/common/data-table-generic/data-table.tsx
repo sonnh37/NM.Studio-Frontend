@@ -23,6 +23,7 @@ import {z, ZodObject, ZodType} from "zod";
 import {DataTableToolbar} from "./data-table-toolbar";
 import {DataTableComponent} from "./data-table-component";
 import {UpdateCommand} from "@/types/commands/base-command";
+import { Card } from "@/components/ui/card";
 
 interface DataTableProps<TData> {
     columns: ColumnDef<TData>[];
@@ -237,7 +238,7 @@ export function DataTable<TData>({
         form.reset();
     };
     return (
-        <div ref={scrollRef} className="space-y-4">
+        <Card ref={scrollRef} className="space-y-4 p-4">
             <DataTableToolbar
                 form={form}
                 table={table}
@@ -267,6 +268,6 @@ export function DataTable<TData>({
                     table={table}
                 />
             )}
-        </div>
+        </Card>
     );
 }

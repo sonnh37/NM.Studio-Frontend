@@ -74,7 +74,7 @@ export function DataTableComponent<TData>({
 
     return (
         <div
-            className={`rounded-md border ${className} space-y-8`}
+            className={`rounded-md border-none ${className} space-y-8`}
             style={{
                 overflowY: "auto",
                 width: "100%",

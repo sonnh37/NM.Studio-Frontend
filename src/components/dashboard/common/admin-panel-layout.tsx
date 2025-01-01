@@ -14,33 +14,23 @@ export default function AdminPanelLayout({
   if (!sidebar) return null;
 
   return (
-    <div>
+    <div
+      className={cn(
+        "bg-gradient-to-br from-orange-50 from-5% via-red-50 via-10% to-blue-100 to-80%",
+        "dark:bg-none dark:bg-neutral-900"
+      )}
+    >
       <Sidebar />
       <main
         className={cn(
-          "transition-[margin-left] ease-in-out bg-neutral-50 dark:bg-background duration-300",
+          "transition-[margin-left] ease-in-out  duration-300",
           sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-64 "
         )}
       >
-        <div
-          className={cn(
-            "shadow-lg drop-shadow-2xl"
-            // sidebar?.isOpen === false
-            //   ? ""
-            //   : "shadow-xl drop-shadow-md"
-          )}
-        >
-          <div className="bg-background dark:bg-background">{children}</div>
+        <div className={cn("shadow-sm drop-shadow-xl")}>
+          <div className="">{children}</div>
         </div>
       </main>
-      {/* <footer
-                className={cn(
-                    "transition-[margin-left] ease-in-out duration-300",
-                    sidebar?.isOpen === false ? "lg:ml-[60px]" : "lg:ml-64"
-                )}
-            >
-                <Footer/>
-            </footer> */}
     </div>
   );
 }

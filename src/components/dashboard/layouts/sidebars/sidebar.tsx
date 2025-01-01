@@ -17,12 +17,12 @@ export function Sidebar() {
     return (
         <aside
             className={cn(
-                "fixed top-0  shadow-none left-0  z-0 h-screen scrollbar-hide -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
+                "fixed top-0 left-0 z-0 border-none h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
                 sidebar?.isOpen === false ? "w-[90px]" : "w-64"
             )}
         >
             {/* <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} /> */}
-            <div className="relative h-full flex flex-col py-4 overflow-hidden ">
+            <div className="relative border-none h-full flex flex-col py-4 overflow-hidden ">
                 <SidebarHeader/>
                 <Menu isOpen={sidebar?.isOpen}/>
                 <SidebarFooter user={user ?? {} as User}/>
