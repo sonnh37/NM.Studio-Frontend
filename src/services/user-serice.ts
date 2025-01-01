@@ -81,7 +81,6 @@ class UserService extends BaseService<User> {
 
   public logout = async (): Promise<BusinessResult<null>> => {
     try {
-      console.log("check_logout_client", true)
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE}/users/logout`,
         {},

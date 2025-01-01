@@ -30,13 +30,12 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
     error,
   } = useQuery({
     queryKey: ["getCurrentUser"],
-    queryFn: async () => {
-      const response = await axios.get<BusinessResult<User>>(
-        `${process.env.NEXT_PUBLIC_API_BASE}/users/info`
-      );
-
-      return response.data;
-    },
+    queryFn: () =>
+      axios
+        .get<BusinessResult<User>>(
+          `${process.env.NEXT_PUBLIC_API_BASE}/users/info`, {withCredentials: true}
+        )
+        .then((res) => res.data),
     refetchOnWindowFocus: false,
   });
 
