@@ -8,9 +8,6 @@ export const metadata: Metadata = {
   description: 'NhuMy Studio chuyên dịch vụ makeup chuyên sâu, áo dài cưới, vest, và trang phục sự kiện. Mang đến sự tinh tế, chuyên nghiệp và phong cách cá nhân hóa.',
   keywords: 'makeup chuyên sâu, áo dài cưới, dịch vụ vest cưới, trang phục sự kiện, studio chuyên nghiệp',
   robots: 'index, follow',
-  alternates: {
-    canonical: "./about",
-  },
 };
 
 export default function Page() {
