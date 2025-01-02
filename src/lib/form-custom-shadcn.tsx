@@ -38,12 +38,13 @@ import { cn, formatCurrency } from "@/lib/utils";
 // import { Editor } from "@tiptap/react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
-
-import { Editor } from "@/components/common/react-tiptap-editor/editor";
-
+const Editor = dynamic(
+  () => import("@/components/common/react-tiptap-editor/editor")
+);
 interface FormInputProps<TFieldValues extends FieldValues> {
   label?: string;
   name: FieldPath<TFieldValues>;
@@ -191,14 +192,12 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
       control={form.control}
       name={name}
       render={({ field }) => {
+        console.log("check_valuefield", field.value);
         return (
           <FormItem>
             <FormLabel className="sr-only">{label}</FormLabel>
             <FormControl>
-              <Editor
-                value={field.value}
-                onChange={field.onChange}
-                />
+              <Editor value={field.value} onChange={field.onChange} />
             </FormControl>
             <FormMessage />
           </FormItem>

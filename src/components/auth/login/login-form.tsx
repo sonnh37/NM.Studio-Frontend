@@ -48,11 +48,13 @@ export const LoginForm = () => {
 
   const onSubmit = (data: FormSchema) => {
     try {
+       // link localhost:3000  
       userSerice.login(data.account, data.password).then((res) => {
         if (res.status != 1) {
           toast.warning(res.message);
           return;
-        }        
+        }   
+        // link localhost:3000      (access, refreshToken)
 
         window.location.reload();
         toast.success("Chào mừng bạn đã đến với Như My Studio!");

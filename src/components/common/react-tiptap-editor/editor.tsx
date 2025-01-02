@@ -2,15 +2,15 @@
 import React, { useCallback, useState } from "react";
 
 import RcTiptapEditor, { locale } from "reactjs-tiptap-editor";
-import 'katex/dist/katex.min.css';
-import 'reactjs-tiptap-editor/style.css';
+import "katex/dist/katex.min.css";
+import "reactjs-tiptap-editor/style.css";
 import { debounce, DEFAULT, extensions } from "./extensions";
 
 interface EditorProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
 }
-export function Editor({ value, onChange }: EditorProps) {
+function Editor({ value = DEFAULT, onChange = () => {} }: EditorProps) {
   const refEditor = React.useRef<any>(null);
   const [theme, setTheme] = useState("light");
   const [disable, setDisable] = useState(false);
@@ -21,10 +21,8 @@ export function Editor({ value, onChange }: EditorProps) {
     }, 1000),
     []
   );
+  
 
-  if (value == undefined || value == null) {
-    return;
-  }
   return (
     <main
       style={{
@@ -47,16 +45,25 @@ export function Editor({ value, onChange }: EditorProps) {
           }}
           className="buttonWrap"
         >
-          <button type="button" onClick={() => locale.setLang("vi")}>Vietnamese</button>
-          <button type="button" onClick={() => locale.setLang("en")}>English</button>
-          <button type="button" onClick={() => locale.setLang("zh_CN")}>Chinese</button>
+          <button type="button" onClick={() => locale.setLang("vi")}>
+            Vietnamese
+          </button>
+          <button type="button" onClick={() => locale.setLang("en")}>
+            English
+          </button>
+          <button type="button" onClick={() => locale.setLang("zh_CN")}>
+            Chinese
+          </button>
           <button type="button" onClick={() => locale.setLang("pt_BR")}>
             Português
           </button>
           <button type="button" onClick={() => locale.setLang("hu_HU")}>
             Hungarian
           </button>
-          <button type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+          <button
+            type="button"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
             {theme === "dark" ? "Light" : "Dark"}
           </button>
           <button type="button" onClick={() => setDisable(!disable)}>
@@ -71,9 +78,11 @@ export function Editor({ value, onChange }: EditorProps) {
           extensions={extensions}
           dark={theme === "dark"}
           disabled={disable}
-          resetCSS={false}
+          resetCSS={true}
         />
       </div>
     </main>
   );
 }
+
+export default Editor;
