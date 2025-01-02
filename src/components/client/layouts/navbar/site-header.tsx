@@ -7,6 +7,7 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import { HeaderMain } from "./header/header-main";
 import { HeaderTop } from "./header/header-top";
+import { Separator } from "@/components/ui/separator";
 
 export function SiteHeader() {
   const user = useSelector((state: RootState) => state.user.user);
@@ -31,6 +32,7 @@ export function SiteHeader() {
         albums={albums}
         user={user}
       />
+      <div className="container mx-auto"><Separator/></div>
     </>
   );
 }

@@ -196,9 +196,9 @@ export function MainNav({
         </NavigationMenu>
 
         <nav className="hidden lg:flex items-center justify-end space-x-4 w-[255px] max-w-[255px]">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           <ProductsCombobox />
-          <CartSheet />
+          {/* <CartSheet /> */}
           {/* <LocaleSwitcher /> */}
           <AuthDropdown user={user} />
         </nav>

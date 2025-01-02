@@ -181,9 +181,9 @@ export function MobileNav({
       </Sheet>
       <div className="flex lg:hidden flex-1 items-center justify-end space-x-4">
         <nav className="flex items-center space-x-4">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           <ProductsCombobox />
-          <CartSheet />
+          {/* <CartSheet /> */}
           <AuthDropdown user={user} />
         </nav>
       </div>
