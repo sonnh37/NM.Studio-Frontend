@@ -1,26 +1,26 @@
 "use client";
-import {ChevronLeft} from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import {FileUpload} from "@/components/custom/file-upload";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {usePreviousPath} from "@/hooks/use-previous-path";
-import ConfirmationDialog, {FormInput, FormInputDate, FormInputEditor, FormSwitch} from "@/lib/form-custom-shadcn";
-import {blogService} from "@/services/blog-service";
-import {Blog} from "@/types/blog";
-import {BusinessResult} from "@/types/response/business-result";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useRouter} from "next/navigation";
-import {useEffect, useRef, useState} from "react";
-import {toast} from "sonner";
-import {z} from "zod";
-import {BsPlus} from "react-icons/bs";
-import {ButtonLoading} from "@/components/common/button-loading";
-import {BlogCreateCommand, BlogUpdateCommand} from "@/types/commands/blog-command";
+import { ButtonLoading } from "@/components/common/button-loading";
+import { FileUpload } from "@/components/custom/file-upload";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
+import { usePreviousPath } from "@/hooks/use-previous-path";
+import ConfirmationDialog, { FormInput, FormInputDate, FormInputReactTipTapEditor, FormSwitch } from "@/lib/form-custom-shadcn";
+import { blogService } from "@/services/blog-service";
+import { Blog } from "@/types/blog";
+import { BlogCreateCommand, BlogUpdateCommand } from "@/types/commands/blog-command";
+import { BusinessResult } from "@/types/response/business-result";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { BsPlus } from "react-icons/bs";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface BlogFormProps {
     initialData: any | null;
@@ -353,7 +353,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({initialData}) => {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <FormInputEditor form={form} name="content"/>
+                                <FormInputReactTipTapEditor form={form} name="content"/>
                             </CardContent>
                         </Card>
                     </div>

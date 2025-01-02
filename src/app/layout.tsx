@@ -1,6 +1,6 @@
 import Script from "next/script";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Client from "./client";
 
 export const metadata: Metadata = {

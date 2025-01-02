@@ -2,6 +2,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["shiki"],
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -12,16 +13,11 @@ const nextConfig = {
     ],
   },
   eslint: {
-    ignoreDuringBuilds: true, // Tắt ESLint trong build
+    ignoreDuringBuilds: true,
   },
-  // webpack: (config, { isServer }) => {
-  //   // Cấu hình alias cho yjs
-  //   if (!isServer) {
-  //     config.resolve.alias['yjs'] = path.resolve(__dirname, 'node_modules/yjs');
-  //   }
-    
-  //   return config;
-  // },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;

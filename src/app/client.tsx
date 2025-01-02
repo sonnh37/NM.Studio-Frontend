@@ -5,7 +5,7 @@ import NextTopLoader from "nextjs-toploader";
 import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { Toaster } from "sonner";
-import "./globals.css";
+import "./_styles/globals.css";
 
 import { UserAccessControl } from "@/components/common/user-access-control";
 import { TooltipProvider } from "@/components/ui/tooltip";

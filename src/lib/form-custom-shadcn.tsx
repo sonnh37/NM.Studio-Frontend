@@ -1,32 +1,5 @@
 // TextInputField.tsx
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input"; // Đảm bảo đúng đường dẫn
-import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn, formatCurrency } from "@/lib/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
@@ -36,12 +9,40 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
-import { Switch } from "@/components/ui/switch";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
-import { Editor } from "@tiptap/react";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input"; // Đảm bảo đúng đường dẫn
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { cn, formatCurrency } from "@/lib/utils";
+// import { Editor } from "@tiptap/react";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
+
+import { Editor } from "@/components/common/react-tiptap-editor/editor";
 
 interface FormInputProps<TFieldValues extends FieldValues> {
   label?: string;
@@ -115,34 +116,76 @@ export const FormInputTextArea = <TFieldValues extends FieldValues>({
   );
 };
 
-export const FormInputEditor = <TFieldValues extends FieldValues>({
+// export const FormInputEditor = <TFieldValues extends FieldValues>({
+//   name,
+//   form,
+//   label = "",
+//   className = "",
+// }: FormInputProps<TFieldValues>) => {
+//   const editorRef = useRef<Editor | null>(null);
+
+//   const handleCreate = useCallback(
+//     ({ editor }: { editor: Editor }) => {
+//       const initialValue = form.getValues(name); // Lấy giá trị từ form
+//       if (initialValue && editor.isEmpty) {
+//         editor.commands.setContent(initialValue); // Đặt nội dung khởi tạo
+//       }
+//       editorRef.current = editor;
+//     },
+//     [form, name]
+//   );
+
+//   // #IMPORTANT Thêm useEffect để đồng bộ giá trị từ form với editor khi có sự thay đổi
+//   useEffect(() => {
+//     if (
+//       editorRef.current &&
+//       form.getValues(name) !== editorRef.current.getHTML()
+//     ) {
+//       editorRef.current.commands.setContent(form.getValues(name));
+//     }
+//   }, [form.getValues(name)]);
+//   return (
+//     <FormField
+//       control={form.control}
+//       name={name}
+//       render={({ field }) => {
+//         return (
+//           <FormItem>
+//             <FormLabel className="sr-only">{label}</FormLabel>
+//             <FormControl>
+//               <div className="flex h-screen overflow-hidden">
+//                 <MinimalTiptapEditor
+//                   {...field}
+//                   className={cn("w-full max-h-full overflow-y-auto", {
+//                     "border-destructive focus-within:border-destructive":
+//                       form.formState.errors.description,
+//                   })}
+//                   editorContentClassName="some-class"
+//                   output="html"
+//                   placeholder="Type your description here..."
+//                   onCreate={handleCreate}
+//                   autofocus={true}
+//                   immediatelyRender={true}
+//                   editable={true}
+//                   injectCSS={true}
+//                   editorClassName="focus:outline-none p-5"
+//                 />
+//               </div>
+//             </FormControl>
+//             <FormMessage />
+//           </FormItem>
+//         );
+//       }}
+//     />
+//   );
+// };
+
+export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
   name,
   form,
   label = "",
   className = "",
 }: FormInputProps<TFieldValues>) => {
-  const editorRef = useRef<Editor | null>(null);
-
-  const handleCreate = useCallback(
-    ({ editor }: { editor: Editor }) => {
-      const initialValue = form.getValues(name); // Lấy giá trị từ form
-      if (initialValue && editor.isEmpty) {
-        editor.commands.setContent(initialValue); // Đặt nội dung khởi tạo
-      }
-      editorRef.current = editor;
-    },
-    [form, name]
-  );
-
-  // #IMPORTANT Thêm useEffect để đồng bộ giá trị từ form với editor khi có sự thay đổi
-  useEffect(() => {
-    if (
-      editorRef.current &&
-      form.getValues(name) !== editorRef.current.getHTML()
-    ) {
-      editorRef.current.commands.setContent(form.getValues(name));
-    }
-  }, [form.getValues(name)]);
   return (
     <FormField
       control={form.control}
@@ -152,24 +195,10 @@ export const FormInputEditor = <TFieldValues extends FieldValues>({
           <FormItem>
             <FormLabel className="sr-only">{label}</FormLabel>
             <FormControl>
-              <div className="flex h-screen overflow-hidden">
-                <MinimalTiptapEditor
-                  {...field}
-                  className={cn("w-full max-h-full overflow-y-auto", {
-                    "border-destructive focus-within:border-destructive":
-                      form.formState.errors.description,
-                  })}
-                  editorContentClassName="some-class"
-                  output="html"
-                  placeholder="Type your description here..."
-                  onCreate={handleCreate}
-                  autofocus={true}
-                  immediatelyRender={true}
-                  editable={true}
-                  injectCSS={true}
-                  editorClassName="focus:outline-none p-5"
+              <Editor
+                value={field.value}
+                onChange={field.onChange}
                 />
-              </div>
             </FormControl>
             <FormMessage />
           </FormItem>

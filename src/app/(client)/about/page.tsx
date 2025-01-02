@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Head from "next/head";
 import AboutPage from "./about";
 
 export const metadata: Metadata = {
