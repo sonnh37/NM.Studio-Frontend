@@ -18,6 +18,7 @@ export default function Client({ children }: { children: React.ReactNode }) {
   return (
     <>
       <NextTopLoader
+        color="#FFFFFF"
         height={3}
         crawl={true}
         showSpinner={false}
