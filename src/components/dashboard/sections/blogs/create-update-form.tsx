@@ -75,6 +75,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   > | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const previousPath = usePreviousPath();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -143,8 +144,6 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-
   return (
     <>
       <ConfirmationDialog
@@ -187,8 +186,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid flex-1 auto-rows-max gap-4">
-            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-4">
+              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-4">
                 <Card
                   x-chunk="dashboard-07-chunk-0"
                   className="shadow-lg drop-shadow-md"
@@ -363,19 +362,19 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                 </Card>
               </div>
             </div>
-          </div>
-          <div className="grid auto-rows-max items-start">
-            <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-2">
-              <CardHeader>
-                <CardTitle>Service Edit</CardTitle>
-                <CardDescription>
-                  Lipsum dolor sit amet, consectetur adipiscing elit
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FormInputReactTipTapEditor form={form} name="content" />
-              </CardContent>
-            </Card>
+            <div className="grid auto-rows-max items-start">
+              <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-2">
+                <CardHeader>
+                  <CardTitle>Service Edit</CardTitle>
+                  <CardDescription>
+                    Lipsum dolor sit amet, consectetur adipiscing elit
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FormInputReactTipTapEditor form={form} name="content" />
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </form>
       </Form>

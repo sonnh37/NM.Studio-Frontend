@@ -192,7 +192,6 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
       control={form.control}
       name={name}
       render={({ field }) => {
-        console.log("check_valuefield", field.value);
         return (
           <FormItem>
             <FormLabel className="sr-only">{label}</FormLabel>

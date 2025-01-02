@@ -47,6 +47,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+    const previousPath = usePreviousPath();
     const [pendingValues, setPendingValues] = useState<z.infer<
         typeof formSchema
     > | null>(null);
@@ -97,24 +98,22 @@ export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-    });
-
-    useEffect(() => {
+        defaultValues: initialData
+          ? {
+              ...initialData,
+              createdDate: initialData.createdDate
+                ? new Date(initialData.createdDate)
+                : new Date(),
+            }
+          : {},
+      });
+    
+      useEffect(() => {
         if (initialData) {
-            const parsedInitialData: SizeUpdateCommand = {
-                ...initialData,
-                createdDate: initialData.createdDate
-                    ? new Date(initialData.createdDate)
-                    : new Date(),
-            };
-
-            form.reset({
-                ...parsedInitialData,
-            });
+          setFirebaseLink(initialData.src || "");
         }
-    }, [initialData, form]);
+      }, [initialData]);
 
-    const previousPath = usePreviousPath();
 
     return (
         <>
@@ -187,8 +186,8 @@ export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
                                 </Button>
                             </div>
                         </div>
-                        <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-                            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+                        <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-4">
+                            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-4">
                                 <Card x-chunk="dashboard-07-chunk-0">
                                     <CardHeader>
                                         <CardTitle>Size Details</CardTitle>
@@ -211,7 +210,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
                                     </CardContent>
                                 </Card>
                             </div>
-                            <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                            <div className="grid auto-rows-max items-start gap-4 lg:gap-4">
                                 <Card x-chunk="dashboard-07-chunk-3">
                                     <CardHeader>
                                         <CardTitle>Information</CardTitle>

@@ -181,7 +181,7 @@ export const extensions = [
   Twitter,
 ];
 
-export const DEFAULT = `<h1 dir="auto" id="nhung-cau-hoi-can-biet-truoc-khi-dat-chup-anh-cuoi" style="text-align: center; line-height: 1.3"><strong>NHỮNG CÂU HỎI CẦN BIẾT TRƯỚC KHI ĐẶT CHỤP ẢNH CƯỚI</strong></h1>`;
+export const DEFAULT = `<h1 dir="auto" style="text-align: center; line-height: 1.3"><strong>Chào mừng bạn đã đến với channel Osca!</strong></h1>`;
 
 export function debounce(func: any, wait: number) {
   let timeout: NodeJS.Timeout;

@@ -78,7 +78,6 @@ function Editor({ value = DEFAULT, onChange = () => {} }: EditorProps) {
           extensions={extensions}
           dark={theme === "dark"}
           disabled={disable}
-          resetCSS={true}
         />
       </div>
     </main>

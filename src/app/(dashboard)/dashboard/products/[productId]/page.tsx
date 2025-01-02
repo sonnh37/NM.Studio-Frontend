@@ -1,27 +1,39 @@
 "use client";
-import {Product} from "@/types/product";
-import {useEffect, useState} from "react";
-import {productService} from "@/services/product-service";
-import {toast} from "sonner";
-import {ProductForm} from "@/components/dashboard/sections/products/create-update-form";
+import ErrorSystem from "@/components/common/errors/error-system";
+import { LoadingPageComponent } from "@/components/common/loading-page";
+import { ProductForm } from "@/components/dashboard/sections/products/create-update-form";
+import { productService } from "@/services/product-service";
+import { Product } from "@/types/product";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
-export default function Page({params}: { params: { productId: string } }) {
-    const [product, setProduct] = useState<Product | null>(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await productService.fetchById(params.productId);
-            if (response.status !== 1) {
-                return toast.error(response.message);
-            }
-            setProduct(response.data as Product); // Assuming response.data contains the product data
-        };
-        fetchData();
-    }, [params.productId]);
-
+export default function Page() {
+    const params = useParams();
+    const {
+      data = {} as Product,
+      isLoading,
+      isError,
+      error,
+    } = useQuery({
+      queryKey: ["fetchProductById", params.productId],
+      queryFn: async () => {
+        const response = await productService.fetchById(
+          params.productId as string
+        );
+        return response.data;
+      },
+      enabled: !!params.productId,
+    });
+  
+    if (isLoading) return <LoadingPageComponent />;
+  
+    if (isError) {
+      console.log("Error fetching:", error);
+      return <ErrorSystem />;
+    }
     return (
-        <div className="space-y-6">
-            <ProductForm initialData={product}/>
-        </div>
+      <div className="space-y-6">
+        <ProductForm initialData={data} />
+      </div>
     );
 }
