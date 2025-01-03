@@ -23,6 +23,8 @@ import { ProductsCombobox } from "../../common/products-combobox";
 import { ModeToggle } from "./mode-toggle";
 import { AuthDropdown } from "./auth-dropdown";
 import { Const } from "@/lib/const";
+import { Separator } from "@/components/ui/separator";
+import MenuAnimationLink from "@/components/common/hovers/menu-animation-link";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -41,7 +43,7 @@ export function MainNav({
 }: MainNavProps) {
   return (
     <>
-      <div className="hidden gap-6 lg:flex justify-between mx-auto w-full">
+      <div className="hidden gap-6 text-lg lg:flex justify-between mx-auto w-full">
         <Link href="/" className="hidden items-center space-x-2 lg:flex">
           <Icons.logo aria-hidden="true" />
           {/* <span className="hidden font-bold lg:inline-block">NHU MY</span> */}
@@ -53,7 +55,7 @@ export function MainNav({
                 Thông tin
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                <ul className="grid gap-3 p-[5rem] w-[98vw] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
@@ -94,17 +96,18 @@ export function MainNav({
                 Dịch vụ
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-1 p-4 md:w-[200px] md:grid-cols-1 ">
+                <ul className="grid p-[5rem] w-[98vw] md:grid-cols-1 ">
                   {services.map((service) => (
                     <div key={service.id}>
                       <ListItem
                         key={service.id}
                         title={service.name ?? "N/A"}
-                        className="p-2 text-neutral-500 "
+                        className=" text-neutral-500 "
                         href={`/services/${service.slug}`}
                       >
                         {/*{service.description}*/}
                       </ListItem>
+                      <Separator />
                     </div>
                   ))}
                 </ul>
@@ -116,15 +119,18 @@ export function MainNav({
                 Albums
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                <ul className="grid gap-3 w-[98vw] p-[5rem] md:grid-cols-2">
                   {albums.map((album) => (
-                    <ListItem
-                      key={album.id}
-                      title={album.title ?? "N/A"}
-                      href={`/albums/${album.slug}`}
-                    >
-                      {album.description}
-                    </ListItem>
+                    <div key={album.id}>
+                      <ListItem
+                        key={album.id}
+                        title={album.title ?? "N/A"}
+                        href={`/albums/${album.slug}`}
+                      >
+                        {album.description}
+                      </ListItem>
+                      <Separator />
+                    </div>
                   ))}
                 </ul>
                 <div className={"w-full grid justify-end"}>
@@ -142,30 +148,27 @@ export function MainNav({
                 Váy cưới
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-4 lg:w-[600px] max-h-[480px] overflow-y-auto">
+                <ul className="grid w-[98vw] gap-6 p-[5rem] md:grid-cols-4 overflow-y-auto">
                   {categories.map((category, index) => {
                     const path = `/products?categoryName=${category.name}`;
                     return (
                       <div key={index}>
-                        <Link
+                        <MenuAnimationLink
                           href={path}
-                          className="block font-bold select-none space-y-1 rounded-md p-3 pl-2 leading-none no-underline outline-none transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
+                          className="block font-bold select-none p-3 space-y-1 rounded-md  leading-none no-underline outline-none transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
                         >
                           {category.name}
-                        </Link>
-                        {category.subCategories!.map(
-                          (subCategory, subIndex) => (
-                            <div key={subCategory.id}>
-                              <ListItem
-                                title={subCategory.name ?? "N/A"}
-                                className="p-2 text-neutral-500 text-sm"
-                                href={`${path}&subCategoryName=${subCategory.name}`}
-                              ></ListItem>
-                              {/* <hr className="border-t border-neutral-300 my-1" />{" "} */}
-                              {/* Thanh line mỏng */}
-                            </div>
-                          )
-                        )}
+                        </MenuAnimationLink>
+                        {category.subCategories!.map((subCategory) => (
+                          <div key={subCategory.id}>
+                            <ListItem
+                              title={subCategory.name ?? "N/A"}
+                              className=" text-neutral-500"
+                              href={`${path}&subCategoryName=${subCategory.name}`}
+                            ></ListItem>
+                            <Separator />
+                          </div>
+                        ))}
                       </div>
                     );
                   })}
