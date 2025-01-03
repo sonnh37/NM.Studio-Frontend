@@ -27,6 +27,7 @@ import ConfirmationDialog, {
   FormInput,
   FormInputDate,
   FormInputNumber,
+  FormInputReactTipTapEditor,
 } from "@/lib/form-custom-shadcn";
 import { serviceService } from "@/services/service-service";
 import {
@@ -376,7 +377,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {/* <FormInputEditor form={form} name="description"/> */}
+                  <FormInputReactTipTapEditor form={form} name="description" />
                 </CardContent>
               </Card>
             </div>

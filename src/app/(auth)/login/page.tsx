@@ -26,7 +26,16 @@ export default function Page() {
   }
 
   return (
-    <BackgroundGradientAnimation>
+    <BackgroundGradientAnimation
+      gradientBackgroundStart="rgb(255, 255, 255)"
+      gradientBackgroundEnd="rgb(255, 255, 255)"
+      firstColor="241, 162, 181"
+      secondColor="241, 162, 181"
+      thirdColor="241, 162, 181"
+      fourthColor="241, 162, 181"
+      fifthColor="241, 162, 181"
+      pointerColor="255, 255, 255"
+    >
       <div className="absolute z-50 inset-0 flex items-center justify-center font-bold px-4">
         <LoginForm />
       </div>

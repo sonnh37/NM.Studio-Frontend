@@ -31,6 +31,7 @@ const config = {
         lato: ["Lato", "sans-serif"],
       },
       colors: {
+        customPink: 'rgb(241, 162, 181)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

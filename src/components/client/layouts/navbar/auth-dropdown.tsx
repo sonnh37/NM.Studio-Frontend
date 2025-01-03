@@ -22,6 +22,7 @@ import userSerice from "@/services/user-serice";
 import store from "@/lib/store";
 import { setUser } from "@/lib/slices/userSlice";
 import { Suspense } from "react";
+import MenuAnimationButton from "@/components/common/hovers/buttons/menu-animation-button/menu-animation-button";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
@@ -34,12 +35,12 @@ export function AuthDropdown({
 }: AuthDropdownProps) {
   if (user == null) {
     return (
-      <Button size="sm" asChild>
+      <MenuAnimationButton>
         <Link href="/login">
-          Sign In
+          Đăng nhập
           <span className="sr-only">Sign In</span>
         </Link>
-      </Button>
+      </MenuAnimationButton>
     );
   }
 
