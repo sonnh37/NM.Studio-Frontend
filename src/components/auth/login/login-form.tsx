@@ -230,7 +230,7 @@ export const LoginForm = () => {
               )}
             />
 
-            <div className="inline-flex gap-2 items-center">
+            {/* <div className="inline-flex pt-4 gap-2 items-center">
               <input
                 type="checkbox"
                 name=""
@@ -242,9 +242,9 @@ export const LoginForm = () => {
                 By Signing Agree with
                 <span className="font-semibold">Term &amp; Policy</span>
               </p>
-            </div>
+            </div> */}
 
-            <div className="inline-flex gap-5">
+            <div className="inline-flex pt-6 gap-5">
               <button type="submit" className="px-6 focus:outline-none focus:scale-110 font-semibold text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-[#D9D9D9] bg-customPink shadow-customPink shadow-lg">
                 Sign Up
               </button>
