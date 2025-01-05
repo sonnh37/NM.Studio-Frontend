@@ -82,13 +82,35 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
 
   const previousPath = usePreviousPath();
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          createdDate: initialData.createdDate
+            ? new Date(initialData.createdDate)
+            : new Date(),
+        }
+      : {},
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setFirebaseLink(initialData.src || "");
+    }
+  }, [initialData]);
+
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+  };
+
+  console.log("cgheck_initialData", initialData);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const values_ = values;
       if (initialData) {
         const updatedValues: PhotoUpdateCommand = {
-          ...values_,
+          ...values,
           file: file,
         };
         const response = await photoService.update(updatedValues);
@@ -97,7 +119,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
         toast.success(response.message);
         router.push(previousPath);
       } else {
-        setPendingValues(values_);
+        setPendingValues(values);
         setShowConfirmationDialog(true);
       }
     } catch (error: any) {
@@ -121,28 +143,6 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     setShowConfirmationDialog(false);
     setPendingValues(null);
   };
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
-        }
-      : {},
-  });
-
-  const handleFileUpload = (file: File | null) => {
-    setFile(file);
-  };
-
-  useEffect(() => {
-    if (initialData) {
-      setFirebaseLink(initialData.src || "");
-    }
-  }, [initialData]);
 
   return (
     <>
