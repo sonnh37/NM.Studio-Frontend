@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import Toc from "./toc";
+import { usePathname } from "next/navigation";
 
 interface RichEditorProps {
   value: string;
@@ -11,6 +12,7 @@ export const DisplayContent: React.FC<RichEditorProps> = ({ value = "" }) => {
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [showIcon, setShowIcon] = useState<boolean>(false);
   const [isContentReady, setIsContentReady] = useState<boolean>(false);
+  
 
   useEffect(() => {
     // Khi nội dung thay đổi, xử lý nội dung HTML

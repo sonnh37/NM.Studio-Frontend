@@ -39,7 +39,7 @@ export default function AboutPage() {
   return (
     <>
       {blogData && (
-        <div className="container overflow-x-hidden mx-auto space-y-8 py-16">
+        <div className="container  mx-auto space-y-8 py-16">
           <div className="grid justify-center gap-2 ">
             <h1 className="text-4xl text-center">{blogData.title}</h1>
             <div className="flex flex-row justify-center gap-4">
@@ -52,21 +52,9 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
-          <div>
-            <Image
-              alt={blogData.title ?? ""}
-              className="object-cover"
-              src={blogData.thumbnail ?? "/image-notfound.jpg"}
-              height={9999}
-              width={9999}
-            />
-          </div>
 
-          <div className="md:px-56">
+          <div className="">
             <DisplayContent value={blogData.content ?? ""} />
-            {/* {editorState && (
-              <Editor editorState={editorState} readOnly={true} toolbarHidden />
-            )} */}
           </div>
         </div>
       )}

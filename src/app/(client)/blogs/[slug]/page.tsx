@@ -58,7 +58,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             </p>
           </div>
         </div>
-        <div className="md:px-56">
+        <div className="">
           {editorState && <DisplayContent value={blog.content ?? ""} />}
         </div>
       </div>
