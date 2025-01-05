@@ -1,60 +1,54 @@
 import React, { useEffect, useState } from "react";
+import { FaBars } from "react-icons/fa";
+import { cn } from "@/lib/utils";
+import Toc from "./toc";
 
 interface RichEditorProps {
   value: string;
 }
 
 export const DisplayContent: React.FC<RichEditorProps> = ({ value = "" }) => {
-  const [toc, setToc] = useState<string[]>([]);
   const [htmlContent, setHtmlContent] = useState<string>("");
-
-  // Hàm tạo mục lục từ các thẻ tiêu đề
-  const generateToc = (html: string): string[] => {
-    const tocLinks: string[] = [];
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-
-    // Lấy tất cả các tiêu đề h1, h2, h3, ...
-    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-
-    headings.forEach((heading, index) => {
-      const id = `heading-${index}`;
-      heading.setAttribute('id', id); // Thêm id để tạo liên kết đến tiêu đề
-      tocLinks.push(`<li><a href="#${id}">${heading.textContent}</a></li>`);
-    });
-
-    return tocLinks;
-  };
+  const [showIcon, setShowIcon] = useState<boolean>(false);
+  const [isContentReady, setIsContentReady] = useState<boolean>(false);
 
   useEffect(() => {
-    // Khi nội dung thay đổi, tạo mục lục và xử lý nội dung HTML
-    const tocLinks = generateToc(value);
-    setToc(tocLinks);
-    setHtmlContent(
-      value
-        // Thêm class "mx-auto" vào tất cả thẻ <img> để căn giữa
-        .replace(/<img /g, '<img class="mx-auto" ')
-        // Chỉnh sửa iframe: thay thế 'url' thành 'src' và thêm thuộc tính allow
-        .replace(
-          /<iframe(.*?)url="(.*?)"(.*?)>/g,
-          '<iframe$1src="$2"$3 allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>'
-        )
-    );
+    // Khi nội dung thay đổi, xử lý nội dung HTML
+    const updatedHtml = value
+      .replace(/<img /g, '<img class="mx-auto" ')
+      .replace(
+        /<iframe(.*?)url="(.*?)"(.*?)>/g,
+        '<iframe$1src="$2"$3 allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>'
+      );
+    setHtmlContent(updatedHtml);
   }, [value]);
 
+  useEffect(() => {
+    // Đánh dấu nội dung đã sẵn sàng
+    if (htmlContent) {
+      setIsContentReady(true);
+    }
+  }, [htmlContent]);
+
   return (
-    <div className="prose max-w-full">
-      {/* Hiển thị mục lục */}
-      <div>
-        <h3>Mục lục</h3>
-        <ul>
-          {toc.map((link, index) => (
-            <li key={index} dangerouslySetInnerHTML={{ __html: link }} />
-          ))}
-        </ul>
+    <div className="prose mx-auto max-w-[70rem] h-full">
+      {/* Nút FaBars */}
+      <label
+        className={
+          "toc-icon fixed !top-24 !right-6 z-[1001] bg-white p-2 shadow-md rounded-full transition-all"
+        }
+        htmlFor="toc"
+      >
+        <FaBars className={cn({ "": showIcon, "": !showIcon })} size={24} />
+      </label>
+      <div className="">
+        <input id="toc" type="checkbox" className="hidden" />
+        {isContentReady && <Toc />}
+        <div
+          className="content js-toc-content md:p-[2rem] md:pt-[4rem]"
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
       </div>
-      
-      {/* Hiển thị nội dung HTML */}
-      <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
     </div>
   );
 };

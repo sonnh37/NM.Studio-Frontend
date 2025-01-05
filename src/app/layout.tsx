@@ -26,6 +26,10 @@ export default function RootLayout({
           name="google-site-verification"
           content="M91G1IRhV2E2PMjOSxZ8bJTGa53ff9WM3xkHpPPlXZM"
         />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.30.0/tocbot.css"
+        />
         <Script
           src="https://kit.fontawesome.com/b08cef85f4.js"
           strategy="lazyOnload"

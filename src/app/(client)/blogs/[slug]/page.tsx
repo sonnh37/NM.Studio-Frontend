@@ -57,20 +57,10 @@ export default function Page({ params }: { params: { slug: string } }) {
               {formatDate(blog.createdDate)}
             </p>
           </div>
-          {/* <div>
-            <Image
-              alt={blog.title ?? ""}
-              className="object-cover"
-              src={blog.thumbnail ?? "/image-notfound.jpg"}
-              height={9999}
-              width={9999}
-            />
-          </div> */}
         </div>
         <div className="md:px-56">
           {editorState && <DisplayContent value={blog.content ?? ""} />}
         </div>
-        {/* Render other service details here */}
       </div>
     </>
   );
