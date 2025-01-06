@@ -47,7 +47,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      <div className="container overflow-x-hidden mx-auto space-y-8 py-16">
+      <div className="container mx-auto space-y-8 py-16">
         <div className="grid justify-center gap-2">
           <h1 className="text-4xl text-center">{blog.title}</h1>
           <div className="flex flex-row justify-center gap-4">

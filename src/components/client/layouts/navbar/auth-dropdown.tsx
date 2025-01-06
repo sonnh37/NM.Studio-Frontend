@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
 
+import MenuAnimationButton from "@/components/common/hovers/buttons/menu-animation-button/menu-animation-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import {
@@ -17,12 +18,9 @@ import {
 import { Icons } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { User } from "@/types/user";
 import userSerice from "@/services/user-serice";
-import store from "@/lib/store";
-import { setUser } from "@/lib/slices/userSlice";
+import { User } from "@/types/user";
 import { Suspense } from "react";
-import MenuAnimationButton from "@/components/common/hovers/buttons/menu-animation-button/menu-animation-button";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
@@ -30,17 +28,12 @@ interface AuthDropdownProps
   user?: User | null;
 }
 
-export function AuthDropdown({
-  user = null,
-}: AuthDropdownProps) {
+export function AuthDropdown({ user = null }: AuthDropdownProps) {
   if (user == null) {
     return (
-      <MenuAnimationButton>
-        <Link href="/login">
-          Đăng nhập
-          <span className="sr-only">Sign In</span>
-        </Link>
-      </MenuAnimationButton>
+      <Link href="/login" className="uppercase text-xs">
+        <MenuAnimationButton>Đăng nhập</MenuAnimationButton>
+      </Link>
     );
   }
 
@@ -59,10 +52,7 @@ export function AuthDropdown({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="secondary"
-          className={cn("size-8 rounded-full")}
-        >
+        <Button variant="secondary" className={cn("size-8 rounded-full")}>
           <Avatar className="size-8">
             <AvatarImage src={user.avatar ?? ""} alt={user.username ?? ""} />
             <AvatarFallback>{initials}</AvatarFallback>

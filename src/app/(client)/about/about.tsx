@@ -39,7 +39,7 @@ export default function AboutPage() {
   return (
     <>
       {blogData && (
-        <div className="container  mx-auto space-y-8 py-16">
+        <div className="container mx-auto space-y-8 py-16">
           <div className="grid justify-center gap-2 ">
             <h1 className="text-4xl text-center">{blogData.title}</h1>
             <div className="flex flex-row justify-center gap-4">
