@@ -72,7 +72,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
+                className="absolute z-50 right-8 top-8 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
               >
                 <span className="sr-only">Close</span>
                 <XMarkIcon aria-hidden="true" className="size-6" />
