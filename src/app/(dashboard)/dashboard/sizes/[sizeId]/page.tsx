@@ -3,7 +3,7 @@ import {Size} from "@/types/size";
 import {useEffect, useState} from "react";
 import {sizeService} from "@/services/size-service";
 import {toast} from "sonner";
-import {SizeForm} from "@/components/dashboard/sections/sizes/create-update-form";
+import {SizeForm} from "@/components/dashboard/sites/sizes/create-update-form";
 
 export default function Page({params}: { params: { sizeId: string } }) {
     const [size, setSize] = useState<Size | null>(null);

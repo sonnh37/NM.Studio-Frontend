@@ -1,8 +1,8 @@
 import {ProductXColor} from "@/types/product-x-color";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 import {ProductXColorUpdateCommand} from "@/types/commands/product-x-color-command";
 
 class ProductXColorService extends BaseService<ProductXColor> {

@@ -1,9 +1,9 @@
-import { TypographyH2 } from "@/components/common/typography/typography-h2";
-import { TypographyH4 } from "@/components/common/typography/typography-h4";
-import { TypographyLarge } from "@/components/common/typography/typography-large";
-import { TypographyList } from "@/components/common/typography/typography-list";
-import { TypographyP } from "@/components/common/typography/typography-p";
-import { Const } from "@/lib/const";
+import { TypographyH2 } from "@/components/_common/typography/typography-h2";
+import { TypographyH4 } from "@/components/_common/typography/typography-h4";
+import { TypographyLarge } from "@/components/_common/typography/typography-large";
+import { TypographyList } from "@/components/_common/typography/typography-list";
+import { TypographyP } from "@/components/_common/typography/typography-p";
+import { Const } from "@/lib/constants/const";
 import Link from "next/link";
 
 function Footer() {

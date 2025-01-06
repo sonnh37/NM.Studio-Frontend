@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollVisibility } from "@/hooks/use-scroll-visibility";
-import { siteConfig } from "@/config/site";
+import { navbarConst } from "@/lib/constants/navbar-const";
 import { Category } from "@/types/category";
 import { Service } from "@/types/service";
 import { Album } from "@/types/album";
@@ -51,10 +51,10 @@ export const HeaderMain = ({
             services={services}
             albums={albums}
             user={user}
-            items={siteConfig.mainNav}
+            items={navbarConst.mainNav}
           />
           <MobileNav
-            items={siteConfig.mainNav}
+            items={navbarConst.mainNav}
             categories={categories}
             services={services}
             albums={albums}

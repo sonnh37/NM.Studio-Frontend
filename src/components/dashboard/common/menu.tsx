@@ -9,7 +9,7 @@ import {Button} from "@/components/ui/button";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {CollapseMenuButton} from "@/components/dashboard/common/collapse-menu-button";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip";
-import {getMenuList} from "@/lib/menu-list";
+import {getMenuList} from "@/lib/constants/sidebar-dashboard-const";
 
 interface MenuProps {
     isOpen: boolean | undefined;

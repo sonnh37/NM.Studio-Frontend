@@ -1,6 +1,6 @@
 "use client"
 
-import {BlogForm} from '@/components/dashboard/sections/blogs/create-update-form';
+import {BlogForm} from '@/components/dashboard/sites/blogs/create-update-form';
 
 export default function Page() {
     return (

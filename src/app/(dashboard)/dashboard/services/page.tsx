@@ -1,7 +1,7 @@
 "use client";
 
-import DataTableServices from "@/components/dashboard/sections/services";
-import {Const} from "@/lib/const";
+import DataTableServices from "@/components/dashboard/sites/services";
+import {Const} from "@/lib/constants/const";
 
 const breadcrumbItems = [
     {title: 'Dashboard', link: '/dashboard'},

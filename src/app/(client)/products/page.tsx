@@ -1,7 +1,7 @@
 "use client";
 
-import { SidebarProduct } from "@/components/client/sections/products/sidebar-product";
-import { TitleProvider } from "@/components/common/title-component";
+import { SidebarProduct } from "@/components/client/sites/products/sidebar-product";
+import { TitleProvider } from "@/components/_common/title-component";
 
 import React from "react";
 

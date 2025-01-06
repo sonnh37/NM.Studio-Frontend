@@ -1,8 +1,8 @@
 import {Blog} from "@/types/blog";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 import {BlogCreateCommand, BlogUpdateCommand,} from "@/types/commands/blog-command";
 
 class BlogService extends BaseService<Blog> {

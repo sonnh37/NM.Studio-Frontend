@@ -1,6 +1,6 @@
 "use client";
 
-import {RegisterForm} from "@/components/auth/register/register-form";
+import {RegisterForm} from "@/components/_common/auth/register/register-form";
 import {BackgroundGradientAnimation} from "@/components/ui/background-gradient-animation";
 
 

@@ -1,5 +1,5 @@
 "use client"
-import {CategoryForm} from "@/components/dashboard/sections/categories/create-update-form";
+import {CategoryForm} from "@/components/dashboard/sites/categories/create-update-form";
 
 export default function Page() {
     return (

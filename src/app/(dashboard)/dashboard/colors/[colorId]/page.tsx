@@ -3,7 +3,7 @@ import {Color} from "@/types/color";
 import {useEffect, useState} from "react";
 import {colorService} from "@/services/color-service";
 import {toast} from "sonner";
-import {ColorForm} from "@/components/dashboard/sections/colors/create-update-form";
+import {ColorForm} from "@/components/dashboard/sites/colors/create-update-form";
 
 export default function Page({params}: { params: { colorId: string } }) {
     const [color, setColor] = useState<Color | null>(null);

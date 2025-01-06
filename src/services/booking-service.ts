@@ -1,8 +1,8 @@
 import {Booking} from "@/types/booking";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 
 class BookingService extends BaseService<Booking> {
     constructor() {

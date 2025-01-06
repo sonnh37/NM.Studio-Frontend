@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { FileUpload } from "@/components/custom/file-upload";
+import { FileUpload } from "@/components/_common/custom/file-upload";
 import { Button } from "@/components/ui/button";
 import {
   Form,

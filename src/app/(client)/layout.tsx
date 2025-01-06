@@ -1,10 +1,10 @@
 "use client";
 import InformationChat from "@/components/client/common/information-chat";
 import Footer from "@/components/client/layouts/footer";
-import BreadcrumbClient from "@/components/client/layouts/navbar/breadcrumb";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import BreadcrumbClient from "@/components/client/common/breadcrumb";
+import {LoadingPageComponent} from "@/components/_common/loading-page";
 
-import { UserAccessControl } from "@/components/common/user-access-control";
+import { UserAccessControl } from "@/components/_common/user-access-control";
 import dynamic from "next/dynamic";
 import React, { Suspense } from "react";
 

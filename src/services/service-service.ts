@@ -1,9 +1,9 @@
 import {Service} from "@/types/service";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
 import {ServiceCreateCommand, ServiceUpdateCommand,} from "@/types/commands/service-command";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 
 class ServiceService extends BaseService<Service> {
     constructor() {

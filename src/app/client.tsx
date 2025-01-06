@@ -1,5 +1,5 @@
 "use client";
-import store from "@/lib/store";
+import store from "@/lib/redux/store";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { HelmetProvider } from "react-helmet-async";
@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-import { UserAccessControl } from "@/components/common/user-access-control";
+import { UserAccessControl } from "@/components/_common/user-access-control";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 export default function Client({ children }: { children: React.ReactNode }) {

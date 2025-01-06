@@ -43,7 +43,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 const Editor = dynamic(
-  () => import("@/components/common/react-tiptap-editor/editor")
+  () => import("@/components/_common/react-tiptap-editor/editor")
 );
 interface FormInputProps<TFieldValues extends FieldValues> {
   label?: string;

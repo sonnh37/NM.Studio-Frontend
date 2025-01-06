@@ -3,7 +3,7 @@ import {Category} from "@/types/category";
 import {useEffect, useState} from "react";
 import {categoryService} from "@/services/category-service";
 import {toast} from "sonner";
-import {CategoryForm} from "@/components/dashboard/sections/categories/create-update-form";
+import {CategoryForm} from "@/components/dashboard/sites/categories/create-update-form";
 
 export default function Page({params}: { params: { categoryId: string } }) {
     const [category, setCategory] = useState<Category | null>(null);

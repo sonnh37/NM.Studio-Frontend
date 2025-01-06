@@ -1,6 +1,6 @@
 "use client";
 
-import {Breadcrumbs} from "@/components/common/breadcrumb";
+import {Breadcrumbs} from "@/components/_common/breadcrumb";
 
 const breadcrumbItems = [{title: "Dashboard", link: "/dashboard"}];
 export default function Page() {

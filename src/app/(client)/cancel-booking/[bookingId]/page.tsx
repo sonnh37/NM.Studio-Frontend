@@ -1,8 +1,8 @@
 "use client"
 
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/_common/loading-page";
 
-import SuccessBooking from "@/components/common/success-booking";
+import SuccessBooking from "@/components/_common/success-booking";
 import {bookingService} from "@/services/booking-service";
 import {useQuery} from "@tanstack/react-query";
 import {useParams, useRouter} from "next/navigation";

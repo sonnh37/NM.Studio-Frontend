@@ -1,13 +1,13 @@
 "use client";
 import { Service } from "@/types/service";
-import { ServiceForm } from "@/components/dashboard/sections/services/create-update-form";
+import { ServiceForm } from "@/components/dashboard/sites/services/create-update-form";
 import { serviceService } from "@/services/service-service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import ErrorPage from "@/app/error/404/page";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import {LoadingPageComponent} from "@/components/_common/loading-page";
 
-import ErrorSystem from "@/components/common/errors/error-system";
+import ErrorSystem from "@/components/_common/errors/error-system";
 
 export default function Page() {
   const params = useParams();

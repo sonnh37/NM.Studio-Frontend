@@ -1,9 +1,9 @@
 import {Album} from "@/types/album";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
 import {AlbumCreateCommand, AlbumUpdateCommand,} from "@/types/commands/album-command";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 
 class AlbumService extends BaseService<Album> {
     constructor() {

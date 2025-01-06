@@ -5,7 +5,7 @@ import {Badge} from "@/components/ui/badge";
 import {getEnumLabel} from "@/lib/utils";
 import {Role} from "@/types/user";
 import {format} from "date-fns";
-import {RootState} from "@/lib/store";
+import {RootState} from "@/lib/redux/store";
 import {useSelector} from "react-redux";
 
 export default function SettingsProfilePage() {

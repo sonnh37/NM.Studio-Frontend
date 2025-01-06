@@ -1,7 +1,7 @@
 "use client";
-import { ButtonLoading } from "@/components/common/button-loading";
-import ErrorSystem from "@/components/common/errors/error-system";
-import {LoadingPageComponent} from "@/components/common/loading-page";
+import { ButtonLoading } from "@/components/_common/button-loading";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";

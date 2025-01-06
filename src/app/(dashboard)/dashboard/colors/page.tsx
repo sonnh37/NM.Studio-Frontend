@@ -1,6 +1,6 @@
 "use client";
 
-import DataTableColors from "@/components/dashboard/sections/colors";
+import DataTableColors from "@/components/dashboard/sites/colors";
 
 export default function Page() {
     return (

@@ -1,10 +1,10 @@
 "use client";
 
-import { LoginForm } from "@/components/auth/login/login-form";
-import { LoadingPageComponent } from "@/components/common/loading-page";
+import { LoginForm } from "@/components/_common/auth/login/login-form";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/lib/redux/store";
 import userSerice from "@/services/user-serice";
 import { Role } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";

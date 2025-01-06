@@ -1,6 +1,6 @@
 "use client";
 
-import DataTableSubcategorys from "@/components/dashboard/sections/sub-categories";
+import DataTableSubcategorys from "@/components/dashboard/sites/sub-categories";
 
 export default function Page() {
     return (

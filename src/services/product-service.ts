@@ -1,8 +1,8 @@
 import {Product, ProductRepresentativeByCategory} from "@/types/product";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 
 class ProductService extends BaseService<Product> {
     constructor() {

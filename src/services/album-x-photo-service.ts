@@ -1,8 +1,8 @@
 import {AlbumXPhoto} from "@/types/album-x-photo";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 import {AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
 
 class AlbumXPhotoService extends BaseService<AlbumXPhoto> {

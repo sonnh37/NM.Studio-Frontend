@@ -1,5 +1,5 @@
-import { LoadingPageComponent } from "@/components/common/loading-page";
-import Editor from "@/components/common/react-tiptap-editor/editor";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import Editor from "@/components/_common/react-tiptap-editor/editor";
 
 export default function Home() {
   return (

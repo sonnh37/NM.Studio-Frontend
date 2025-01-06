@@ -1,6 +1,6 @@
 "use client";
 
-import DataTableProducts from "@/components/dashboard/sections/products";
+import DataTableProducts from "@/components/dashboard/sites/products";
 
 export default function Page() {
     return (

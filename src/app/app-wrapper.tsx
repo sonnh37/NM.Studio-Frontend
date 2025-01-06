@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/lib/store";
-import { fetchToken } from "@/lib/slices/tokenSlice";
+import type { AppDispatch } from "@/lib/redux/store";
+import { fetchToken } from "@/lib/redux/slices/tokenSlice";
 import {
   QueryClient,
   QueryClientProvider,
@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { HelmetProvider } from "react-helmet-async";
-import {LoadingPage} from "@/components/common/loading-page";
+import {LoadingPage} from "@/components/_common/loading-page";
 
 import { Suspense } from "react";
 import userSerice from "@/services/user-serice";

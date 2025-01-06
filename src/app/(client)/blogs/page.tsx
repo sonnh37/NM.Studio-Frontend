@@ -1,10 +1,10 @@
 "use client";
 
 import { Pagination } from "@/components/client/common/pagination";
-import { BlogsRecent } from "@/components/client/sections/blogs/blogs-recent";
-import ErrorSystem from "@/components/common/errors/error-system";
-import {LoadingPageComponent} from "@/components/common/loading-page";
-import { TitleProvider } from "@/components/common/title-component";
+import { BlogsRecent } from "@/components/client/sites/blogs/blogs-recent";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import {LoadingPageComponent} from "@/components/_common/loading-page";
+import { TitleProvider } from "@/components/_common/title-component";
 
 import { Button } from "@/components/ui/button";
 import { convertHtmlToPlainText, formatDate } from "@/lib/utils";

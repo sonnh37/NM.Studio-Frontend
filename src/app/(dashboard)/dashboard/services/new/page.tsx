@@ -1,6 +1,6 @@
 "use client";
 
-import {ServiceForm} from "@/components/dashboard/sections/services/create-update-form";
+import {ServiceForm} from "@/components/dashboard/sites/services/create-update-form";
 
 export default function Page() {
     return (

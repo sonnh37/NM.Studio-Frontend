@@ -1,10 +1,7 @@
-import userSerice from "@/services/user-serice";
+import { BaseQueryableQuery } from "@/types/queries/base-query";
 import { type ClassValue, clsx } from "clsx";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
-import { NextApiRequest } from "next";
 import { twMerge } from "tailwind-merge";
-
-var jwt = require("jsonwebtoken");
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,6 +45,18 @@ export const isValidImage = async (src: string): Promise<boolean> => {
 //     const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 //     return validExtensions.some(extension => src.endsWith(extension));
 // };
+
+export const toSlug = (title: string): string => {
+  return title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')  // Loại bỏ các dấu
+      .replace(/đ/g, 'd')  // Thay thế "đ" bằng "d"
+      .replace(/[^a-z0-9 ]/g, '')  // Loại bỏ các ký tự không phải chữ cái, số, hoặc khoảng trắng
+      .replace(/\s+/g, '-')  // Thay thế khoảng trắng bằng dấu gạch ngang
+      .replace(/-+$/, '')  // Loại bỏ các dấu gạch ngang dư thừa ở cuối
+      .trim();  // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+};
 
 export const formatTimeSpan = (time: string): string => {
   // Chia tách giờ và phút
@@ -127,47 +136,6 @@ export const formatPrice = (price: number) => {
 //   return null;
 // };
 
-// export const getRefreshToken = (): string | null => {
-//   if (typeof window !== "undefined") {
-//     return document.cookie
-//       .split("; ")
-//       .find((row) => row.startsWith("refreshToken="))
-//       ?.split("=")[1] || null;
-//   }
-//   return null;
-// };
-
-export const refreshAccessToken = async (
-  refreshToken: string
-): Promise<string | null> => {
-  if (!refreshToken) {
-    return null;
-  }
-
-  // Gửi yêu cầu đến API để refresh token
-  const response = await userSerice.refreshToken(refreshToken);
-
-  if (response.status == 1) {
-    const data = response.data;
-    return data?.token ?? null;
-  }
-
-  return null;
-};
-
-export const getRefreshToken = (req: NextApiRequest): string | null => {
-  const cookies = req.cookies;
-  return cookies.refreshToken || null;
-};
-
-export const isTokenExpired = (token: string): boolean => {
-  try {
-    const decoded = jwt.decode(token) as { exp: number };
-    return Date.now() > decoded.exp * 1000;
-  } catch (error) {
-    return true;
-  }
-};
 
 export const convertHtmlToPlainText = (description: string): string => {
   try {
@@ -178,24 +146,6 @@ export const convertHtmlToPlainText = (description: string): string => {
   } catch (error) {
     console.error("Error converting HTML to plain text:", error);
     return ""; // Trả về chuỗi rỗng nếu xảy ra lỗi
-  }
-};
-
-export const convertUrlToFile = async (url: string): Promise<File | null> => {
-  try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-
-    // Lấy tên file từ URL hoặc tạo tên ngẫu nhiên nếu không có
-    const urlParts = url.split("/");
-    const filename =
-      urlParts[urlParts.length - 1] || `notfound_${Date.now()}.jpg`;
-
-    const file = new File([blob], filename, { type: blob.type });
-    return file;
-  } catch (error) {
-    console.error("Error converting URL to File:", error);
-    return null;
   }
 };
 
@@ -219,3 +169,56 @@ export function toLocalISOString(date: Date) {
   const tzOffset = date.getTimezoneOffset() * 60000; // Chuyển phút lệch sang milliseconds
   return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
 }
+
+export const cleanQueryParams = (query: BaseQueryableQuery) => {
+    const cleanedQuery: Record<string, any> = {};
+
+    for (const key in query) {
+        const value = query[key as keyof BaseQueryableQuery];
+
+        // Xử lý trường hợp các giá trị boolean
+        if (key === "isDeleted" || key === "isActive") {
+            if (Array.isArray(value)) {
+                cleanedQuery[key] = value
+                    .filter((item) => item !== null)
+                    .map((item) => item.toString());
+            } else if (value !== undefined && value !== null) {
+                cleanedQuery[key] = value.toString();
+            }
+        }
+        // Xử lý giá trị array thông thường
+        else if (Array.isArray(value)) {
+            const filteredArray = value.filter((item) => item !== null);
+            if (filteredArray.length > 0) {
+                filteredArray.forEach((item, index) => {
+                    cleanedQuery[`${key}[${index}]`] = item;
+                });
+            }
+        }
+        // Xử lý đối tượng: chuyển thành chuỗi JSON
+        else if (typeof value === 'object' && value !== null) {
+            // Convert object to JSON string
+            cleanedQuery[key] = JSON.stringify(value); // Convert object to string
+        }
+        // Xử lý giá trị không phải array hay object
+        else if (value !== undefined && value !== null) {
+            cleanedQuery[key] = value;
+        }
+    }
+
+    // Convert object cleanedQuery to query string
+    const params = new URLSearchParams();
+
+    for (const key in cleanedQuery) {
+        const value = cleanedQuery[key];
+        if (Array.isArray(value)) {
+            value.forEach((val) => {
+                params.append(key, val);
+            });
+        } else {
+            params.append(key, value.toString());
+        }
+    }
+
+    return params.toString(); // Return as query string
+};

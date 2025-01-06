@@ -1,12 +1,12 @@
 "use client";
 import {useSelector} from "react-redux";
-import {RootState} from "@/lib/store";
+import {RootState} from "@/lib/redux/store";
 import {BsTelephone} from "react-icons/bs";
 import {SiZalo} from "react-icons/si";
 import {LiaFacebookMessenger} from "react-icons/lia";
 import {BookingDialog} from "@/components/client/common/booking-dialog";
 import {AnimatePresence, motion} from "framer-motion";
-import { Const } from "@/lib/const";
+import { Const } from "@/lib/constants/const";
 
 const InformationChat = () => {
     const isOpen = useSelector((state: RootState) => state.chat.isOpen);

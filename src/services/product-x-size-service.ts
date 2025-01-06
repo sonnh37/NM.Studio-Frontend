@@ -1,8 +1,8 @@
 import {ProductXSize} from "@/types/product-x-size";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 import {ProductXSizeUpdateCommand} from "@/types/commands/product-x-size-command";
 
 class ProductXSizeService extends BaseService<ProductXSize> {

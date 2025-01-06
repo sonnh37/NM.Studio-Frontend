@@ -1,8 +1,8 @@
 import { User } from "@/types/user";
 import { BusinessResult } from "@/types/response/business-result";
 import { LoginResponse } from "@/types/response/login-response";
-import { Const } from "@/lib/const";
-import axiosInstance from "@/lib/axios-instance";
+import { Const } from "@/lib/constants/const";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 import { BaseService } from "./base-service";
 import axios from "axios";
 import {
@@ -11,8 +11,8 @@ import {
   UserUpdatePasswordCommand,
 } from "@/types/commands/user-command";
 import { TokenResponse } from "@/types/response/token-response";
-import store from "@/lib/store";
-import { logout, setUser } from "@/lib/slices/userSlice";
+import store from "@/lib/redux/store";
+import { logout, setUser } from "@/lib/redux/slices/userSlice";
 
 class UserService extends BaseService<User> {
   constructor() {
@@ -231,4 +231,4 @@ class UserService extends BaseService<User> {
   };
 }
 
-export default new UserService();
+export const userService = new UserService();

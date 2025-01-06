@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "@/lib/store";
-import {toggleChat} from "@/lib/slices/chatSlice";
+import {RootState} from "@/lib/redux/store";
+import {toggleChat} from "@/lib/redux/slices/chatSlice";
 
 const ChatButton = memo(() => {
     const dispatch = useDispatch();

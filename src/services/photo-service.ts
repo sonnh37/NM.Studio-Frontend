@@ -1,9 +1,9 @@
 import {Photo} from "@/types/photo";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
 import {PhotoCreateCommand, PhotoUpdateCommand} from "@/types/commands/photo-command";
-import axiosInstance from "@/lib/axios-instance";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 
 class PhotoService extends BaseService<Photo> {
     constructor() {

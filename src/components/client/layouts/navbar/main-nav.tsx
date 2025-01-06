@@ -22,9 +22,9 @@ import { ProductsCombobox } from "../../common/products-combobox";
 
 import { ModeToggle } from "./mode-toggle";
 import { AuthDropdown } from "./auth-dropdown";
-import { Const } from "@/lib/const";
+import { Const } from "@/lib/constants/const";
 import { Separator } from "@/components/ui/separator";
-import MenuAnimationLink from "@/components/common/hovers/menu-animation-link";
+import MenuAnimationLink from "@/components/_common/hovers/menu-animation-link";
 
 interface MainNavProps {
   items?: MainNavItem[];

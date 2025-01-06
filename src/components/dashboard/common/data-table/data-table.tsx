@@ -18,7 +18,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 import {DataTablePagination} from "@/components/dashboard/common/data-table/data-table-pagination";
 import {BaseQueryableQuery} from "@/types/queries/base-query";
 import {DataTableToolbar} from "@/components/dashboard/common/data-table/data-table-toolbar";
-import BarLoader from "@/components/common/bar-loader"
+import BarLoader from "@/components/_common/bar-loader"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];

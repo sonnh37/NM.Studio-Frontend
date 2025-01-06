@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import type { MainNavItem } from "@/types";
 
-import { siteConfig } from "@/config/site";
+import { navbarConst } from "@/lib/constants/navbar-const";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
@@ -135,7 +135,7 @@ export function MobileNav({
               }}
             >
               <Icons.logo className="mr-2 size-4" aria-hidden="true" />
-              {/* <span className="font-bold">{siteConfig.name}</span>
+              {/* <span className="font-bold">{navbarConst.name}</span>
               <span className="sr-only">Home</span> */}
             </Link>
           </div>

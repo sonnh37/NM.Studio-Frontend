@@ -1,9 +1,9 @@
-import ErrorSystem from "@/components/common/errors/error-system";
-import { LoadingPageComponent } from "@/components/common/loading-page";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { useAlbums } from "@/hooks/use-albums";
 import { useCategories } from "@/hooks/use-categories";
 import { useServices } from "@/hooks/use-services";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/lib/redux/store";
 import { useSelector } from "react-redux";
 import { HeaderMain } from "./header/header-main";
 import { HeaderTop } from "./header/header-top";

@@ -1,6 +1,6 @@
 "use client";
 
-import DataTableBlogs from "@/components/dashboard/sections/blogs";
+import DataTableBlogs from "@/components/dashboard/sites/blogs";
 
 export default function Page() {
     return (

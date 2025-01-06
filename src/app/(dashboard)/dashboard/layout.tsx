@@ -1,7 +1,7 @@
 "use client";
 import AdminPanelLayout from "@/components/dashboard/common/admin-panel-layout";
 import { ContentLayout } from "@/components/dashboard/common/content-layout";
-import KBar from "@/components/dashboard/kbar";
+import KBar from "@/components/dashboard/common/kbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 

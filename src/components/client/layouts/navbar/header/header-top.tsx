@@ -1,5 +1,5 @@
 import ChatButton from "@/components/client/common/chat-button";
-import { Const } from "@/lib/const";
+import { Const } from "@/lib/constants/const";
 
 export const HeaderTop = () => (
   <div className="bg-neutral-600 transition-colors duration-300 text-white font-thin text-sm tracking-wide dark:text-white">

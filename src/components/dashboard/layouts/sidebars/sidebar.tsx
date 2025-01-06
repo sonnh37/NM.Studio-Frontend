@@ -1,7 +1,7 @@
 import { Menu } from "@/components/dashboard/common/menu";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/lib/redux/store";
 import { cn } from "@/lib/utils";
 import { User } from "@/types/user";
 import { useSelector } from "react-redux";

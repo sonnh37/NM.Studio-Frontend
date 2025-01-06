@@ -1,6 +1,6 @@
 import {Color} from "@/types/color";
 import {BaseService} from "./base-service";
-import {Const} from "@/lib/const";
+import {Const} from "@/lib/constants/const";
 
 class ColorService extends BaseService<Color> {
     constructor() {

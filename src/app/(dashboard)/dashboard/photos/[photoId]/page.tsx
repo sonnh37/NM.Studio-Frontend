@@ -3,11 +3,11 @@ import { Photo } from "@/types/photo";
 import { useEffect, useState } from "react";
 import { photoService } from "@/services/photo-service";
 import { toast } from "sonner";
-import { PhotoForm } from "@/components/dashboard/sections/photos/create-update-form";
+import { PhotoForm } from "@/components/dashboard/sites/photos/create-update-form";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingPageComponent } from "@/components/common/loading-page";
-import ErrorSystem from "@/components/common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import ErrorSystem from "@/components/_common/errors/error-system";
 
 export default function Page() {
   const params = useParams();

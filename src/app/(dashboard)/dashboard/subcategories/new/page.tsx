@@ -1,5 +1,5 @@
 "use client"
-import {SubCategoryForm} from "@/components/dashboard/sections/sub-categories/create-update-form";
+import {SubCategoryForm} from "@/components/dashboard/sites/sub-categories/create-update-form";
 
 export default function Page() {
     return (

@@ -1,5 +1,5 @@
 "use client";
-import DataTableAlbums from "@/components/dashboard/sections/albums";
+import DataTableAlbums from "@/components/dashboard/sites/albums";
 
 export default function Page() {
     return (

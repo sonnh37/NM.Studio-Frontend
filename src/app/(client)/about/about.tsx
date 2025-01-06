@@ -1,6 +1,6 @@
 "use client";
 import { DisplayContent } from "@/components/client/common/display-content";
-import ErrorSystem from "@/components/common/errors/error-system";
+import ErrorSystem from "@/components/_common/errors/error-system";
 
 import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";

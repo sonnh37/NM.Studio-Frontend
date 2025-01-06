@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/axios-instance";
-import {cleanQueryParams} from "@/lib/clean-query-param";
+import axiosInstance from "@/lib/interceptors/axios-instance";
+import {cleanQueryParams} from "@/lib/utils";
 import {CreateCommand, UpdateCommand} from "@/types/commands/base-command";
 import {BaseQueryableQuery} from "@/types/queries/base-query";
 import {BusinessResult} from "@/types/response/business-result";

@@ -1,9 +1,9 @@
 "use client";
 import { DisplayContent } from "@/components/client/common/display-content";
-import { ServiceCard } from "@/components/client/sections/services/service-card";
-import ErrorSystem from "@/components/common/errors/error-system";
-import { LoadingPageComponent } from "@/components/common/loading-page";
-import { TypographyH2 } from "@/components/common/typography/typography-h2";
+import { ServiceCard } from "@/components/client/sites/services/service-card";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { TypographyH2 } from "@/components/_common/typography/typography-h2";
 import { Separator } from "@/components/ui/separator";
 
 import { formatDate } from "@/lib/utils";
