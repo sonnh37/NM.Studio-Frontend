@@ -8,6 +8,7 @@ export class Const {
     //#region Environment Variables
     static readonly CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID_GOOGLE;
     static readonly API_BASE = `${process.env.NEXT_PUBLIC_API_BASE}`;
+    static readonly BASE_URL = `${process.env.NEXT_PUBLIC_SITE_URL}`;
     //#endregion
     static readonly BOOKING = "bookings";
     static readonly ALBUM = "albums";

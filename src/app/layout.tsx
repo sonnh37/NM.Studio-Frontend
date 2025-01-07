@@ -2,9 +2,10 @@ import Script from "next/script";
 
 import type { Metadata } from "next";
 import Client from "./client";
+import { Const } from "@/lib/constants/const";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(`${process.env.NEXT_PUBLIC_SITE_URL}`),
+  metadataBase: new URL(`${Const.BASE_URL}`),
   title: {
     template: "%s | NhuMy Studio",
     default: "NhuMy Studio",
