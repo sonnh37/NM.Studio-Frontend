@@ -42,6 +42,7 @@ import { useEffect, useRef, useState } from "react";
 import { BsPlus } from "react-icons/bs";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BlogFormProps {
   initialData: any | null;
@@ -76,6 +77,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const [file, setFile] = useState<File | null>(null);
   const previousPath = usePreviousPath();
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -109,7 +111,9 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
         };
         const response = await blogService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-
+        queryClient.invalidateQueries({
+          queryKey: ["fetchBlogById", initialData.id],
+        });
         toast.success(response.message);
         router.push(previousPath);
       } else {

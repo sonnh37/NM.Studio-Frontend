@@ -24,9 +24,9 @@ import { Gender, Role, User } from "@/types/user";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { UpdateCommand } from "@/types/commands/base-command";
-import userSerice from "@/services/user-serice";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { userService } from "@/services/user-serice";
 
 const profileFormSchema = z.object({
   id: z.string().optional(),
@@ -128,7 +128,7 @@ export function ProfileForm({ user }: { user?: User }) {
       ...data,
       file: file,
     };
-    const response = await userSerice.update(updatedValues);
+    const response = await userService.update(updatedValues);
     if (response.status != 1) throw new Error(response.message);
 
     // toast.success(

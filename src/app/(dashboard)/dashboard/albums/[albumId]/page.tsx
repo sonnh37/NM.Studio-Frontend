@@ -4,24 +4,39 @@ import {useEffect, useState} from "react";
 import {Album} from "@/types/album";
 import {albumService} from "@/services/album-service";
 import {toast} from "sonner";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
-export default function Page({params}: { params: { albumId: string } }) {
-    const [album, setAlbum] = useState<Album | null>(null);
+export default function Page() {
+    const params = useParams();
+    const {
+        data = {} as Album,
+        isLoading,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: ["fetchAlbumById", params.albumId],
+        queryFn: async () => {
+            const response = await albumService.fetchById(
+                params.albumId as string
+            );
+            return response.data;
+        },
+        enabled: !!params.albumId,
+    });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await albumService.fetchById(params.albumId);
-            if (response.status !== 1) {
-                return toast.error(response.message);
-            }
-            setAlbum(response.data as Album); // Assuming response.data contains the album data
-        };
-        fetchData();
-    }, [params.albumId]);
+    if (isLoading) return <LoadingPageComponent/>;
+
+    if (isError) {
+        console.log("Error fetching:", error);
+        return <ErrorSystem/>;
+    }
 
     return (
         <div className="space-y-6">
-            <AlbumForm initialData={album}/>
+            <AlbumForm initialData={data}/>
         </div>
     );
 }

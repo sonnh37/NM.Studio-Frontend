@@ -1,16 +1,9 @@
 "use client";
-import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -20,14 +13,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { albumService } from "@/services/album-service";
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { ButtonLoading } from "@/components/_common/button-loading";
 import { FileUpload } from "@/components/_common/custom/file-upload";
+import { TypographyH3 } from "@/components/_common/typography/typography-h3";
+import { TypographyP } from "@/components/_common/typography/typography-p";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
@@ -40,12 +40,17 @@ import {
   AlbumUpdateCommand,
 } from "@/types/commands/album-command";
 import { BusinessResult } from "@/types/response/business-result";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { BsPlus } from "react-icons/bs";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
 
 interface AlbumFormProps {
-  initialData: any | null;
+  initialData: Album | null;
 }
 
 const formSchema = z.object({
@@ -58,20 +63,16 @@ const formSchema = z.object({
     .optional()
     .default(() => new Date()),
   createdBy: z.string().nullable().optional().default(null),
+  lastUpdatedBy: z.string().nullable().optional().default(null),
   isDeleted: z.boolean().default(false),
 });
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
   const title = initialData ? "Edit album" : "Create album";
-  const description = initialData ? "Edit a album." : "Add a new album";
-  const toastMessage = initialData ? "Album updated." : "Album created.";
-  const action = initialData ? "Save changes" : "Create";
+  const action = initialData ? "Save and continue" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
@@ -79,7 +80,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const previousPath = usePreviousPath();
   const [file, setFile] = useState<File | null>(null);
-
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
@@ -97,6 +98,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       setFirebaseLink(initialData.background || "");
     }
   }, [initialData]);
+
   const handleFileUpload = (file: File | null) => {
     setFile(file);
   };
@@ -110,7 +112,9 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
         };
         const response = await albumService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-
+        queryClient.invalidateQueries({
+          queryKey: ["fetchAlbumById", initialData.id],
+        });
         toast.success(response.message);
         router.push(previousPath);
       } else {
@@ -130,55 +134,185 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       toast.error("No pending values to create album.");
       return Promise.reject(new Error("No pending values"));
     }
-
+    setIsLoading(true);
     try {
       const createdValues: AlbumCreateCommand = {
         ...pendingValues,
         file: file,
       };
       const response = await albumService.create(createdValues);
+      if (response.status !== 1) throw new Error(response.message);
+
+      toast.success(response.message);
+      setShowConfirmationDialog(false);
+      setPendingValues(null);
+      setIsLoading(false);
+
       return response;
     } catch (error: any) {
       console.error("Error creating album:", error);
       toast.error(error.message || "Failed to create album.");
-      return Promise.reject(error); // Trả về lỗi để xử lý tiếp
+      setShowConfirmationDialog(false);
+      setPendingValues(null);
+      setIsLoading(false);
+      return Promise.reject(error);
     }
   };
 
+  const HeaderForm = () => {
+    return (
+      <div className="flex flex-row items-center justify-between gap-4">
+        <div className="flex flex-row items-center gap-4">
+          <Link href={previousPath}>
+            <Button type="button" variant="outline">
+              <IoReturnUpBackOutline />
+            </Button>
+          </Link>
+          <TypographyH3 className="tracking-normal font-thin">
+            {title}
+          </TypographyH3>
+          <TypographyP className="[&:not(:first-child)]:mt-0">
+            {initialData
+              ? "Last Updated: " + initialData.lastUpdatedDate
+              : null}
+          </TypographyP>
+        </div>
+
+        <div className="flex justify-end">
+          {loading ? (
+            <ButtonLoading
+              size={"lg"}
+              className={"w-full flex justify-center items-center"}
+            />
+          ) : (
+            <Button
+              className="flex justify-center items-center"
+              size={"lg"}
+              type="submit"
+              disabled={loading}
+            >
+              {action}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const MainCard = () => {
+    return (
+      <Card className="overflow-hidden">
+        <CardContent className="p-6">
+          <div className="grid gap-6">
+            <div className="grid gap-3">
+              <FormInput
+                form={form}
+                name="title"
+                label="Title"
+                placeholder="Enter title"
+              />
+
+              <FormInputTextArea
+                form={form}
+                name="description"
+                label="Description"
+                placeholder="Enter description"
+              />
+
+              <FormField
+                control={form.control}
+                name="background"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Background</FormLabel>
+                    <FormControl>
+                      <div className="grid gap-2">
+                        {firebaseLink ? (
+                          <>
+                            <Image
+                              alt="Picture"
+                              className="w-[30%] rounded-md "
+                              height={9999}
+                              src={firebaseLink}
+                              width={9999}
+                            />
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                        <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                          <FileUpload onChange={handleFileUpload} />
+                        </div>
+                        <FormMessage />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const SubCard = () => {
+    return <></>;
+  };
+
+  const InformationCard = () => {
+    return (
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle>Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6">
+            <div className="grid gap-3">
+              <FormInput
+                form={form}
+                name="createdBy"
+                label="Created By"
+                placeholder="N/A"
+                disabled={true}
+              />
+            </div>
+            <div className="grid gap-3">
+              <Label>Created Date</Label>
+              <Button
+                type="button"
+                disabled={true}
+                variant={"outline"}
+                className={cn(
+                  "w-full flex flex-row justify-between pl-3 text-left font-normaltext-muted-foreground"
+                )}
+              >
+                {initialData?.lastUpdatedDate ? (
+                  format(initialData?.lastUpdatedDate, "dd/MM/yyyy")
+                ) : (
+                  <span>{format(new Date(), "dd/MM/yyyy")}</span>
+                )}
+                <CalendarIcon className="mr-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
   return (
     <>
       <ConfirmationDialog
         isLoading={isLoading}
         isOpen={showConfirmationDialog}
-        onConfirm={async () => {
-          setIsLoading(true);
-          const res = await handleCreateConfirmation();
-          if (res.status != 1) {
-            toast.error(res.message);
-            setIsLoading(false);
-            return;
-          }
-          toast.success(res.message);
-          setShowConfirmationDialog(false);
-          setPendingValues(null);
-
-          setIsLoading(false);
-        }} // Đóng modal
+        onConfirm={handleCreateConfirmation}
         onClose={async () => {
-          setIsLoading(true);
           const res = await handleCreateConfirmation();
           if (res.status != 1) {
-            toast.error(res.message);
-            setIsLoading(false);
             return;
           }
-          toast.success(res.message);
-          setShowConfirmationDialog(false);
-          setPendingValues(null);
-          setIsLoading(false);
-
           router.push(previousPath);
-        }} // Đóng modal
+        }}
         title="Do you want to continue adding this album?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
@@ -186,172 +320,21 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid flex-1 auto-rows-max gap-4">
-            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-4">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-4">
-                <Card
-                  x-chunk="dashboard-07-chunk-0"
-                  className="shadow-lg drop-shadow-md"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-neutral-800">
-                      {title}
-                      <FormField
-                        control={form.control}
-                        name="isDeleted"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <p>
-                                {initialData
-                                  ? field.value
-                                    ? "Deleted"
-                                    : "Last Updated: " +
-                                      initialData.lastUpdatedDate
-                                  : null}
-                              </p>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="title"
-                          label="Title"
-                          description="This is your public display title."
-                          placeholder="Enter title"
-                        />
-
-                        <FormInputTextArea
-                          form={form}
-                          name="description"
-                          label="Description"
-                          description="This is your public display description."
-                          placeholder="Enter description"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card
-                  className="overflow-hidden"
-                  x-chunk="dashboard-07-chunk-2"
-                >
-                  <CardHeader>
-                    <CardTitle>Picture</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="background"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Album Background</FormLabel>
-                          <FormControl>
-                            <div className="grid gap-2">
-                              {firebaseLink ? (
-                                <>
-                                  <Image
-                                    alt="Picture"
-                                    className="aspect-square w-full rounded-md object-cover"
-                                    height={300}
-                                    src={firebaseLink}
-                                    width={300}
-                                  />
-                                </>
-                              ) : (
-                                <></>
-                              )}
-                              <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                                <FileUpload onChange={handleFileUpload} />
-                              </div>
-                              <FormMessage />
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
+          <div className="grid gap-2">
+            <HeaderForm />
+          </div>
+          <div className="grid gap-4">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="grid gap-4 lg:col-span-2">
+                <MainCard />
               </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-4">
-                <Card className="p-2 gap-4 flex  shadow-sm drop-shadow-md">
-                  <div className="grid grid-cols-3 justify-between w-full gap-2">
-                    <div className="col-span-1">
-                      <Link href={previousPath}>
-                        <Button
-                          variant="outline"
-                          className="shadow-inner w-full text-neutral-700"
-                        >
-                          <ChevronLeft />
-                          Back
-                        </Button>
-                      </Link>
-                    </div>
 
-                    <div className="col-span-2">
-                      {loading ? (
-                        <ButtonLoading
-                          className={
-                            "shadow-inner w-full flex justify-center items-center"
-                          }
-                        />
-                      ) : (
-                        <Button
-                          className="shadow-inner w-full flex justify-center items-center"
-                          type="submit"
-                          disabled={loading}
-                        >
-                          <BsPlus />
-                          {action}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-                <Card
-                  x-chunk="dashboard-07-chunk-3"
-                  className="shadow-lg drop-shadow-md"
-                >
-                  <CardHeader>
-                    <CardTitle>Information</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="createdBy"
-                          label="Created By"
-                          placeholder="N/A"
-                          disabled={true}
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <FormInputDate
-                          form={form}
-                          name="createdDate"
-                          label="Created Date"
-                          disabled={true}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="grid gap-4 h-fit">
+                <InformationCard />
               </div>
+            </div>
+            <div>
+              <SubCard />
             </div>
           </div>
         </form>

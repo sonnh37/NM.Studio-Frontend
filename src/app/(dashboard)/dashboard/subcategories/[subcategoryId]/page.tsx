@@ -1,27 +1,40 @@
 "use client";
-import {SubCategory} from "@/types/category";
-import {useEffect, useState} from "react";
-import {subCategoryService} from "@/services/sub-category-service";
-import {toast} from "sonner";
-import {SubCategoryForm} from "@/components/dashboard/sites/sub-categories/create-update-form";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { SubCategoryForm } from "@/components/dashboard/sites/sub-categories/create-update-form";
+import { subCategoryService } from "@/services/sub-category-service";
+import { SubCategory } from "@/types/category";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
-export default function Page({params}: { params: { subcategoryId: string } }) {
-    const [subcategory, setSubcategory] = useState<SubCategory | null>(null);
+export default function Page() {
+  const params = useParams();
+  const {
+    data = {} as SubCategory,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchSubCategoryById", params.subcategoryId],
+    queryFn: async () => {
+      const response = await subCategoryService.fetchById(
+        params.subcategoryId as string
+      );
+      return response.data;
+    },
+    enabled: !!params.subcategoryId,
+  });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await subCategoryService.fetchById(params.subcategoryId);
-            if (response.status !== 1) {
-                return toast.error(response.message);
-            }
-            setSubcategory(response.data as SubCategory); // Assuming response.data contains the subcategory data
-        };
-        fetchData();
-    }, [params.subcategoryId]);
+  if (isLoading) return <LoadingPageComponent />;
 
-    return (
-        <div className="space-y-6">
-            <SubCategoryForm initialData={subcategory}/>
-        </div>
-    );
+  if (isError) {
+    console.log("Error fetching:", error);
+    return <ErrorSystem />;
+  }
+
+  return (
+    <div className="space-y-6">
+      <SubCategoryForm initialData={data} />
+    </div>
+  );
 }

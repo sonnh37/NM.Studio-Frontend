@@ -1,27 +1,38 @@
 "use client";
-import {Color} from "@/types/color";
-import {useEffect, useState} from "react";
-import {colorService} from "@/services/color-service";
-import {toast} from "sonner";
-import {ColorForm} from "@/components/dashboard/sites/colors/create-update-form";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { ColorForm } from "@/components/dashboard/sites/colors/create-update-form";
+import { colorService } from "@/services/color-service";
+import { Color } from "@/types/color";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
-export default function Page({params}: { params: { colorId: string } }) {
-    const [color, setColor] = useState<Color | null>(null);
+export default function Page() {
+  const params = useParams();
+  const {
+    data = {} as Color,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchColorById", params.colorId],
+    queryFn: async () => {
+      const response = await colorService.fetchById(params.colorId as string);
+      return response.data;
+    },
+    enabled: !!params.colorId,
+  });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await colorService.fetchById(params.colorId);
-            if (response.status !== 1) {
-                return toast.error(response.message);
-            }
-            setColor(response.data as Color); // Assuming response.data contains the color data
-        };
-        fetchData();
-    }, [params.colorId]);
+  if (isLoading) return <LoadingPageComponent />;
 
-    return (
-        <div className="space-y-6">
-            <ColorForm initialData={color}/>
-        </div>
-    );
+  if (isError) {
+    console.log("Error fetching:", error);
+    return <ErrorSystem />;
+  }
+
+  return (
+    <div className="space-y-6">
+      <ColorForm initialData={data} />
+    </div>
+  );
 }

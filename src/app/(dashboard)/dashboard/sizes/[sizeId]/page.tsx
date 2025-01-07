@@ -1,27 +1,38 @@
 "use client";
-import {Size} from "@/types/size";
-import {useEffect, useState} from "react";
-import {sizeService} from "@/services/size-service";
-import {toast} from "sonner";
-import {SizeForm} from "@/components/dashboard/sites/sizes/create-update-form";
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { SizeForm } from "@/components/dashboard/sites/sizes/create-update-form";
+import { sizeService } from "@/services/size-service";
+import { Size } from "@/types/size";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
-export default function Page({params}: { params: { sizeId: string } }) {
-    const [size, setSize] = useState<Size | null>(null);
+export default function Page() {
+  const params = useParams();
+  const {
+    data = {} as Size,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchSizeById", params.sizeId],
+    queryFn: async () => {
+      const response = await sizeService.fetchById(params.sizeId as string);
+      return response.data;
+    },
+    enabled: !!params.sizeId,
+  });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await sizeService.fetchById(params.sizeId);
-            if (response.status !== 1) {
-                return toast.error(response.message);
-            }
-            setSize(response.data as Size); // Assuming response.data contains the size data
-        };
-        fetchData();
-    }, [params.sizeId]);
+  if (isLoading) return <LoadingPageComponent />;
 
-    return (
-        <div className="space-y-6">
-            <SizeForm initialData={size}/>
-        </div>
-    );
+  if (isError) {
+    console.log("Error fetching:", error);
+    return <ErrorSystem />;
+  }
+
+  return (
+    <div className="space-y-6">
+      <SizeForm initialData={data} />
+    </div>
+  );
 }

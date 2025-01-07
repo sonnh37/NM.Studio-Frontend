@@ -57,6 +57,7 @@ import {
 import { ProductStatus } from "@/types/product";
 import { Size } from "@/types/size";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProductFormProps {
   initialData: any | null;
@@ -75,7 +76,9 @@ const formSchema = z.object({
   isDeleted: z.boolean().default(false),
 });
 
-export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({
+  initialData = null,
+}) => {
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
   const title = initialData ? "Edit product" : "Create product";
@@ -99,7 +102,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-
+  const queryClient = useQueryClient();
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
@@ -112,6 +115,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         if (response.status != 1) throw new Error(response.message);
 
         toast.success(response.message);
+        queryClient.invalidateQueries({
+          queryKey: ["fetchProductById", initialData.id],
+        });
         router.push(Const.DASHBOARD_PRODUCT_URL);
       } else {
         setPendingValues(values_);

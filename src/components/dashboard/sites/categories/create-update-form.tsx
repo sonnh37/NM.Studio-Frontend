@@ -37,6 +37,7 @@ import {
 } from "@/types/commands/category-command";
 import { useRouter } from "next/navigation";
 import { BsPlus } from "react-icons/bs";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CategoryFormProps {
   initialData: any | null;
@@ -69,7 +70,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     typeof formSchema
   > | null>(null);
   const previousPath = usePreviousPath();
-
+  const queryClient = useQueryClient();
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
@@ -80,7 +81,9 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
         };
         const response = await categoryService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-
+        queryClient.invalidateQueries({
+          queryKey: ["fetchCategoryById", initialData.id],
+        });
         toast.success(response.message);
         router.push(Const.DASHBOARD_CATEGORY_URL);
       } else {

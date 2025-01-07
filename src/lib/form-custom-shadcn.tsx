@@ -35,7 +35,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, formatCurrency } from "@/lib/utils";
-// import { Editor } from "@tiptap/react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -531,9 +530,9 @@ export const FormInputDate = <TFieldValues extends FieldValues>({
                     )}
                   >
                     {field.value ? (
-                      format(field.value, "PPP")
+                      format(field.value, "dd/MM/yyyy")
                     ) : (
-                      <span>{format(new Date(), "PPP")}</span>
+                      <span>{format(new Date(), "dd/MM/yyyy")}</span>
                     )}
                     <CalendarIcon className="mr-2 h-4 w-4" />
                   </Button>
