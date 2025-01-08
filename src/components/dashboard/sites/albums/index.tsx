@@ -36,32 +36,20 @@ export default function DataTableAlbums() {
   const filterEnums: FilterEnum[] = [
     { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
   ];
-  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");
+  const tabsRef = useRef<HTMLDivElement>(null);
+
   const { data: album, isLoading } = useQuery({
     queryKey: ["album", queryParam?.toLowerCase()], // Cache theo queryParam
     queryFn: async () => {
       const response = await albumService.fetchById(queryParam as string);
       return response.data;
-    }, // Gọi API với queryParam
+    }, 
+    refetchOnWindowFocus: false
   });
 
-  const { data: albums } = useQuery({
-    queryKey: ["album", queryParam?.toLowerCase()], // Cache theo queryParam
-    queryFn: async () => {
-      const response = await albumService.fetchById(queryParam as string);
-      return response.data;
-    }, // Gọi API với queryParam
-  });
 
-  const tabsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isLoading && queryParam && tabsRef.current) {
-      tabsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [isLoading, queryParam]);
   return (
     <Tabs defaultValue="item-1">
       <TabsList>

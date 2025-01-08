@@ -1,4 +1,4 @@
-import userSerice from '@/services/user-serice';
+import { userService } from "@/services/user-serice";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 
@@ -15,7 +15,7 @@ const initialState: TokenState = {
 };
 
 export const fetchToken = createAsyncThunk('token/fetchToken', async () => {
-  const response = await userSerice.getToken();
+  const response = await userService.getToken();
   if (response.status === 1) {
     return response.data?.accessToken;
   } else {

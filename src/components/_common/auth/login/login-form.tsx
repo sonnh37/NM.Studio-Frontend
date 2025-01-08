@@ -1,12 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
-import { Meteors } from "../../../ui/meteors";
-import { Button } from "../../../ui/button";
-import Link from "next/link";
-import "./login.css";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { TypographyH2 } from "@/components/_common/typography/typography-h2";
 import {
   Form,
   FormControl,
@@ -14,14 +7,14 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
-import userSerice from "@/services/user-serice";
+import { userService } from "@/services/user-serice";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LoginResponse } from "@/types/response/login-response";
-import { useDispatch } from "react-redux";
-import { setToken } from "@/lib/redux/slices/tokenSlice";
-import { TypographyH1 } from "@/components/_common/typography/typography-h1";
-import { TypographyH2 } from "@/components/_common/typography/typography-h2";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Meteors } from "../../../ui/meteors";
+import "./login.css";
 
 const emailSchema = z.string().email("Email không hợp lệ");
 const usernameSchema = z
@@ -51,7 +44,7 @@ export const LoginForm = () => {
   const onSubmit = (data: FormSchema) => {
     try {
       // link localhost:3000
-      userSerice.login(data.account, data.password).then((res) => {
+      userService.login(data.account, data.password).then((res) => {
         if (res.status != 1) {
           toast.warning(res.message);
           return;
@@ -245,10 +238,17 @@ export const LoginForm = () => {
             </div> */}
 
             <div className="inline-flex pt-6 gap-5">
-              <button type="submit" className="px-6 focus:outline-none focus:scale-110 font-semibold text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-[#D9D9D9] bg-customPink shadow-customPink shadow-lg">
+              <button
+                type="submit"
+                className="px-6 focus:outline-none focus:scale-110 font-semibold text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-[#D9D9D9] bg-customPink shadow-customPink shadow-lg"
+              >
                 Sign Up
               </button>
-              <button type="button" onClick={() => router.push("/register")} className="px-6 focus:outline-none focus:scale-110 font-semibold text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-customPink bg-[#D9D9D9] shadow-customPink shadow-lg">
+              <button
+                type="button"
+                onClick={() => router.push("/register")}
+                className="px-6 focus:outline-none focus:scale-110 font-semibold text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-customPink bg-[#D9D9D9] shadow-customPink shadow-lg"
+              >
                 Sign In
               </button>
             </div>

@@ -1,41 +1,41 @@
 "use client";
 
 import {
-    BadgeCheck,
-    Bell,
-    ChevronsUpDown,
-    CreditCard,
-    LogOut,
-    Sparkles,
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import userSerice from "@/services/user-serice";
 import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { userService } from "@/services/user-serice";
 
 export function SidebarFooter({ user }: { user: User }) {
   const { isMobile } = useSidebar();
   const dispatch = useDispatch();
   const router = useRouter();
   const handleLogout = () => {
-    userSerice.logout().then((res) => {
+    userService.logout().then((res) => {
       if (res.status == 1) {
         window.location.href = "/";
       }

@@ -18,9 +18,9 @@ import {
 import { Icons } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import userSerice from "@/services/user-serice";
 import { User } from "@/types/user";
 import { Suspense } from "react";
+import { userService } from "@/services/user-serice";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
@@ -42,7 +42,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
   }`;
 
   const handleLogout = () => {
-    userSerice.logout().then((res) => {
+    userService.logout().then((res) => {
       if (res.status == 1) {
         window.location.href = "/";
       }
