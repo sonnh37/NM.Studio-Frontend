@@ -128,7 +128,7 @@ export default function DataTableSubCategorys({
             columns={columns_tab1}
             fetchData={subCategoryService.fetchAll}
             columnSearch="name"
-            defaultValues={getQueryParams}
+            defaultParams={getQueryParams}
             filterEnums={[
                 {columnId: "isActive", title: "Is Active", options: isActive_options},
                 {

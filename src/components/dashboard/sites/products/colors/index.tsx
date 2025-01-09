@@ -195,7 +195,7 @@ export default function DataTableColors({
             columns={columns_tab1}
             fetchData={colorService.fetchAll}
             columnSearch="name"
-            defaultValues={getQueryParams}
+            defaultParams={getQueryParams}
             filterEnums={[
                 {columnId: "isActive", title: "Is Active", options: isActive_options},
                 {

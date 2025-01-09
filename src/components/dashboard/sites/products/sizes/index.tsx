@@ -195,7 +195,7 @@ export default function DataTableSizes({
             columns={columns_tab1}
             fetchData={sizeService.fetchAll}
             columnSearch="name"
-            defaultValues={getQueryParams}
+            defaultParams={getQueryParams}
             filterEnums={[
                 {columnId: "isActive", title: "Is Active", options: isActive_options},
                 {

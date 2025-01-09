@@ -165,7 +165,7 @@ export default function DataTablePhotos({
             columns={columns_tab1}
             fetchData={photoService.fetchAll}
             columnSearch="href"
-            defaultValues={getQueryParams}
+            defaultParams={getQueryParams}
             filterEnums={[
                 {columnId: "isActive", title: "Is Active", options: isActive_options},
                 {
