@@ -177,11 +177,16 @@ export const cleanQueryParams = (query: BaseQueryableQuery) => {
         const value = query[key as keyof BaseQueryableQuery];
 
         // Xử lý trường hợp các giá trị boolean
-        if (key === "isDeleted" || key === "isActive") {
+        if (key.startsWith("is")) {
             if (Array.isArray(value)) {
-                cleanedQuery[key] = value
-                    .filter((item) => item !== null)
-                    .map((item) => item.toString());
+                // Nếu chứa cả true và false, đặt là undefined
+                if (value.includes(true) && value.includes(false)) {
+                    // cleanedQuery[key] = null;
+                } else {
+                    cleanedQuery[key] = value
+                        .filter((item) => item !== null)
+                        .map((item) => item.toString());
+                }
             } else if (value !== undefined && value !== null) {
                 cleanedQuery[key] = value.toString();
             }
