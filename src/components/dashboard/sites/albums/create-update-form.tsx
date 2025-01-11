@@ -81,6 +81,13 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const previousPath = usePreviousPath();
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (initialData) {
+      setFirebaseLink(initialData.background || "");
+    }
+  }, [initialData]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
@@ -92,12 +99,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
         }
       : {},
   });
-
-  useEffect(() => {
-    if (initialData) {
-      setFirebaseLink(initialData.background || "");
-    }
-  }, [initialData]);
 
   const handleFileUpload = (file: File | null) => {
     setFile(file);

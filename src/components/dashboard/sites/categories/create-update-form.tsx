@@ -1,46 +1,51 @@
 "use client";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { categoryService } from "@/services/category-service";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { ButtonLoading } from "@/components/_common/button-loading";
+import { FileUpload } from "@/components/_common/custom/file-upload";
+import { TypographyH3 } from "@/components/_common/typography/typography-h3";
+import { TypographyP } from "@/components/_common/typography/typography-p";
+import { Label } from "@/components/ui/label";
 import { usePreviousPath } from "@/hooks/use-previous-path";
-import { Const } from "@/lib/constants/const";
 import ConfirmationDialog, {
   FormInput,
-  FormInputDate,
+  FormInputReactTipTapEditor,
+  FormInputTextArea,
+  FormSwitch,
 } from "@/lib/form-custom-shadcn";
+import { cn } from "@/lib/utils";
+import { Category } from "@/types/category";
 import {
   CategoryCreateCommand,
   CategoryUpdateCommand,
 } from "@/types/commands/category-command";
-import { useRouter } from "next/navigation";
-import { BsPlus } from "react-icons/bs";
+import { BusinessResult } from "@/types/response/business-result";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface CategoryFormProps {
-  initialData: any | null;
+  initialData: Category | null;
 }
 
 const formSchema = z.object({
@@ -56,66 +61,18 @@ const formSchema = z.object({
 
 export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
   const title = initialData ? "Edit category" : "Create category";
-  const description = initialData ? "Edit a category." : "Add a new category";
-  const toastMessage = initialData ? "Category updated." : "Category created.";
-  const action = initialData ? "Save changes" : "Create";
+  const action = initialData ? "Save and continue" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const previousPath = usePreviousPath();
+  const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      const values_ = values;
-      if (initialData) {
-        const updatedValues: CategoryUpdateCommand = {
-          ...values_,
-        };
-        const response = await categoryService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
-          queryKey: ["fetchCategoryById", initialData.id],
-        });
-        toast.success(response.message);
-        router.push(Const.DASHBOARD_CATEGORY_URL);
-      } else {
-        setPendingValues(values_);
-        setShowConfirmationDialog(true);
-      }
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateConfirmation = async () => {
-    try {
-      if (pendingValues) {
-        const createdValues: CategoryCreateCommand = {
-          ...pendingValues,
-        };
-
-        const response = await categoryService.create(createdValues);
-        if (response.status != 1) throw new Error(response.message);
-        toast.success(response.message);
-      }
-      setShowConfirmationDialog(false);
-      setPendingValues(null);
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    }
-  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -129,25 +86,185 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       : {},
   });
 
-  useEffect(() => {
-    if (initialData) {
-      setFirebaseLink(initialData.src || "");
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+  };
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setLoading(true);
+      if (initialData) {
+        const updatedValues: CategoryUpdateCommand = {
+          ...values,
+          file: file,
+        };
+        const response = await categoryService.update(updatedValues);
+        if (response.status != 1) throw new Error(response.message);
+        queryClient.invalidateQueries({
+          queryKey: ["fetchCategoryById", initialData.id],
+        });
+        toast.success(response.message);
+        router.push(previousPath);
+      } else {
+        setPendingValues(values);
+        setShowConfirmationDialog(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-  }, [initialData]);
+  };
 
+  const handleCreateConfirmation = async (): Promise<
+    BusinessResult<Category>
+  > => {
+    if (!pendingValues) {
+      toast.error("No pending values to create category.");
+      return Promise.reject(new Error("No pending values"));
+    }
+    setIsLoading(true);
+    try {
+      const createdValues: CategoryCreateCommand = {
+        ...pendingValues,
+        file: file,
+      };
+      const response = await categoryService.create(createdValues);
+      if (response.status !== 1) throw new Error(response.message);
+
+      toast.success(response.message);
+      setShowConfirmationDialog(false);
+      setPendingValues(null);
+      setIsLoading(false);
+
+      return response;
+    } catch (error: any) {
+      console.error("Error creating category:", error);
+      toast.error(error.message || "Failed to create category.");
+      setShowConfirmationDialog(false);
+      setPendingValues(null);
+      setIsLoading(false);
+      return Promise.reject(error);
+    }
+  };
+
+  const HeaderForm = () => {
+    return (
+      <div className="flex flex-row items-center justify-between gap-4">
+        <div className="flex flex-row items-center gap-4">
+          <Link href={previousPath}>
+            <Button type="button" variant="outline">
+              <IoReturnUpBackOutline />
+            </Button>
+          </Link>
+          <TypographyH3 className="tracking-normal font-thin">
+            {title}
+          </TypographyH3>
+          <TypographyP className="[&:not(:first-child)]:mt-0">
+            {initialData
+              ? "Last Updated: " + initialData.lastUpdatedDate
+              : null}
+          </TypographyP>
+        </div>
+
+        <div className="flex justify-end">
+          {loading ? (
+            <ButtonLoading
+              size={"lg"}
+              className={"w-full flex justify-center items-center"}
+            />
+          ) : (
+            <Button
+              className="flex justify-center items-center"
+              size={"lg"}
+              type="submit"
+              disabled={loading}
+            >
+              {action}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const MainCard = () => {
+    return (
+      <Card className="overflow-hidden">
+        <CardContent className="p-6">
+          <div className="grid gap-6">
+            <div className="grid gap-3">
+              <FormInput
+                form={form}
+                name="name"
+                label="Name"
+                description="This is your public display name."
+                placeholder="Enter name"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const SubCard = () => {
+    return <></>;
+  };
+
+  const InformationCard = () => {
+    return (
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle>Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6">
+            <div className="grid gap-3">
+              <FormInput
+                form={form}
+                name="createdBy"
+                label="Created By"
+                placeholder="N/A"
+                disabled={true}
+              />
+            </div>
+            <div className="grid gap-3">
+              <Label>Created Date</Label>
+              <Button
+                type="button"
+                disabled={true}
+                variant={"outline"}
+                className={cn(
+                  "w-full flex flex-row justify-between pl-3 text-left font-normaltext-muted-foreground"
+                )}
+              >
+                {initialData?.lastUpdatedDate ? (
+                  format(initialData?.lastUpdatedDate, "dd/MM/yyyy")
+                ) : (
+                  <span>{format(new Date(), "dd/MM/yyyy")}</span>
+                )}
+                <CalendarIcon className="mr-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
   return (
     <>
       <ConfirmationDialog
+        isLoading={isLoading}
         isOpen={showConfirmationDialog}
-        onConfirm={() => {
-          handleCreateConfirmation();
-          setShowConfirmationDialog(false);
-        }} // Đóng modal
-        onClose={() => {
-          handleCreateConfirmation();
-          setShowConfirmationDialog(false);
+        onConfirm={handleCreateConfirmation}
+        onClose={async () => {
+          const res = await handleCreateConfirmation();
+          if (res.status != 1) {
+            return;
+          }
           router.push(previousPath);
-        }} // Đóng modal
+        }}
         title="Do you want to continue adding this category?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
@@ -155,120 +272,21 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid flex-1 auto-rows-max gap-4">
-            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-4">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-4">
-                <Card
-                  x-chunk="dashboard-07-chunk-0"
-                  className="shadow-lg drop-shadow-md"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-neutral-800">
-                      {title}
-                      <FormField
-                        control={form.control}
-                        name="isDeleted"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <p>
-                                {initialData
-                                  ? field.value
-                                    ? "Deleted"
-                                    : "Last Updated: " +
-                                      initialData.lastUpdatedDate
-                                  : null}
-                              </p>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="name"
-                          label="Name"
-                          description="This is your public display name."
-                          placeholder="Enter name"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+          <div className="grid gap-2">
+            <HeaderForm />
+          </div>
+          <div className="grid gap-4">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="grid gap-4 lg:col-span-2">
+                <MainCard />
               </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-4">
-                <Card className="p-2 gap-4 flex  shadow-sm drop-shadow-md">
-                  <div className="grid grid-cols-3 justify-between w-full gap-2">
-                    <div className="col-span-1">
-                      <Link href={previousPath}>
-                        <Button
-                          variant="outline"
-                          className="shadow-inner text-neutral-700 w-full"
-                        >
-                          <ChevronLeft />
-                          Back
-                        </Button>
-                      </Link>
-                    </div>
 
-                    <div className="flex col-span-2 w-full">
-                      {loading ? (
-                        <ButtonLoading
-                          className={
-                            "shadow-inner w-full flex justify-center items-center"
-                          }
-                        />
-                      ) : (
-                        <Button
-                          className="shadow-inner w-full flex justify-center items-center"
-                          type="submit"
-                          disabled={loading}
-                        >
-                          <BsPlus />
-                          {action}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-                <Card
-                  x-chunk="dashboard-07-chunk-3"
-                  className="shadow-lg drop-shadow-md"
-                >
-                  <CardHeader>
-                    <CardTitle>Information</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="createdBy"
-                          label="Created By"
-                          placeholder="N/A"
-                          disabled={true}
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <FormInputDate
-                          form={form}
-                          name="createdDate"
-                          label="Created Date"
-                          disabled={true}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="grid gap-4 h-fit">
+                <InformationCard />
               </div>
+            </div>
+            <div>
+              <SubCard />
             </div>
           </div>
         </form>

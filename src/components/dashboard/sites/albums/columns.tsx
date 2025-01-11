@@ -90,12 +90,11 @@ export const columns: ColumnDef<Album>[] = [
     ),
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdDate"));
-      return date.toLocaleDateString("en-US", {
-        weekday: "short", // Thu
-        year: "numeric", // 2022
-        month: "short", // Oct
-        day: "numeric", // 20
-      });
+      return date.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
     },
   },
   {

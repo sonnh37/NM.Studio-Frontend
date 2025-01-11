@@ -5,7 +5,7 @@ import RcTiptapEditor, { locale } from "reactjs-tiptap-editor";
 import "katex/dist/katex.min.css";
 import "reactjs-tiptap-editor/style.css";
 import { debounce, DEFAULT, extensions } from "./extensions";
-
+import './style.css'
 interface EditorProps {
   value?: string;
   onChange?: (value: string) => void;
@@ -28,6 +28,7 @@ function Editor({ value = DEFAULT, onChange = () => {} }: EditorProps) {
       style={{
         padding: "0 20px",
       }}
+      className=""
     >
       <div
         style={
