@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
+  FormInputPlateJsEditor,
   FormInputReactTipTapEditor,
   FormInputTextArea,
   FormSwitch,
@@ -253,7 +254,17 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const SubCard = () => {
     return (
       <>
-        <FormInputReactTipTapEditor form={form} name="content" />
+        {/* <FormInputReactTipTapEditor form={form} name="content" /> */}
+        <Card className="overflow-x-hidden">
+          <CardHeader>
+            <CardTitle>Editor</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="">
+            <FormInputReactTipTapEditor form={form} name="content" />
+            </div>
+          </CardContent>
+        </Card>
       </>
     );
   };
@@ -331,7 +342,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                 <InformationCard />
               </div>
             </div>
-            <div>
+            <div className="overflow-x-hidden">
               <SubCard />
             </div>
           </div>

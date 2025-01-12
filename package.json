@@ -111,6 +111,7 @@
     "@udecode/plate-resizable": "^42.0.0",
     "@udecode/plate-select": "^42.0.0",
     "@udecode/plate-selection": "^42.0.0",
+    "@udecode/plate-serializer-html": "^21.5.1",
     "@udecode/plate-slash-command": "^42.0.0",
     "@udecode/plate-table": "^42.0.0",
     "@udecode/plate-toggle": "^42.0.0",

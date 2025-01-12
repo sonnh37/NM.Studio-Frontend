@@ -10,7 +10,7 @@ interface EditorProps {
   value?: string;
   onChange?: (value: string) => void;
 }
-function Editor({ value = DEFAULT, onChange = () => {} }: EditorProps) {
+export default function Editor({ value = DEFAULT, onChange = () => {} }: EditorProps) {
   const refEditor = React.useRef<any>(null);
   const [theme, setTheme] = useState("light");
   const [disable, setDisable] = useState(false);
@@ -84,5 +84,3 @@ function Editor({ value = DEFAULT, onChange = () => {} }: EditorProps) {
     </main>
   );
 }
-
-export default Editor;

@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const svgToDataUri = require("mini-svg-data-uri");
+import animate from 'tailwindcss-animate'
 
 const {
   default: flattenColorPalette,
@@ -176,6 +177,7 @@ const config = {
     },
   },
   plugins: [
+    animate,
     require("tailwind-scrollbar-hide"),
     require("@tailwindcss/typography"),
     require("tailwindcss-animate"),

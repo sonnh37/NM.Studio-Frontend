@@ -1,4 +1,6 @@
 // TextInputField.tsx
+import { PlateEditor } from "@/components/editor/plate-editor";
+import { SettingsProvider } from "@/components/editor/settings";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -41,6 +43,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
+import { Toaster } from "sonner";
 const Editor = dynamic(
   () => import("@/components/_common/react-tiptap-editor/editor")
 );
@@ -196,6 +199,37 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
             <FormLabel className="sr-only">{label}</FormLabel>
             <FormControl>
               <Editor value={field.value} onChange={field.onChange} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+};
+
+export const FormInputPlateJsEditor = <TFieldValues extends FieldValues>({
+  name,
+  form,
+  label = "",
+}: FormInputProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => {
+        return (
+          <FormItem>
+            <FormLabel className="sr-only">{label}</FormLabel>
+            <FormControl>
+              {/* <Editor value={field.value} onChange={field.onChange} /> */}
+              <div className="h-screen w-full" data-registry="plate">
+                <SettingsProvider>
+                  <PlateEditor value={field.value} onChange={field.onChange} />
+                </SettingsProvider>
+
+                <Toaster />
+              </div>
             </FormControl>
             <FormMessage />
           </FormItem>
