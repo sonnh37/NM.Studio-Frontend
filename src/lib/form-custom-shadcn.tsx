@@ -11,6 +11,10 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useCallback, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import TiptapEditor, { type TiptapEditorRef } from "@/components/TiptapEditor";
+import { getPost, savePost } from "@/services/post";
 import {
   FormControl,
   FormDescription,
@@ -182,6 +186,10 @@ export const FormInputTextArea = <TFieldValues extends FieldValues>({
 //     />
 //   );
 // };
+interface PostForm {
+  title: string;
+  content: string;
+}
 
 export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
   name,
@@ -189,21 +197,58 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
   label = "",
   className = "",
 }: FormInputProps<TFieldValues>) => {
+  const editorRef = useRef<TiptapEditorRef>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { control, reset, getValues, watch } = form;
+
+  // const getWordCount = useCallback(
+  //   () => editorRef.current?.getInstance()?.storage.characterCount.words() ?? 0,
+  //   [editorRef.current]
+  // );
+
+  useEffect(() => {
+    const id = getValues("id"); 
+
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
+    console.log("check_content", getValues(name))
+    savePost({ ...getValues(name)});
+    setIsLoading(false);
+  }, [getValues, name]);
+
+  useEffect(() => {
+    const subscription = watch((values, { type }) => {
+      if (type === "change") {
+        savePost({ ...values[name]});
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  if (isLoading) return;
+
   return (
     <FormField
-      control={form.control}
+      control={control}
       name={name}
-      render={({ field }) => {
-        return (
-          <FormItem>
-            <FormLabel className="sr-only">{label}</FormLabel>
-            <FormControl>
-              <Editor value={field.value} onChange={field.onChange} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        );
-      }}
+      render={({ field }) => (
+        <TiptapEditor
+          ref={editorRef}
+          ssr={true}
+          output="html"
+          placeholder={{
+            paragraph: "Type your content here...",
+            imageCaption: "Type caption for image (optional)",
+          }}
+          contentMinHeight={256}
+          contentMaxHeight={640}
+          onContentChange={field.onChange}
+          initialContent={field.value}
+        />
+      )}
     />
   );
 };

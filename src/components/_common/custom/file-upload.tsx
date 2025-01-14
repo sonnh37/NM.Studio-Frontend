@@ -92,13 +92,13 @@ export const FileUpload = ({
                     <p className="relative z-20 font-sans font-normal text-neutral-400 dark:text-neutral-400 text-base mt-2">
                         Drag or drop your files here or click to upload
                     </p>
-                    <div className="relative z-[9999] w-full mt-10 max-w-xl mx-auto">
+                    <div className="relative w-full mt-10 max-w-xl mx-auto">
                         {file && ( // Show the file preview if there's a selected file
                             <motion.div
                                 key={file.name}
                                 layoutId="file-upload"
                                 className={cn(
-                                    "relative overflow-hidden z-[9999] bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md",
+                                    "relative overflow-hidden  bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md",
                                     "shadow-sm"
                                 )}
                             >

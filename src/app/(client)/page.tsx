@@ -9,7 +9,6 @@ import {Blog} from "@/components/client/sites/home/blog";
 import Contact from "@/components/client/sites/home/contact";
 import {BookingModal} from "@/components/client/common/booking-modal";
 import InfiniteScrollingLogosAnimation from "@/components/client/common/infinite-srolling-logos";
-
 export default function HomePage() {
     // Home page
     return (

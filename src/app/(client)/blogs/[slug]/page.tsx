@@ -8,6 +8,15 @@ import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 
 import ErrorSystem from "@/components/_common/errors/error-system";
+import PostReadingProgress from "@/components/shared/PostReadingProgress";
+import PostHeader from "@/components/shared/PostHeader";
+import PostSharing from "@/components/shared/PostSharing";
+import PostContent from "@/components/shared/PostContent";
+import PostToc from "@/components/shared/PostToc";
+import Image from "next/image";
+import { useMemo } from "react";
+import TiptapRenderer from "@/components/TiptapRenderer/ClientRenderer";
+import { userService } from "@/services/user-serice";
 
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
@@ -19,9 +28,10 @@ export default function Page({ params }: { params: { slug: string } }) {
     pageNumber: 1,
     slug: slug,
   };
+  
 
   const {
-    data: blog = {} as Blog,
+    data: post = {} as Blog,
     isLoading,
     isError,
     error,
@@ -32,8 +42,15 @@ export default function Page({ params }: { params: { slug: string } }) {
       return response.data?.results![0];
     },
   });
+  const getWordCount = (content: string) => {
+    return content.trim().split(/\s+/).length;
+  };
 
-  const editorState = createEditorState(blog?.content ?? "");
+  const readingTime = useMemo(() => {
+    const wpm = 150; // từ mỗi phút
+    const wordCount = getWordCount(post.content ?? "");
+    return Math.ceil(wordCount / wpm);
+  }, [post.content]);
 
   if (isLoading) return <LoadingPageComponent />;
 
@@ -42,23 +59,37 @@ export default function Page({ params }: { params: { slug: string } }) {
     return <ErrorSystem />;
   }
 
+  if (!post) return null;
+
   return (
     <>
-      <div className="container mx-auto space-y-8 py-16">
-        <div className="grid justify-center gap-2">
-          <h1 className="text-4xl text-center">{blog.title}</h1>
-          <div className="flex flex-row justify-center gap-4">
-            <p className="text-gray-500 text-sm">{blog.createdBy ?? "Admin"}</p>
-            <p className="text-gray-500 text-sm">|</p>
-            <p className="text-gray-500 text-sm">
-              {formatDate(blog.createdDate)}
-            </p>
-          </div>
+      <article className="py-10 px-6 flex flex-col items-center ">
+        <PostReadingProgress />
+        <PostHeader
+        avatar={"/image-notfound.jpg"}
+          title={post.title ?? "Đang cập nhật..."}
+          author={post.createdBy ?? "N/A"}
+          createdAt={post.createdDate?.toLocaleString() ?? "N/A"}
+          readingTime={readingTime}
+          cover={post.thumbnail ?? "/image-notfound.jpg"}
+        />
+        <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
+          <PostSharing />
+          <PostContent>
+            <TiptapRenderer>
+              {post.content ?? "Đang cập nhật..."}
+            </TiptapRenderer>
+          </PostContent>
+          <PostToc />
         </div>
-        <div className="">
-          {editorState && <DisplayContent value={blog.content ?? ""} />}
-        </div>
-      </div>
+        <Image
+          src={"/doraemon.png"}
+          width={350}
+          height={350}
+          alt=""
+          className="mx-auto mt-20"
+        />
+      </article>
     </>
   );
 }
