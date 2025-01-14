@@ -1,37 +1,16 @@
 "use client";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Card, CardContent } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import { categoryService } from "@/services/category-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { IoReturnUpBackOutline } from "react-icons/io5";
+import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { ButtonLoading } from "@/components/_common/button-loading";
-import { FileUpload } from "@/components/_common/custom/file-upload";
-import { TypographyH3 } from "@/components/_common/typography/typography-h3";
-import { TypographyP } from "@/components/_common/typography/typography-p";
-import { Label } from "@/components/ui/label";
 import { usePreviousPath } from "@/hooks/use-previous-path";
-import ConfirmationDialog, {
-  FormInput,
-  FormInputReactTipTapEditor,
-  FormInputTextArea,
-  FormSwitch,
-} from "@/lib/form-custom-shadcn";
-import { cn } from "@/lib/utils";
+import ConfirmationDialog, { FormInput } from "@/lib/form-custom-shadcn";
 import { Category } from "@/types/category";
 import {
   CategoryCreateCommand,
@@ -39,10 +18,9 @@ import {
 } from "@/types/commands/category-command";
 import { BusinessResult } from "@/types/response/business-result";
 import { useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { HeaderForm } from "../../common/create-update-forms/header-form";
+import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 
 interface CategoryFormProps {
   initialData: Category | null;
@@ -148,110 +126,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     }
   };
 
-  const HeaderForm = () => {
-    return (
-      <div className="flex flex-row items-center justify-between gap-4">
-        <div className="flex flex-row items-center gap-4">
-          <Link href={previousPath}>
-            <Button type="button" variant="outline">
-              <IoReturnUpBackOutline />
-            </Button>
-          </Link>
-          <TypographyH3 className="tracking-normal font-thin">
-            {title}
-          </TypographyH3>
-          <TypographyP className="[&:not(:first-child)]:mt-0">
-            {initialData
-              ? "Last Updated: " + initialData.lastUpdatedDate
-              : null}
-          </TypographyP>
-        </div>
-
-        <div className="flex justify-end">
-          {loading ? (
-            <ButtonLoading
-              size={"lg"}
-              className={"w-full flex justify-center items-center"}
-            />
-          ) : (
-            <Button
-              className="flex justify-center items-center"
-              size={"lg"}
-              type="submit"
-              disabled={loading}
-            >
-              {action}
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const MainCard = () => {
-    return (
-      <Card className="overflow-hidden">
-        <CardContent className="p-6">
-          <div className="grid gap-6">
-            <div className="grid gap-3">
-              <FormInput
-                form={form}
-                name="name"
-                label="Name"
-                description="This is your public display name."
-                placeholder="Enter name"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const SubCard = () => {
-    return <></>;
-  };
-
-  const InformationCard = () => {
-    return (
-      <Card className="overflow-hidden">
-        <CardHeader>
-          <CardTitle>Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-6">
-            <div className="grid gap-3">
-              <FormInput
-                form={form}
-                name="createdBy"
-                label="Created By"
-                placeholder="N/A"
-                disabled={true}
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label>Created Date</Label>
-              <Button
-                type="button"
-                disabled={true}
-                variant={"outline"}
-                className={cn(
-                  "w-full flex flex-row justify-between pl-3 text-left font-normaltext-muted-foreground"
-                )}
-              >
-                {initialData?.lastUpdatedDate ? (
-                  format(initialData?.lastUpdatedDate, "dd/MM/yyyy")
-                ) : (
-                  <span>{format(new Date(), "dd/MM/yyyy")}</span>
-                )}
-                <CalendarIcon className="mr-2 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
   return (
     <>
       <ConfirmationDialog
@@ -273,21 +147,40 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-2">
-            <HeaderForm />
+            <HeaderForm
+              previousPath={previousPath}
+              title={title}
+              initialData={initialData}
+              loading={loading}
+              action={action}
+            />
           </div>
           <div className="grid gap-4">
             <div className="grid gap-4 lg:grid-cols-3">
               <div className="grid gap-4 lg:col-span-2">
-                <MainCard />
+                {/* main */}
+                <Card className="overflow-hidden">
+                  <CardContent className="p-6">
+                    <div className="grid gap-6">
+                      <div className="grid gap-3">
+                        <FormInput
+                          form={form}
+                          name="name"
+                          label="Name"
+                          description="This is your public display name."
+                          placeholder="Enter name"
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               <div className="grid gap-4 h-fit">
-                <InformationCard />
+                <InformationBaseCard form={form} initialData={initialData} />
               </div>
             </div>
-            <div>
-              <SubCard />
-            </div>
+            <div>{/* sub */}</div>
           </div>
         </form>
       </Form>

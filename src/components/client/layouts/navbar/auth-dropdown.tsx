@@ -18,7 +18,7 @@ import {
 import { Icons } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { User } from "@/types/user";
+import { Role, User } from "@/types/user";
 import { Suspense } from "react";
 import { userService } from "@/services/user-serice";
 
@@ -80,7 +80,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
             </div>
           }
         >
-          <AuthDropdownGroup link={user.id} />
+          <AuthDropdownGroup user={user} />
         </Suspense>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
@@ -96,33 +96,48 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
 }
 
 interface AuthDropdownGroupProps {
-  link?: string;
+  user?: User | null;
 }
 
-function AuthDropdownGroup({ link }: AuthDropdownGroupProps) {
+function AuthDropdownGroup({ user }: AuthDropdownGroupProps) {
   return (
     <DropdownMenuGroup>
-      <DropdownMenuItem asChild>
-        <Link href={link ?? "#"}>
-          <DashboardIcon className="mr-2 size-4" aria-hidden="true" />
-          Dashboard
-          <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild>
+      {user?.role !== Role.Customer ? (
+        <>
+          <DropdownMenuItem asChild>
+            <Link href={"/dashboard"}>
+              <DashboardIcon className="mr-2 size-4" aria-hidden="true" />
+              Dashboard
+              <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/settings">
+              <GearIcon className="mr-2 size-4" aria-hidden="true" />
+              Settings
+              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+        </>
+      ) : (
+        <>
+          <DropdownMenuItem asChild>
+            <Link href="/settings">
+              <GearIcon className="mr-2 size-4" aria-hidden="true" />
+              Settings
+              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+        </>
+      )}
+
+      {/* <DropdownMenuItem asChild>
         <Link href="/dashboard/billing">
           <Icons.credit className="mr-2 size-4" aria-hidden="true" />
           Billing
           <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
         </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild>
-        <Link href="/dashboard/settings">
-          <GearIcon className="mr-2 size-4" aria-hidden="true" />
-          Settings
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-        </Link>
-      </DropdownMenuItem>
+      </DropdownMenuItem> */}
     </DropdownMenuGroup>
   );
 }

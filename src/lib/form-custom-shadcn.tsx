@@ -1,6 +1,14 @@
 // TextInputField.tsx
+import {
+  SelectV2,
+  SelectV2Content,
+  SelectV2Item,
+  SelectV2Trigger,
+  SelectV2Value,
+} from "@/components/_common/select";
 import { PlateEditor } from "@/components/editor/plate-editor";
 import { SettingsProvider } from "@/components/editor/settings";
+import TiptapEditor, { type TiptapEditorRef } from "@/components/TiptapEditor";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,10 +19,6 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCallback, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import TiptapEditor, { type TiptapEditorRef } from "@/components/TiptapEditor";
-import { getPost, savePost } from "@/services/post";
 import {
   FormControl,
   FormDescription,
@@ -41,11 +45,12 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, formatCurrency } from "@/lib/utils";
+import { savePost } from "@/services/post";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 import { Toaster } from "sonner";
 const Editor = dynamic(
@@ -207,21 +212,21 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
   // );
 
   useEffect(() => {
-    const id = getValues("id"); 
+    const id = getValues("id");
 
     if (!id) {
       setIsLoading(false);
       return;
     }
-    console.log("check_content", getValues(name))
-    savePost({ ...getValues(name)});
+    console.log("check_content", getValues(name));
+    savePost({ ...getValues(name) });
     setIsLoading(false);
   }, [getValues, name]);
 
   useEffect(() => {
     const subscription = watch((values, { type }) => {
       if (type === "change") {
-        savePost({ ...values[name]});
+        savePost({ ...values[name] });
       }
     });
 
@@ -758,7 +763,7 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
                     Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
                   }
                 />
-                <Select
+                <SelectV2
                   defaultValue={time}
                   onValueChange={(newTime) => {
                     setTime(newTime);
@@ -772,10 +777,10 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
                   }}
                   open={true}
                 >
-                  <SelectTrigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="border-none shadow-none mr-2 fixed top-2 left-0">
+                  <SelectV2Trigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
+                    <SelectV2Value />
+                  </SelectV2Trigger>
+                  <SelectV2Content className="border-none shadow-none mr-2 fixed top-2 left-0">
                     <ScrollArea className="h-[15rem]">
                       {Array.from({ length: 96 }).map((_, i) => {
                         const hour = Math.floor(i / 4)
@@ -785,14 +790,14 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
                           .toString()
                           .padStart(2, "0");
                         return (
-                          <SelectItem key={i} value={`${hour}:${minute}`}>
+                          <SelectV2Item key={i} value={`${hour}:${minute}`}>
                             {hour}:{minute}
-                          </SelectItem>
+                          </SelectV2Item>
                         );
                       })}
                     </ScrollArea>
-                  </SelectContent>
-                </Select>
+                  </SelectV2Content>
+                </SelectV2>
               </PopoverContent>
             </Popover>
             {/* <FormDescription>Set your date and time.</FormDescription> */}

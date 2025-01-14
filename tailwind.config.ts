@@ -177,7 +177,6 @@ const config = {
     },
   },
   plugins: [
-    animate,
     require("tailwind-scrollbar-hide"),
     require("@tailwindcss/typography"),
     require("tailwindcss-animate"),

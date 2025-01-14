@@ -1,9 +1,7 @@
 "use client";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -13,25 +11,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { albumService } from "@/services/album-service";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { IoReturnUpBackOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { ButtonLoading } from "@/components/_common/button-loading";
 import { FileUpload } from "@/components/_common/custom/file-upload";
-import { TypographyH3 } from "@/components/_common/typography/typography-h3";
-import { TypographyP } from "@/components/_common/typography/typography-p";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
-  FormInputDate,
   FormInputTextArea,
 } from "@/lib/form-custom-shadcn";
 import { Album } from "@/types/album";
@@ -43,11 +31,8 @@ import { BusinessResult } from "@/types/response/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { Label } from "@/components/ui/label";
+import { HeaderForm } from "../../common/create-update-forms/header-form";
+import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 
 interface AlbumFormProps {
   initialData: Album | null;
@@ -71,7 +56,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
   const title = initialData ? "Edit album" : "Create album";
   const action = initialData ? "Save and continue" : "Create";
-  const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const router = useRouter();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [pendingValues, setPendingValues] = useState<z.infer<
@@ -81,12 +65,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const previousPath = usePreviousPath();
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (initialData) {
-      setFirebaseLink(initialData.background || "");
-    }
-  }, [initialData]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -160,147 +138,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     }
   };
 
-  const HeaderForm = () => {
-    return (
-      <div className="flex flex-row items-center justify-between gap-4">
-        <div className="flex flex-row items-center gap-4">
-          <Link href={previousPath}>
-            <Button type="button" variant="outline">
-              <IoReturnUpBackOutline />
-            </Button>
-          </Link>
-          <TypographyH3 className="tracking-normal font-thin">
-            {title}
-          </TypographyH3>
-          <TypographyP className="[&:not(:first-child)]:mt-0">
-            {initialData
-              ? "Last Updated: " + initialData.lastUpdatedDate
-              : null}
-          </TypographyP>
-        </div>
-
-        <div className="flex justify-end">
-          {loading ? (
-            <ButtonLoading
-              size={"lg"}
-              className={"w-full flex justify-center items-center"}
-            />
-          ) : (
-            <Button
-              className="flex justify-center items-center"
-              size={"lg"}
-              type="submit"
-              disabled={loading}
-            >
-              {action}
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const MainCard = () => {
-    return (
-      <Card className="overflow-hidden">
-        <CardContent className="p-6">
-          <div className="grid gap-6">
-            <div className="grid gap-3">
-              <FormInput
-                form={form}
-                name="title"
-                label="Title"
-                placeholder="Enter title"
-              />
-
-              <FormInputTextArea
-                form={form}
-                name="description"
-                label="Description"
-                placeholder="Enter description"
-              />
-
-              <FormField
-                control={form.control}
-                name="background"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Background</FormLabel>
-                    <FormControl>
-                      <div className="grid gap-2">
-                        {firebaseLink ? (
-                          <>
-                            <Image
-                              alt="Picture"
-                              className="w-[30%] rounded-md "
-                              height={9999}
-                              src={firebaseLink}
-                              width={9999}
-                            />
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                        <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                          <FileUpload onChange={handleFileUpload} />
-                        </div>
-                        <FormMessage />
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const SubCard = () => {
-    return <></>;
-  };
-
-  const InformationCard = () => {
-    return (
-      <Card className="overflow-hidden">
-        <CardHeader>
-          <CardTitle>Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-6">
-            <div className="grid gap-3">
-              <FormInput
-                form={form}
-                name="createdBy"
-                label="Created By"
-                placeholder="N/A"
-                disabled={true}
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label>Created Date</Label>
-              <Button
-                type="button"
-                disabled={true}
-                variant={"outline"}
-                className={cn(
-                  "w-full flex flex-row justify-between pl-3 text-left font-normaltext-muted-foreground"
-                )}
-              >
-                {initialData?.lastUpdatedDate ? (
-                  format(initialData?.lastUpdatedDate, "dd/MM/yyyy")
-                ) : (
-                  <span>{format(new Date(), "dd/MM/yyyy")}</span>
-                )}
-                <CalendarIcon className="mr-2 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
   return (
     <>
       <ConfirmationDialog
@@ -322,21 +159,77 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-2">
-            <HeaderForm />
+            <HeaderForm
+              previousPath={previousPath}
+              title={title}
+              initialData={initialData}
+              loading={loading}
+              action={action}
+            />
           </div>
           <div className="grid gap-4">
             <div className="grid gap-4 lg:grid-cols-3">
               <div className="grid gap-4 lg:col-span-2">
-                <MainCard />
+                {/* main */}
+                <Card className="overflow-hidden">
+                  <CardContent className="p-6">
+                    <div className="grid gap-6">
+                      <div className="grid gap-3">
+                        <FormInput
+                          form={form}
+                          name="title"
+                          label="Title"
+                          placeholder="Enter title"
+                        />
+
+                        <FormInputTextArea
+                          form={form}
+                          name="description"
+                          label="Description"
+                          placeholder="Enter description"
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="background"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Background</FormLabel>
+                              <FormControl>
+                                <div className="grid gap-2">
+                                  {field.value ? (
+                                    <>
+                                      <Image
+                                        alt="Picture"
+                                        className="w-[30%] rounded-md "
+                                        height={9999}
+                                        src={field.value ?? "/image-notfound.jpg"}
+                                        width={9999}
+                                      />
+                                    </>
+                                  ) : (
+                                    <></>
+                                  )}
+                                  <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                                    <FileUpload onChange={handleFileUpload} />
+                                  </div>
+                                  <FormMessage />
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               <div className="grid gap-4 h-fit">
-                <InformationCard />
+                <InformationBaseCard form={form} initialData={initialData} />
               </div>
             </div>
-            <div>
-              <SubCard />
-            </div>
+            <div>{/* sub */}</div>
           </div>
         </form>
       </Form>

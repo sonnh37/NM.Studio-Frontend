@@ -1,247 +1,198 @@
 "use client";
-import {ChevronLeft} from "lucide-react";
-import Link from "next/link";
-import {useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
-import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-import {sizeService} from "@/services/size-service";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { sizeService } from "@/services/size-service";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect, useRef, useState} from "react";
-import {toast} from "sonner";
-import {z} from "zod";
-
-import {usePreviousPath} from "@/hooks/use-previous-path";
-import {Const} from "@/lib/constants/const";
-import ConfirmationDialog, {FormInput, FormInputDate} from "@/lib/form-custom-shadcn";
-import {useRouter} from "next/navigation";
-import {SizeCreateCommand, SizeUpdateCommand} from "@/types/commands/size-command";
+import { FileUpload } from "@/components/_common/custom/file-upload";
+import { usePreviousPath } from "@/hooks/use-previous-path";
+import ConfirmationDialog, {
+  FormInput,
+  FormInputTextArea,
+} from "@/lib/form-custom-shadcn";
+import { Size } from "@/types/size";
+import {
+  SizeCreateCommand,
+  SizeUpdateCommand,
+} from "@/types/commands/size-command";
+import { BusinessResult } from "@/types/response/business-result";
+import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { HeaderForm } from "../../common/create-update-forms/header-form";
+import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 
 interface SizeFormProps {
-    initialData: any | null;
+  initialData: Size | null;
 }
 
 const formSchema = z.object({
-    id: z.string().optional(),
-    name: z.string().min(1, "Name is required").nullable(),
-    createdDate: z
-        .date()
-        .optional()
-        .default(() => new Date()),
-    createdBy: z.string().nullable().optional().default(null),
-    isDeleted: z.boolean().default(false),
+  id: z.string().optional(),
+  name: z.string().min(1, "Name is required").nullable(),
+  createdDate: z
+    .date()
+    .optional()
+    .default(() => new Date()),
+  createdBy: z.string().nullable().optional().default(null),
+  isDeleted: z.boolean().default(false),
 });
 
-export const SizeForm: React.FC<SizeFormProps> = ({initialData}) => {
-    const [loading, setLoading] = useState(false);
-    const [imgLoading, setImgLoading] = useState(false);
-    const title = initialData ? "Edit size" : "Create size";
-    const description = initialData ? "Edit a size." : "Add a new size";
-    const toastMessage = initialData ? "Size updated." : "Size created.";
-    const action = initialData ? "Save changes" : "Create";
-    const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
-    const router = useRouter();
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null); // Lưu tạm file đã chọn
-    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
-    const previousPath = usePreviousPath();
-    const [pendingValues, setPendingValues] = useState<z.infer<
-        typeof formSchema
-    > | null>(null);
+export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
+  const [loading, setLoading] = useState(false);
+  const title = initialData ? "Edit size" : "Create size";
+  const action = initialData ? "Save and continue" : "Create";
+  const router = useRouter();
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [pendingValues, setPendingValues] = useState<z.infer<
+    typeof formSchema
+  > | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const previousPath = usePreviousPath();
+  const [file, setFile] = useState<File | null>(null);
+  const queryClient = useQueryClient();
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        try {
-            setLoading(true);
-            const values_ = values;
-            if (initialData) {
-                const updatedValues: SizeUpdateCommand = {
-                    ...values_,
-                };
-                const response = await sizeService.update(updatedValues);
-                if (response.status != 1) throw new Error(response.message);
-
-                toast.success(response.message);
-                router.push(Const.DASHBOARD_SIZE_URL);
-            } else {
-                setPendingValues(values_);
-                setShowConfirmationDialog(true);
-            }
-        } catch (error: any) {
-            console.error(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          createdDate: initialData.createdDate
+            ? new Date(initialData.createdDate)
+            : new Date(),
         }
-    };
+      : {},
+  });
 
-    const handleCreateConfirmation = async () => {
-        try {
-            if (pendingValues) {
-                const createdValues: SizeCreateCommand = {
-                    ...pendingValues,
-                };
+  const handleFileUpload = (file: File | null) => {
+    setFile(file);
+  };
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setLoading(true);
+      if (initialData) {
+        const updatedValues: SizeUpdateCommand = {
+          ...values,
+          file: file,
+        };
+        const response = await sizeService.update(updatedValues);
+        if (response.status != 1) throw new Error(response.message);
+        queryClient.invalidateQueries({
+          queryKey: ["fetchSizeById", initialData.id],
+        });
+        toast.success(response.message);
+        router.push(previousPath);
+      } else {
+        setPendingValues(values);
+        setShowConfirmationDialog(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                const response = await sizeService.create(createdValues);
-                if (response.status != 1) throw new Error(response.message);
-                toast.success(response.message);
-            }
-            setShowConfirmationDialog(false);
-            setPendingValues(null);
-        } catch (error: any) {
-            console.error(error);
-            toast.error(error.message);
-        }
-    };
+  const handleCreateConfirmation = async (): Promise<BusinessResult<Size>> => {
+    if (!pendingValues) {
+      toast.error("No pending values to create size.");
+      return Promise.reject(new Error("No pending values"));
+    }
+    setIsLoading(true);
+    try {
+      const createdValues: SizeCreateCommand = {
+        ...pendingValues,
+        file: file,
+      };
+      const response = await sizeService.create(createdValues);
+      if (response.status !== 1) throw new Error(response.message);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: initialData
-          ? {
-              ...initialData,
-              createdDate: initialData.createdDate
-                ? new Date(initialData.createdDate)
-                : new Date(),
-            }
-          : {},
-      });
-    
-      useEffect(() => {
-        if (initialData) {
-          setFirebaseLink(initialData.src || "");
-        }
-      }, [initialData]);
+      toast.success(response.message);
+      setShowConfirmationDialog(false);
+      setPendingValues(null);
+      setIsLoading(false);
 
+      return response;
+    } catch (error: any) {
+      console.error("Error creating size:", error);
+      toast.error(error.message || "Failed to create size.");
+      setShowConfirmationDialog(false);
+      setPendingValues(null);
+      setIsLoading(false);
+      return Promise.reject(error);
+    }
+  };
 
-    return (
-        <>
-            <ConfirmationDialog
-                isOpen={showConfirmationDialog}
-                onConfirm={() => {
-                    handleCreateConfirmation();
-                    setShowConfirmationDialog(false);
-                }} // Đóng modal
-                onClose={() => {
-                    handleCreateConfirmation();
-                    setShowConfirmationDialog(false);
-                    router.push(previousPath);
-                }} // Đóng modal
-                title="Do you want to continue adding this size?"
-                description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
-                confirmText="Yes"
-                cancelText="No"
+  return (
+    <>
+      <ConfirmationDialog
+        isLoading={isLoading}
+        isOpen={showConfirmationDialog}
+        onConfirm={handleCreateConfirmation}
+        onClose={async () => {
+          const res = await handleCreateConfirmation();
+          if (res.status != 1) {
+            return;
+          }
+          router.push(previousPath);
+        }}
+        title="Do you want to continue adding this size?"
+        description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
+        confirmText="Yes"
+        cancelText="No"
+      />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="grid gap-2">
+            <HeaderForm
+              previousPath={previousPath}
+              title={title}
+              initialData={initialData}
+              loading={loading}
+              action={action}
             />
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <div className="grid flex-1 auto-rows-max gap-4">
-                        <div className="flex items-center gap-4">
-                            <Link href={previousPath}>
-                                <Button variant="outline" size="icon" className="h-7 w-7">
-                                    <ChevronLeft className="h-4 w-4"/>
-                                    <span className="sr-only">Back</span>
-                                </Button>
-                            </Link>
-
-                            <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                                Size Controller
-                            </h1>
-                            <Badge variant="outline" className="ml-auto sm:ml-0">
-                                <FormField
-                                    control={form.control}
-                                    name="isDeleted"
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <p>
-                                                    {initialData
-                                                        ? field.value
-                                                            ? "Deleted"
-                                                            : "Last Updated: " + initialData.lastUpdatedDate
-                                                        : "New"}
-                                                </p>
-                                            </FormControl>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )}
-                                />
-                            </Badge>
-                            <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                                <Link href="" passHref>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            router.push(previousPath);
-                                        }}
-                                    >
-                                        Discard
-                                    </Button>
-                                </Link>
-                                <Button type="submit" size="sm" disabled={loading}>
-                                    {loading ? "Processing..." : action}
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-4">
-                            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-4">
-                                <Card x-chunk="dashboard-07-chunk-0">
-                                    <CardHeader>
-                                        <CardTitle>Size Details</CardTitle>
-                                        <CardDescription>
-                                            Lipsum dolor sit amet, consectetur adipiscing elit
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="grid gap-6">
-                                            <div className="grid gap-3">
-                                                <FormInput
-                                                    form={form}
-                                                    name="name"
-                                                    label="Name"
-                                                    description="This is your public display name."
-                                                    placeholder="Enter name"
-                                                />
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                            <div className="grid auto-rows-max items-start gap-4 lg:gap-4">
-                                <Card x-chunk="dashboard-07-chunk-3">
-                                    <CardHeader>
-                                        <CardTitle>Information</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="grid gap-6">
-                                            <div className="grid gap-3">
-                                                <FormInput
-                                                    form={form}
-                                                    name="createdBy"
-                                                    label="Created By"
-                                                    placeholder="N/A"
-                                                    disabled={true}
-                                                />
-                                            </div>
-                                            <div className="grid gap-3">
-                                                <FormInputDate
-                                                    form={form}
-                                                    name="createdDate"
-                                                    label="Created Date"
-                                                    disabled={true}
-                                                />
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </div>
+          </div>
+          <div className="grid gap-4">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="grid gap-4 lg:col-span-2">
+                {/* main */}
+                <Card className="overflow-hidden">
+                  <CardContent className="p-6">
+                    <div className="grid gap-6">
+                      <div className="grid gap-3">
+                        <FormInput
+                          form={form}
+                          name="name"
+                          label="Name"
+                          description="This is your public display name."
+                          placeholder="Enter name"
+                        />
+                      </div>
                     </div>
-                </form>
-            </Form>
-        </>
-    );
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid gap-4 h-fit">
+                <InformationBaseCard form={form} initialData={initialData} />
+              </div>
+            </div>
+            <div>{/* sub */}</div>
+          </div>
+        </form>
+      </Form>
+    </>
+  );
 };
