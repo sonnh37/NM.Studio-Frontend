@@ -12,6 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import ErrorSystem from "./errors/error-system";
 import axios from "axios";
+import { authService } from "@/services/auth-service";
 
 interface UserAccessControlProps {
   children: React.ReactNode;
@@ -29,13 +30,8 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
     isError,
     error,
   } = useQuery({
-    queryKey: ["getCurrentUser"],
-    queryFn: () =>
-      axios
-        .get<BusinessResult<User>>(
-          `${process.env.NEXT_PUBLIC_API_BASE}/users/info`, {withCredentials: true}
-        )
-        .then((res) => res.data),
+    queryKey: ["getUserInfo"],
+    queryFn: () => authService.getUserInfo(),
     refetchOnWindowFocus: false,
   });
 

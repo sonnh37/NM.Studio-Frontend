@@ -138,7 +138,7 @@ export function ProfileForm({ user }: { user?: User }) {
     // );
     toast.success("Thay đổi của bạn đã lưu.");
     queryClient.invalidateQueries({
-      queryKey: ["getCurrentUser"],
+      queryKey: ["getUserInfo"],
     });
   }
 

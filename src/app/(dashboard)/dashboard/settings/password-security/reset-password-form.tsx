@@ -57,7 +57,7 @@ export default function ResetPasswordForm({ user }: { user?: User }) {
         const response = await userService.updatePassword(updatedValues);
         if (response.status != 1) throw new Error(response.message);
         queryClient.invalidateQueries({
-          queryKey: ["getCurrentUser"],
+          queryKey: ["getUserInfo"],
         });
         toast.success(response.message);
       }

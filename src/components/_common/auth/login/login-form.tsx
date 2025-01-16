@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Meteors } from "../../../ui/meteors";
 import "./login.css";
+import { authService } from "@/services/auth-service";
 
 const emailSchema = z.string().email("Email không hợp lệ");
 const usernameSchema = z
@@ -43,14 +44,11 @@ export const LoginForm = () => {
 
   const onSubmit = (data: FormSchema) => {
     try {
-      // link localhost:3000
-      userService.login(data.account, data.password).then((res) => {
+      authService.login(data.account, data.password).then((res) => {
         if (res.status != 1) {
           toast.warning(res.message);
           return;
         }
-        // link localhost:3000      (access, refreshToken)
-
         window.location.reload();
         toast.success("Chào mừng bạn đã đến với Như My Studio!");
       });

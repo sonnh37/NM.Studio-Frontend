@@ -20,7 +20,7 @@ axiosInstance.interceptors.response.use(
         // Gọi API refresh token để lấy accessToken mới
         const refreshResponse = (
           await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE}/users/refresh-token`,
+            `${process.env.NEXT_PUBLIC_API_BASE}/auth/refresh-token`,
             {},
             { withCredentials: true }
           )

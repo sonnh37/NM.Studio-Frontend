@@ -29,13 +29,14 @@ import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { userService } from "@/services/user-serice";
+import { authService } from "@/services/auth-service";
 
 export function SidebarFooter({ user }: { user: User }) {
   const { isMobile } = useSidebar();
   const dispatch = useDispatch();
   const router = useRouter();
   const handleLogout = () => {
-    userService.logout().then((res) => {
+    authService.logout().then((res) => {
       if (res.status == 1) {
         window.location.href = "/";
       }

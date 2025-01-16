@@ -1,18 +1,13 @@
-import { User } from "@/types/user";
-import { BusinessResult } from "@/types/response/business-result";
-import { LoginResponse } from "@/types/response/login-response";
 import { Const } from "@/lib/constants/const";
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import { BaseService } from "./base-service";
-import axios from "axios";
 import {
   UserCreateCommand,
   UserUpdateCommand,
   UserUpdatePasswordCommand,
 } from "@/types/commands/user-command";
-import { TokenResponse } from "@/types/response/token-response";
-import store from "@/lib/redux/store";
-import { logout, setUser } from "@/lib/redux/slices/userSlice";
+import { BusinessResult } from "@/types/response/business-result";
+import { User } from "@/types/user";
+import { BaseService } from "./base-service";
 
 class UserService extends BaseService<User> {
   constructor() {
@@ -64,52 +59,6 @@ class UserService extends BaseService<User> {
       .catch((error) => this.handleError(error)); // Xử lý lỗi
   };
 
-  public login = async (
-    account: string,
-    password: string
-  ): Promise<BusinessResult<LoginResponse>> => {
-    try {
-      const response = await axiosInstance.post<BusinessResult<LoginResponse>>(
-        `${this.endpoint}/login`,
-        { account: account, password: password }
-      );
-      return response.data;
-    } catch (error) {
-      return this.handleError(error);
-    }
-  };
-
-  public logout = async (): Promise<BusinessResult<null>> => {
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE}/users/logout`,
-        {},
-        { withCredentials: true }
-      );
-      if(response.data.status === 1) {
-        store.dispatch(logout());
-      }
-      return response.data;
-    } catch (error) {
-      return this.handleError(error);
-    }
-  };
-
-  public loginByGoogle = async (
-    token: string
-  ): Promise<BusinessResult<LoginResponse>> => {
-    try {
-      const response = await axiosInstance.post<BusinessResult<LoginResponse>>(
-        `${this.endpoint}/login-by-google`,
-        { token: token }
-      );
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
-
   public fetchUserByUsernameOrEmail = async (
     keyword: string
   ): Promise<BusinessResult<User>> => {
@@ -139,23 +88,6 @@ class UserService extends BaseService<User> {
     }
   };
 
-  public getCurrentUser = async (): Promise<BusinessResult<User>> => {
-    try {
-      const response = await axiosInstance.get<BusinessResult<User>>(
-        `${this.endpoint}/info`
-      );
-      if(response.data.status === 1) {
-        store.dispatch(setUser(response.data.data ?? null));
-      } else {
-        store.dispatch(logout());
-      }
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
-
   public findAccountRegisteredByGoogle = async (
     token: string
   ): Promise<BusinessResult<null>> => {
@@ -169,65 +101,6 @@ class UserService extends BaseService<User> {
       this.handleError(error);
       return Promise.reject(error);
     }
-  };
-
-  public registerByGoogle = async (
-    token: string,
-    password: string
-  ): Promise<BusinessResult<LoginResponse>> => {
-    try {
-      const response = await axiosInstance.post<BusinessResult<LoginResponse>>(
-        `${this.endpoint}/register-by-google`,
-        { token: token, password: password }
-      );
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
-
-  public register = async (
-    user: User
-  ): Promise<BusinessResult<LoginResponse>> => {
-    try {
-      const response = await axiosInstance.post<BusinessResult<LoginResponse>>(
-        `${this.endpoint}/register`,
-        user
-      );
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
-
-  public refreshToken = (
-    command: string
-  ): Promise<BusinessResult<LoginResponse>> => {
-    return axiosInstance
-      .post<BusinessResult<LoginResponse>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
-
-  public getToken = (): Promise<BusinessResult<TokenResponse>> => {
-    return axiosInstance
-      .get<BusinessResult<TokenResponse>>(`${this.endpoint}/get-token`)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
-
-  public isLoggedIn = (): Promise<BusinessResult<null>> => {
-    return axios
-      .get<BusinessResult<null>>(
-        `${process.env.NEXT_PUBLIC_API_BASE}/users/is-logged-in`,
-        {
-          withCredentials: true,
-        }
-      )
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
   };
 }
 

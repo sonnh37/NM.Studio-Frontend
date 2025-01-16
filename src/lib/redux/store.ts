@@ -4,7 +4,6 @@ import widthsSlice from '@/lib/redux/slices/widthsSlice';
 import photosSlice from "@/lib/redux/slices/photosSlice";
 import chatSlice from "@/lib/redux/slices/chatSlice";
 import userSlice from "@/lib/redux/slices/userSlice";
-import tokenReducer from '@/lib/redux/slices/tokenSlice';
 
 const store = configureStore({
     reducer: {
@@ -12,7 +11,6 @@ const store = configureStore({
         photos: photosSlice,
         chat: chatSlice,
         user: userSlice,
-        token: tokenReducer
     },
 });
 

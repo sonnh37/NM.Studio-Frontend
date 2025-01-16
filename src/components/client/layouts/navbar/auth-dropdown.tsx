@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { Role, User } from "@/types/user";
 import { Suspense } from "react";
 import { userService } from "@/services/user-serice";
+import { authService } from "@/services/auth-service";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
@@ -42,7 +43,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
   }`;
 
   const handleLogout = () => {
-    userService.logout().then((res) => {
+    authService.logout().then((res) => {
       if (res.status == 1) {
         window.location.href = "/";
       }

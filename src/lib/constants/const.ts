@@ -25,6 +25,7 @@ export class Const {
     static readonly SIZE = "sizes";
     static readonly BLOG = "blogs";
     static readonly USER = "users";
+    static readonly AUTH = "auth";
 
     static readonly DASHBOARD = "dashboard";
     static readonly DASHBOARD_URL = "/dashboard";
