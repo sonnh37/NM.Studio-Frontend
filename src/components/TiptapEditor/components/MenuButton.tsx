@@ -4,11 +4,12 @@ import clsx from "clsx";
 import Tooltip from "./ui/Tooltip";
 import Icon, { type IconProps } from "./ui/Icon";
 import Button, { type ButtonProps } from "./ui/Button";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "./ui/DropdownMenu";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover";
 
 import { getShortcutKey } from "../utils/shortcut";
 import { useTiptapContext } from "./Provider";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface MenuButtonProps extends Omit<ButtonProps, "variant" | "ref" | "type"> {
   icon?: IconProps["name"];
@@ -126,7 +127,7 @@ const MenuButton = React.forwardRef<HTMLButtonElement, MenuButtonProps>(
         <Popover modal={false}>
           <PopoverTrigger asChild>{renderContent}</PopoverTrigger>
           <PopoverContent
-            className={dropdownClass}
+            className={cn(dropdownClass, "w-fit p-1")}
             style={dropdownStyle}
             onCloseAutoFocus={(e) => e.preventDefault()}
           >

@@ -29,7 +29,7 @@ const MenuBar = () => {
       <Toolbar dense>
         <UndoButton />
         <RedoButton />
-        {/* <ClearFormatButton /> */}
+        <ClearFormatButton />
 
         <ToolbarDivider />
 
@@ -55,13 +55,13 @@ const MenuBar = () => {
 
         <ToolbarDivider />
 
-        {/* <BlockquoteButton /> */}
+        <BlockquoteButton />
         <LinkButton />
         <ImageCloudButton />
         <ImageButton/>
-        {/* <YoutubeButton /> */}
-        {/* <CodeBlockButton /> */}
-        <InsertDropdown />
+        <YoutubeButton />
+        <CodeBlockButton />
+        {/* <InsertDropdown /> */}
       </Toolbar>
     </div>
   );
