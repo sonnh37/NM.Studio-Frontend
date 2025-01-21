@@ -23,7 +23,7 @@ export const components: Partial<Components> = {
 
     // Cập nhật width nếu cần thiết, có thể thay đổi bằng percentage hoặc pixel
     if (imageWidth) {
-      computedStyle.width = `${(parseFloat(style?.width || "1"))}%`; // Điều chỉnh dựa trên tỷ lệ phần trăm
+      computedStyle.width = `${(parseFloat(style?.width || "100"))}%`; // Điều chỉnh dựa trên tỷ lệ phần trăm
     }
 
     return (

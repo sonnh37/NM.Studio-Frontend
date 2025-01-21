@@ -19,9 +19,7 @@ export function BlogsRecent() {
 
                 isDeleted: false,
             };
-            console.log("check_in", request);
             const res = await blogService.fetchAll(request);
-            console.log("check_inn", res);
             setBlogs(res.data?.results ?? []);
         } catch (error) {
             console.error(error);
