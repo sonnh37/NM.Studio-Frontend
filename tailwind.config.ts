@@ -1,8 +1,8 @@
 import type { Config } from "tailwindcss";
 
 const svgToDataUri = require("mini-svg-data-uri");
-import animate from 'tailwindcss-animate'
-
+import animate from "tailwindcss-animate";
+const plugin = require("tailwindcss/plugin");
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
@@ -32,7 +32,7 @@ const config = {
         lato: ["Lato", "sans-serif"],
       },
       colors: {
-        customPink: 'rgb(241, 162, 181)',
+        customPink: "rgb(241, 162, 181)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -83,6 +83,38 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        enterFromRight: {
+          from: { opacity: "0", transform: "translateX(200px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        enterFromLeft: {
+          from: { opacity: "0", transform: "translateX(-200px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        exitToRight: {
+          from: { opacity: "1", transform: "translateX(0)" },
+          to: { opacity: "0", transform: "translateX(200px)" },
+        },
+        exitToLeft: {
+          from: { opacity: "1", transform: "translateX(0)" },
+          to: { opacity: "0", transform: "translateX(-200px)" },
+        },
+        scaleIn: {
+          from: { opacity: "0", transform: "rotateX(-10deg) scale(0.9)" },
+          to: { opacity: "1", transform: "rotateX(0deg) scale(1)" },
+        },
+        scaleOut: {
+          from: { opacity: "1", transform: "rotateX(0deg) scale(1)" },
+          to: { opacity: "0", transform: "rotateX(-10deg) scale(0.95)" },
+        },
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        fadeOut: {
+          from: { opacity: "1" },
+          to: { opacity: "0" },
+        },
         moveHorizontal: {
           "0%": {
             transform: "translateX(-50%) translateY(-10%)",
@@ -163,6 +195,14 @@ const config = {
         },
       },
       animation: {
+        scaleIn: "scaleIn 200ms ease",
+        scaleOut: "scaleOut 200ms ease",
+        fadeIn: "fadeIn 200ms ease",
+        fadeOut: "fadeOut 200ms ease",
+        enterFromLeft: "enterFromLeft 250ms ease",
+        enterFromRight: "enterFromRight 250ms ease",
+        exitToLeft: "exitToLeft 250ms ease",
+        exitToRight: "exitToRight 250ms ease",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down": "collapsible-down 0.2s ease-out",
@@ -177,6 +217,13 @@ const config = {
     },
   },
   plugins: [
+    plugin(({ matchUtilities }: any) => {
+      matchUtilities({
+        perspective: (value: any) => ({
+          perspective: value,
+        }),
+      });
+    }),
     require("tailwind-scrollbar-hide"),
     require("@tailwindcss/typography"),
     require("tailwindcss-animate"),

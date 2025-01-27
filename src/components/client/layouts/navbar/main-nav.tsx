@@ -3,6 +3,7 @@ import { Icons } from "@/components/ui/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
+  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
@@ -25,6 +26,10 @@ import { AuthDropdown } from "./auth-dropdown";
 import { Const } from "@/lib/constants/const";
 import { Separator } from "@/components/ui/separator";
 import MenuAnimationLink from "@/components/_common/hovers/menu-animation-link";
+import Image from "next/image";
+import { TypographyH2 } from "@/components/_common/typography/typography-h2";
+import { TypographyH4 } from "@/components/_common/typography/typography-h4";
+import { TypographySmall } from "@/components/_common/typography/typography-small";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -55,7 +60,7 @@ export function MainNav({
                 Thông tin
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-3 p-[5rem] w-[98vw] lg:grid-cols-[.75fr_1fr]">
+                <ul className="grid gap-x-2.5 p-[22px] sm:w-[600px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
@@ -96,7 +101,7 @@ export function MainNav({
                 Dịch vụ
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid p-[5rem] w-[98vw] md:grid-cols-1 ">
+                <ul className="grid gap-x-2.5 p-[22px] sm:w-[400px] sm:grid-cols-1">
                   {services.map((service) => (
                     <div key={service.id}>
                       <ListItem
@@ -107,7 +112,6 @@ export function MainNav({
                       >
                         {/*{service.description}*/}
                       </ListItem>
-                      <Separator />
                     </div>
                   ))}
                 </ul>
@@ -119,18 +123,17 @@ export function MainNav({
                 Albums
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-3 w-[98vw] p-[5rem] md:grid-cols-2">
+                <ul className="grid gap-x-2.5 p-[22px] sm:w-[500px] sm:grid-cols-4">
                   {albums.map((album) => (
-                    <div key={album.id}>
-                      <ListItem
-                        key={album.id}
-                        title={album.title ?? "N/A"}
-                        href={`/albums/${album.slug}`}
-                      >
-                        {album.description}
-                      </ListItem>
-                      <Separator />
-                    </div>
+                    <Link key={album.id} href={`/albums/${album.slug}`}>
+                      <Image
+                        src={album.background ?? "/image-notfound.jpg"}
+                        width={100}
+                        height={100}
+                        alt={album.title ?? "N/A"}
+                      />
+                      <TypographySmall> {album.title}</TypographySmall>
+                    </Link>
                   ))}
                 </ul>
                 <div className={"w-full grid justify-end"}>
@@ -148,7 +151,7 @@ export function MainNav({
                 Váy cưới
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[98vw] gap-6 p-[5rem] md:grid-cols-4 overflow-y-auto">
+                <ul className="grid sm:w-[800px] gap-x-2.5 p-[22px] md:grid-cols-4 overflow-y-auto">
                   {categories.map((category, index) => {
                     const path = `/products?categoryName=${category.name}`;
                     return (
@@ -166,7 +169,6 @@ export function MainNav({
                               className=" text-neutral-500"
                               href={`${path}&subCategoryName=${subCategory.name}`}
                             ></ListItem>
-                            <Separator />
                           </div>
                         ))}
                       </div>
@@ -195,6 +197,7 @@ export function MainNav({
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+            <NavigationMenuIndicator />
           </NavigationMenuList>
         </NavigationMenu>
 

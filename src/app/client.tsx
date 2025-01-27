@@ -18,8 +18,8 @@ export default function Client({ children }: { children: React.ReactNode }) {
   return (
     <>
       <NextTopLoader
-        color="#FFFFFF"
-        height={3}
+        // color="#1b2d3f"
+        height={4}
         crawl={true}
         showSpinner={false}
         easing="ease"
