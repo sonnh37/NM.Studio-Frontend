@@ -705,6 +705,69 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
     </div>
   );
 };
+
+export const FormInputDateRangePicker = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  form,
+  placeholder = "",
+  disabled = false,
+}: FormInputProps<TFieldValues>) => {
+  return (
+    <div className="flex justify-start gap-3">
+      <FormField
+        control={form.control}
+        name={name}
+        render={({ field }) => (
+          <FormItem className="flex flex-col">
+            {label ? <FormLabel>{label}</FormLabel> : <></>}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !field.value?.from && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {field.value?.from ? (
+                    field.value?.to ? (
+                      <>
+                        {format(field.value.from, "LLL dd, y")} -{" "}
+                        {format(field.value.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(field.value.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={field.value?.from}
+                  selected={{
+                    from: field.value?.from!,
+                    to: field.value?.to,
+                  }}
+                  onSelect={field.onChange}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+};
+
 export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
   label,
   name,

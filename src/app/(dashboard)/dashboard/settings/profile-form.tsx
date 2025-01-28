@@ -95,6 +95,7 @@ export function ProfileForm({ user }: { user?: User }) {
   const handleFileUpload = (file: File | null) => {
     setFile(file);
   };
+  const queryClient = useQueryClient();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -108,21 +109,8 @@ export function ProfileForm({ user }: { user?: User }) {
     }
   }, [user, form]);
 
-  // const { fields, append } = useFieldArray({
-  //   name: "urls",
-  //   control: form.control,
-  // });
-  const queryClient = useQueryClient();
 
   async function onSubmit(data: ProfileFormValues) {
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
 
     const updatedValues: UpdateCommand = {
       ...data,
@@ -131,11 +119,6 @@ export function ProfileForm({ user }: { user?: User }) {
     const response = await userService.update(updatedValues);
     if (response.status != 1) throw new Error(response.message);
 
-    // toast.success(
-    //   <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //     <code className="text-white">{JSON.stringify(updatedValues, null, 2)}</code>
-    //   </pre>
-    // );
     toast.success("Thay đổi của bạn đã lưu.");
     queryClient.invalidateQueries({
       queryKey: ["getUserInfo"],
