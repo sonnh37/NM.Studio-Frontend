@@ -6,6 +6,7 @@ export interface BlogCreateCommand extends CreateCommand {
     content?: string | null | undefined;
     isFeatured?: boolean;
     thumbnail?: string | null | undefined;
+    file?: File | null;
 }
 
 export interface BlogUpdateCommand extends UpdateCommand {
@@ -14,4 +15,5 @@ export interface BlogUpdateCommand extends UpdateCommand {
     content?: string | null | undefined;
     isFeatured?: boolean;
     thumbnail?: string | null | undefined;
+    file?: File | null;
 }

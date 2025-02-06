@@ -15,6 +15,7 @@ export interface UserCreateCommand extends CreateCommand {
     role?: Role | null | undefined;
     status?: UserStatus | null | undefined;
     preferences?: string | null | undefined;
+    file?: File | null;
 }
 
 export interface UserUpdateCommand extends UpdateCommand {
@@ -31,6 +32,7 @@ export interface UserUpdateCommand extends UpdateCommand {
     role?: Role | null | undefined;
     status?: UserStatus | null | undefined;
     preferences?: string | null | undefined;
+    file?: File | null;
 }
 
 export interface UserUpdatePasswordCommand {

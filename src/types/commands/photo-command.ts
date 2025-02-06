@@ -7,6 +7,7 @@ export interface PhotoCreateCommand extends CreateCommand {
     src?: string | null | undefined;
     href?: string | null | undefined;
     tag?: string | null | undefined;
+    file?: File | null;
 }
 
 export interface PhotoUpdateCommand extends UpdateCommand {
@@ -16,4 +17,5 @@ export interface PhotoUpdateCommand extends UpdateCommand {
     src?: string | null | undefined;
     href?: string | null | undefined;
     tag?: string | null | undefined;
+    file?: File | null;
 }

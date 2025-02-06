@@ -5,6 +5,7 @@ export interface AlbumCreateCommand extends CreateCommand {
     slug?: string | null | undefined;
     description?: string | null | undefined;
     background?: string | null | undefined;
+    file?: File | null;
 }
 
 export interface AlbumUpdateCommand extends UpdateCommand {
@@ -12,4 +13,5 @@ export interface AlbumUpdateCommand extends UpdateCommand {
     slug?: string | null | undefined;
     description?: string | null | undefined;
     background?: string | null | undefined;
+    file?: File | null;
 }

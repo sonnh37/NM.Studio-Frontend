@@ -6,6 +6,7 @@ export interface ServiceCreateCommand extends CreateCommand {
     src?: string | null | undefined;
     slug?: string | null | undefined;
     price?: number | null | undefined;
+    file?: File | null;
 }
 
 export interface ServiceUpdateCommand extends UpdateCommand {
@@ -14,4 +15,5 @@ export interface ServiceUpdateCommand extends UpdateCommand {
     src?: string | null | undefined;
     slug?: string | null | undefined;
     price?: number | null | undefined;
+    file?: File | null;
 }
