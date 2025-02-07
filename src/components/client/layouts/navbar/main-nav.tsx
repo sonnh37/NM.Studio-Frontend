@@ -18,18 +18,13 @@ import { Service } from "@/types/service";
 import { User } from "@/types/user";
 import Link from "next/link";
 import * as React from "react";
-import { CartSheet } from "../../common/cart-sheet";
 import { ProductsCombobox } from "../../common/products-combobox";
 
-import { ModeToggle } from "./mode-toggle";
-import { AuthDropdown } from "./auth-dropdown";
-import { Const } from "@/lib/constants/const";
-import { Separator } from "@/components/ui/separator";
 import MenuAnimationLink from "@/components/_common/hovers/menu-animation-link";
-import Image from "next/image";
-import { TypographyH2 } from "@/components/_common/typography/typography-h2";
-import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
+import { Const } from "@/lib/constants/const";
+import Image from "next/image";
+import { AuthDropdown } from "./auth-dropdown";
 
 interface MainNavProps {
   items?: MainNavItem[];

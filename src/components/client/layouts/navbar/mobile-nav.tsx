@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import type { MainNavItem } from "@/types";
 
-import { navbarConst } from "@/lib/constants/navbar-const";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
