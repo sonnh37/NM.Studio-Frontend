@@ -10,16 +10,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FormInput, FormSwitch } from "@/lib/form-custom-shadcn";
-import { productXSizeService } from "@/services/product-x-size-service";
+import { productSizeService } from "@/services/product-size-service";
 import { sizeService } from "@/services/size-service";
 import {
-    ProductXSizeCreateCommand,
-    ProductXSizeUpdateCommand,
-} from "@/types/commands/product-x-size-command";
+    ProductSizeCreateCommand,
+    ProductSizeUpdateCommand,
+} from "@/types/commands/product-size-command";
 import { SizeCreateCommand } from "@/types/commands/size-command";
-import { ProductXSize } from "@/types/product-x-size";
+import { ProductSize } from "@/types/entities/product-size";
 import { SizeGetAllQuery } from "@/types/queries/size-query";
-import { Size } from "@/types/size";
+import { Size } from "@/types/entities/size";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -38,7 +38,7 @@ import { z } from "zod";
 import { columns } from "./columns";
 interface DataTableSizesProps {
   productId?: string;
-  productXSizes?: ProductXSize[];
+  productSizes?: ProductSize[];
   tab?: number;
 }
 
@@ -50,7 +50,7 @@ const formSchema = z.object({
 export default function DataTableSizes({
   productId,
   tab,
-  productXSizes,
+  productSizes,
 }: DataTableSizesProps) {
   const [getQueryParams, setGetQueryParams] = useState<SizeGetAllQuery>();
 
@@ -66,13 +66,13 @@ export default function DataTableSizes({
 
   const queryClient = useQueryClient();
 
-  const handleRemoveSize = (value: ProductXSize) => {
-    const productXSize_: ProductXSizeUpdateCommand = {
+  const handleRemoveSize = (value: ProductSize) => {
+    const productSize_: ProductSizeUpdateCommand = {
       sizeId: value.sizeId,
       productId: productId,
     };
 
-    productXSizeService.delete_(productXSize_).then(async (response) => {
+    productSizeService.delete_(productSize_).then(async (response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -83,13 +83,13 @@ export default function DataTableSizes({
   };
 
   const handleAddSize = (value: Size) => {
-    const productXSize_: ProductXSizeCreateCommand = {
+    const productSize_: ProductSizeCreateCommand = {
       sizeId: value.id,
       productId: productId,
       isActive: true,
     };
 
-    productXSizeService.create(productXSize_).then((response) => {
+    productSizeService.create(productSize_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
@@ -100,14 +100,14 @@ export default function DataTableSizes({
     });
   };
 
-  const handleUpdateSize = (row: ProductXSize, isActive: boolean) => {
-    const productXSize_: ProductXSizeUpdateCommand = {
+  const handleUpdateSize = (row: ProductSize, isActive: boolean) => {
+    const productSize_: ProductSizeUpdateCommand = {
       sizeId: row.sizeId,
       productId: productId,
       isActive: isActive,
     };
 
-    productXSizeService.update(productXSize_).then((response) => {
+    productSizeService.update(productSize_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -117,7 +117,7 @@ export default function DataTableSizes({
     });
   };
 
-  const columns_tab0: ColumnDef<ProductXSize>[] = [
+  const columns_tab0: ColumnDef<ProductSize>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => <></>,
@@ -225,12 +225,12 @@ export default function DataTableSizes({
         if (response.status === 1) {
           const sizeId = response.data?.id;
           if (sizeId) {
-            const productXSize_: ProductXSizeCreateCommand = {
+            const productSize_: ProductSizeCreateCommand = {
               sizeId: sizeId,
               productId,
               isActive: data.isActive,
             };
-            productXSizeService.create(productXSize_).then((response) => {
+            productSizeService.create(productSize_).then((response) => {
               if (response.status === 1) {
                 queryClient.invalidateQueries({
                   queryKey: ["product", productId],
@@ -268,12 +268,12 @@ export default function DataTableSizes({
           </form>
         </Form>
       </div>
-      <DataOnlyTable columns={columns_tab0} data={productXSizes ?? []} />
+      <DataOnlyTable columns={columns_tab0} data={productSizes ?? []} />
     </div>
   ) : (
     <DataTable
       columns={columns_tab1}
-      fetchData={sizeService.fetchAll}
+      fetchData={sizeService.getAll}
       columnSearch="name"
       defaultParams={getQueryParams}
       filterEnums={[

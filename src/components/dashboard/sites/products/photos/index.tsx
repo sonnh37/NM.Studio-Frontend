@@ -5,15 +5,15 @@ import {
     isDeleted_options,
 } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
-import { photoService } from "@/services/photo-service";
-import { productXPhotoService } from "@/services/product-x-photo-service";
+import { mediaFileService } from "@/services/media-file-service";
+import { productMediaService } from "@/services/product-media-service";
 import {
-    ProductXPhotoCreateCommand,
-    ProductXPhotoUpdateCommand,
-} from "@/types/commands/product-x-photo-command";
-import { Photo } from "@/types/photo";
-import { ProductXPhoto } from "@/types/product-x-photo";
-import { PhotoGetAllQuery } from "@/types/queries/photo-query";
+    ProductMediaCreateCommand,
+    ProductMediaUpdateCommand,
+} from "@/types/commands/product-media-command";
+import { MediaFile } from "@/types/entities/media-file";
+import { ProductMedia } from "@/types/entities/product-media";
+import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ import { columns } from "./columns";
 
 interface DataTablePhotosProps {
   productId?: string;
-  productXPhotos?: ProductXPhoto[];
+  productXPhotos?: ProductMedia[];
   tab?: number;
 }
 
@@ -33,10 +33,10 @@ export default function DataTablePhotos({
   tab,
   productXPhotos,
 }: DataTablePhotosProps) {
-  const [getQueryParams, setGetQueryParams] = useState<PhotoGetAllQuery>();
+  const [getQueryParams, setGetQueryParams] = useState<MediaFileGetAllQuery>();
 
   useEffect(() => {
-    const defaultQueryParams: PhotoGetAllQuery = {
+    const defaultQueryParams: MediaFileGetAllQuery = {
       isPagination: true,
       isDeleted: false,
       productId: productId,
@@ -49,7 +49,7 @@ export default function DataTablePhotos({
   const handleSelectAll = (value: boolean, table: any) => {
     // const allRows = table.getRowModel().rows;
     // const allSelected_ = allRows.map((row) => row.original);
-    // const allSelectedProductXPhotos: ProductXPhotoUpdateCommand[] = allSelected_.map((photo) => ({
+    // const allSelectedProductXPhotos: ProductMediaUpdateCommand[] = allSelected_.map((photo) => ({
     //   photoId: photo.id,
     //   productId,
     //   isDeleted: false,
@@ -64,12 +64,12 @@ export default function DataTablePhotos({
   };
 
   const handleRemovePhoto = (photoId: string) => {
-    const productXPhoto_: ProductXPhotoUpdateCommand = {
+    const productXPhoto_: ProductMediaUpdateCommand = {
       photoId,
       productId,
     };
 
-    productXPhotoService.delete_(productXPhoto_).then(async (response) => {
+    productMediaService.delete_(productXPhoto_).then(async (response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -79,13 +79,13 @@ export default function DataTablePhotos({
     });
   };
 
-  const handleAddPhoto = (row: Photo) => {
-    const productXPhoto_: ProductXPhotoCreateCommand = {
+  const handleAddPhoto = (row: MediaFile) => {
+    const productXPhoto_: ProductMediaCreateCommand = {
       photoId: row.id,
       productId,
     };
 
-    productXPhotoService.create(productXPhoto_).then((response) => {
+    productMediaService.create(productXPhoto_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
@@ -96,7 +96,7 @@ export default function DataTablePhotos({
     });
   };
 
-  const columns_tab0: ColumnDef<Photo>[] = [
+  const columns_tab0: ColumnDef<MediaFile>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => (
@@ -124,7 +124,7 @@ export default function DataTablePhotos({
     ...columns,
   ];
 
-  const columns_tab1: ColumnDef<Photo>[] = [
+  const columns_tab1: ColumnDef<MediaFile>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => (
@@ -159,14 +159,14 @@ export default function DataTablePhotos({
       data={
         productXPhotos!
           .map((m) => m.photo)
-          .filter((photo) => photo !== undefined) as Photo[]
+          .filter((photo) => photo !== undefined) as MediaFile[]
       }
     />
   ) : (
     <DataTable
-      deleteAll={photoService.delete}
+      deleteAll={mediaFileService.delete}
       columns={columns_tab1}
-      fetchData={photoService.fetchAll}
+      fetchData={mediaFileService.getAll}
       columnSearch="href"
       defaultParams={getQueryParams}
       filterEnums={[

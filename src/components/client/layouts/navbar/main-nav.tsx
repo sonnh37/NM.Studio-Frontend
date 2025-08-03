@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { MainNavItem } from "@/types";
-import { Album } from "@/types/album";
-import { Category } from "@/types/category";
-import { Service } from "@/types/service";
-import { User } from "@/types/user";
+import { Album } from "@/types/entities/album";
+import { Category } from "@/types/entities/category";
+import { Service } from "@/types/entities/service";
+import { User } from "@/types/entities/user";
 import Link from "next/link";
 import * as React from "react";
 import { ProductsCombobox } from "../../common/products-combobox";

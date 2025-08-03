@@ -20,7 +20,7 @@
 //             <CardContent>
 //                 <DataTable
 //                     columns={columns}
-//                     fetchData={orderService.fetchAll}
+//                     fetchData={orderService.getAll}
 //                     columnSearch="id"
 //                     className="h-60"
 //                     defaultValues={queryParams}

@@ -10,9 +10,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
-import { Color } from "@/types/color";
-import { Product } from "@/types/product";
-import { Size } from "@/types/size";
+import { Color } from "@/types/entities/color";
+import { Product } from "@/types/entities/product";
+import { Size } from "@/types/entities/size";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -30,7 +30,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const handleSizeChange = (sizeName: string) => {
-    const size = product.productXSizes?.find(
+    const size = product.productSizes?.find(
       (pxc) => pxc.size?.name === sizeName
     );
     if (size) {
@@ -205,7 +205,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                         </div>
 
                         <div className="flex flex-row space-x-2 mt-4">
-                          {product.productXSizes?.map((pxc) => (
+                          {product.productSizes?.map((pxc) => (
                             <div
                               key={pxc.id}
                               className="flex flex-col items-center"

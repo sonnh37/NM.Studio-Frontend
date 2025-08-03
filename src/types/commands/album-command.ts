@@ -1,17 +1,34 @@
-import {CreateCommand, UpdateCommand} from "./base-command";
+import {CreateCommand, DeleteCommand, UpdateCommand} from "./base/base-command";
 
 export interface AlbumCreateCommand extends CreateCommand {
-    title?: string | null | undefined;
-    slug?: string | null | undefined;
-    description?: string | null | undefined;
-    background?: string | null | undefined;
+    title?: string | null;
+    slug?: string | null;
+    description?: string | null;
+    background?: string | null;
+    eventDate?: string | null;
+    brideName?: string | null;
+    groomName?: string | null;
+    location?: string | null;
+    photographer?: string | null;
+    isPublic: boolean;
     file?: File | null;
 }
 
 export interface AlbumUpdateCommand extends UpdateCommand {
-    title?: string | null | undefined;
-    slug?: string | null | undefined;
-    description?: string | null | undefined;
-    background?: string | null | undefined;
+    title?: string | null;
+    slug?: string | null;
+    description?: string | null;
+    background?: string | null;
+    eventDate?: string | null;
+    brideName?: string | null;
+    groomName?: string | null;
+    location?: string | null;
+    photographer?: string | null;
+    isPublic: boolean;
     file?: File | null;
+}
+
+
+export interface AlbumDeleteCommand extends DeleteCommand {
+
 }

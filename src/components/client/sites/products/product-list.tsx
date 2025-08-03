@@ -1,7 +1,7 @@
 "use client";
 
 import { productService } from "@/services/product-service";
-import { Product } from "@/types/product";
+import { Product } from "@/types/entities/product";
 import { ProductGetAllQuery } from "@/types/queries/product-query";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -45,7 +45,7 @@ export function ProductList() {
   const { data, isError, error } = useQuery({
     queryKey: ["fetchProducts", queryProduct], // Dùng queryKey bao gồm queryProduct để đảm bảo query được tái sử dụng khi queryProduct thay đổi
     queryFn: async () => {
-      const response = await productService.fetchAll(queryProduct);
+      const response = await productService.getAll(queryProduct);
       return response.data; // Giả sử API trả về kiểu dữ liệu như bạn mong muốn
     },
   });

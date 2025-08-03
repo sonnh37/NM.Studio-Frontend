@@ -25,7 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn } from "@/lib/utils";
-import { photoService } from "@/services/photo-service";
+import { mediaFileService } from "@/services/media-file-service";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -148,7 +148,7 @@ export default function PhotoTable() {
   const { data: category, isLoading } = useQuery({
     queryKey: ["category", queryParam?.toLowerCase()], // Cache theo queryParam
     queryFn: async () => {
-      const response = await categoryService.fetchById(queryParam as string);
+      const response = await categoryService.getById(queryParam as string);
       return response.data;
     }, 
   });
@@ -194,7 +194,7 @@ export default function PhotoTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => photoService.fetchAll(queryParams),
+    queryFn: () => mediaFileService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
@@ -257,7 +257,7 @@ export default function PhotoTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteAll={photoService.delete}
+        deleteAll={mediaFileService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -275,8 +275,8 @@ export default function PhotoTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanent={photoService.deletePermanent}
-          restore={photoService.restore}
+          deletePermanent={mediaFileService.deletePermanent}
+          restore={mediaFileService.restore}
           table={table}
         />
       )}

@@ -4,7 +4,7 @@ import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import { BlogForm } from "@/components/dashboard/sites/blogs/create-update-form";
 import { blogService } from "@/services/blog-service";
-import { Blog } from "@/types/blog";
+import { Blog } from "@/types/entities/blog";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -18,7 +18,7 @@ export default function Page() {
     } = useQuery({
         queryKey: ["fetchBlogById", params.blogId],
         queryFn: async () => {
-            const response = await blogService.fetchById(
+            const response = await blogService.getById(
                 params.blogId as string
             );
             return response.data;

@@ -6,7 +6,7 @@ export const useAlbums = (query: AlbumGetAllQuery) => {
   return useQuery({
     queryKey: ["albums", query],
     queryFn: async () => {
-      const response = await albumService.fetchAll(query);
+      const response = await albumService.getAll(query);
       return response.data?.results ?? [];
     },
     refetchOnWindowFocus: false,

@@ -20,6 +20,7 @@ export default async function PostPage() {
     <article className="py-10 px-6 flex flex-col items-center ">
       <PostReadingProgress />
       <PostHeader
+      avatar=""
         title={post.title}
         author={post.author}
         createdAt={post.createdAt}

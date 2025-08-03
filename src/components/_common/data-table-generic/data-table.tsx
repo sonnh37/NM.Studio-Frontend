@@ -2,7 +2,7 @@ import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-
 import { FormField } from "@/components/ui/form";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { BaseQueryableQuery } from "@/types/queries/base-query";
+import { GetQueryableQuery } from "@/types/queries/base/base-query";
 import { BusinessResult } from "@/types/response/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -26,15 +26,15 @@ import { useForm, useWatch } from "react-hook-form";
 import { z, ZodObject, ZodType } from "zod";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTableComponent } from "./data-table-component";
-import { UpdateCommand } from "@/types/commands/base-command";
+import { UpdateCommand } from "@/types/commands/base/base-command";
 import { Card } from "@/components/ui/card";
 import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   fetchData: (
-    queryParams: BaseQueryableQuery
-  ) => Promise<BusinessResult<PagedResponse<TData>>>;
+    queryParams: GetQueryableQuery
+  ) => Promise<BusinessResult<QueryResult<TData>>>;
   deleteAll?: (id: string) => Promise<BusinessResult<null>>;
   restore?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
   deletePermanent?: (id: string) => Promise<BusinessResult<null>>;
@@ -131,7 +131,7 @@ export function DataTable<TData>({
     control: form.control,
   });
 
-  const getQueryParams = useCallback((): BaseQueryableQuery => {
+  const getQueryParams = useCallback((): GetQueryableQuery => {
     const filterParams: Record<string, any> = {};
 
     columnFilters.forEach((filter) => {

@@ -1,10 +1,10 @@
 "use client";
 
 import {DataTableColumnHeader} from "@/components/_common/data-table-generic/data-table-column-header";
-import {ProductXSize} from "@/types/product-x-size";
+import {ProductSize} from "@/types/entities/product-size";
 import {ColumnDef} from "@tanstack/react-table";
 
-export const columns: ColumnDef<ProductXSize>[] = [
+export const columns: ColumnDef<ProductSize>[] = [
     {
         accessorKey: "product.name",
         header: ({column}) => (

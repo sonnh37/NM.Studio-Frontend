@@ -1,30 +1,30 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {AlbumXPhotoUpdateCommand} from "@/types/commands/album-x-photo-command";
+import {AlbumMediaUpdateCommand} from "@/types/commands/album-media-command";
 
 interface PhotosState {
-    selectedAlbumXPhotos: AlbumXPhotoUpdateCommand[];
+    selectedAlbumMedias: AlbumMediaUpdateCommand[];
 }
 
 const initialState: PhotosState = {
-    selectedAlbumXPhotos: [],
+    selectedAlbumMedias: [],
 };
 
 const photosSlice = createSlice({
     name: 'photos',
     initialState,
     reducers: {
-        setSelectedAlbumXPhotos(state, action: PayloadAction<AlbumXPhotoUpdateCommand[]>) {
-            state.selectedAlbumXPhotos = action.payload;
+        setSelectedAlbumMedias(state, action: PayloadAction<AlbumMediaUpdateCommand[]>) {
+            state.selectedAlbumMedias = action.payload;
         },
-        addSelectedPhoto(state, action: PayloadAction<AlbumXPhotoUpdateCommand>) {
-            state.selectedAlbumXPhotos.push(action.payload);
+        addSelectedPhoto(state, action: PayloadAction<AlbumMediaUpdateCommand>) {
+            state.selectedAlbumMedias.push(action.payload);
         },
         removeSelectedPhoto(state, action: PayloadAction<string>) {
-            state.selectedAlbumXPhotos = state.selectedAlbumXPhotos.filter(photo => photo.photoId !== action.payload);
+            state.selectedAlbumMedias = state.selectedAlbumMedias.filter(photo => photo.photoId !== action.payload);
         },
     },
 });
 
-export const {setSelectedAlbumXPhotos, addSelectedPhoto, removeSelectedPhoto} = photosSlice.actions;
+export const {setSelectedAlbumMedias, addSelectedPhoto, removeSelectedPhoto} = photosSlice.actions;
 
 export default photosSlice.reducer;

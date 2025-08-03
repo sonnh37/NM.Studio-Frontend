@@ -147,7 +147,7 @@ export default function ServiceTable() {
   const { data: category, isLoading } = useQuery({
     queryKey: ["category", queryParam?.toLowerCase()], // Cache theo queryParam
     queryFn: async () => {
-      const response = await categoryService.fetchById(queryParam as string);
+      const response = await categoryService.getById(queryParam as string);
       return response.data;
     },
   });
@@ -193,7 +193,7 @@ export default function ServiceTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => serviceService.fetchAll(queryParams),
+    queryFn: () => serviceService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,

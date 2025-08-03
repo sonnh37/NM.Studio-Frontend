@@ -23,9 +23,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { colorService } from "@/services/color-service";
 import { sizeService } from "@/services/size-service";
 import { categoryService } from "@/services/category-service";
-import { Color } from "@/types/color";
-import { Category, SubCategory } from "@/types/category";
-import { Size } from "@/types/size";
+import { Color } from "@/types/entities/color";
+import { Category, SubCategory } from "@/types/entities/category";
+import { Size } from "@/types/entities/size";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { CategoryGetAllQuery } from "@/types/queries/category-query";
@@ -204,7 +204,7 @@ export function SidebarProduct() {
   const { data: colors = [], isLoading: colorsLoading } = useQuery({
     queryKey: ["fetchColors"],
     queryFn: async () => {
-      const response = await colorService.fetchAll({
+      const response = await colorService.getAll({
         isPagination: false,
         isDeleted: false,
       });
@@ -217,7 +217,7 @@ export function SidebarProduct() {
   const { data: sizes = [], isLoading: sizesLoading } = useQuery({
     queryKey: ["fetchSizes"],
     queryFn: async () => {
-      const response = await sizeService.fetchAll({
+      const response = await sizeService.getAll({
         isPagination: false,
         isDeleted: false,
       });
@@ -230,7 +230,7 @@ export function SidebarProduct() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ["fetchCategories"],
     queryFn: async () => {
-      const response = await categoryService.fetchAll({
+      const response = await categoryService.getAll({
         isPagination: false,
         isDeleted: false,
       });
@@ -243,7 +243,7 @@ export function SidebarProduct() {
     useQuery({
       queryKey: ["fetchCategoryByName", searchParams.get("categoryName")],
       queryFn: async () => {
-        const response = await categoryService.fetchAll({
+        const response = await categoryService.getAll({
           isPagination: true,
           isDeleted: false,
           pageSize: 1,

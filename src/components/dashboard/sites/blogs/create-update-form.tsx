@@ -33,7 +33,7 @@ import ConfirmationDialog, {
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
 import { cn } from "@/lib/utils";
-import { Blog } from "@/types/blog";
+import { Blog } from "@/types/entities/blog";
 import {
   BlogCreateCommand,
   BlogUpdateCommand,

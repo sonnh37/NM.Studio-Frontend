@@ -28,7 +28,7 @@ import {
   ServiceUpdateCommand,
 } from "@/types/commands/service-command";
 import { BusinessResult } from "@/types/response/business-result";
-import { Service } from "@/types/service";
+import { Service } from "@/types/entities/service";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

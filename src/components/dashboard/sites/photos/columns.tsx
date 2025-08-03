@@ -14,15 +14,15 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { photoService } from "@/services/photo-service";
-import { Photo } from "@/types/photo";
+import { mediaFileService } from "@/services/media-file-service";
+import { MediaFile } from "@/types/entities/media-file";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-export const columns: ColumnDef<Photo>[] = [
+export const columns: ColumnDef<MediaFile>[] = [
   {
     accessorKey: "select",
     header: ({ table }) => (
@@ -163,7 +163,7 @@ export const columns: ColumnDef<Photo>[] = [
 ];
 
 interface ActionsProps {
-  row: Row<Photo>;
+  row: Row<MediaFile>;
 }
 
 const Actions: React.FC<ActionsProps> = ({ row }) => {
@@ -201,7 +201,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteById={photoService.delete}
+        deleteById={mediaFileService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

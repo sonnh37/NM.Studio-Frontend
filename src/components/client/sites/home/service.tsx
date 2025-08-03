@@ -24,16 +24,24 @@ interface Studio {
 
 export function Service() {
   const router = useRouter();
-  const query: ServiceGetAllQuery = {
-    isDeleted: false,
-    isPagination: true,
-    pageSize: 6,
-    pageNumber: 1,
-  };
+
+   const query: ServiceGetAllQuery = {
+      pagination: {
+        isPagingEnabled: true,
+        pageNumber: 1,
+        pageSize: 6,
+      },
+      sorting: {
+        sortDirection: 1,
+        sortField: "createdDate",
+      },
+      isDeleted: false,
+    };
+
   const { data: services = [], isLoading, isError, error } = useQuery({
     queryKey: ["fetchServices", query],
     queryFn: async () => {
-      const response = await serviceService.fetchAll(query);
+      const response = await serviceService.getAll(query);
       return response.data?.results;
     },
   });

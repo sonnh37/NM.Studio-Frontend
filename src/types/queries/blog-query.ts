@@ -1,6 +1,6 @@
-import {BaseQueryableQuery} from "./base-query";
+import {GetQueryableQuery} from "./base/base-query";
 
-export interface BlogGetAllQuery extends BaseQueryableQuery {
+export interface BlogGetAllQuery extends GetQueryableQuery {
     title?: string | null | undefined;
     slug?: string | null | undefined;
     content?: string | null | undefined;

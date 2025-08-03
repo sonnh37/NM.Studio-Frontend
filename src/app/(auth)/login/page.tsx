@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/_common/auth/login/login-form";
 
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { RootState } from "@/lib/redux/store";
-import { Role } from "@/types/user";
+import { Role } from "@/types/entities/user";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 

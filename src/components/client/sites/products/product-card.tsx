@@ -1,7 +1,7 @@
 "use client";
 
 import { productService } from "@/services/product-service";
-import { Product } from "@/types/product";
+import { Product } from "@/types/entities/product";
 import { ProductGetAllQuery } from "@/types/queries/product-query";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";

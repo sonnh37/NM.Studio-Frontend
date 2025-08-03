@@ -1,7 +1,7 @@
 "use client";
 
 import {DataTableColumnHeader} from "@/components/_common/data-table-generic/data-table-column-header";
-import {SubCategory} from "@/types/category";
+import {SubCategory} from "@/types/entities/category";
 import {ColumnDef} from "@tanstack/react-table";
 
 export const columns: ColumnDef<SubCategory>[] = [

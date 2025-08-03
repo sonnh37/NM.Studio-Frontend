@@ -1,23 +1,20 @@
-import {Product, ProductRepresentativeByCategory} from "@/types/product";
-import {BaseService} from "./base-service";
+import {Product, ProductRepresentativeByCategory} from "@/types/entities/product";
+import {BaseService} from "./base/base-service";
 import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/interceptors/axios-instance";
+import {QueryResult} from "@/types/response/query-result";
 
 class ProductService extends BaseService<Product> {
     constructor() {
-        super(`${Const.PRODUCT}`);
+        super(`${Const.PRODUCTS}`);
     }
 
-    public fetchRepresentativeByCategory = (): Promise<BusinessResult<ResultsResponse<ProductRepresentativeByCategory>>> => {
-        return axiosInstance
-            .get<BusinessResult<ResultsResponse<ProductRepresentativeByCategory>>>(`${this.endpoint}/representative-by-category`)
-            .then(response => {
-                return response.data; // Đảm bảo rằng nó trả về dữ liệu
-            })
-            .catch(error => {
-                return this.handleError(error); // Xử lý lỗi
-            });
+    async getRepresentativeByCategory(): Promise<BusinessResult<QueryResult<ProductRepresentativeByCategory>>> {
+        const res = await axiosInstance
+            .get<BusinessResult<QueryResult<ProductRepresentativeByCategory>>>(`${this.endpoint}/representative-by-category`);
+        return res.data;
+
     }
 
 }

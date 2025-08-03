@@ -1,10 +1,10 @@
-import {BaseQueryableQuery} from "./base-query";
+import {GetQueryableQuery} from "./base/base-query";
 
-export interface CategoryGetAllQuery extends BaseQueryableQuery {
+export interface CategoryGetAllQuery extends GetQueryableQuery {
     name?: string | null | undefined;
 }
 
-export interface SubCategoryGetAllQuery extends BaseQueryableQuery {
+export interface SubCategoryGetAllQuery extends GetQueryableQuery {
     name?: string | null | undefined;
     categoryId?: string | null | undefined;
     isNullCategoryId?: boolean | null | undefined;

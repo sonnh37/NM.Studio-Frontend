@@ -1,10 +1,10 @@
-import {SubCategory} from "@/types/category";
-import {BaseService} from "./base-service";
+import {SubCategory} from "@/types/entities/category";
+import {BaseService} from "./base/base-service";
 import {Const} from "@/lib/constants/const";
 
 class SubCategoryService extends BaseService<SubCategory> {
     constructor() {
-        super(`${Const.SUBCATEGORY}`);
+        super(`${Const.SUBCATEGORIES}`);
     }
 }
 

@@ -3,7 +3,7 @@
 import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import SuccessBooking from "@/components/_common/success-booking";
-import {bookingService} from "@/services/booking-service";
+import {serviceBookingService} from "@/services/service-booking-service";
 import {useQuery} from "@tanstack/react-query";
 import {useParams, useRouter} from "next/navigation";
 
@@ -12,7 +12,7 @@ const CancelBooking: React.FC = () => {
     const {bookingId} = useParams();
     const {data, error, isLoading, isError, isSuccess} = useQuery({
         queryKey: ["cancelBooking", bookingId],
-        queryFn: async () => await bookingService.cancel(bookingId as string),
+        queryFn: async () => await serviceBookingService.cancel(bookingId as string),
         enabled: !!bookingId,
         refetchOnWindowFocus: false
     });

@@ -1,5 +1,5 @@
 // redux/userSlice.ts
-import {User} from "@/types/user";
+import {User} from "@/types/entities/user";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface UserState {

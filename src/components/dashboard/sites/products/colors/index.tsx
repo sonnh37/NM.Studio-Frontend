@@ -10,16 +10,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FormInput, FormSwitch } from "@/lib/form-custom-shadcn";
-import { productXColorService } from "@/services/product-x-color-service";
+import { productColorService } from "@/services/product-color-service";
 import { colorService } from "@/services/color-service";
 import {
-  ProductXColorCreateCommand,
-  ProductXColorUpdateCommand,
-} from "@/types/commands/product-x-color-command";
+  ProductColorCreateCommand,
+  ProductColorDeleteCommand,
+  ProductColorUpdateCommand,
+} from "@/types/commands/product-color-command";
 import { ColorCreateCommand } from "@/types/commands/color-command";
-import { ProductXColor } from "@/types/product-x-color";
+import { ProductColor } from "@/types/entities/product-color";
 import { ColorGetAllQuery } from "@/types/queries/color-query";
-import { Color } from "@/types/color";
+import { Color } from "@/types/entities/color";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -38,7 +39,7 @@ import { z } from "zod";
 import { columns } from "./columns";
 interface DataTableColorsProps {
   productId?: string;
-  productXColors?: ProductXColor[];
+  productXColors?: ProductColor[];
   tab?: number;
 }
 
@@ -66,15 +67,19 @@ export default function DataTableColors({
 
   const queryClient = useQueryClient();
 
-  const handleRemoveColor = (value: ProductXColor) => {
-    const productXColor_: ProductXColorUpdateCommand = {
+  const handleRemoveColor = (value: ProductColor) => {
+    const command: ProductColorDeleteCommand = {
+      id: value.id,
+      isPermanent: true,
       colorId: value.colorId,
       productId: productId,
     };
 
-    productXColorService.delete_(productXColor_).then(async (response) => {
+    productColorService.delete(command).then(async (response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        await queryClient.invalidateQueries({
+          queryKey: ["product", productId],
+        });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -83,13 +88,13 @@ export default function DataTableColors({
   };
 
   const handleAddColor = (value: Color) => {
-    const productXColor_: ProductXColorCreateCommand = {
+    const productXColor_: ProductColorCreateCommand = {
       colorId: value.id,
       productId: productId,
       isActive: true,
     };
 
-    productXColorService.create(productXColor_).then((response) => {
+    productColorService.create(productXColor_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
@@ -100,14 +105,14 @@ export default function DataTableColors({
     });
   };
 
-  const handleUpdateColor = (row: ProductXColor, isActive: boolean) => {
-    const productXColor_: ProductXColorUpdateCommand = {
+  const handleUpdateColor = (row: ProductColor, isActive: boolean) => {
+    const productXColor_: ProductColorUpdateCommand = {
       colorId: row.colorId,
       productId: productId,
       isActive: isActive,
     };
 
-    productXColorService.update(productXColor_).then((response) => {
+    productColorService.update(productXColor_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -117,7 +122,7 @@ export default function DataTableColors({
     });
   };
 
-  const columns_tab0: ColumnDef<ProductXColor>[] = [
+  const columns_tab0: ColumnDef<ProductColor>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => <></>,
@@ -220,17 +225,19 @@ export default function DataTableColors({
       setIsLoading(true);
       const updatedValues: ColorCreateCommand = {
         name: data.name,
+        isActive: data.isActive,
+        sortOrder: 0,
       };
       colorService.create(updatedValues).then((response) => {
         if (response.status === 1) {
           const colorId = response.data?.id;
           if (colorId) {
-            const productXColor_: ProductXColorCreateCommand = {
+            const productXColor_: ProductColorCreateCommand = {
               colorId: colorId,
               productId,
               isActive: data.isActive,
             };
-            productXColorService.create(productXColor_).then((response) => {
+            productColorService.create(productXColor_).then((response) => {
               if (response.status === 1) {
                 queryClient.invalidateQueries({
                   queryKey: ["product", productId],
@@ -273,7 +280,7 @@ export default function DataTableColors({
   ) : (
     <DataTable
       columns={columns_tab1}
-      fetchData={colorService.fetchAll}
+      fetchData={colorService.getAll}
       columnSearch="name"
       defaultParams={getQueryParams}
       filterEnums={[

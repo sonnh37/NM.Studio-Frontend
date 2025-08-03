@@ -20,9 +20,9 @@ import {
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { toLocalISOString } from "@/lib/utils";
-import { bookingService } from "@/services/booking-service";
+import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
-import { BookingCreateCommand } from "@/types/commands/booking-command";
+import { ServiceBookingCreateCommand } from "@/types/commands/service-booking-command";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -63,7 +63,7 @@ export function BookingDialog() {
   } = useQuery({
     queryKey: ["fetchServices", query],
     queryFn: async () => {
-      const res = await serviceService.fetchAll(query);
+      const res = await serviceService.getAll(query);
       return res.data?.results;
     },
     refetchOnWindowFocus: false,
@@ -78,11 +78,11 @@ export function BookingDialog() {
     try {
       setLoading(true);
       const date = toLocalISOString(values.bookingDate);
-      const updatedValues: BookingCreateCommand = {
+      const updatedValues: ServiceBookingCreateCommand = {
         ...values,
         bookingDate: date,
       };
-      const response = await bookingService.create(updatedValues);
+      const response = await serviceBookingService.create(updatedValues);
       if (response.status != 1) throw new Error(response.message);
 
       toast.success(response.message);

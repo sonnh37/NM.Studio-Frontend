@@ -19,7 +19,7 @@ export const useCategoriesOptions = () => {
     return useQuery({
         queryKey: ["categories_options"],
         queryFn: async () => {
-            const response = await categoryService.fetchAll(); // Endpoint API của bạn
+            const response = await categoryService.getAll(); // Endpoint API của bạn
             return response.data?.results!.map((category) => ({
                 label: category.name, // Đặt key phù hợp với API
                 value: category.id,

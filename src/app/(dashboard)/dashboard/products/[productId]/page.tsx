@@ -3,7 +3,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { ProductForm } from "@/components/dashboard/sites/products/create-update-form";
 import { productService } from "@/services/product-service";
-import { Product } from "@/types/product";
+import { Product } from "@/types/entities/product";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -17,7 +17,7 @@ export default function Page() {
     } = useQuery({
       queryKey: ["fetchProductById", params.productId],
       queryFn: async () => {
-        const response = await productService.fetchById(
+        const response = await productService.getById(
           params.productId as string
         );
         return response.data;

@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
-import { Service } from "@/types/service";
+import { Service } from "@/types/entities/service";
 import { useQuery } from "@tanstack/react-query";
 import { Navigation, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -38,7 +38,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
   } = useQuery({
     queryKey: ["fetchService", serviceId],
     queryFn: async () => {
-      const response = await serviceService.fetchAll(query);
+      const response = await serviceService.getAll(query);
       return response.data?.results?.[0] as Service;
     },
   });
@@ -67,7 +67,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
         pageSize: 8,
         pageNumber: 1,
       };
-      const response = await serviceService.fetchAll(query_);
+      const response = await serviceService.getAll(query_);
       const re = response.data?.results!.filter((m) => m.id != service.id);
       return re;
     },

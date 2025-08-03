@@ -1,6 +1,6 @@
-import {BaseQueryableQuery} from "./base-query";
+import {GetQueryableQuery} from "./base/base-query";
 
-export interface ServiceGetAllQuery extends BaseQueryableQuery {
+export interface ServiceGetAllQuery extends GetQueryableQuery {
     name?: string | null | undefined;
     description?: string | null | undefined;
     src?: string | null | undefined;

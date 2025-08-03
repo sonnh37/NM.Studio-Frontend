@@ -5,7 +5,7 @@ import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import { convertToISODate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
-import { Photo } from "@/types/photo";
+import { MediaFile } from "@/types/entities/media-file";
 import { AlbumGetAllQuery } from "@/types/queries/album-query";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -29,7 +29,7 @@ export function AlbumGallery() {
   } = useQuery({
     queryKey: ["fetchAlbum", query],
     queryFn: async () => {
-      const response = await albumService.fetchAll(query);
+      const response = await albumService.getAll(query);
       const result = response.data?.results ?? [];
       return result[0];
     },
@@ -46,7 +46,7 @@ export function AlbumGallery() {
   const photos = album?.albumXPhotos
     ? album.albumXPhotos
         .map((x) => x.photo)
-        .filter((photo): photo is Photo => photo !== undefined)
+        .filter((photo): photo is MediaFile => photo !== undefined)
     : [];
 
   return (

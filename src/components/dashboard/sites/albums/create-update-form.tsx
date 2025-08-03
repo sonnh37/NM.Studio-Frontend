@@ -22,7 +22,7 @@ import ConfirmationDialog, {
   FormInput,
   FormInputTextArea,
 } from "@/lib/form-custom-shadcn";
-import { Album } from "@/types/album";
+import { Album } from "@/types/entities/album";
 import {
   AlbumCreateCommand,
   AlbumUpdateCommand,

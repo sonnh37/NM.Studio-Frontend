@@ -1,7 +1,7 @@
 // Album.tsx
 "use client";
 
-import type { Album } from "@/types/album";
+import type { Album } from "@/types/entities/album";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { albumService } from "@/services/album-service";
@@ -9,23 +9,29 @@ import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { usePathname, useRouter } from "next/navigation";
 import { AlbumList } from "../albums/album-list";
 import { Const } from "@/lib/constants/const";
+import { AlbumGetAllQuery } from "@/types/queries/album-query";
 
 export function AlbumHome() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const pathName = usePathname();
   const router = useRouter();
-  const serviceGetAllQuery: ServiceGetAllQuery = {
-    pageNumber: 1,
-    pageSize: 12,
-    sortOrder: 1,
-
-    isPagination: true,
+  const query: AlbumGetAllQuery = {
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: 1,
+      pageSize: 12,
+    },
+    sorting: {
+      sortDirection: 1,
+      sortField: "createdDate",
+    },
+    isDeleted: false,
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await albumService.fetchAll(serviceGetAllQuery);
+        const response = await albumService.getAll(query);
         const albums = response.data?.results;
 
         setAlbums(albums!);
@@ -68,7 +74,7 @@ export function AlbumHome() {
           <AlbumList />
           <div className="flex pt-5 justify-center">
             <button
-              onClick={() => router.push(Const.ALBUM)}
+              onClick={() => router.push(Const.ALBUMS)}
               className="border-2 border-neutral-300 text-neutral-500 px-12 py-4 rounded-none tracking-widest uppercase bg-transparent hover:bg-neutral-500 hover:text-white dark:text-neutral-200 transition duration-200"
             >
               Xem thêm

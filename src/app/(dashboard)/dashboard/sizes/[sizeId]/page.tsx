@@ -3,7 +3,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { SizeForm } from "@/components/dashboard/sites/sizes/create-update-form";
 import { sizeService } from "@/services/size-service";
-import { Size } from "@/types/size";
+import { Size } from "@/types/entities/size";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -17,7 +17,7 @@ export default function Page() {
   } = useQuery({
     queryKey: ["fetchSizeById", params.sizeId],
     queryFn: async () => {
-      const response = await sizeService.fetchById(params.sizeId as string);
+      const response = await sizeService.getById(params.sizeId as string);
       return response.data;
     },
     enabled: !!params.sizeId,

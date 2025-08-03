@@ -1,6 +1,6 @@
-import {BaseQueryableQuery} from "./base-query";
+import {GetQueryableQuery} from "./base/base-query";
 
-export interface ColorGetAllQuery extends BaseQueryableQuery {
+export interface ColorGetAllQuery extends GetQueryableQuery {
     name?: string | null | undefined;
     productId?: string | null | undefined;
 }

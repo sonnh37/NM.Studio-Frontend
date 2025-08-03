@@ -37,7 +37,7 @@ export default function AlbumPage() {
   } = useQuery({
     queryKey: ["fetchBlogs", query],
     queryFn: async () => {
-      const response = await blogService.fetchAll(query);
+      const response = await blogService.getAll(query);
       return response;
     },
   });

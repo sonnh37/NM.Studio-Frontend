@@ -1,5 +1,5 @@
 import { convertHtmlToPlainText } from "@/lib/utils";
-import { Service } from "@/types/service";
+import { Service } from "@/types/entities/service";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

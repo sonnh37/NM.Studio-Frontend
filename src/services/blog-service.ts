@@ -1,18 +1,16 @@
-import {Blog} from "@/types/blog";
-import {BaseService} from "./base-service";
+import {Blog} from "@/types/entities/blog";
+import {BaseService} from "./base/base-service";
 import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/response/business-result";
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import {BlogCreateCommand, BlogUpdateCommand,} from "@/types/commands/blog-command";
+import {BlogCreateCommand, BlogDeleteCommand, BlogUpdateCommand} from "@/types/commands/blog-command";
 
 class BlogService extends BaseService<Blog> {
     constructor() {
-        super(`${Const.BLOG}`);
+        super(`${Const.BLOGS}`);
     }
 
-    public create = async (
-        command: BlogCreateCommand
-    ): Promise<BusinessResult<Blog>> => {
+    async create(command: BlogCreateCommand): Promise<BusinessResult<Blog>> {
         let link = null;
         if (command.file) {
             link = await this.uploadImage(command.file, "Blog");
@@ -20,15 +18,12 @@ class BlogService extends BaseService<Blog> {
 
         command.thumbnail = link ?? undefined;
 
-        return axiosInstance
-            .post<BusinessResult<Blog>>(this.endpoint, command)
-            .then((response) => response.data)
-            .catch((error) => this.handleError(error)); // Xử lý lỗi
-    };
+        return await super.create(command);
+    }
 
-    public update = async (
+    async update(
         command: BlogUpdateCommand
-    ): Promise<BusinessResult<Blog>> => {
+    ): Promise<BusinessResult<Blog>> {
         let link = null;
         if (command.file) {
             link = await this.uploadImage(command.file, "Blog");
@@ -40,35 +35,22 @@ class BlogService extends BaseService<Blog> {
 
         command.thumbnail = link ?? command.thumbnail;
 
-        return axiosInstance
-            .put<BusinessResult<Blog>>(this.endpoint, command)
-            .then((response) => response.data)
-            .catch((error) => this.handleError(error)); // Xử lý lỗi
+        const res = await axiosInstance.put<BusinessResult<Blog>>(this.endpoint, command);
+        return res.data;
     };
 
-    public deletePermanent = async (
-        id: string
-    ): Promise<BusinessResult<null>> => {
-        try {
-            const data = await this.fetchById(id);
-            const filePath = data.data?.thumbnail;
+    async deletePermanently(
+        command: BlogDeleteCommand
+    ): Promise<BusinessResult<null>> {
+        const data = await this.getById(command.id);
+        const filePath = data.data?.thumbnail;
 
-            // Gọi API xóa trên backend
-            const response = await axiosInstance
-                .delete<BusinessResult<null>>(
-                    `${this.endpoint}?id=${id}&isPermanent=true`
-                )
-                .then((res) => res.data);
-
-            // Nếu backend xóa thành công và có filePath, xóa file trên Firebase
-            if (response.status === 1 && filePath) {
-                await this.deleteImage(filePath);
-            }
-
-            return response;
-        } catch (error) {
-            return this.handleError(error); // Xử lý lỗi
+        const response = await super.delete(command);
+        if (response.status === 1 && filePath) {
+            await this.deleteImage(filePath);
         }
+
+        return response;
     };
 }
 

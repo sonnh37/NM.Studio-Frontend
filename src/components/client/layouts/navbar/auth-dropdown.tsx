@@ -18,7 +18,7 @@ import {
 import { Icons } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { Role, User } from "@/types/user";
+import { Role, User } from "@/types/entities/user";
 import { Suspense } from "react";
 import { userService } from "@/services/user-serice";
 import { authService } from "@/services/auth-service";

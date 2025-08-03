@@ -3,7 +3,7 @@ import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { DisplayContent } from "@/components/client/common/display-content";
 import { createEditorState, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
-import { Blog } from "@/types/blog";
+import { Blog } from "@/types/entities/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 
@@ -38,7 +38,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   } = useQuery({
     queryKey: ["fetchBlog"],
     queryFn: async () => {
-      const response = await blogService.fetchAll(query);
+      const response = await blogService.getAll(query);
       return response.data?.results![0];
     },
   });

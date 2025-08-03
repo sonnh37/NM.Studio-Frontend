@@ -17,7 +17,7 @@
 //     useEffect(() => {
 //         const getOrders = async () => {
 //             try {
-//                 const response = await orderService.fetchAll({isPagination: false}); // Truyền query thích hợp
+//                 const response = await orderService.getAll({isPagination: false}); // Truyền query thích hợp
 //                 const ordersData = response.data?.results ?? [];
 //                 setOrders(ordersData);
 //                 const total = calculateTotalPrice(ordersData);
@@ -29,7 +29,7 @@
 //
 //         const getUsers = async () => {
 //             try {
-//                 const response = await orderService.fetchAll({isPagination: true}); // Truyền query thích hợp
+//                 const response = await orderService.getAll({isPagination: true}); // Truyền query thích hợp
 //                 const totalUserData = response.data?.totalRecords;
 //                 setTotalUser(totalUserData!);
 //             } catch (error) {

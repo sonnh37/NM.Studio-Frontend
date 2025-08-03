@@ -1,6 +1,6 @@
 import {formatDate} from "@/lib/utils";
 import {blogService} from "@/services/blog-service";
-import {Blog} from "@/types/blog";
+import {Blog} from "@/types/entities/blog";
 import {BlogGetAllQuery} from "@/types/queries/blog-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +19,7 @@ export function BlogsRecent() {
 
                 isDeleted: false,
             };
-            const res = await blogService.fetchAll(request);
+            const res = await blogService.getAll(request);
             setBlogs(res.data?.results ?? []);
         } catch (error) {
             console.error(error);

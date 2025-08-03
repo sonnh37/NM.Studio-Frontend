@@ -120,7 +120,7 @@ export function getMenuList(pathname: string): Group[] {
                         },
                         {
                             href: Const.DASHBOARD_PHOTO_NEW_URL,
-                            label: "New Photo",
+                            label: "New MediaFile",
                             active: pathname === Const.DASHBOARD_PHOTO_NEW_URL,
                         },
                     ],

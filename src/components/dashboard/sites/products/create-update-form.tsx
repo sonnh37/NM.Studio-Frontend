@@ -32,12 +32,12 @@ import ConfirmationDialog, {
 } from "@/lib/form-custom-shadcn";
 import { getEnumOptions } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
-import { Category } from "@/types/category";
+import { Category } from "@/types/entities/category";
 import {
   ProductCreateCommand,
   ProductUpdateCommand,
 } from "@/types/commands/product-command";
-import { Product, ProductStatus } from "@/types/product";
+import { Product, ProductStatus } from "@/types/entities/product";
 import { BusinessResult } from "@/types/response/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -150,7 +150,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   };
 
   const fetchCategories = async () => {
-    const response = await categoryService.fetchAll();
+    const response = await categoryService.getAll();
     return response.data?.results;
   };
 

@@ -140,18 +140,9 @@ const defaultSchema = z.object({
 });
 //#endregion
 export default function BlogTable() {
-  const filterEnums: FilterEnum[] = [
-    { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
-  ];
+  
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");
-  const { data: category, isLoading } = useQuery({
-    queryKey: ["category", queryParam?.toLowerCase()], // Cache theo queryParam
-    queryFn: async () => {
-      const response = await categoryService.fetchById(queryParam as string);
-      return response.data;
-    }, 
-  });
   //#region DEFAULT
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -194,7 +185,7 @@ export default function BlogTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => blogService.fetchAll(queryParams),
+    queryFn: () => blogService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,

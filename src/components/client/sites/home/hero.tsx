@@ -2,9 +2,9 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { CarouselApi } from "@/components/ui/carousel";
-import { photoService } from "@/services/photo-service";
-import { Photo } from "@/types/photo";
-import { PhotoGetAllQuery } from "@/types/queries/photo-query";
+import { mediaFileService } from "@/services/media-file-service";
+import { MediaFile } from "@/types/entities/media-file";
+import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -20,13 +20,12 @@ import {
   Zoom,
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-const query: PhotoGetAllQuery = {
-  isPagination: true,
-  pageSize: 20,
-  pageNumber: 1,
+const query: MediaFileGetAllQuery = {
+  pagination: {
+    isPagingEnabled: true,
+  },
   isFeatured: true,
-  isDeleted: false,
-  sortField: 'lastUpdatedDate',
+  isDeleted: false
 };
 export function Hero() {
   const [api, setApi] = React.useState<CarouselApi>();
@@ -47,14 +46,14 @@ export function Hero() {
   }, [api]);
 
   const {
-    data: photos = [] as Photo[],
+    data: photos = [] as MediaFile[],
     isLoading,
     isError,
     error,
   } = useQuery({
     queryKey: ["fetchPhotosHero", query],
     queryFn: async () => {
-      const response = await photoService.fetchAll(query);
+      const response = await mediaFileService.getAll(query);
       const photos = response.data?.results ?? [];
 
       return photos;

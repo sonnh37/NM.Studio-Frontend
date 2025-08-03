@@ -1,7 +1,7 @@
 "use client";
 import {AnimatedTestimonials} from "@/components/ui/animated-testimonials";
 import {isValidImage} from "@/lib/utils";
-import {Photo} from "@/types/photo";
+import {MediaFile} from "@/types/entities/media-file";
 
 interface Testimonial {
     quote: string;
@@ -14,7 +14,7 @@ export const AnimatedTestimonialsPhotos = async ({
                                                      photos = [],
                                                      autoplay = false,
                                                  }: {
-    photos: Photo[];
+    photos: MediaFile[];
     autoplay?: boolean;
 }) => {
     if (photos.length === 0) {

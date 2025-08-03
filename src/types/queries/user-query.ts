@@ -1,7 +1,7 @@
-import {Gender, Role, UserStatus} from "../user";
-import {BaseQueryableQuery} from "./base-query";
+import {Gender, Role, UserStatus} from "../entities/user";
+import {GetQueryableQuery} from "./base/base-query";
 
-export interface UserGetAllQuery extends BaseQueryableQuery {
+export interface UserGetAllQuery extends GetQueryableQuery {
     firstName?: string | null | undefined;
     lastName?: string | null | undefined;
     avatar?: string | null | undefined;

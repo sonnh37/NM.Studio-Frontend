@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { blogService } from "@/services/blog-service";
-import { Blog } from "@/types/blog";
+import { Blog } from "@/types/entities/blog";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";

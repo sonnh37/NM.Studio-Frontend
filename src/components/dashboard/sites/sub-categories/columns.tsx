@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { subCategoryService } from "@/services/sub-category-service";
-import { SubCategory } from "@/types/category";
+import { SubCategory } from "@/types/entities/category";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";

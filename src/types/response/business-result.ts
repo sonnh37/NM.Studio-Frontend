@@ -1,7 +1,7 @@
-export interface BusinessResult<Tdata> {
+export interface BusinessResult<T> {
     status: number;
     message?: string;
-    data?: Tdata;
+    data?: T;
 }
 
 

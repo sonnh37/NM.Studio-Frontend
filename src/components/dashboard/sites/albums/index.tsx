@@ -147,7 +147,7 @@ export default function AlbumTable() {
   const { data: album, isLoading } = useQuery({
     queryKey: ["album", queryParam?.toLowerCase()], // Cache theo queryParam
     queryFn: async () => {
-      const response = await albumService.fetchById(queryParam as string);
+      const response = await albumService.getById(queryParam as string);
       return response.data;
     },
     refetchOnWindowFocus: false,
@@ -195,7 +195,7 @@ export default function AlbumTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => albumService.fetchAll(queryParams),
+    queryFn: () => albumService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,

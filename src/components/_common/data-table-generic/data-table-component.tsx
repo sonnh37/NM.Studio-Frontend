@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "./data-table-pagination";
 import { useSelector } from "react-redux";
-import { UpdateCommand } from "@/types/commands/base-command";
+import { UpdateCommand } from "@/types/commands/base/base-command";
 import { BusinessResult } from "@/types/response/business-result";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";

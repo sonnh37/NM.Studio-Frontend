@@ -6,7 +6,7 @@ export const useCategories = (query: CategoryGetAllQuery) => {
   return useQuery({
     queryKey: ["categories", query],
     queryFn: async () => {
-      const response = await categoryService.fetchAll(query);
+      const response = await categoryService.getAll(query);
       return response.data?.results ?? [];
     },
     refetchOnWindowFocus: false,

@@ -6,7 +6,7 @@ import {
 } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
 import { subCategoryService } from "@/services/sub-category-service";
-import { SubCategory } from "@/types/category";
+import { SubCategory } from "@/types/entities/category";
 import { SubCategoryUpdateCommand } from "@/types/commands/category-command";
 import { SubCategoryGetAllQuery } from "@/types/queries/category-query";
 import { useQueryClient } from "@tanstack/react-query";
@@ -125,7 +125,7 @@ export default function DataTableSubCategorys({
     <DataTable
       deleteAll={subCategoryService.delete}
       columns={columns_tab1}
-      fetchData={subCategoryService.fetchAll}
+      fetchData={subCategoryService.getAll}
       columnSearch="name"
       defaultParams={getQueryParams}
       filterEnums={[

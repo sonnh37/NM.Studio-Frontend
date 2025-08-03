@@ -145,7 +145,7 @@ export default function CategoryTable() {
   const { data: category, isLoading } = useQuery({
     queryKey: ["category", queryParam?.toLowerCase()], // Cache theo queryParam
     queryFn: async () => {
-      const response = await categoryService.fetchById(queryParam as string);
+      const response = await categoryService.getById(queryParam as string);
       return response.data;
     }, // Gọi API với queryParam
   });
@@ -191,7 +191,7 @@ export default function CategoryTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => categoryService.fetchAll(queryParams),
+    queryFn: () => categoryService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,

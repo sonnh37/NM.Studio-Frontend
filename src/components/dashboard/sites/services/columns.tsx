@@ -2,7 +2,7 @@
 
 import { DataTableColumnHeader } from "@/components/dashboard/common/data-table/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Service } from "@/types/service";
+import { Service } from "@/types/entities/service";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";

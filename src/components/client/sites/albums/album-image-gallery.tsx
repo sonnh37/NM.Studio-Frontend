@@ -8,11 +8,11 @@ import "yet-another-react-lightbox/styles.css";
 import "react-photo-album/masonry.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-import {Photo} from "@/types/photo";
+import {MediaFile} from "@/types/entities/media-file";
 import Image from "next/image";
 
 interface AlbumImageGalleryProps {
-    photos: Photo[];
+    photos: MediaFile[];
 }
 
 const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {

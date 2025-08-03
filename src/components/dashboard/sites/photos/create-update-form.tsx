@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { photoService } from "@/services/photo-service";
+import { mediaFileService } from "@/services/media-file-service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -24,10 +24,10 @@ import ConfirmationDialog, {
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
 import {
-  PhotoCreateCommand,
-  PhotoUpdateCommand,
-} from "@/types/commands/photo-command";
-import { Photo } from "@/types/photo";
+  MediaFileCreateCommand,
+  MediaFileUpdateCommand,
+} from "@/types/commands/media-file-command";
+import { MediaFile } from "@/types/entities/media-file";
 import { BusinessResult } from "@/types/response/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -36,7 +36,7 @@ import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 
 interface PhotoFormProps {
-  initialData: Photo | null;
+  initialData: MediaFile | null;
 }
 
 const formSchema = z.object({
@@ -88,11 +88,11 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: PhotoUpdateCommand = {
+        const updatedValues: MediaFileUpdateCommand = {
           ...values,
           file: file,
         };
-        const response = await photoService.update(updatedValues);
+        const response = await mediaFileService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
         queryClient.invalidateQueries({
           queryKey: ["fetchPhotoById", initialData.id],
@@ -111,18 +111,18 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     }
   };
 
-  const handleCreateConfirmation = async (): Promise<BusinessResult<Photo>> => {
+  const handleCreateConfirmation = async (): Promise<BusinessResult<MediaFile>> => {
     if (!pendingValues) {
       toast.error("No pending values to create photo.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
     try {
-      const createdValues: PhotoCreateCommand = {
+      const createdValues: MediaFileCreateCommand = {
         ...pendingValues,
         file: file,
       };
-      const response = await photoService.create(createdValues);
+      const response = await mediaFileService.create(createdValues);
       if (response.status !== 1) throw new Error(response.message);
 
       toast.success(response.message);

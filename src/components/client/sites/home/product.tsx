@@ -25,7 +25,7 @@ const ProductHome = () => {
   } = useQuery({
     queryKey: ["fetchRepresentativeByCategory"],
     queryFn: async () => {
-      const res = await productService.fetchRepresentativeByCategory();
+      const res = await productService.getRepresentativeByCategory();
       return res.data?.results;
     },
     refetchOnWindowFocus: false

@@ -29,7 +29,7 @@ export function ServiceSwiper() {
   } = useQuery({
     queryKey: ["fetchServices", query],
     queryFn: async () => {
-      const response = await serviceService.fetchAll(query);
+      const response = await serviceService.getAll(query);
       return response.data?.results;
     },
   });

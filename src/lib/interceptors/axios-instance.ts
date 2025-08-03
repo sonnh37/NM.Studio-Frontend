@@ -3,9 +3,9 @@ import { LoginResponse } from "@/types/response/login-response";
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE + "/api",
   withCredentials: true,
-  //timeout: 10000,
+  timeout: 60000,
 });
 
 axiosInstance.interceptors.response.use(
@@ -55,7 +55,8 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error); // Ngăn không gửi lại yêu cầu
     }
 
-    return Promise.reject(error);
+      console.error(`API Error:`, error);
+      return Promise.reject(error);
   }
 );
 

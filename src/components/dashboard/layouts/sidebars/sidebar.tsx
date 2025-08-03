@@ -3,7 +3,7 @@ import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { RootState } from "@/lib/redux/store";
 import { cn } from "@/lib/utils";
-import { User } from "@/types/user";
+import { User } from "@/types/entities/user";
 import { useSelector } from "react-redux";
 import { SidebarFooter } from "./sidebar-footer";
 import SidebarHeader from "./sidebar-header";

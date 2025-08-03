@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, { FormInput } from "@/lib/form-custom-shadcn";
-import { Category } from "@/types/category";
+import { Category } from "@/types/entities/category";
 import {
   CategoryCreateCommand,
   CategoryUpdateCommand,

@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, { FormInput } from "@/lib/form-custom-shadcn";
-import { Color } from "@/types/color";
+import { Color } from "@/types/entities/color";
 import {
   ColorCreateCommand,
   ColorUpdateCommand,

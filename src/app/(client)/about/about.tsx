@@ -4,7 +4,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 
 import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
-import { Blog } from "@/types/blog";
+import { Blog } from "@/types/entities/blog";
 import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 
@@ -27,7 +27,7 @@ export default function AboutPage() {
   } = useQuery({
     queryKey: ["fetchBlog"],
     queryFn: async () => {
-      const response = await blogService.fetchAll(query);
+      const response = await blogService.getAll(query);
       return response.data?.results?.[0] as Blog;
     },
   });

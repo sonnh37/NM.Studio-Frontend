@@ -1,13 +1,13 @@
 "use client";
 
 import {DataTableColumnHeader} from "@/components/_common/data-table-generic/data-table-column-header";
-import {Photo} from "@/types/photo";
+import {MediaFile} from "@/types/entities/media-file";
 import {ColumnDef} from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export const columns: ColumnDef<Photo>[] = [
+export const columns: ColumnDef<MediaFile>[] = [
     {
         accessorKey: "src",
         header: "Src Image",

@@ -6,7 +6,7 @@ export const useServices = (query: ServiceGetAllQuery) => {
   return useQuery({
     queryKey: ["services", query],
     queryFn: async () => {
-      const response = await serviceService.fetchAll(query);
+      const response = await serviceService.getAll(query);
       return response.data?.results ?? [];
     },
     refetchOnWindowFocus: false,

@@ -1,7 +1,7 @@
-import {ProductStatus} from "../product";
-import {BaseQueryableQuery} from "./base-query";
+import {ProductStatus} from "../entities/product";
+import {GetQueryableQuery} from "./base/base-query";
 
-export interface ProductGetAllQuery extends BaseQueryableQuery {
+export interface ProductGetAllQuery extends GetQueryableQuery {
     sku?: string | null | undefined;
     slug?: string | null | undefined;
     subCategoryId?: string | null | undefined;

@@ -32,7 +32,7 @@ export function AlbumList() {
   } = useQuery({
     queryKey: ["fetchAlbums", queryAlbum],
     queryFn: async () => {
-      const response = await albumService.fetchAll(queryAlbum);
+      const response = await albumService.getAll(queryAlbum);
       const result = response.data?.results ?? [];
       return result;
     },

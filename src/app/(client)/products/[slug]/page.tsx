@@ -10,10 +10,10 @@ import { TypographySmall } from "@/components/_common/typography/typography-smal
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { productService } from "@/services/product-service";
-import { Color } from "@/types/color";
-import { Product } from "@/types/product";
+import { Color } from "@/types/entities/color";
+import { Product } from "@/types/entities/product";
 import { ProductGetAllQuery } from "@/types/queries/product-query";
-import { Size } from "@/types/size";
+import { Size } from "@/types/entities/size";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -50,7 +50,7 @@ export default function Page() {
   } = useQuery({
     queryKey: ["fetchProduct", slug],
     queryFn: async () => {
-      const response = await productService.fetchAll(query);
+      const response = await productService.getAll(query);
       return response.data?.results?.[0] as Product;
     },
     refetchOnWindowFocus: false,
@@ -72,7 +72,7 @@ export default function Page() {
         categoryName: product.subCategory?.category?.name,
         subCategoryName: product.subCategory?.name,
       };
-      const response = await productService.fetchAll(query_);
+      const response = await productService.getAll(query_);
       console.log("check_relateproduct", response.data?.results);
       return response.data?.results;
     },
@@ -93,7 +93,7 @@ export default function Page() {
   }
 
   const handleSizeChange = (sizeName: string) => {
-    const size = product.productXSizes?.find(
+    const size = product.productSizes?.find(
       (pxc) => pxc.size?.name === sizeName
     );
     if (size) {
@@ -240,7 +240,7 @@ export default function Page() {
               </div>
 
               <div className="flex flex-row space-x-2 mt-4">
-                {product.productXSizes?.map((pxc) => (
+                {product.productSizes?.map((pxc) => (
                   <div key={pxc.id} className="flex flex-col items-center">
                     <Button
                       variant="outline"

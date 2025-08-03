@@ -5,18 +5,16 @@ import {
   UserUpdateCommand,
   UserUpdatePasswordCommand,
 } from "@/types/commands/user-command";
+import { User } from "@/types/entities/user";
 import { BusinessResult } from "@/types/response/business-result";
-import { User } from "@/types/user";
-import { BaseService } from "./base-service";
+import { BaseService } from "./base/base-service";
 
 class UserService extends BaseService<User> {
   constructor() {
-    super(Const.USER);
+    super(Const.USERS);
   }
 
-  public create = async (
-    command: UserCreateCommand
-  ): Promise<BusinessResult<User>> => {
+  async create(command: UserCreateCommand): Promise<BusinessResult<User>> {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "User");
@@ -24,15 +22,10 @@ class UserService extends BaseService<User> {
 
     command.avatar = link ?? undefined;
 
-    return axiosInstance
-      .post<BusinessResult<User>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
+    return await super.create(command);
+  }
 
-  public update = async (
-    command: UserUpdateCommand
-  ): Promise<BusinessResult<User>> => {
+  async update(command: UserUpdateCommand): Promise<BusinessResult<User>> {
     let link = null;
     if (command.file) {
       link = await this.uploadImage(command.file, "User");
@@ -44,64 +37,46 @@ class UserService extends BaseService<User> {
 
     command.avatar = link ?? command.avatar;
 
-    return axiosInstance
-      .put<BusinessResult<User>>(this.endpoint, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
-  };
+    return await super.update(command);
+  }
 
   public updatePassword = async (
     command: UserUpdatePasswordCommand
   ): Promise<BusinessResult<null>> => {
-    return axiosInstance
-      .put<BusinessResult<null>>(`${this.endpoint}/password`, command)
-      .then((response) => response.data)
-      .catch((error) => this.handleError(error)); // Xử lý lỗi
+    const res = await axiosInstance.put<BusinessResult<null>>(
+      `${this.endpoint}/password`,
+      command
+    );
+
+    return res.data;
   };
 
-  public fetchUserByUsernameOrEmail = async (
+  async fetchUserByUsernameOrEmail(
     keyword: string
-  ): Promise<BusinessResult<User>> => {
-    try {
-      const response = await axiosInstance.get<BusinessResult<User>>(
-        `${this.endpoint}/username-or-email`,
-        { params: { key: keyword } }
-      );
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
+  ): Promise<BusinessResult<User>> {
+    const response = await axiosInstance.get<BusinessResult<User>>(
+      `${this.endpoint}/username-or-email`,
+      { params: { key: keyword } }
+    );
+    return response.data;
+  }
 
-  public fetchUserByUsername = async (
-    username: string
-  ): Promise<BusinessResult<User>> => {
-    try {
-      const response = await axiosInstance.get<BusinessResult<User>>(
-        `${this.endpoint}/${username}`
-      );
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
+  async fetchUserByUsername(username: string): Promise<BusinessResult<User>> {
+    const response = await axiosInstance.get<BusinessResult<User>>(
+      `${this.endpoint}/${username}`
+    );
+    return response.data;
+  }
 
-  public findAccountRegisteredByGoogle = async (
+  async findAccountRegisteredByGoogle(
     token: string
-  ): Promise<BusinessResult<null>> => {
-    try {
-      const response = await axiosInstance.post<BusinessResult<null>>(
-        `${this.endpoint}/find-account-registered-by-google`,
-        { token: token }
-      );
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-      return Promise.reject(error);
-    }
-  };
+  ): Promise<BusinessResult<null>> {
+    const response = await axiosInstance.post<BusinessResult<null>>(
+      `${this.endpoint}/find-account-registered-by-google`,
+      { token: token }
+    );
+    return response.data;
+  }
 }
 
 export const userService = new UserService();

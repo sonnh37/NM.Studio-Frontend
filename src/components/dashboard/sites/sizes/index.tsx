@@ -147,7 +147,7 @@ export default function SizeTable() {
   const { data: category, isLoading } = useQuery({
     queryKey: ["category", queryParam?.toLowerCase()], // Cache theo queryParam
     queryFn: async () => {
-      const response = await categoryService.fetchById(queryParam as string);
+      const response = await categoryService.getById(queryParam as string);
       return response.data;
     },
   });
@@ -193,7 +193,7 @@ export default function SizeTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => sizeService.fetchAll(queryParams),
+    queryFn: () => sizeService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,

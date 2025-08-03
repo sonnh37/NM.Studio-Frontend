@@ -1,7 +1,7 @@
 "use client";
 import { ButtonLoading } from "@/components/_common/button-loading";
 import ErrorSystem from "@/components/_common/errors/error-system";
-import {LoadingPageComponent} from "@/components/_common/loading-page";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -11,9 +11,10 @@ import {
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { toLocalISOString } from "@/lib/utils";
-import { bookingService } from "@/services/booking-service";
+import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
-import { BookingCreateCommand } from "@/types/commands/booking-command";
+import { ServiceBookingCreateCommand } from "@/types/commands/service-booking-command";
+import { ServiceBookingStatus } from "@/types/entities/service-booking";
 import { ServiceGetAllQuery } from "@/types/queries/service-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -37,7 +38,15 @@ export function BookingModal() {
   const router = useRouter();
 
   const query: ServiceGetAllQuery = {
-    isPagination: false,
+    pagination: {
+      isPagingEnabled: false,
+      pageNumber: 1,
+      pageSize: 3,
+    },
+    sorting: {
+      sortDirection: 1,
+      sortField: "createdDate",
+    },
     isDeleted: false,
   };
 
@@ -53,7 +62,7 @@ export function BookingModal() {
   } = useQuery({
     queryKey: ["fetchServices", query],
     queryFn: async () => {
-      const res = await serviceService.fetchAll(query);
+      const res = await serviceService.getAll(query);
       return res.data?.results;
     },
   });
@@ -69,11 +78,19 @@ export function BookingModal() {
     try {
       setLoading(true);
       const date = toLocalISOString(values.bookingDate);
-      const updatedValues: BookingCreateCommand = {
+      const command: ServiceBookingCreateCommand = {
         ...values,
-        bookingDate: date,
+        appointmentDate: date,
+        status: ServiceBookingStatus.Pending,
+        startTime: "",
+        endTime: "",
+        durationMinutes: 0,
+        servicePrice: 0,
+        depositAmount: 0,
+        totalAmount: 0,
+        isDepositPaid: false,
       };
-      const response = await bookingService.create(updatedValues);
+      const response = await serviceBookingService.create(command);
       if (response.status != 1) throw new Error(response.message);
 
       toast.success(response.message);

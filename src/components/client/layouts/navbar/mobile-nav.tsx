@@ -24,11 +24,11 @@ import {
 } from "@/components/ui/sheet";
 import { Icons } from "@/components/ui/icons";
 import dynamic from "next/dynamic";
-import { User } from "@/types/user";
+import { User } from "@/types/entities/user";
 import { AuthDropdown } from "./auth-dropdown";
-import { Category } from "@/types/category";
-import { Album } from "@/types/album";
-import { Service } from "@/types/service";
+import { Category } from "@/types/entities/category";
+import { Album } from "@/types/entities/album";
+import { Service } from "@/types/entities/service";
 const ModeToggle = dynamic(
   () => import("./mode-toggle").then((mod) => mod.ModeToggle),
   { ssr: true }

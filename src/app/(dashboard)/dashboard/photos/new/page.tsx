@@ -4,7 +4,7 @@ import {PhotoForm} from "@/components/dashboard/sites/photos/create-update-form"
 
 const breadcrumbItems = [
     {title: "Dashboard", link: "/dashboard"},
-    {title: "Photo", link: "/dashboard/photo"},
+    {title: "MediaFile", link: "/dashboard/photo"},
     {title: "New", link: "/dashboard/photo/new"},
 ];
 

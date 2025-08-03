@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollVisibility } from "@/hooks/use-scroll-visibility";
 import { navbarConst } from "@/lib/constants/navbar-const";
-import { Category } from "@/types/category";
-import { Service } from "@/types/service";
-import { Album } from "@/types/album";
-import { User } from "@/types/user";
+import { Category } from "@/types/entities/category";
+import { Service } from "@/types/entities/service";
+import { Album } from "@/types/entities/album";
+import { User } from "@/types/entities/user";
 
 // Dynamically import MainNav and MobileNav with React.memo
 const MainNav = dynamic(
@@ -39,7 +39,7 @@ export const HeaderMain = ({
       animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
       transition={{ duration: isTop ? 0 : 0.5 }}
       className={cn(
-        "sticky top-0 z-[1000] w-full transition-colors duration-300 tracking-wider text-sm",
+        "sticky top-0 z-[1000] w-full  tracking-wider text-sm",
         "bg-transparent hover:bg-white dark:hover:bg-slate-950",
         "group backdrop-blur-3xl"
       )}

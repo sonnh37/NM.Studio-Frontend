@@ -22,7 +22,7 @@ import ConfirmationDialog, {
   FormInput,
   FormInputTextArea,
 } from "@/lib/form-custom-shadcn";
-import { Size } from "@/types/size";
+import { Size } from "@/types/entities/size";
 import {
   SizeCreateCommand,
   SizeUpdateCommand,

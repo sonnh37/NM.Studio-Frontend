@@ -6,7 +6,7 @@ import { logout, setUser } from "@/lib/redux/slices/userSlice";
 import store from "@/lib/redux/store";
 
 import { BusinessResult } from "@/types/response/business-result";
-import { Role, User } from "@/types/user";
+import { Role, User } from "@/types/entities/user";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";

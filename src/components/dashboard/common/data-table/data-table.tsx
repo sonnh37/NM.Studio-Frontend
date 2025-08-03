@@ -16,13 +16,13 @@ import {keepPreviousData, useQuery,} from '@tanstack/react-query'
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {DataTablePagination} from "@/components/dashboard/common/data-table/data-table-pagination";
-import {BaseQueryableQuery} from "@/types/queries/base-query";
+import {GetQueryableQuery} from "@/types/queries/base/base-query";
 import {DataTableToolbar} from "@/components/dashboard/common/data-table/data-table-toolbar";
 import BarLoader from "@/components/_common/bar-loader"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    fetchData: (queryParams: BaseQueryableQuery) => Promise<PagedResponse<TData>>;
+    fetchData: (queryParams: GetQueryableQuery) => Promise<QueryResult<TData>>;
     stringObject: string
 }
 
@@ -45,7 +45,7 @@ export function DataTable<TData, TValue>({
     const isDeletedFilter = columnFilters.find(filter => filter.id === 'isDeleted');
     const isDeleted = isDeletedFilter ? isDeletedFilter.value as boolean : undefined;
 
-    const [queryParams, setQueryParams] = React.useState<BaseQueryableQuery>({
+    const [queryParams, setQueryParams] = React.useState<GetQueryableQuery>({
         pageNumber: pagination.pageIndex + 1,
         pageSize: pagination.pageSize,
         sortField: sorting.length > 0 ? sorting[0]?.id : 'CreatedDate',

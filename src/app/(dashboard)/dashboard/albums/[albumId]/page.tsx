@@ -1,7 +1,7 @@
 "use client";
 import {AlbumForm} from "@/components/dashboard/sites/albums/create-update-form";
 import {useEffect, useState} from "react";
-import {Album} from "@/types/album";
+import {Album} from "@/types/entities/album";
 import {albumService} from "@/services/album-service";
 import {toast} from "sonner";
 import ErrorSystem from "@/components/_common/errors/error-system";
@@ -19,7 +19,7 @@ export default function Page() {
     } = useQuery({
         queryKey: ["fetchAlbumById", params.albumId],
         queryFn: async () => {
-            const response = await albumService.fetchById(
+            const response = await albumService.getById(
                 params.albumId as string
             );
             return response.data;

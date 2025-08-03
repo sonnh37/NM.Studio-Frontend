@@ -15,7 +15,7 @@ import ConfirmationDialog, {
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { categoryService } from "@/services/category-service";
-import { Category, SubCategory } from "@/types/category";
+import { Category, SubCategory } from "@/types/entities/category";
 import {
   SubCategoryCreateCommand,
   SubCategoryUpdateCommand,
@@ -134,7 +134,7 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
   };
 
   const fetchCategories = async () => {
-    const response = await categoryService.fetchAll();
+    const response = await categoryService.getAll();
     return response.data?.results;
   };
 

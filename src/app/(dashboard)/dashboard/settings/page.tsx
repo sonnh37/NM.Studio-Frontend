@@ -3,7 +3,7 @@ import {ProfileForm} from "@/app/(dashboard)/dashboard/settings/profile-form";
 import {Separator} from "@/components/ui/separator";
 import {Badge} from "@/components/ui/badge";
 import {getEnumLabel} from "@/lib/utils";
-import {Role} from "@/types/user";
+import {Role} from "@/types/entities/user";
 import {format} from "date-fns";
 import {RootState} from "@/lib/redux/store";
 import {useSelector} from "react-redux";

@@ -3,7 +3,7 @@
 import { DataTableColumnHeader } from "@/components/_common/data-table-generic/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Product, ProductStatus } from "@/types/product";
+import { Product, ProductStatus } from "@/types/entities/product";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";

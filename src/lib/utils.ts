@@ -1,4 +1,3 @@
-import { BaseQueryableQuery } from "@/types/queries/base-query";
 import { type ClassValue, clsx } from "clsx";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
 import { twMerge } from "tailwind-merge";
@@ -170,11 +169,11 @@ export function toLocalISOString(date: Date) {
   return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
 }
 
-export const cleanQueryParams = (query: BaseQueryableQuery) => {
+export const cleanQueryParams = (query: any) => {
     const cleanedQuery: Record<string, any> = {};
 
     for (const key in query) {
-        const value = query[key as keyof BaseQueryableQuery];
+        const value = query[key as keyof any];
 
         // Xử lý trường hợp các giá trị boolean
         if (key.startsWith("is")) {

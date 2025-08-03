@@ -10,11 +10,11 @@ import DataTablePhotos from "@/components/dashboard/sites/products/photos";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { productService } from "@/services/product-service";
-import { productXColorService } from "@/services/product-x-color-service";
-import { productXSizeService } from "@/services/product-x-size-service";
+import { productColorService } from "@/services/product-color-service";
+import { productSizeService } from "@/services/product-size-service";
 import { FilterEnum } from "@/types/filter-enum";
-import { ProductXColorGetAllQuery } from "@/types/queries/product-x-color-query";
-import { ProductXSizeGetAllQuery } from "@/types/queries/product-x-size-query";
+import { ProductColorGetAllQuery } from "@/types/queries/product-color-query";
+import { ProductSizeGetAllQuery } from "@/types/queries/product-size-query";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { z } from "zod";
@@ -160,7 +160,7 @@ export default function DataTableProducts() {
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", queryParam?.toLowerCase()],
     queryFn: async () => {
-      const response = await productService.fetchById(queryParam as string);
+      const response = await productService.getById(queryParam as string);
       return response.data;
     },
     enabled: !!queryParam,
@@ -209,7 +209,7 @@ export default function DataTableProducts() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => productService.fetchAll(queryParams),
+    queryFn: () => productService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
@@ -340,7 +340,7 @@ export default function DataTableProducts() {
               </TabsContent>
             </Tabs>
 
-            {/* Tab cho productXSizes */}
+            {/* Tab cho productSizes */}
             <Tabs defaultValue="sizes-selected" className="w-full mt-4">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="sizes-selected">Selected Sizes</TabsTrigger>
@@ -353,7 +353,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTableSizes
                     productId={product.id}
-                    productXSizes={product.productXSizes ?? []}
+                    productSizes={product.productSizes ?? []}
                     tab={0}
                   />
                 </Card>
@@ -362,7 +362,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTableSizes
                     productId={product.id}
-                    productXSizes={product.productXSizes ?? []}
+                    productSizes={product.productSizes ?? []}
                     tab={1}
                   />
                 </Card>

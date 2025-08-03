@@ -5,15 +5,15 @@ import {
   isDeleted_options,
 } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
-import { albumXPhotoService } from "@/services/album-x-photo-service";
-import { photoService } from "@/services/photo-service";
-import { AlbumXPhoto } from "@/types/album-x-photo";
+import { albumMediaService } from "@/services/album-media-service";
+import { mediaFileService } from "@/services/media-file-service";
+import { AlbumMedia } from "@/types/entities/album-media";
 import {
-  AlbumXPhotoCreateCommand,
-  AlbumXPhotoUpdateCommand,
-} from "@/types/commands/album-x-photo-command";
-import { Photo } from "@/types/photo";
-import { PhotoGetAllQuery } from "@/types/queries/photo-query";
+  AlbumMediaCreateCommand,
+  AlbumMediaUpdateCommand,
+} from "@/types/commands/album-media-command";
+import { MediaFile } from "@/types/entities/media-file";
+import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ import { columns } from "./columns";
 
 interface DataTablePhotosProps {
   albumId?: string;
-  albumXPhotos?: AlbumXPhoto[];
+  albumXPhotos?: AlbumMedia[];
   tab?: number;
 }
 
@@ -33,10 +33,10 @@ export default function DataTablePhotos({
   tab,
   albumXPhotos,
 }: DataTablePhotosProps) {
-  const [getQueryParams, setGetQueryParams] = useState<PhotoGetAllQuery>();
+  const [getQueryParams, setGetQueryParams] = useState<MediaFileGetAllQuery>();
 
   useEffect(() => {
-    const defaultQueryParams: PhotoGetAllQuery = {
+    const defaultQueryParams: MediaFileGetAllQuery = {
       isPagination: true,
       isDeleted: false,
       albumId: albumId,
@@ -49,27 +49,27 @@ export default function DataTablePhotos({
   const handleSelectAll = (value: boolean, table: any) => {
     // const allRows = table.getRowModel().rows;
     // const allSelected_ = allRows.map((row) => row.original);
-    // const allSelectedAlbumXPhotos: AlbumXPhotoUpdateCommand[] = allSelected_.map((photo) => ({
+    // const allSelectedAlbumMedias: AlbumMediaUpdateCommand[] = allSelected_.map((photo) => ({
     //   photoId: photo.id,
     //   albumId,
     //   isDeleted: false,
     // }));
     // if (value) {
-    //   dispatch(setSelectedAlbumXPhotos(allSelectedAlbumXPhotos));
-    //   onChange(allSelectedAlbumXPhotos);
+    //   dispatch(setSelectedAlbumMedias(allSelectedAlbumMedias));
+    //   onChange(allSelectedAlbumMedias);
     // } else {
-    //   dispatch(setSelectedAlbumXPhotos([]));
+    //   dispatch(setSelectedAlbumMedias([]));
     //   onChange([]);
     // }
   };
 
   const handleRemovePhoto = (photoId: string) => {
-    const albumXPhoto_: AlbumXPhotoUpdateCommand = {
+    const albumXPhoto_: AlbumMediaUpdateCommand = {
       photoId,
       albumId,
     };
 
-    albumXPhotoService.delete_(albumXPhoto_).then(async (response) => {
+    albumMediaService.delete_(albumXPhoto_).then(async (response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["album", albumId] });
         toast.success(response.message);
@@ -79,13 +79,13 @@ export default function DataTablePhotos({
     });
   };
 
-  const handleAddPhoto = (row: Photo) => {
-    const albumXPhoto_: AlbumXPhotoCreateCommand = {
+  const handleAddPhoto = (row: MediaFile) => {
+    const albumXPhoto_: AlbumMediaCreateCommand = {
       photoId: row.id,
       albumId,
     };
 
-    albumXPhotoService.create(albumXPhoto_).then((response) => {
+    albumMediaService.create(albumXPhoto_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["album", albumId] });
         queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
@@ -96,7 +96,7 @@ export default function DataTablePhotos({
     });
   };
 
-  const columns_tab0: ColumnDef<Photo>[] = [
+  const columns_tab0: ColumnDef<MediaFile>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => (
@@ -124,7 +124,7 @@ export default function DataTablePhotos({
     ...columns,
   ];
 
-  const columns_tab1: ColumnDef<Photo>[] = [
+  const columns_tab1: ColumnDef<MediaFile>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => (
@@ -159,14 +159,14 @@ export default function DataTablePhotos({
       data={
         albumXPhotos!
           .map((m) => m.photo)
-          .filter((photo) => photo !== undefined) as Photo[]
+          .filter((photo) => photo !== undefined) as MediaFile[]
       }
     />
   ) : (
     <DataTable
-      deleteAll={photoService.delete}
+      deleteAll={mediaFileService.delete}
       columns={columns_tab1}
-      fetchData={photoService.fetchAll}
+      fetchData={mediaFileService.getAll}
       columnSearch="href"
       defaultParams={getQueryParams}
       filterEnums={[
