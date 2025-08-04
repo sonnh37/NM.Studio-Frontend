@@ -205,7 +205,7 @@ export default function PhotoTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -257,7 +257,7 @@ export default function PhotoTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteAll={mediaFileService.delete}
+        deleteFunc={mediaFileService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -275,8 +275,8 @@ export default function PhotoTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanent={mediaFileService.deletePermanent}
-          restore={mediaFileService.restore}
+          deletePermanentFunc={mediaFileService.delete}
+          updateUndoFunc={mediaFileService.update}
           table={table}
         />
       )}

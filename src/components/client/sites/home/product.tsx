@@ -26,7 +26,7 @@ const ProductHome = () => {
     queryKey: ["fetchRepresentativeByCategory"],
     queryFn: async () => {
       const res = await productService.getRepresentativeByCategory();
-      return res.data?.results;
+      return res.data;
     },
     refetchOnWindowFocus: false
   });

@@ -13,11 +13,11 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate } from "@/lib/utils";
 import { colorService } from "@/services/color-service";
 import { Color } from "@/types/entities/color";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 export const columns: ColumnDef<Color>[] = [
@@ -42,13 +42,6 @@ export const columns: ColumnDef<Color>[] = [
     ),
   },
   {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
-  },
-  {
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Code" />
@@ -57,65 +50,77 @@ export const columns: ColumnDef<Color>[] = [
       const name = row.getValue("name") as string;
       return (
         <div className="flex items-center space-x-2">
-          {/* Hiển thị ô màu */}
           <span
             className="w-4 h-4 rounded-full border border-gray-300"
             style={{
               backgroundColor: name,
             }}
           ></span>
-          {/* Hiển thị tên màu */}
           <span>{name}</span>
         </div>
       );
     },
   },
   {
+    accessorKey: "colorCode",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Color Code" />
+    ),
+  },
+  {
+    accessorKey: "colorType",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Color Type" />
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+  },
+  {
+    accessorKey: "imagePath",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Image Path" />
+    ),
+  },
+  {
+    accessorKey: "isActive",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Is Active" />
+    ),
+  },
+  {
+    accessorKey: "sortOrder",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Sort Order" />
+    ),
+  },
+  {
+    id: "actions",
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return <Actions row={row} />;
+    },
+  },
+  {
+    id: "createdDate",
     accessorKey: "createdDate",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data created" />
     ),
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdDate"));
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
+      if (!row.original.createdDate) return "-";
+      return formatDate(row.original.createdDate);
     },
   },
   {
     accessorKey: "isDeleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Deleted" />
-    ),
-    cell: ({ row }) => {
-      const isDeleted = row.getValue("isDeleted") as boolean;
-      if (!isDeleted) {
-        return (
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Fcheck.png?alt=media&token=1bdb7751-4bdc-4af1-b6e1-9b758df3a3d5"
-            width={500}
-            height={500}
-            alt="Gallery Icon"
-            className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-          />
-        );
-      }
-      return (
-        <Image
-          src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Funcheck.png?alt=media&token=3b2b94d3-1c59-4a96-b4c6-312033d868b1"
-          width={500}
-          height={500}
-          alt="Gallery Icon"
-          className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-        />
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
   },
 ];
 
@@ -157,7 +162,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteById={colorService.delete}
+        deleteFunc={colorService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

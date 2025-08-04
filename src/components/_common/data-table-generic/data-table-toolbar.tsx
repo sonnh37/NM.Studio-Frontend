@@ -45,6 +45,7 @@ import { Slider } from "@/components/ui/slider";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedWidths } from "@/lib/redux/slices/widthsSlice";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
+import { DeleteCommand } from "@/types/commands/base/base-command";
 
 interface DataTableToolbarProps<TData> {
   form: UseFormReturn<
@@ -56,7 +57,7 @@ interface DataTableToolbarProps<TData> {
   >;
   table: Table<TData>;
   filterEnums: FilterEnum[];
-  deleteAll?: (id: string) => Promise<BusinessResult<null>>;
+  deleteFunc?: (command: DeleteCommand) => Promise<BusinessResult<null>>;
   isSheetOpen: boolean;
   columnSearch: string;
   handleSheetChange?: (open: boolean) => void;
@@ -108,7 +109,7 @@ export function DataTableToolbar<TData>({
   table,
   filterEnums,
   columnSearch,
-  deleteAll = undefined,
+  deleteFunc,
   isSheetOpen = false,
   handleSheetChange = undefined,
   formFilterAdvanceds = [],
@@ -252,12 +253,12 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center gap-2">
         <>
           {/* Hand by hand */}
-          {table.getFilteredSelectedRowModel().rows.length > 0 && deleteAll ? (
+          {table.getFilteredSelectedRowModel().rows.length > 0 && deleteFunc ? (
             <DeleteBaseEntitysDialog
               list={table
                 .getFilteredSelectedRowModel()
                 .rows.map((row) => row.original)}
-              deleteById={deleteAll}
+              deleteFunc={deleteFunc}
               onSuccess={() => table.toggleAllRowsSelected(false)}
             />
           ) : null}

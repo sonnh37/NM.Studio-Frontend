@@ -1,7 +1,7 @@
 "use client";
 
 
-import DataTablePhotos from "@/components/dashboard/sites/photos";
+import DataTablePhotos from "@/components/dashboard/sites/media-files";
 
 export default function Page() {
     return (

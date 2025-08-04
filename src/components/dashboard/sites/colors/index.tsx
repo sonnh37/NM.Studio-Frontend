@@ -205,7 +205,7 @@ export default function ColorTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -257,7 +257,7 @@ export default function ColorTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteAll={colorService.delete}
+        deleteFunc={colorService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -275,8 +275,8 @@ export default function ColorTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanent={colorService.deletePermanent}
-          restore={colorService.restore}
+          deletePermanentFunc={colorService.delete}
+          updateUndoFunc={colorService.update}
           table={table}
         />
       )}

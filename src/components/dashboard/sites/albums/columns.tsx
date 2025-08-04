@@ -18,10 +18,12 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+
 export const columns: ColumnDef<Album>[] = [
   {
     accessorKey: "select",
@@ -44,15 +46,10 @@ export const columns: ColumnDef<Album>[] = [
     ),
   },
   {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => <Actions row={row} />,
-  },
-  {
     accessorKey: "background",
     header: "Background Image",
     cell: ({ row }) => {
-      const backgroundUrl = row.getValue("background") as string; // Lấy URL của hình ảnh từ dữ liệu album
+      const backgroundUrl = row.getValue("background") as string;
       return (
         <Link href={backgroundUrl || "#"}>
           <Image
@@ -60,7 +57,7 @@ export const columns: ColumnDef<Album>[] = [
             className="aspect-square rounded-md object-cover"
             height={64}
             width={64}
-            src={backgroundUrl ?? ""} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+            src={backgroundUrl ?? ""}
           />
         </Link>
       );
@@ -73,64 +70,82 @@ export const columns: ColumnDef<Album>[] = [
     ),
   },
   {
+    accessorKey: "slug",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Slug" />
+    ),
+  },
+  {
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
     ),
+    cell: ({ row }) => (
+      <div className="truncate max-w-xs">{row.getValue("description")}</div>
+    ),
+  },
+  {
+    accessorKey: "eventDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Event Date" />
+    ),
+  },
+  {
+    accessorKey: "brideName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Bride Name" />
+    ),
+  },
+  {
+    accessorKey: "groomName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Groom Name" />
+    ),
+  },
+  {
+    accessorKey: "location",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Location" />
+    ),
+  },
+  {
+    accessorKey: "photographer",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Photographer" />
+    ),
+  },
+  {
+    accessorKey: "isPublic",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Is Public" />
+    ),
+  },
+  {
+    id: "actions",
+    accessorKey: "actions",
+    header: "Actions",
     cell: ({ row }) => {
-      return (
-        <div className="truncate max-w-xs">{row.getValue("description")}</div>
-      );
+      return <Actions row={row} />;
     },
   },
   {
+    id: "createdDate",
     accessorKey: "createdDate",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data created" />
     ),
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdDate"));
-      return date.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
+      if (!row.original.createdDate) return "-";
+      return formatDate(row.original.createdDate);
     },
   },
   {
     accessorKey: "isDeleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Deleted" />
-    ),
-    cell: ({ row }) => {
-      const isDeleted = row.getValue("isDeleted") as boolean;
-      if (!isDeleted) {
-        return (
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Fcheck.png?alt=media&token=1bdb7751-4bdc-4af1-b6e1-9b758df3a3d5"
-            width={500}
-            height={500}
-            alt="Gallery Icon"
-            className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-          />
-        );
-      }
-      return (
-        <Image
-          src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Funcheck.png?alt=media&token=3b2b94d3-1c59-4a96-b4c6-312033d868b1"
-          width={500}
-          height={500}
-          alt="Gallery Icon"
-          className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-        />
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
   },
 ];
-
 interface ActionsProps {
   row: Row<Album>;
 }
@@ -144,7 +159,6 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
   };
 
   const handleAlbumsClick = () => {
-    //row.toggleSelected();
     router.push(`${pathName}?q=${model.id}`);
   };
 
@@ -178,7 +192,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteById={albumService.delete}
+        deleteFunc={albumService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

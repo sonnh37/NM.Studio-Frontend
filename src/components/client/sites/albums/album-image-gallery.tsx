@@ -49,8 +49,8 @@ const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {
             const slidesData: Slide[] = [];
 
             // Loop through the photos and process each image asynchronously.
-            for (const photo of photos) {
-                const imageSrc = photo.src ?? "/image-notfound.jpg";
+            for (const mediaFile of photos) {
+                const imageSrc = mediaFile.src ?? "/image-notfound.jpg";
 
                 const img = new window.Image();
                 img.src = imageSrc;

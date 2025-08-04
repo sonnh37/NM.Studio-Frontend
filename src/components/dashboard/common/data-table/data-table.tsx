@@ -22,13 +22,13 @@ import BarLoader from "@/components/_common/bar-loader"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    fetchData: (queryParams: GetQueryableQuery) => Promise<QueryResult<TData>>;
+    getAllFunc: (queryParams: GetQueryableQuery) => Promise<QueryResult<TData>>;
     stringObject: string
 }
 
 export function DataTable<TData, TValue>({
                                              columns,
-                                             fetchData,
+                                             getAllFunc,
                                              stringObject
                                          }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
 
     const {data, isFetching, error} = useQuery({
         queryKey: ['data', queryParams],
-        queryFn: () => fetchData(queryParams),
+        queryFn: () => getAllFunc(queryParams),
         placeholderData: keepPreviousData,
     });
 
@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
     const table = useReactTable({
         data: data?.results ?? defaultData,
         columns,
-        rowCount: data?.totalRecords ?? 0,
+        rowCount: data?.totalCount ?? 0,
         onPaginationChange: (newPagination) => setPagination(newPagination),
         onSortingChange: (newSorting) => setSorting(newSorting),
         getCoreRowModel: getCoreRowModel(),

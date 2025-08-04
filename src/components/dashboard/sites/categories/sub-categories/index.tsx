@@ -33,7 +33,9 @@ export default function DataTableSubCategorys({
 
   useEffect(() => {
     const defaultQueryParams: SubCategoryGetAllQuery = {
-      isPagination: true,
+      pagination: {
+        isPagingEnabled: true,
+      },
       isNullCategoryId: true,
       isDeleted: false,
     };
@@ -123,9 +125,9 @@ export default function DataTableSubCategorys({
     />
   ) : (
     <DataTable
-      deleteAll={subCategoryService.delete}
+      deleteFunc={subCategoryService.delete}
       columns={columns_tab1}
-      fetchData={subCategoryService.getAll}
+      getAllFunc={subCategoryService.getAll}
       columnSearch="name"
       defaultParams={getQueryParams}
       filterEnums={[

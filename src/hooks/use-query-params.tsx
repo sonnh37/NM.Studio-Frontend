@@ -1,3 +1,4 @@
+import { GetQueryableQuery, SortDirection } from "@/types/queries/base/base-query";
 import {
   ColumnFiltersState,
   PaginationState,
@@ -11,7 +12,7 @@ export const useQueryParams = (
   columnFilters: ColumnFiltersState,
   pagination: PaginationState,
   sorting: SortingState
-) => {
+): () => GetQueryableQuery => {
   return useCallback(() => {
     const filterParams: Record<string, any> = {};
 
@@ -34,13 +35,18 @@ export const useQueryParams = (
       }
     });
 
-    console.log("check_sorting", sorting)
     return {
-      pageNumber: pagination.pageIndex + 1,
-      pageSize: pagination.pageSize,
-      sortField: sorting[0]?.id || "CreatedDate",
-      sortOrder: sorting[0]?.desc ? -1 : 1,
-      isPagination: true,
+      pagination: {
+        pageNumber: pagination.pageIndex + 1,
+        pageSize: pagination.pageSize,
+        isPagingEnabled: true,
+      },
+      sorting: {
+        sortField: sorting[0]?.id || "CreatedDate",
+        sortDirection: sorting[0]?.desc
+          ? SortDirection.Descending
+          : SortDirection.Ascending,
+      },
       fromDate: formValues?.date?.from?.toISOString(),
       toDate: formValues?.date?.to?.toISOString(),
       ...filterParams,

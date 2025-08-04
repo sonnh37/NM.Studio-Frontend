@@ -206,7 +206,7 @@ export default function AlbumTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -264,7 +264,7 @@ export default function AlbumTable() {
             table={table}
             filterEnums={filterEnums}
             columnSearch={columnSearch}
-            deleteAll={albumService.delete}
+            deleteFunc={albumService.delete}
             isSheetOpen={isSheetOpen}
             handleSheetChange={handleSheetChange}
             formFilterAdvanceds={formFilterAdvanceds}
@@ -282,8 +282,8 @@ export default function AlbumTable() {
             />
           ) : (
             <DataTableComponent
-              deletePermanent={albumService.deletePermanent}
-              restore={albumService.restore}
+              deletePermanentFunc={albumService.delete}
+              updateUndoFunc={albumService.update}
               table={table}
             />
           )}
@@ -304,7 +304,7 @@ export default function AlbumTable() {
               <Card className="p-4">
                 <DataTablePhotos
                   albumId={album.id}
-                  albumXPhotos={album.albumXPhotos ?? []}
+                  albumMedias={album.albumMedias ?? []}
                   tab={0}
                 />
               </Card>
@@ -313,7 +313,7 @@ export default function AlbumTable() {
               <Card className="p-4">
                 <DataTablePhotos
                   albumId={album.id}
-                  albumXPhotos={album.albumXPhotos ?? []}
+                  albumMedias={album.albumMedias ?? []}
                   tab={1}
                 />
               </Card>

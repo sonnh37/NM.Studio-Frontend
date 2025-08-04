@@ -6,5 +6,5 @@ export interface AlbumMediaGetAllQuery extends GetQueryableQuery {
     albumId?: string | null | undefined;
     photoId?: string | null | undefined;
     album?: AlbumGetAllQuery | null | undefined;
-    photo?: MediaFileGetAllQuery | null | undefined;
+    mediaFile?: MediaFileGetAllQuery | null | undefined;
 }

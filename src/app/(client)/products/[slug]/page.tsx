@@ -23,23 +23,25 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/navigation";
 import "swiper/css/scrollbar";
-import 'swiper/css/effect-fade';
+import "swiper/css/effect-fade";
 import { FreeMode, Navigation, Scrollbar, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./style.css";
 import { Separator } from "@/components/ui/separator";
-import type { Swiper as SwiperType} from 'swiper';
+import type { Swiper as SwiperType } from "swiper";
 export default function Page() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const { slug } = useParams();
   const query: ProductGetAllQuery = {
-    isDeleted: false,
-    isPagination: true,
-    pageSize: 1,
-    pageNumber: 1,
+    pagination: {
+      isPagingEnabled: true,
+      pageSize: 1,
+      pageNumber: 1,
+    },
     slug: slug as string,
+    isDeleted: false,
   };
 
   const {
@@ -65,12 +67,14 @@ export default function Page() {
     queryKey: ["fetchProducts", product.id],
     queryFn: async () => {
       const query_: ProductGetAllQuery = {
-        isDeleted: false,
-        isPagination: true,
-        pageSize: 8,
-        pageNumber: 1,
+        pagination: {
+          isPagingEnabled: true,
+          pageSize: 8,
+          pageNumber: 1,
+        },
         categoryName: product.subCategory?.category?.name,
         subCategoryName: product.subCategory?.name,
+        isDeleted: false,
       };
       const response = await productService.getAll(query_);
       console.log("check_relateproduct", response.data?.results);
@@ -102,7 +106,7 @@ export default function Page() {
   };
 
   const handleColorChange = (colorName: string) => {
-    const color = product.productXColors?.find(
+    const color = product.productColors?.find(
       (pxc) => pxc.color?.name === colorName
     );
     if (color) {
@@ -131,11 +135,11 @@ export default function Page() {
               thumbs={{ swiper: thumbsSwiper }}
               modules={[FreeMode, Navigation, Thumbs]}
             >
-              {product.productXPhotos!.map((pxp, index) => (
+              {product.productMedias!.map((pxp, index) => (
                 <SwiperSlide key={index}>
                   <img
-                    alt={pxp.photo?.title ?? "N/A"}
-                    src={pxp.photo?.src ?? "/image-notfound.jpg"}
+                    alt={pxp.mediaFile?.title ?? "N/A"}
+                    src={pxp.mediaFile?.src ?? "/image-notfound.jpg"}
                   />
                 </SwiperSlide>
               ))}
@@ -170,14 +174,14 @@ export default function Page() {
                 },
               }}
             >
-              {product.productXPhotos!.map((pxp, index) => (
+              {product.productMedias!.map((pxp, index) => (
                 <SwiperSlide
                   key={index}
                   className="w-[25%] h-[100%] opacity-40"
                 >
                   <img
-                    alt={pxp.photo?.title ?? "N/A"}
-                    src={pxp.photo?.src ?? "/image-notfound.jpg"}
+                    alt={pxp.mediaFile?.title ?? "N/A"}
+                    src={pxp.mediaFile?.src ?? "/image-notfound.jpg"}
                     className="w-full h-full object-cover"
                   />
                 </SwiperSlide>
@@ -202,7 +206,7 @@ export default function Page() {
                 Color
               </legend>
               <div className="flex flex-row space-x-2 mt-4">
-                {product.productXColors?.map((pxc) => (
+                {product.productColors?.map((pxc) => (
                   <div key={pxc.id} className="flex flex-col items-center">
                     <Button
                       variant="outline"
@@ -282,7 +286,7 @@ export default function Page() {
         </TypographyH2>
         {/* Relate */}
         <Swiper
-        className="relate-swiper"
+          className="relate-swiper"
           spaceBetween={15}
           slidesPerView={1}
           slidesPerGroup={1}

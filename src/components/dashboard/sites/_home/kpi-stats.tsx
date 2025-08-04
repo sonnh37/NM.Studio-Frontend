@@ -30,7 +30,7 @@
 //         const getUsers = async () => {
 //             try {
 //                 const response = await orderService.getAll({isPagination: true}); // Truyền query thích hợp
-//                 const totalUserData = response.data?.totalRecords;
+//                 const totalUserData = response.data?.totalCount;
 //                 setTotalUser(totalUserData!);
 //             } catch (error) {
 //                 console.error("Error fetching orders:", error);

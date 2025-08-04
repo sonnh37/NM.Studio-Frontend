@@ -7,11 +7,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { albumMediaService } from "@/services/album-media-service";
 import { mediaFileService } from "@/services/media-file-service";
-import { AlbumMedia } from "@/types/entities/album-media";
 import {
   AlbumMediaCreateCommand,
-  AlbumMediaUpdateCommand,
+  AlbumMediaDeleteCommand
 } from "@/types/commands/album-media-command";
+import { AlbumMedia } from "@/types/entities/album-media";
 import { MediaFile } from "@/types/entities/media-file";
 import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,33 +24,35 @@ import { columns } from "./columns";
 
 interface DataTablePhotosProps {
   albumId?: string;
-  albumXPhotos?: AlbumMedia[];
+  albumMedias?: AlbumMedia[];
   tab?: number;
 }
 
 export default function DataTablePhotos({
   albumId,
   tab,
-  albumXPhotos,
+  albumMedias,
 }: DataTablePhotosProps) {
   const [getQueryParams, setGetQueryParams] = useState<MediaFileGetAllQuery>();
 
   useEffect(() => {
-    const defaultQueryParams: MediaFileGetAllQuery = {
-      isPagination: true,
-      isDeleted: false,
+    const query: MediaFileGetAllQuery = {
+      pagination: {
+        isPagingEnabled: true,
+      },
       albumId: albumId,
+      isDeleted: false,
     };
 
-    setGetQueryParams(defaultQueryParams);
+    setGetQueryParams(query);
   }, [albumId]);
 
   const queryClient = useQueryClient();
   const handleSelectAll = (value: boolean, table: any) => {
     // const allRows = table.getRowModel().rows;
     // const allSelected_ = allRows.map((row) => row.original);
-    // const allSelectedAlbumMedias: AlbumMediaUpdateCommand[] = allSelected_.map((photo) => ({
-    //   photoId: photo.id,
+    // const allSelectedAlbumMedias: AlbumMediaUpdateCommand[] = allSelected_.map((mediaFile) => ({
+    //   photoId: mediaFile.id,
     //   albumId,
     //   isDeleted: false,
     // }));
@@ -63,13 +65,14 @@ export default function DataTablePhotos({
     // }
   };
 
-  const handleRemovePhoto = (photoId: string) => {
-    const albumXPhoto_: AlbumMediaUpdateCommand = {
-      photoId,
-      albumId,
+  const handleRemovePhoto = (modal: MediaFile) => {
+    const command: AlbumMediaDeleteCommand = {
+      mediaFileId: modal.id,
+      isPermanent: true,
+      albumId: albumId,
     };
 
-    albumMediaService.delete_(albumXPhoto_).then(async (response) => {
+    albumMediaService.delete(command).then(async (response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["album", albumId] });
         toast.success(response.message);
@@ -80,12 +83,12 @@ export default function DataTablePhotos({
   };
 
   const handleAddPhoto = (row: MediaFile) => {
-    const albumXPhoto_: AlbumMediaCreateCommand = {
-      photoId: row.id,
+    const command: AlbumMediaCreateCommand = {
+      mediaFileId: row.id,
       albumId,
     };
 
-    albumMediaService.create(albumXPhoto_).then((response) => {
+    albumMediaService.create(command).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["album", albumId] });
         queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
@@ -115,7 +118,7 @@ export default function DataTablePhotos({
           type="button"
           variant="outline"
           size="icon"
-          onClick={() => handleRemovePhoto(row.original.id!)}
+          onClick={() => handleRemovePhoto(row.original)}
         >
           <GrSubtract />
         </Button>
@@ -157,16 +160,16 @@ export default function DataTablePhotos({
     <DataOnlyTable
       columns={columns_tab0}
       data={
-        albumXPhotos!
-          .map((m) => m.photo)
-          .filter((photo) => photo !== undefined) as MediaFile[]
+        albumMedias!
+          .map((m) => m.mediaFile)
+          .filter((mediaFile) => mediaFile !== undefined) as MediaFile[]
       }
     />
   ) : (
     <DataTable
-      deleteAll={mediaFileService.delete}
+      deleteFunc={mediaFileService.delete}
       columns={columns_tab1}
-      fetchData={mediaFileService.getAll}
+      getAllFunc={mediaFileService.getAll}
       columnSearch="href"
       defaultParams={getQueryParams}
       filterEnums={[

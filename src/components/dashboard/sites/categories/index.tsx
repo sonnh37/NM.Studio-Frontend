@@ -202,7 +202,7 @@ export default function CategoryTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -260,7 +260,7 @@ export default function CategoryTable() {
             table={table}
             filterEnums={filterEnums}
             columnSearch={columnSearch}
-            deleteAll={categoryService.delete}
+            deleteFunc={categoryService.delete}
             isSheetOpen={isSheetOpen}
             handleSheetChange={handleSheetChange}
             formFilterAdvanceds={formFilterAdvanceds}
@@ -278,8 +278,8 @@ export default function CategoryTable() {
             />
           ) : (
             <DataTableComponent
-              deletePermanent={categoryService.deletePermanent}
-              restore={categoryService.restore}
+              deletePermanentFunc={categoryService.delete}
+              updateUndoFunc={categoryService.update}
               table={table}
             />
           )}

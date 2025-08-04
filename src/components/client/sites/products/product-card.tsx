@@ -50,9 +50,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 className="aspect-[2/3] bg-gray-200 rounded-md object-cover"
                 alt={product.name!}
                 src={
-                  product.productXPhotos!.length > 0 &&
-                  product.productXPhotos![0].photo
-                    ? product.productXPhotos![0].photo.src ??
+                  product.productMedias!.length > 0 &&
+                  product.productMedias![0].mediaFile
+                    ? product.productMedias![0].mediaFile.src ??
                       "/image-notfound.jpg"
                     : "/image-notfound.jpg"
                 }
@@ -80,7 +80,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className="flex">
           <RadioGroup className="flex flex-row space-x-1" disabled>
-            {product.productXColors?.map((pxc) => (
+            {product.productColors?.map((pxc) => (
               <div key={pxc.id}>
                 <RadioGroupItem
                   value={pxc.color?.name as string}

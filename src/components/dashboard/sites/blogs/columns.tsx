@@ -18,6 +18,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/entities/blog";
 import { MoreHorizontal } from "lucide-react";
@@ -44,18 +45,12 @@ export const columns: ColumnDef<Blog>[] = [
       />
     ),
   },
-  {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
-  },
+
   {
     accessorKey: "thumbnail",
     header: "Thumbnail Image",
     cell: ({ row }) => {
-      const backgroundUrl = row.getValue("thumbnail") as string; // Lấy URL của hình ảnh từ dữ liệu blog
+      const backgroundUrl = row.getValue("thumbnail") as string;
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image
@@ -63,7 +58,7 @@ export const columns: ColumnDef<Blog>[] = [
             className="aspect-square size-[64px] rounded-md object-cover"
             height={9999}
             width={9999}
-            src={backgroundUrl ?? ""} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+            src={backgroundUrl ?? ""}
           />
         </Link>
       );
@@ -76,6 +71,12 @@ export const columns: ColumnDef<Blog>[] = [
     ),
   },
   {
+    accessorKey: "slug",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Slug" />
+    ),
+  },
+  {
     accessorKey: "content",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Content" />
@@ -85,66 +86,75 @@ export const columns: ColumnDef<Blog>[] = [
     },
   },
   {
+    accessorKey: "summary",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Summary" />
+    ),
+  },
+  {
+    accessorKey: "bannerImage",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Banner" />
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+  },
+  {
     accessorKey: "isFeatured",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Featured" />
     ),
     cell: ({ row }) => {
-      const isFeatured = row.getValue("isFeatured") as boolean;
+      const isFeatured = row.original.isFeatured;
       if (!isFeatured) {
-        return <Badge variant="outline">In blog</Badge>;
+        return <Badge variant="outline">Blog page</Badge>;
       }
-      return <Badge>In about page</Badge>;
+      return <Badge>About page</Badge>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
   },
   {
+    accessorKey: "viewCount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="View Count" />
+    ),
+  },
+  {
+    accessorKey: "tags",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tags" />
+    ),
+  },
+  {
+    id: "actions",
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return <Actions row={row} />;
+    },
+  },
+  {
+    id: "createdDate",
     accessorKey: "createdDate",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data created" />
     ),
     cell: ({ row }) => {
-        const date = new Date(row.getValue("createdDate"));
-        return date.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
+      if (!row.original.createdDate) return "-";
+      return formatDate(row.original.createdDate);
     },
   },
   {
     accessorKey: "isDeleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Deleted" />
-    ),
-    cell: ({ row }) => {
-      const isDeleted = row.getValue("isDeleted") as boolean;
-      if (!isDeleted) {
-        return (
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Fcheck.png?alt=media&token=1bdb7751-4bdc-4af1-b6e1-9b758df3a3d5"
-            width={500}
-            height={500}
-            alt="Gallery Icon"
-            className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-          />
-        );
-      }
-      return (
-        <Image
-          src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Funcheck.png?alt=media&token=3b2b94d3-1c59-4a96-b4c6-312033d868b1"
-          width={500}
-          height={500}
-          alt="Gallery Icon"
-          className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-        />
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
   },
 ];
 
@@ -191,7 +201,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteById={blogService.delete}
+        deleteFunc={blogService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

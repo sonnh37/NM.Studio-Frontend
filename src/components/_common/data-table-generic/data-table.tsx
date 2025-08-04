@@ -2,7 +2,10 @@ import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-
 import { FormField } from "@/components/ui/form";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { GetQueryableQuery } from "@/types/queries/base/base-query";
+import {
+  GetQueryableQuery,
+  SortDirection,
+} from "@/types/queries/base/base-query";
 import { BusinessResult } from "@/types/response/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -26,18 +29,18 @@ import { useForm, useWatch } from "react-hook-form";
 import { z, ZodObject, ZodType } from "zod";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTableComponent } from "./data-table-component";
-import { UpdateCommand } from "@/types/commands/base/base-command";
+import { DeleteCommand, UpdateCommand } from "@/types/commands/base/base-command";
 import { Card } from "@/components/ui/card";
 import { DataTablePagination } from "./data-table-pagination";
+import { QueryResult } from "@/types/response/query-result";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
-  fetchData: (
+  getAllFunc: (
     queryParams: GetQueryableQuery
   ) => Promise<BusinessResult<QueryResult<TData>>>;
-  deleteAll?: (id: string) => Promise<BusinessResult<null>>;
-  restore?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
-  deletePermanent?: (id: string) => Promise<BusinessResult<null>>;
+  deleteFunc?: (command: DeleteCommand) => Promise<BusinessResult<null>>;
+  updateUndoFunc?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
   columnSearch: string;
   filterEnums?: FilterEnum[];
   formSchema?: ZodObject<any>;
@@ -48,11 +51,10 @@ interface DataTableProps<TData> {
 
 export function DataTable<TData>({
   columns,
-  fetchData,
+  getAllFunc,
   filterEnums = [],
-  deleteAll,
-  restore,
-  deletePermanent,
+  deleteFunc,
+  updateUndoFunc,
   columnSearch,
   formSchema,
   formFilterAdvanceds = [],
@@ -154,13 +156,19 @@ export function DataTable<TData>({
     });
 
     return {
-      pageNumber: pagination.pageIndex + 1,
-      pageSize: pagination.pageSize,
-      sortField: sorting.length > 0 ? sorting[0]?.id : "CreatedDate",
-      sortOrder: sorting.length > 0 ? (sorting[0]?.desc ? -1 : 1) : -1,
-      isPagination: true,
-      fromDate: formValues?.date?.from?.toISOString() || undefined,
-      toDate: formValues?.date?.to?.toISOString() || undefined,
+      pagination: {
+        pageNumber: pagination.pageIndex + 1,
+        pageSize: pagination.pageSize,
+        isPagingEnabled: true,
+      },
+      sorting: {
+        sortField: sorting[0]?.id || "CreatedDate",
+        sortDirection: sorting[0]?.desc
+          ? SortDirection.Descending
+          : SortDirection.Ascending,
+      },
+      fromDate: formValues?.date?.from?.toISOString(),
+      toDate: formValues?.date?.to?.toISOString(),
       ...filterParams,
     };
   }, [pagination, sorting, formValues, columnFilters]);
@@ -169,7 +177,7 @@ export function DataTable<TData>({
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => fetchData(queryParams),
+    queryFn: () => getAllFunc(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
@@ -183,7 +191,7 @@ export function DataTable<TData>({
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -234,7 +242,7 @@ export function DataTable<TData>({
         form={form}
         table={table}
         filterEnums={filterEnums}
-        deleteAll={deleteAll}
+        deleteFunc={deleteFunc}
         isSheetOpen={isSheetOpen}
         columnSearch={columnSearch}
         handleSheetChange={handleSheetChange}
@@ -253,8 +261,8 @@ export function DataTable<TData>({
       ) : (
         <DataTableComponent
           className={className}
-          deletePermanent={deletePermanent}
-          restore={restore}
+          deletePermanentFunc={deleteFunc}
+          updateUndoFunc={updateUndoFunc}
           table={table}
         />
       )}

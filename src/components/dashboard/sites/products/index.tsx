@@ -6,7 +6,7 @@ import { DataTableComponent } from "@/components/_common/data-table-generic/data
 import { DataTablePagination } from "@/components/_common/data-table-generic/data-table-pagination";
 import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-table-skelete";
 import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
-import DataTablePhotos from "@/components/dashboard/sites/products/photos";
+import DataTablePhotos from "@/components/dashboard/sites/products/medias";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { productService } from "@/services/product-service";
@@ -220,7 +220,7 @@ export default function DataTableProducts() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -278,7 +278,7 @@ export default function DataTableProducts() {
             table={table}
             filterEnums={filterEnums}
             columnSearch={columnSearch}
-            deleteAll={productService.delete}
+            deleteFunc={productService.delete}
             isSheetOpen={isSheetOpen}
             handleSheetChange={handleSheetChange}
             formFilterAdvanceds={formFilterAdvanceds}
@@ -296,8 +296,8 @@ export default function DataTableProducts() {
             />
           ) : (
             <DataTableComponent
-              deletePermanent={productService.deletePermanent}
-              restore={productService.restore}
+              deletePermanentFunc={productService.delete}
+              updateUndoFunc={productService.update}
               table={table}
             />
           )}
@@ -309,7 +309,7 @@ export default function DataTableProducts() {
           <></>
         ) : (
           <>
-            {/* Tab cho productXPhotos */}
+            {/* Tab cho productMedias */}
             <Tabs defaultValue="photos-selected" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="photos-selected">
@@ -324,7 +324,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTablePhotos
                     productId={product.id}
-                    productXPhotos={product.productXPhotos ?? []}
+                    productMedias={product.productMedias ?? []}
                     tab={0}
                   />
                 </Card>
@@ -333,7 +333,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTablePhotos
                     productId={product.id}
-                    productXPhotos={product.productXPhotos ?? []}
+                    productMedias={product.productMedias ?? []}
                     tab={1}
                   />
                 </Card>
@@ -369,7 +369,7 @@ export default function DataTableProducts() {
               </TabsContent>
             </Tabs>
 
-            {/* Tab cho productXColors */}
+            {/* Tab cho productColors */}
             <Tabs defaultValue="colors-selected" className="w-full mt-4">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="colors-selected">
@@ -384,7 +384,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTableColors
                     productId={product.id}
-                    productXColors={product.productXColors ?? []}
+                    productColors={product.productColors ?? []}
                     tab={0}
                   />
                 </Card>
@@ -393,7 +393,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTableColors
                     productId={product.id}
-                    productXColors={product.productXColors ?? []}
+                    productColors={product.productColors ?? []}
                     tab={1}
                   />
                 </Card>

@@ -13,12 +13,16 @@ import AlbumImageGallery from "./album-image-gallery";
 
 export function AlbumGallery() {
   const { slug } = useParams();
+
   const query: AlbumGetAllQuery = {
-    isDeleted: false,
-    isPagination: true,
-    pageSize: 1,
-    pageNumber: 1,
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: 1,
+      pageSize: 1,
+    },
+
     slug: slug.toString(),
+    isDeleted: false,
   };
 
   const {
@@ -43,10 +47,10 @@ export function AlbumGallery() {
     return <ErrorSystem />;
   }
 
-  const photos = album?.albumXPhotos
-    ? album.albumXPhotos
-        .map((x) => x.photo)
-        .filter((photo): photo is MediaFile => photo !== undefined)
+  const photos = album?.albumMedias
+    ? album.albumMedias
+        .map((x) => x.mediaFile)
+        .filter((mediaFile): mediaFile is MediaFile => mediaFile !== undefined)
     : [];
 
   return (

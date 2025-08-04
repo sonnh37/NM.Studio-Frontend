@@ -21,11 +21,11 @@ export const AnimatedTestimonialsPhotos = async ({
         return <div>No photos available</div>;
     }
     const testimonials: Testimonial[] = await Promise.all(
-        photos.map(async (photo) => ({
-            quote: photo.tag || "Untitled",
-            name: photo.title || "Anonymous",
-            designation: photo.description || "Untitled",
-            src: await isValidImage(photo.src ?? "/image-notfound.jpg") ? photo.src : "/image-notfound.jpg",
+        photos.map(async (mediaFile) => ({
+            quote: mediaFile.tag || "Untitled",
+            name: mediaFile.title || "Anonymous",
+            designation: mediaFile.description || "Untitled",
+            src: await isValidImage(mediaFile.src ?? "/image-notfound.jpg") ? mediaFile.src : "/image-notfound.jpg",
         } as Testimonial))
     );
 

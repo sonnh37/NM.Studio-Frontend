@@ -4,24 +4,25 @@ import { DataTableColumnHeader } from "@/components/_common/data-table-generic/d
 import { Checkbox } from "@/components/ui/checkbox";
 import { Size } from "@/types/entities/size";
 import { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
 
 import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate } from "@/lib/utils";
 import { sizeService } from "@/services/size-service";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 export const columns: ColumnDef<Size>[] = [
   {
@@ -45,6 +46,92 @@ export const columns: ColumnDef<Size>[] = [
     ),
   },
   {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
+  },
+  {
+    accessorKey: "displayName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Display Name" />
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => (
+      <div className="truncate max-w-xs">{row.getValue("description")}</div>
+    ),
+  },
+  {
+    accessorKey: "bust",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Bust (cm)" />
+    ),
+  },
+  {
+    accessorKey: "waist",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Waist (cm)" />
+    ),
+  },
+  {
+    accessorKey: "hip",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Hip (cm)" />
+    ),
+  },
+  {
+    accessorKey: "length",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Length (cm)" />
+    ),
+  },
+  {
+    accessorKey: "sizeGuide",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Size Guide" />
+    ),
+    cell: ({ row }) => {
+      const guide = row.getValue("sizeGuide") as string;
+      return guide ? (
+        <Link href={guide} target="_blank" className="text-blue-600 underline">
+          Link
+        </Link>
+      ) : (
+        "-"
+      );
+    },
+  },
+  {
+    accessorKey: "isActive",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Active" />
+    ),
+    cell: ({ row }) => (row.getValue("isActive") ? "Yes" : "No"),
+  },
+  {
+    accessorKey: "sortOrder",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Sort Order" />
+    ),
+  },
+  {
+    id: "createdDate",
+    accessorKey: "createdDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date Created" />
+    ),
+    cell: ({ row }) => {
+      if (!row.original.createdDate) return "-";
+      return formatDate(row.original.createdDate);
+    },
+  },
+  {
+    id: "actions",
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
@@ -52,57 +139,10 @@ export const columns: ColumnDef<Size>[] = [
     },
   },
   {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-  },
-  {
-    accessorKey: "createdDate",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data created" />
-    ),
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("createdDate"));
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-    },
-  },
-  {
     accessorKey: "isDeleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Deleted" />
-    ),
-    cell: ({ row }) => {
-      const isDeleted = row.getValue("isDeleted") as boolean;
-      if (!isDeleted) {
-        return (
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Fcheck.png?alt=media&token=1bdb7751-4bdc-4af1-b6e1-9b758df3a3d5"
-            width={500}
-            height={500}
-            alt="Gallery Icon"
-            className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-          />
-        );
-      }
-      return (
-        <Image
-          src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Funcheck.png?alt=media&token=3b2b94d3-1c59-4a96-b4c6-312033d868b1"
-          width={500}
-          height={500}
-          alt="Gallery Icon"
-          className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-        />
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
   },
 ];
 
@@ -153,7 +193,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteById={sizeService.delete}
+        deleteFunc={sizeService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

@@ -6,5 +6,5 @@ export interface ProductMedia extends BaseEntity {
     productId?: string | null | undefined;
     photoId?: string | null | undefined;
     product?: Product | null | undefined;
-    photo?: MediaFile | null | undefined;
+    mediaFile?: MediaFile | null | undefined;
 }

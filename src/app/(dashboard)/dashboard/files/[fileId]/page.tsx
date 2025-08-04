@@ -3,7 +3,7 @@ import { MediaFile } from "@/types/entities/media-file";
 import { useEffect, useState } from "react";
 import { mediaFileService } from "@/services/media-file-service";
 import { toast } from "sonner";
-import { PhotoForm } from "@/components/dashboard/sites/photos/create-update-form";
+import { PhotoForm } from "@/components/dashboard/sites/media-files/create-update-form";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingPageComponent } from "@/components/_common/loading-page";

@@ -56,7 +56,7 @@ const formSchema = z.object({
 });
 export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Edit photo" : "Create photo";
+  const title = initialData ? "Edit mediaFile" : "Create mediaFile";
   const action = initialData ? "Save and continue" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const router = useRouter();
@@ -113,7 +113,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
 
   const handleCreateConfirmation = async (): Promise<BusinessResult<MediaFile>> => {
     if (!pendingValues) {
-      toast.error("No pending values to create photo.");
+      toast.error("No pending values to create mediaFile.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
@@ -132,8 +132,8 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
 
       return response;
     } catch (error: any) {
-      console.error("Error creating photo:", error);
-      toast.error(error.message || "Failed to create photo.");
+      console.error("Error creating mediaFile:", error);
+      toast.error(error.message || "Failed to create mediaFile.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -154,7 +154,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
           }
           router.push(previousPath);
         }}
-        title="Do you want to continue adding this photo?"
+        title="Do you want to continue adding this mediaFile?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"

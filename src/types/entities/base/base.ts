@@ -1,9 +1,9 @@
 export interface BaseEntity {
     id: string;
     createdBy?: string;
-    createdDate?: Date;
+    createdDate?: string;
     lastUpdatedBy?: string;
-    lastUpdatedDate?: Date;
+    lastUpdatedDate?: string;
     isDeleted: boolean;
 }
 

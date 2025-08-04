@@ -14,8 +14,9 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate } from "@/lib/utils";
 import { mediaFileService } from "@/services/media-file-service";
-import { MediaFile } from "@/types/entities/media-file";
+import { MediaCategory, MediaFile, MediaType } from "@/types/entities/media-file";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
@@ -44,17 +45,10 @@ export const columns: ColumnDef<MediaFile>[] = [
     ),
   },
   {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
-  },
-  {
     accessorKey: "src",
     header: "Src Image",
     cell: ({ row }) => {
-      const srcUrl = row.getValue("src") as string; // Lấy URL của hình ảnh từ dữ liệu photo
+      const srcUrl = row.getValue("src") as string;
       return (
         <Link href={srcUrl || "#"}>
           <Image
@@ -62,7 +56,7 @@ export const columns: ColumnDef<MediaFile>[] = [
             className="aspect-square rounded-md object-cover"
             height={64}
             width={64}
-            src={srcUrl ?? ""} // Sử dụng đường dẫn hình ảnh từ dữ liệu
+            src={srcUrl ?? ""}
           />
         </Link>
       );
@@ -72,6 +66,18 @@ export const columns: ColumnDef<MediaFile>[] = [
     accessorKey: "title",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Title" />
+    ),
+  },
+  {
+    accessorKey: "displayTitle",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Display Title" />
+    ),
+  },
+  {
+    accessorKey: "altText",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Alt Text" />
     ),
   },
   {
@@ -98,19 +104,96 @@ export const columns: ColumnDef<MediaFile>[] = [
     ),
   },
   {
-    accessorKey: "createdDate",
+    accessorKey: "fileSize",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data created" />
+      <DataTableColumnHeader column={column} title="File Size" />
+    ),
+  },
+  {
+    accessorKey: "width",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Width" />
+    ),
+  },
+  {
+    accessorKey: "height",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Height" />
+    ),
+  },
+  {
+    accessorKey: "duration",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Duration" />
+    ),
+  },
+  {
+    accessorKey: "resolution",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Resolution" />
+    ),
+  },
+  {
+    accessorKey: "format",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Format" />
+    ),
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+    cell: ({ row }) => MediaCategory[row.original.category].toString() ?? "-",
+  },
+  {
+    accessorKey: "type",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Type" />
+    ),
+    cell: ({ row }) => MediaType[row.original.type].toString() ?? "-",
+  },
+  {
+    accessorKey: "isWatermarked",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Watermarked" />
+    ),
+    cell: ({ row }) => (row.getValue("isWatermarked") ? "Yes" : "No"),
+  },
+  {
+    accessorKey: "copyright",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Copyright" />
+    ),
+  },
+  {
+    accessorKey: "createdMediaBy",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created By" />
+    ),
+  },
+  {
+    accessorKey: "takenMediaDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Taken Date" />
     ),
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdDate"));
-      return date.toLocaleDateString("en-US", {
-        weekday: "short", // Thu
-        year: "numeric", // 2022
-        month: "short", // Oct
-        day: "numeric", // 20
-      });
+      if (!row.original.takenMediaDate) return "-";
+      return formatDate(row.original.takenMediaDate);
     },
+  },
+  {
+    accessorKey: "location",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Location" />
+    ),
+  },
+  {
+    accessorKey: "isActive",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Is Active" />
+    ),
+    cell: ({ row }) => (row.getValue("isActive") ? "Active" : "Inactive"),
   },
   {
     accessorKey: "isFeatured",
@@ -129,36 +212,29 @@ export const columns: ColumnDef<MediaFile>[] = [
     },
   },
   {
-    accessorKey: "isDeleted",
+    id: "actions",
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return <Actions row={row} />;
+    },
+  },
+  {
+    id: "createdDate",
+    accessorKey: "createdDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Deleted" />
+      <DataTableColumnHeader column={column} title="Data created" />
     ),
     cell: ({ row }) => {
-      const isDeleted = row.getValue("isDeleted") as boolean;
-      if (!isDeleted) {
-        return (
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Fcheck.png?alt=media&token=1bdb7751-4bdc-4af1-b6e1-9b758df3a3d5"
-            width={500}
-            height={500}
-            alt="Gallery Icon"
-            className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-          />
-        );
-      }
-      return (
-        <Image
-          src="https://firebasestorage.googleapis.com/v0/b/smart-thrive.appspot.com/o/Blog%2Funcheck.png?alt=media&token=3b2b94d3-1c59-4a96-b4c6-312033d868b1"
-          width={500}
-          height={500}
-          alt="Gallery Icon"
-          className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
-        />
-      );
+      if (!row.original.createdDate) return "-";
+      return formatDate(row.original.createdDate);
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+  },
+  {
+    accessorKey: "isDeleted",
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
   },
 ];
 
@@ -201,7 +277,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteById={mediaFileService.delete}
+        deleteFunc={mediaFileService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

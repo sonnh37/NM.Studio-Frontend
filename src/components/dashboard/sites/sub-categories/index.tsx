@@ -204,7 +204,7 @@ export default function SubCategoryTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -256,7 +256,7 @@ export default function SubCategoryTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteAll={subCategoryService.delete}
+        deleteFunc={subCategoryService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -274,8 +274,8 @@ export default function SubCategoryTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanent={subCategoryService.deletePermanent}
-          restore={subCategoryService.restore}
+          deletePermanentFunc={subCategoryService.delete}
+          updateUndoFunc={subCategoryService.update}
           table={table}
         />
       )}

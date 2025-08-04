@@ -1,7 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { flexRender, Table as ReactTable } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,27 +9,34 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "./data-table-pagination";
-import { useSelector } from "react-redux";
-import { UpdateCommand } from "@/types/commands/base/base-command";
+import {
+  DeleteCommand,
+  UpdateCommand,
+} from "@/types/commands/base/base-command";
 import { BusinessResult } from "@/types/response/business-result";
-import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 interface TableComponentProps<TData> {
   table: ReactTable<TData>;
+  isLoading?: boolean;
   className?: string;
-  restore?: (command: UpdateCommand) => Promise<BusinessResult<any>>;
-  deletePermanent?: (id: string) => Promise<BusinessResult<null>>;
+  queryKey?: string;
+  updateUndoFunc?: (command: any) => Promise<BusinessResult<any>>;
+  deletePermanentFunc?: (command: any) => Promise<BusinessResult<null>>;
 }
 
 export function DataTableComponent<TData>({
   table,
   className,
-  restore,
-  deletePermanent,
+  isLoading = false,
+
+  updateUndoFunc,
+  deletePermanentFunc,
+  queryKey = "data",
 }: TableComponentProps<TData>) {
   const queryClient = useQueryClient();
 
@@ -45,16 +51,18 @@ export function DataTableComponent<TData>({
   );
 
   const handleRestore = async (model: any) => {
-    if (restore) {
+    if (updateUndoFunc) {
       try {
-        const command: UpdateCommand = { id: model.id }; // Define your command structure
-        const result = await restore(command);
+        const command: UpdateCommand = {
+          ...model,
+        };
+        const result = await updateUndoFunc(command);
         if (result.status == 1) {
-          queryClient.invalidateQueries({ queryKey: ["data"] });
+          queryClient.invalidateQueries({ queryKey: [queryKey] });
           toast.success(`Row with id ${model.id} restored successfully.`);
-          // Optionally, restore the local state or refetch data
+          // Optionally, updateUndoFunc the local state or refetch data
         } else {
-          toast.error(`Failed to restore row with id ${model.id}:`);
+          toast.error(`Failed to updateUndoFunc row with id ${model.id}:`);
         }
       } catch (error) {
         console.error(`Error restoring row with id ${model.id}:`, error);
@@ -62,14 +70,18 @@ export function DataTableComponent<TData>({
     }
   };
 
-  const handleDeletePermanently = async (id: string) => {
-    if (deletePermanent) {
+  const handleDeletePermanentFuncly = async (id: string) => {
+    const model: DeleteCommand = {
+      id: id,
+      isPermanent: true,
+    };
+    if (deletePermanentFunc) {
       try {
-        const result = await deletePermanent(id);
+        const result = await deletePermanentFunc(model);
         if (result.status == 1) {
-          queryClient.invalidateQueries({ queryKey: ["data"] });
+          queryClient.invalidateQueries({ queryKey: [queryKey] });
           toast.success(`Row with id ${id} deleted permanently.`);
-          // Optionally, restore the local state or refetch data
+          // Optionally, updateUndoFunc the local state or refetch data
         } else {
           toast.error(`Failed to delete row with id ${id}:`);
         }
@@ -104,9 +116,23 @@ export function DataTableComponent<TData>({
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows.length > 0 ? (
+        {isLoading ? (
+          <TableRow>
+            <TableCell
+              colSpan={table.getAllColumns().length}
+              className="h-[300px]"
+            >
+              <div className="flex h-full items-center justify-center">
+                <LoadingComponent />
+              </div>
+            </TableCell>
+          </TableRow>
+        ) : table.getRowModel().rows.length > 0 ? (
           table.getRowModel().rows.map((row) => {
             const model = row.original as any;
+            if (!model) {
+              return;
+            }
             const isDeleted = model.isDeleted;
             const id = model.id as string;
             return (
@@ -115,7 +141,6 @@ export function DataTableComponent<TData>({
                 data-state={row.getIsSelected() ? "selected" : undefined}
                 style={{
                   position: "relative",
-                  transform: `scale(${tableWidth / 100})`,
                   transformOrigin: "left",
                   pointerEvents: isDeleted ? "none" : "auto",
                 }}
@@ -127,18 +152,20 @@ export function DataTableComponent<TData>({
                     style={{
                       opacity: isDeleted ? 0.5 : 1,
                     }}
+                    className="p-3"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
                 {isDeleted && (
                   <div className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center gap-1 bg-white/50 opacity-0 hover:opacity-100 dark:bg-black/50">
-                    <Button onClick={() => handleRestore(model)}>
+                    <Button type="button" onClick={() => handleRestore(model)}>
                       Restore
                     </Button>
                     <Button
+                      type="button"
                       variant={"destructive"}
-                      onClick={() => handleDeletePermanently(model.id)}
+                      onClick={() => handleDeletePermanentFuncly(model.id)}
                     >
                       Delete Permanently
                     </Button>
@@ -153,8 +180,11 @@ export function DataTableComponent<TData>({
           })
         ) : (
           <TableRow>
-            <TableCell colSpan={columnsLength} className="h-24 text-center">
-              No results.
+            <TableCell
+              colSpan={table.getAllColumns().length}
+              className="h-24 text-center"
+            >
+              Không có kết quả.
             </TableCell>
           </TableRow>
         )}

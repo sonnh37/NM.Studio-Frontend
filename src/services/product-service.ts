@@ -10,9 +10,9 @@ class ProductService extends BaseService<Product> {
         super(`${Const.PRODUCTS}`);
     }
 
-    async getRepresentativeByCategory(): Promise<BusinessResult<QueryResult<ProductRepresentativeByCategory>>> {
+    async getRepresentativeByCategory(): Promise<BusinessResult<ProductRepresentativeByCategory[]>> {
         const res = await axiosInstance
-            .get<BusinessResult<QueryResult<ProductRepresentativeByCategory>>>(`${this.endpoint}/representative-by-category`);
+            .get<BusinessResult<ProductRepresentativeByCategory[]>>(`${this.endpoint}/representative-by-category`);
         return res.data;
 
     }

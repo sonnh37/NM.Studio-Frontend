@@ -1,15 +1,16 @@
 import { DataTable } from "@/components/_common/data-table-generic/data-table";
 import { DataOnlyTable } from "@/components/_common/data-table-origin/data-only-table";
 import {
-    isActive_options,
-    isDeleted_options,
+  isActive_options,
+  isDeleted_options,
 } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
 import { mediaFileService } from "@/services/media-file-service";
 import { productMediaService } from "@/services/product-media-service";
 import {
-    ProductMediaCreateCommand,
-    ProductMediaUpdateCommand,
+  ProductMediaCreateCommand,
+  ProductMediaDeleteCommand,
+  ProductMediaUpdateCommand,
 } from "@/types/commands/product-media-command";
 import { MediaFile } from "@/types/entities/media-file";
 import { ProductMedia } from "@/types/entities/product-media";
@@ -24,20 +25,22 @@ import { columns } from "./columns";
 
 interface DataTablePhotosProps {
   productId?: string;
-  productXPhotos?: ProductMedia[];
+  productMedias?: ProductMedia[];
   tab?: number;
 }
 
 export default function DataTablePhotos({
   productId,
   tab,
-  productXPhotos,
+  productMedias,
 }: DataTablePhotosProps) {
   const [getQueryParams, setGetQueryParams] = useState<MediaFileGetAllQuery>();
 
   useEffect(() => {
     const defaultQueryParams: MediaFileGetAllQuery = {
-      isPagination: true,
+      pagination: {
+        isPagingEnabled: true,
+      },
       isDeleted: false,
       productId: productId,
     };
@@ -49,27 +52,28 @@ export default function DataTablePhotos({
   const handleSelectAll = (value: boolean, table: any) => {
     // const allRows = table.getRowModel().rows;
     // const allSelected_ = allRows.map((row) => row.original);
-    // const allSelectedProductXPhotos: ProductMediaUpdateCommand[] = allSelected_.map((photo) => ({
-    //   photoId: photo.id,
+    // const allSelectedProductMedias: ProductMediaUpdateCommand[] = allSelected_.map((mediaFile) => ({
+    //   photoId: mediaFile.id,
     //   productId,
     //   isDeleted: false,
     // }));
     // if (value) {
-    //   dispatch(setSelectedProductXPhotos(allSelectedProductXPhotos));
-    //   onChange(allSelectedProductXPhotos);
+    //   dispatch(setSelectedProductMedias(allSelectedProductMedias));
+    //   onChange(allSelectedProductMedias);
     // } else {
-    //   dispatch(setSelectedProductXPhotos([]));
+    //   dispatch(setSelectedProductMedias([]));
     //   onChange([]);
     // }
   };
 
   const handleRemovePhoto = (photoId: string) => {
-    const productXPhoto_: ProductMediaUpdateCommand = {
+    const productMedia_: ProductMediaDeleteCommand = {
       photoId,
+      isPermanent: true,
       productId,
     };
 
-    productMediaService.delete_(productXPhoto_).then(async (response) => {
+    productMediaService.delete(productMedia_).then(async (response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -80,12 +84,12 @@ export default function DataTablePhotos({
   };
 
   const handleAddPhoto = (row: MediaFile) => {
-    const productXPhoto_: ProductMediaCreateCommand = {
+    const productMedia_: ProductMediaCreateCommand = {
       photoId: row.id,
       productId,
     };
 
-    productMediaService.create(productXPhoto_).then((response) => {
+    productMediaService.create(productMedia_).then((response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
@@ -157,16 +161,16 @@ export default function DataTablePhotos({
     <DataOnlyTable
       columns={columns_tab0}
       data={
-        productXPhotos!
-          .map((m) => m.photo)
-          .filter((photo) => photo !== undefined) as MediaFile[]
+        productMedias!
+          .map((m) => m.mediaFile)
+          .filter((mediaFile) => mediaFile !== undefined) as MediaFile[]
       }
     />
   ) : (
     <DataTable
-      deleteAll={mediaFileService.delete}
+      deleteFunc={mediaFileService.delete}
       columns={columns_tab1}
-      fetchData={mediaFileService.getAll}
+      getAllFunc={mediaFileService.getAll}
       columnSearch="href"
       defaultParams={getQueryParams}
       filterEnums={[

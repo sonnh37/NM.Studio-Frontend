@@ -39,7 +39,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
   };
 
   const handleColorChange = (colorName: string) => {
-    const color = product.productXColors?.find(
+    const color = product.productColors?.find(
       (pxc) => pxc.color?.name === colorName
     );
     if (color) {
@@ -82,7 +82,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                 <div className="aspect-[2/3] p-0 w-full rounded-none border-none bg-gray-100 object-cover sm:col-span-6">
                   <Carousel className="w-full">
                     <CarouselContent>
-                      {product.productXPhotos?.map((pic, index) => (
+                      {product.productMedias?.map((pic, index) => (
                         <CarouselItem key={index}>
                           <Card className="border-none">
                             <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
@@ -90,8 +90,8 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                                 className="aspect-[2/3]  w-full"
                                 width={9999}
                                 height={9999}
-                                alt={pic.photo?.title ?? ""}
-                                src={pic.photo?.src ?? ""}
+                                alt={pic.mediaFile?.title ?? ""}
+                                src={pic.mediaFile?.src ?? ""}
                               />
                             </CardContent>
                           </Card>
@@ -160,7 +160,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                           Color
                         </legend>
                         <div className="flex flex-row space-x-2 mt-4">
-                          {product.productXColors?.map((pxc) => (
+                          {product.productColors?.map((pxc) => (
                             <div
                               key={pxc.id}
                               className="flex flex-col items-center"

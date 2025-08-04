@@ -204,7 +204,7 @@ export default function ServiceTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -256,7 +256,7 @@ export default function ServiceTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteAll={serviceService.delete}
+        deleteFunc={serviceService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -274,8 +274,8 @@ export default function ServiceTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanent={serviceService.deletePermanent}
-          restore={serviceService.restore}
+          deletePermanentFunc={serviceService.delete}
+          updateUndoFunc={serviceService.update}
           table={table}
         />
       )}

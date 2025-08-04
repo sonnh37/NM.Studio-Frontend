@@ -21,12 +21,16 @@ export default function AlbumPage() {
   const pathname = usePathname();
   const pageNumber = parseInt(searchParams.get("page") || "1", 10);
 
+
   const query: BlogGetAllQuery = {
-    isPagination: true,
-    pageSize: 6,
-    pageNumber: pageNumber,
-    isFeatured: false,
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: pageNumber,
+      pageSize: 6,
+    },
+
     isDeleted: false,
+    isFeatured: false,
   };
 
   const {

@@ -19,9 +19,11 @@ export function AlbumList() {
   const pathName = usePathname();
 
   const queryAlbum: AlbumGetAllQuery = {
-    isPagination: true,
+    pagination: {
+      isPagingEnabled: true,
+      pageSize: pathName === `/${Const.ALBUMS}` ? 60 : 162,
+    },
     isDeleted: false,
-    pageSize: pathName === `/${Const.ALBUM}` ? 60 : 16,
   };
 
   const {

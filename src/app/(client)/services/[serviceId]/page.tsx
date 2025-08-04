@@ -23,10 +23,12 @@ import { useMemo } from "react";
 export default function Page({ params }: { params: { serviceId: string } }) {
   const { serviceId } = params;
   const query: ServiceGetAllQuery = {
+    pagination: {
+      isPagingEnabled: true,
+      pageSize: 1,
+      pageNumber: 1,
+    },
     isDeleted: false,
-    isPagination: true,
-    pageSize: 1,
-    pageNumber: 1,
     slug: serviceId,
   };
 
@@ -63,9 +65,11 @@ export default function Page({ params }: { params: { serviceId: string } }) {
     queryFn: async () => {
       const query_: ServiceGetAllQuery = {
         isDeleted: false,
-        isPagination: true,
-        pageSize: 8,
-        pageNumber: 1,
+        pagination: {
+          isPagingEnabled: true,
+          pageSize: 8,
+          pageNumber: 1,
+        },
       };
       const response = await serviceService.getAll(query_);
       const re = response.data?.results!.filter((m) => m.id != service.id);

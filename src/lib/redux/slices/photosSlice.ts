@@ -20,7 +20,7 @@ const photosSlice = createSlice({
             state.selectedAlbumMedias.push(action.payload);
         },
         removeSelectedPhoto(state, action: PayloadAction<string>) {
-            state.selectedAlbumMedias = state.selectedAlbumMedias.filter(photo => photo.photoId !== action.payload);
+            state.selectedAlbumMedias = state.selectedAlbumMedias.filter(mediaFile => mediaFile.photoId !== action.payload);
         },
     },
 });

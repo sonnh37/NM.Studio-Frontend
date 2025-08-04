@@ -20,15 +20,18 @@ import { userService } from "@/services/user-serice";
 
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
+
+
   const query: BlogGetAllQuery = {
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: 1,
+      pageSize: 1,
+    },
+    slug: slug,
     isDeleted: false,
     isFeatured: false,
-    isPagination: true,
-    pageSize: 1,
-    pageNumber: 1,
-    slug: slug,
   };
-  
 
   const {
     data: post = {} as Blog,

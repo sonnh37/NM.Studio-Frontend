@@ -196,16 +196,20 @@ export default function BlogTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalRecords ?? 0,
+    pageCount: data?.data?.totalPages ?? -1,
+    rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
+    initialState: {
+      // sorting: [{ id: "createdDate", desc: true }],
+      columnPinning: { right: ["actions"] },
+    },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
-    debugTable: true,
+    getRowId: (originalRow) => originalRow.id,
   });
 
   //#endregion
@@ -248,7 +252,7 @@ export default function BlogTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteAll={blogService.delete}
+        deleteFunc={blogService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -266,9 +270,10 @@ export default function BlogTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanent={blogService.deletePermanent}
-          restore={blogService.restore}
+          deletePermanentFunc={blogService.delete}
+          updateUndoFunc={blogService.update}
           table={table}
+          isLoading={isFetching}
         />
       )}
       <DataTablePagination table={table} />

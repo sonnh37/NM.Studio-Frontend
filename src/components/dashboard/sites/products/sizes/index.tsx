@@ -3,8 +3,8 @@ import { DataTable } from "@/components/_common/data-table-generic/data-table";
 import { DataTableColumnHeader } from "@/components/_common/data-table-generic/data-table-column-header";
 import { DataOnlyTable } from "@/components/_common/data-table-origin/data-only-table";
 import {
-    isActive_options,
-    isDeleted_options,
+  isActive_options,
+  isDeleted_options,
 } from "@/components/_common/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,9 @@ import { FormInput, FormSwitch } from "@/lib/form-custom-shadcn";
 import { productSizeService } from "@/services/product-size-service";
 import { sizeService } from "@/services/size-service";
 import {
-    ProductSizeCreateCommand,
-    ProductSizeUpdateCommand,
+  ProductSizeCreateCommand,
+  ProductSizeDeleteCommand,
+  ProductSizeUpdateCommand,
 } from "@/types/commands/product-size-command";
 import { SizeCreateCommand } from "@/types/commands/size-command";
 import { ProductSize } from "@/types/entities/product-size";
@@ -23,10 +24,10 @@ import { Size } from "@/types/entities/size";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-    ColumnDef,
-    ColumnFiltersState,
-    SortingState,
-    VisibilityState,
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
 } from "@tanstack/react-table";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -56,7 +57,9 @@ export default function DataTableSizes({
 
   useEffect(() => {
     const defaultQueryParams: SizeGetAllQuery = {
-      isPagination: true,
+      pagination: {
+        isPagingEnabled: true,
+      },
       isDeleted: false,
       productId: productId,
     };
@@ -67,12 +70,13 @@ export default function DataTableSizes({
   const queryClient = useQueryClient();
 
   const handleRemoveSize = (value: ProductSize) => {
-    const productSize_: ProductSizeUpdateCommand = {
+    const productSize: ProductSizeDeleteCommand = {
       sizeId: value.sizeId,
+      isPermanent: true,
       productId: productId,
     };
 
-    productSizeService.delete_(productSize_).then(async (response) => {
+    productSizeService.delete(productSize).then(async (response) => {
       if (response.status === 1) {
         queryClient.invalidateQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -220,6 +224,8 @@ export default function DataTableSizes({
       setIsLoading(true);
       const updatedValues: SizeCreateCommand = {
         name: data.name,
+        isActive: false,
+        sortOrder: 0,
       };
       sizeService.create(updatedValues).then((response) => {
         if (response.status === 1) {
@@ -273,7 +279,7 @@ export default function DataTableSizes({
   ) : (
     <DataTable
       columns={columns_tab1}
-      fetchData={sizeService.getAll}
+      getAllFunc={sizeService.getAll}
       columnSearch="name"
       defaultParams={getQueryParams}
       filterEnums={[

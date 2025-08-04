@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format } from "date-fns";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
 import { twMerge } from "tailwind-merge";
 
@@ -11,6 +12,8 @@ export function isMacOs() {
 
   return window.navigator.userAgent.includes("Mac");
 }
+
+
 
 export const convertToISODate = (
   date: Date | string | null | undefined
@@ -95,15 +98,18 @@ export function getEnumLabel<T extends EnumType>(
   return found ? found[0] : "Unknown";
 }
 
-export const formatDate = (date: Date | string | undefined | null) => {
-  if (!date) return "Không có ngày"; // Xử lý khi giá trị không tồn tại
+export const formatDate = (
+  date: Date | string | undefined | null,
+  isShowTime: boolean = false
+) => {
+  if (!date) return "Không có ngày";
+  // 0:00
   const validDate = typeof date === "string" ? new Date(date) : date;
-  if (isNaN(validDate.getTime())) return "Ngày không hợp lệ"; // Xử lý ngày không hợp lệ
-  return new Intl.DateTimeFormat("vi-VN", {
-    month: "long",
-    day: "2-digit",
-    year: "numeric",
-  }).format(validDate);
+  // 7:00
+  if (isNaN(validDate.getTime())) return "Ngày không hợp lệ";
+
+  const formatString = isShowTime ? "dd/MM/yyyy HH:mm:ss" : "dd/MM/yyyy";
+  return format(validDate, formatString);
 };
 
 export const formatPrice = (price: number) => {
