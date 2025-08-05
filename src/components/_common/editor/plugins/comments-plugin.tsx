@@ -4,7 +4,7 @@ import type { TComment } from '@udecode/plate-comments';
 
 import { CommentsPlugin } from '@udecode/plate-comments/react';
 
-import { CommentsPopover } from '@/components/plate-ui/comments-popover';
+import { CommentsPopover } from '@/components/ui/plate-ui/comments-popover';
 
 const commentsData: Record<string, TComment> = {
   1: {

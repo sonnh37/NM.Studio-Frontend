@@ -3,7 +3,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { Plate, usePlateEditor } from "@udecode/plate/react";
 import { SettingsDialog } from "@/components/_common/editor/settings";
 import { useCreateEditor } from "@/components/_common/editor/use-create-editor";
-import { Editor, EditorContainer } from "@/components/plate-ui/editor";
+import { Editor, EditorContainer } from "@/components/ui/plate-ui/editor";
 import { serializeHtml } from "@udecode/plate";
 import { useState } from "react";
 

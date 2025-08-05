@@ -23,11 +23,11 @@ import { BaseIndentListPlugin } from '@udecode/plate-indent-list';
 import { BaseLinkPlugin } from '@udecode/plate-link';
 import { MarkdownPlugin } from '@udecode/plate-markdown';
 
-import { AIMenu } from '@/components/plate-ui/ai-menu';
+import { AIMenu } from '@/components/ui/plate-ui/ai-menu';
 import {
   TodoLiStatic,
   TodoMarkerStatic,
-} from '@/components/plate-ui/indent-todo-marker-static';
+} from '@/components/ui/plate-ui/indent-todo-marker-static';
 
 import { cursorOverlayPlugin } from './cursor-overlay-plugin';
 const createAIEditor = () => {

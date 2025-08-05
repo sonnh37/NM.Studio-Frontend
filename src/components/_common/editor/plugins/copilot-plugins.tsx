@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@udecode/plate-ai/react';
 import { serializeMdNodes, stripMarkdown } from '@udecode/plate-markdown';
 
-import { GhostText } from '@/components/plate-ui/ghost-text';
+import { GhostText } from '@/components/ui/plate-ui/ghost-text';
 
 export const copilotPlugins = [
   CopilotPlugin.configure(({ api }) => ({
