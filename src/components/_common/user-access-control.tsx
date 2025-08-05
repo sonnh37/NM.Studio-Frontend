@@ -41,7 +41,7 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
 
   if (isError) {
     console.log("Error fetching:", error);
-     dispatch(logout());
+    //  dispatch(logout());
     return <ErrorSystem />;
   }
 

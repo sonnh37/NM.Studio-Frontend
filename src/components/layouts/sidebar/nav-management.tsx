@@ -42,7 +42,7 @@ export function NavManagement({
   const pathName = usePathname();
   return (
     <SidebarGroup>
-      {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
+      <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           const isActive =
@@ -62,7 +62,7 @@ export function NavManagement({
                       tooltip={item.title}
                       className={cn(
                         styleCommon,
-                        isActive ? "!bg-orange-500 !text-white" : "",
+                        isActive ? "!bg-muted !text-white" : "",
                         "py-4"
                       )}
                     >
@@ -82,7 +82,7 @@ export function NavManagement({
                             <SidebarMenuSubButton
                               className={cn(
                                 styleCommon,
-                                isActiveSub ? "!bg-orange-500 !text-white" : "",
+                                isActiveSub ? "!bg-muted !text-white" : "",
                                 "py-2.5"
                               )}
                               asChild
@@ -105,7 +105,7 @@ export function NavManagement({
                   className={cn(
                     styleCommon,
                     "py-4",
-                    isActive ? "!bg-orange-500 !text-white" : ""
+                    isActive ? "!bg-muted !text-white" : ""
                   )}
                   tooltip={item.title}
                   asChild
