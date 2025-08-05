@@ -38,37 +38,37 @@ export class Const {
     static readonly DASHBOARD = "dashboard";
     static readonly DASHBOARD_URL = "/dashboard";
     static readonly NEW = "new";
-    static readonly DASHBOARD_BOOKING_URL = `/${Const.DASHBOARD}/${Const.BOOKING}`;
+    static readonly DASHBOARD_BOOKING_URL = `/${Const.DASHBOARD}/${Const.SERVICE_BOOKINGS}`;
     static readonly DASHBOARD_BOOKING_NEW_URL = `${Const.DASHBOARD_BOOKING_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_ALBUM_URL = `/${Const.DASHBOARD}/${Const.ALBUM}`;
+    static readonly DASHBOARD_ALBUM_URL = `/${Const.DASHBOARD}/${Const.ALBUMS}`;
     static readonly DASHBOARD_ALBUM_NEW_URL = `${Const.DASHBOARD_ALBUM_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_PHOTO_URL = `/${Const.DASHBOARD}/${Const.PHOTO}`;
+    static readonly DASHBOARD_PHOTO_URL = `/${Const.DASHBOARD}/${Const.MEDIA_FILES}`;
     static readonly DASHBOARD_PHOTO_NEW_URL = `${Const.DASHBOARD_PHOTO_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_SERVICE_URL = `/${Const.DASHBOARD}/${Const.SERVICE}`;
+    static readonly DASHBOARD_SERVICE_URL = `/${Const.DASHBOARD}/${Const.SERVICES}`;
     static readonly DASHBOARD_SERVICE_NEW_URL = `${Const.DASHBOARD_SERVICE_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_PRODUCT_URL = `/${Const.DASHBOARD}/${Const.PRODUCT}`;
+    static readonly DASHBOARD_PRODUCT_URL = `/${Const.DASHBOARD}/${Const.PRODUCTS}`;
     static readonly DASHBOARD_PRODUCT_NEW_URL = `${Const.DASHBOARD_PRODUCT_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_BLOG_URL = `/${Const.DASHBOARD}/${Const.BLOG}`;
+    static readonly DASHBOARD_BLOG_URL = `/${Const.DASHBOARD}/${Const.BLOGS}`;
     static readonly DASHBOARD_BLOG_NEW_URL = `${Const.DASHBOARD_BLOG_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_COLOR_URL = `/${Const.DASHBOARD}/${Const.COLOR}`;
+    static readonly DASHBOARD_COLOR_URL = `/${Const.DASHBOARD}/${Const.COLORS}`;
     static readonly DASHBOARD_COLOR_NEW_URL = `${Const.DASHBOARD_COLOR_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_SIZE_URL = `/${Const.DASHBOARD}/${Const.SIZE}`;
+    static readonly DASHBOARD_SIZE_URL = `/${Const.DASHBOARD}/${Const.SIZES}`;
     static readonly DASHBOARD_SIZE_NEW_URL = `${Const.DASHBOARD_SIZE_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_SUBCATEGORY_URL = `/${Const.DASHBOARD}/${Const.SUBCATEGORY}`;
+    static readonly DASHBOARD_SUBCATEGORY_URL = `/${Const.DASHBOARD}/${Const.SUBCATEGORIES}`;
     static readonly DASHBOARD_SUBCATEGORY_NEW_URL = `${Const.DASHBOARD_SUBCATEGORY_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_CATEGORY_URL = `/${Const.DASHBOARD}/${Const.CATEGORY}`;
+    static readonly DASHBOARD_CATEGORY_URL = `/${Const.DASHBOARD}/${Const.CATEGORIES}`;
     static readonly DASHBOARD_CATEGORY_NEW_URL = `${Const.DASHBOARD_CATEGORY_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_USER_URL = `/${Const.DASHBOARD}/${Const.USER}`;
+    static readonly DASHBOARD_USER_URL = `/${Const.DASHBOARD}/${Const.USERS}`;
     static readonly DASHBOARD_USER_NEW_URL = `${Const.DASHBOARD_USER_URL}/${Const.NEW}`;
 
 

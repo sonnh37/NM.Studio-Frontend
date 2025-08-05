@@ -27,7 +27,7 @@ class AuthService {
 
     public logout = async (): Promise<BusinessResult<null>> => {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`,
+            `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`,
             {},
             {withCredentials: true}
         );
@@ -49,7 +49,7 @@ class AuthService {
 
     public getUserInfo = async (): Promise<BusinessResult<User>> => {
         const response = await axios.get<BusinessResult<User>>(
-            `${process.env.NEXT_PUBLIC_API_BASE}/auth/info`,
+            `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/info`,
             {withCredentials: true}
         );
         return response.data;

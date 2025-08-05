@@ -19,6 +19,8 @@ import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import { LoadingPageComponent } from "../loading-page";
+import { getCommonPinningStyles } from "@/lib/data-table";
 
 interface TableComponentProps<TData> {
   table: ReactTable<TData>;
@@ -92,7 +94,8 @@ export function DataTableComponent<TData>({
   };
 
   return (
-    <Table style={{ width: "100%" }}>
+    <div className="overflow-hidden rounded-md border">
+    <Table>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow
@@ -103,7 +106,13 @@ export function DataTableComponent<TData>({
             }}
           >
             {headerGroup.headers.map((header) => (
-              <TableHead key={header.id}>
+              <TableHead
+                key={header.id}
+                colSpan={header.colSpan}
+                style={{
+                  ...getCommonPinningStyles({ column: header.column }),
+                }}
+              >
                 {header.isPlaceholder
                   ? null
                   : flexRender(
@@ -123,7 +132,7 @@ export function DataTableComponent<TData>({
               className="h-[300px]"
             >
               <div className="flex h-full items-center justify-center">
-                <LoadingComponent />
+                <LoadingPageComponent />
               </div>
             </TableCell>
           </TableRow>
@@ -138,7 +147,8 @@ export function DataTableComponent<TData>({
             return (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() ? "selected" : undefined}
+                // data-state={row.getIsSelected() ? "selected" : undefined}
+                data-state={row.getIsSelected() && "selected"}
                 style={{
                   position: "relative",
                   transformOrigin: "left",
@@ -150,9 +160,10 @@ export function DataTableComponent<TData>({
                   <TableCell
                     key={cell.id}
                     style={{
+                      ...getCommonPinningStyles({ column: cell.column }),
                       opacity: isDeleted ? 0.5 : 1,
                     }}
-                    className="p-3"
+                    // className="p-3"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
@@ -190,5 +201,6 @@ export function DataTableComponent<TData>({
         )}
       </TableBody>
     </Table>
+    </div>
   );
 }

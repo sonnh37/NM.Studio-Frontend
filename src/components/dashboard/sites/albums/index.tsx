@@ -206,16 +206,20 @@ export default function AlbumTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
+    pageCount: data?.data?.totalPages ?? -1,
     rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
+    initialState: {
+       sorting: [{ id: "createdDate", desc: true }],
+      columnPinning: { right: ["actions"] },
+    },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
-    debugTable: true,
+    getRowId: (originalRow) => originalRow.id,
   });
 
   //#endregion

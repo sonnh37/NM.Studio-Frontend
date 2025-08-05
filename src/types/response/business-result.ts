@@ -1,6 +1,8 @@
 export interface BusinessResult<T> {
     status: number;
-    message?: string;
+    isSuccess: boolean;
+    message: string;
+    errors?: string;
     data?: T;
 }
 

@@ -163,6 +163,7 @@
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.3.0",
     "nextjs-toploader": "^3.7.15",
+    "nuqs": "^2.4.3",
     "pdf-lib": "^1.17.1",
     "prettier": "^3.4.2",
     "prismjs": "^1.29.0",
