@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import MenuButton from "../../MenuButton";
-import { CODE_BLOCK_LANGUAGUES } from "@/components/sites/tiptaps/TiptapEditor/constants/code-languages";
+import { CODE_BLOCK_LANGUAGUES } from "@/components/_common/tiptaps/TiptapEditor/constants/code-languages";
 import { useTiptapContext } from "../../Provider";
 import Icon from "../../ui/Icon";
 import Input from "../../ui/Input";

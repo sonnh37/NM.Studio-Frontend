@@ -15,7 +15,7 @@ import PostContent from "@/components/_common/shared/PostContent";
 import PostToc from "@/components/_common/shared/PostToc";
 import Image from "next/image";
 import { useMemo } from "react";
-import TiptapRenderer from "@/components/sites/tiptaps/TiptapRenderer/ClientRenderer";
+import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
 import { userService } from "@/services/user-serice";
 
 export default function Page({ params }: { params: { slug: string } }) {

@@ -4,7 +4,7 @@ import {BubbleMenu} from "../../BubbleMenu";
 import {Toolbar, ToolbarDivider} from "../../ui/Toolbar";
 import MenuButton from "../../MenuButton";
 import {useEditorState} from "@tiptap/react";
-import {getNodeContainer} from "@/components/sites/tiptaps/TiptapEditor/utils/getNodeContainer";
+import {getNodeContainer} from "@/components/_common/tiptaps/TiptapEditor/utils/getNodeContainer";
 import AltTextEdit from "./AltTextEdit";
 import type {Instance} from "tippy.js";
 import SizeDropdown from "./SizeDropdown";

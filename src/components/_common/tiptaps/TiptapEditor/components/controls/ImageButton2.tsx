@@ -60,9 +60,9 @@ import React, {ChangeEvent, Fragment, useCallback, useRef, useState} from "react
 import MenuButton from "../MenuButton";
 import {useEditorState} from "@tiptap/react";
 import {useTiptapContext} from "../Provider";
-import Dialog from "@/components/sites/tiptaps/TiptapEditor/components/ui/Dialog";
+import Dialog from "@/components/_common/tiptaps/TiptapEditor/components/ui/Dialog";
 import MediaLibrary from "@/components/_common/MediaLibrary";
-import useModal from "@/components/sites/tiptaps/TiptapEditor/hooks/useModal";
+import useModal from "@/components/_common/tiptaps/TiptapEditor/hooks/useModal";
 
 const ImageCloudButton = () => {
   const {editor} = useTiptapContext();

@@ -17,7 +17,7 @@ import PostHeader from "@/components/_common/shared/PostHeader";
 import PostReadingProgress from "@/components/_common/shared/PostReadingProgress";
 import PostSharing from "@/components/_common/shared/PostSharing";
 import PostToc from "@/components/_common/shared/PostToc";
-import TiptapRenderer from "@/components/sites/tiptaps/TiptapRenderer/ClientRenderer";
+import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
 import Image from "next/image";
 import { useMemo } from "react";
 export default function Page({ params }: { params: { serviceId: string } }) {

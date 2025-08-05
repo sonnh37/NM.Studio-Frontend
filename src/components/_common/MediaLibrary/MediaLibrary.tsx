@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import MediaGallery from './MediaGallery';
-import Button from '@/components/sites/tiptaps/TiptapEditor/components/ui/Button';
+import Button from '@/components/_common/tiptaps/TiptapEditor/components/ui/Button';
 
 import './style.scss';
 
