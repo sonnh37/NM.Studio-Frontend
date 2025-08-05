@@ -1,6 +1,6 @@
 "use client";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { ServiceForm } from "@/components/dashboard/sites/services/create-update-form";
+import { ServiceForm } from "@/components/sites/dashboard/sites/services/create-update-form";
 import { serviceService } from "@/services/service-service";
 import { Service } from "@/types/entities/service";
 import { useQuery } from "@tanstack/react-query";

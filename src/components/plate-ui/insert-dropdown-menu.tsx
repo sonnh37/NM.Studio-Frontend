@@ -52,7 +52,7 @@ import {
 import {
   insertBlock,
   insertInlineElement,
-} from '@/components/editor/transforms';
+} from '@/components/_common/editor/transforms';
 
 import {
   DropdownMenu,

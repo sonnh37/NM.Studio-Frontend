@@ -1,7 +1,7 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { ProductForm } from "@/components/dashboard/sites/products/create-update-form";
+import { ProductForm } from "@/components/sites/dashboard/sites/products/create-update-form";
 import { productService } from "@/services/product-service";
 import { Product } from "@/types/entities/product";
 import { useQuery } from "@tanstack/react-query";

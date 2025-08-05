@@ -2,7 +2,7 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import {LoadingPageComponent} from "@/components/_common/loading-page";
 
-import { BlogForm } from "@/components/dashboard/sites/blogs/create-update-form";
+import { BlogForm } from "@/components/sites/dashboard/sites/blogs/create-update-form";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/entities/blog";
 import { useQuery } from "@tanstack/react-query";

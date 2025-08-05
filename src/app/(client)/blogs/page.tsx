@@ -1,7 +1,7 @@
 "use client";
 
-import { Pagination } from "@/components/client/common/pagination";
-import { BlogsRecent } from "@/components/client/sites/blogs/blogs-recent";
+import { Pagination } from "@/components/sites/client/common/pagination";
+import { BlogsRecent } from "@/components/sites/client/sites/blogs/blogs-recent";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import {LoadingPageComponent} from "@/components/_common/loading-page";
 import { TitleProvider } from "@/components/_common/title-component";

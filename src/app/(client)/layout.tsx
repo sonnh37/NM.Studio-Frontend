@@ -1,7 +1,7 @@
 "use client";
-import InformationChat from "@/components/client/common/information-chat";
-import Footer from "@/components/client/layouts/footer";
-import BreadcrumbClient from "@/components/client/common/breadcrumb";
+import InformationChat from "@/components/sites/client/common/information-chat";
+import Footer from "@/components/sites/client/layouts/footer";
+import BreadcrumbClient from "@/components/sites/client/common/breadcrumb";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import dynamic from "next/dynamic";
@@ -11,7 +11,7 @@ import "./styles.scss";
 
 const SiteHeader = dynamic(
   () =>
-    import("@/components/client/layouts/navbar/site-header").then(
+    import("@/components/sites/client/layouts/navbar/site-header").then(
       (mod) => mod.SiteHeader
     ),
   { ssr: false }

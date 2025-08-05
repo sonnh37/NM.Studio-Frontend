@@ -1,5 +1,5 @@
 "use client";
-import AlbumTable from "@/components/dashboard/sites/albums";
+import AlbumTable from "@/components/sites/dashboard/sites/albums";
 
 export default function Page() {
     return (

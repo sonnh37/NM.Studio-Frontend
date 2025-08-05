@@ -35,7 +35,7 @@ import {
 import { TogglePlugin } from '@udecode/plate-toggle/react';
 import { GripVertical } from 'lucide-react';
 
-import { STRUCTURAL_TYPES } from '@/components/editor/transforms';
+import { STRUCTURAL_TYPES } from '@/components/_common/editor/transforms';
 
 import {
   Tooltip,

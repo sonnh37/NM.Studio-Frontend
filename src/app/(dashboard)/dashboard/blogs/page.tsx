@@ -1,6 +1,6 @@
 "use client";
 
-import BlogTable from "@/components/dashboard/sites/blogs";
+import BlogTable from "@/components/sites/dashboard/sites/blogs";
 
 export default function Page() {
     return (

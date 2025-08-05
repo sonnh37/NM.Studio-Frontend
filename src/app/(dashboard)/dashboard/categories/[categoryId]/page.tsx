@@ -1,7 +1,7 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { CategoryForm } from "@/components/dashboard/sites/categories/create-update-form";
+import { CategoryForm } from "@/components/sites/dashboard/sites/categories/create-update-form";
 import { categoryService } from "@/services/category-service";
 import { Category } from "@/types/entities/category";
 import { useQuery } from "@tanstack/react-query";

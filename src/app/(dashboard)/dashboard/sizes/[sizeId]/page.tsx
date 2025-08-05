@@ -1,7 +1,7 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { SizeForm } from "@/components/dashboard/sites/sizes/create-update-form";
+import { SizeForm } from "@/components/sites/dashboard/sites/sizes/create-update-form";
 import { sizeService } from "@/services/size-service";
 import { Size } from "@/types/entities/size";
 import { useQuery } from "@tanstack/react-query";

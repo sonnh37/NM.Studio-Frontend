@@ -13,7 +13,6 @@ body {
   overflow-x: hidden;
 }
 
-
 .swiper-pagination-bullet {
   background-color: #7e7e7e !important; /* Màu của chấm chưa active */
   border-radius: 50% !important; /* Border radius cho chấm */
@@ -27,9 +26,6 @@ body {
   border-radius: 14px !important;
   transition: all 0.3s ease-out !important; /* Hiệu ứng chuyển đổi mượt mà */
 }
-
-
-
 
 @layer base {
   :root {
@@ -88,9 +84,6 @@ body {
   }
 }
 
-
-
-
 @layer base {
   * {
     @apply border-border;
@@ -115,5 +108,3 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
   }
 }
-
-

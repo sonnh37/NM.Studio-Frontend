@@ -1,6 +1,6 @@
 "use client";
-import { DisplayContent } from "@/components/client/common/display-content";
-import { ProductCard } from "@/components/client/sites/products/product-card";
+import { DisplayContent } from "@/components/sites/client/common/display-content";
+import { ProductCard } from "@/components/sites/client/sites/products/product-card";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { TypographyH2 } from "@/components/_common/typography/typography-h2";

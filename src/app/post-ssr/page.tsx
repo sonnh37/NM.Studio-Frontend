@@ -1,9 +1,9 @@
-import PostHeader from "../../components/shared/PostHeader";
-import PostToc from "../../components/shared/PostToc";
-import PostContent from "../../components/shared/PostContent";
-import PostSharing from "../../components/shared/PostSharing";
-import PostReadingProgress from "../../components/shared/PostReadingProgress";
-import TiptapRenderer from "@/components/TiptapRenderer/ServerRenderer";
+import PostHeader from "../../components/_common/shared/PostHeader";
+import PostToc from "../../components/_common/shared/PostToc";
+import PostContent from "../../components/_common/shared/PostContent";
+import PostSharing from "../../components/_common/shared/PostSharing";
+import PostReadingProgress from "../../components/_common/shared/PostReadingProgress";
+import TiptapRenderer from "@/components/sites/tiptaps/TiptapRenderer/ServerRenderer";
 import Image from "next/image";
 
 import { getPost } from "@/services/post";

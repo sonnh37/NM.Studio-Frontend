@@ -1,5 +1,5 @@
 "use client"
-import {SizeForm} from "@/components/dashboard/sites/sizes/create-update-form";
+import {SizeForm} from "@/components/sites/dashboard/sites/sizes/create-update-form";
 
 export default function Page() {
     return (

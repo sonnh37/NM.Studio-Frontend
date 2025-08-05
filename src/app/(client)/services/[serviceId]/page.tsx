@@ -2,7 +2,7 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { TypographyH2 } from "@/components/_common/typography/typography-h2";
-import { ServiceCard } from "@/components/client/sites/services/service-card";
+import { ServiceCard } from "@/components/sites/client/sites/services/service-card";
 import { Separator } from "@/components/ui/separator";
 
 import { serviceService } from "@/services/service-service";
@@ -12,12 +12,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Navigation, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import PostContent from "@/components/shared/PostContent";
-import PostHeader from "@/components/shared/PostHeader";
-import PostReadingProgress from "@/components/shared/PostReadingProgress";
-import PostSharing from "@/components/shared/PostSharing";
-import PostToc from "@/components/shared/PostToc";
-import TiptapRenderer from "@/components/TiptapRenderer/ClientRenderer";
+import PostContent from "@/components/_common/shared/PostContent";
+import PostHeader from "@/components/_common/shared/PostHeader";
+import PostReadingProgress from "@/components/_common/shared/PostReadingProgress";
+import PostSharing from "@/components/_common/shared/PostSharing";
+import PostToc from "@/components/_common/shared/PostToc";
+import TiptapRenderer from "@/components/sites/tiptaps/TiptapRenderer/ClientRenderer";
 import Image from "next/image";
 import { useMemo } from "react";
 export default function Page({ params }: { params: { serviceId: string } }) {

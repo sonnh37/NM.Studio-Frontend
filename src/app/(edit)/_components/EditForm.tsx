@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import TiptapEditor, { type TiptapEditorRef } from "@/components/TiptapEditor";
+import TiptapEditor, { type TiptapEditorRef } from "@/components/sites/tiptaps/TiptapEditor";
 import { getPost, savePost } from "@/services/post";
 
 interface PostForm {

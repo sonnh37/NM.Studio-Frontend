@@ -1,5 +1,5 @@
 "use client"
-import {ProductForm} from "@/components/dashboard/sites/products/create-update-form";
+import {ProductForm} from "@/components/sites/dashboard/sites/products/create-update-form";
 
 export default function Page() {
     return (

@@ -1,5 +1,5 @@
 "use client"
-import {ColorForm} from "@/components/dashboard/sites/colors/create-update-form";
+import {ColorForm} from "@/components/sites/dashboard/sites/colors/create-update-form";
 
 export default function Page() {
     return (

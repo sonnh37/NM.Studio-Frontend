@@ -1,5 +1,5 @@
 "use client";
-import {DisplayContent} from "@/components/client/common/display-content";
+import {DisplayContent} from "@/components/sites/client/common/display-content";
 import ErrorSystem from "@/components/_common/errors/error-system";
 
 import {formatDate} from "@/lib/utils";

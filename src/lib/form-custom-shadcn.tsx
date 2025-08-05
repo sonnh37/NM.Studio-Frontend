@@ -6,9 +6,9 @@ import {
   SelectV2Trigger,
   SelectV2Value,
 } from "@/components/_common/select";
-import { PlateEditor } from "@/components/editor/plate-editor";
-import { SettingsProvider } from "@/components/editor/settings";
-import TiptapEditor, { type TiptapEditorRef } from "@/components/TiptapEditor";
+import { PlateEditor } from "@/components/_common/editor/plate-editor";
+import { SettingsProvider } from "@/components/_common/editor/settings";
+import TiptapEditor, { type TiptapEditorRef } from "@/components/sites/tiptaps/TiptapEditor";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {

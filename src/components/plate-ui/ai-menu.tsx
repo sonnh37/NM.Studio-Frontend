@@ -11,7 +11,7 @@ import {
 } from '@udecode/plate-selection/react';
 import { Loader2Icon } from 'lucide-react';
 
-import { useChat } from '@/components/editor/use-chat';
+import { useChat } from '@/components/_common/editor/use-chat';
 
 import { AIChatEditor } from './ai-chat-editor';
 import { AIMenuItems } from './ai-menu-items';

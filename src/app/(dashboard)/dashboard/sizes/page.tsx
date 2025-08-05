@@ -1,6 +1,6 @@
 "use client";
 
-import DataTableSizes from "@/components/dashboard/sites/sizes";
+import DataTableSizes from "@/components/sites/dashboard/sites/sizes";
 
 export default function Page() {
     return (

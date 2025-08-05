@@ -1,6 +1,6 @@
 "use client";
 
-import {PhotoForm} from "@/components/dashboard/sites/media-files/create-update-form";
+import {PhotoForm} from "@/components/sites/dashboard/sites/media-files/create-update-form";
 
 const breadcrumbItems = [
     {title: "Dashboard", link: "/dashboard"},

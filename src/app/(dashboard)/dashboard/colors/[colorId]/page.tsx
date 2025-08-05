@@ -1,7 +1,7 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { ColorForm } from "@/components/dashboard/sites/colors/create-update-form";
+import { ColorForm } from "@/components/sites/dashboard/sites/colors/create-update-form";
 import { colorService } from "@/services/color-service";
 import { Color } from "@/types/entities/color";
 import { useQuery } from "@tanstack/react-query";
