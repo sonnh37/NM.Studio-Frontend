@@ -155,7 +155,7 @@
     "kbar": "^0.1.0-beta.45",
     "lodash": "^4.17.21",
     "lowlight": "^3.3.0",
-    "lucide-react": "^0.427.0",
+    "lucide-react": "^0.536.0",
     "mini-svg-data-uri": "^1.4.4",
     "next": "^14.2.21",
     "next-auth": "^4.24.7",

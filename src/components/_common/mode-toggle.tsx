@@ -1,34 +1,68 @@
 "use client";
 
-import * as React from "react";
-import {useTheme} from "next-themes";
-import {MoonIcon, SunIcon} from "@radix-ui/react-icons";
-
-import {Button} from "@/components/ui/button";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import {
+  updateLocalCache,
+  updateUserCache
+} from "@/lib/redux/slices/cacheSlice";
+import { AppDispatch } from "@/lib/redux/store";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useCallback } from "react";
+import { useDispatch } from "react-redux";
 
 export function ModeToggle() {
-    const {setTheme, theme} = useTheme();
+  const dispatch = useDispatch<AppDispatch>();
+  const { setTheme, resolvedTheme } = useTheme();
 
-    return (
-        <TooltipProvider disableHoverableContent>
-            <Tooltip delayDuration={100}>
-                <TooltipTrigger asChild>
-                    <Button
-                        className="w-8 h-8 mr-2"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    >
-                        <SunIcon
-                            className="w-[1.2rem] h-[1.2rem] rotate-90 scale-0 transition-transform ease-in-out duration-500 dark:rotate-0 dark:scale-100"/>
-                        <MoonIcon
-                            className="absolute w-[1.2rem] h-[1.2rem] rotate-0 scale-1000 transition-transform ease-in-out duration-500 dark:-rotate-90 dark:scale-0"/>
-                        <span className="sr-only">Switch Theme</span>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Switch Theme</TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    );
+  const handleThemeToggle = useCallback(
+    (e?: React.MouseEvent) => {
+      const newMode = resolvedTheme === "dark" ? "light" : "dark";
+      const root = document.documentElement;
+
+      if (!document.startViewTransition) {
+        setTheme(newMode);
+        dispatch(updateLocalCache({ theme: newMode }));
+        dispatch(updateUserCache({ theme: newMode }));
+        return;
+      }
+
+      if (e) {
+        root.style.setProperty("--x", `${e.clientX}px`);
+        root.style.setProperty("--y", `${e.clientY}px`);
+      }
+
+      document.startViewTransition(() => {
+        setTheme(newMode);
+        dispatch(updateLocalCache({ theme: newMode }));
+        dispatch(updateUserCache({ theme: newMode }));
+      });
+    },
+    [resolvedTheme, setTheme, dispatch]
+  );
+
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={handleThemeToggle}
+      aria-label="Toggle theme"
+    >
+        <Sun
+          className={`absolute size-[1.2rem] transition-all duration-300 ease-in-out ${
+            resolvedTheme === "dark"
+              ? "rotate-0 scale-100 opacity-100"
+              : "rotate-90 scale-0 opacity-0"
+          }`}
+        />
+        <Moon
+          className={`absolute size-[1.2rem] transition-all duration-300 ease-in-out ${
+            resolvedTheme === "light"
+              ? "rotate-0 scale-100 opacity-100"
+              : "rotate-90 scale-0 opacity-0"
+          }`}
+        />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
 }

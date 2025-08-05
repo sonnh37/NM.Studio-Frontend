@@ -77,6 +77,16 @@ class UserService extends BaseService<User> {
     );
     return response.data;
   }
+
+  async updateCache(newCache: object): Promise<BusinessResult<null>> {
+    const response = await axiosInstance.put<BusinessResult<null>>(
+      `${this.endpoint}/update-cache`,
+      {
+        cache: JSON.stringify(newCache),
+      }
+    );
+    return response.data;
+  }
 }
 
 export const userService = new UserService();

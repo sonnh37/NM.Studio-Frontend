@@ -1,4 +1,4 @@
-import lungtaLogo from "../../../../public/logos/lungta-logo.jpg";
+import lungtaLogo from "../../../../../public/logos/lungta-logo.jpg";
 import {motion} from "framer-motion";
 import Image from "next/image";
 import React from "react";

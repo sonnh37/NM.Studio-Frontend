@@ -25,7 +25,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { User } from "@/types/user";
+import { User } from "@/types/entities/user";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/auth-service";

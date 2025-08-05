@@ -1,9 +1,9 @@
 "use client";
 
-import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { LoadingPage, LoadingPageComponent } from "@/components/_common/loading-page";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import { logout, setUser } from "@/lib/redux/slices/userSlice";
-import store from "@/lib/redux/store";
+import store, { AppDispatch } from "@/lib/redux/store";
 
 import { BusinessResult } from "@/types/response/business-result";
 import { Role, User } from "@/types/entities/user";
@@ -13,6 +13,8 @@ import React from "react";
 import ErrorSystem from "./errors/error-system";
 import axios from "axios";
 import { authService } from "@/services/auth-service";
+import { AnimatePresence, motion } from "framer-motion";
+import { useDispatch } from "react-redux";
 
 interface UserAccessControlProps {
   children: React.ReactNode;
@@ -23,9 +25,11 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
 }) => {
   const router = useRouter();
   const pathName = usePathname();
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     data: result,
+    isFetching,
     isLoading,
     isError,
     error,
@@ -35,13 +39,29 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
     refetchOnWindowFocus: false,
   });
 
-  if (isLoading) {
-    return <LoadingPageComponent />;
-  }
-
   if (isError) {
     console.log("Error fetching:", error);
+     dispatch(logout());
     return <ErrorSystem />;
+  }
+
+   if (isFetching) {
+    return (
+      <AnimatePresence mode="wait">
+        {
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center"
+          >
+            <LoadingPageComponent />
+          </motion.div>
+        }
+      </AnimatePresence>
+    );
   }
 
   if (result?.status === 1) {
@@ -69,5 +89,16 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
     }
   }
 
-  return <>{children}</>;
+  return <>
+      {
+        <motion.div
+          key="content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {children}
+        </motion.div>
+      }
+    </>
 };

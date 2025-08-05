@@ -4,13 +4,17 @@ import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
-import { Toaster } from "sonner";
 import "./globals.css";
 
+import { Toaster } from "@/components/_common/toast";
 import { UserAccessControl } from "@/components/_common/user-access-control";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-export default function Client({ children }: { children: React.ReactNode }) {
+export default function LayoutClient({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const queryClient = new QueryClient();
   if (!queryClient) {
     return null;
@@ -41,15 +45,7 @@ export default function Client({ children }: { children: React.ReactNode }) {
           </QueryClientProvider>
         </Provider>
       </ThemeProvider>
-      <Toaster
-        position="top-center"
-        richColors
-        icons={{
-          success: "🎉",
-          error: "🚨",
-          warning: "⚠️",
-        }}
-      />
+      <Toaster />
     </>
   );
 }

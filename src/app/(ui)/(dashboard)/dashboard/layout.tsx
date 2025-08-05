@@ -1,15 +1,21 @@
 "use client";
 import { AuthDropdown } from "@/components/_common/auth-dropdown";
 import DynamicBreadcrumbs from "@/components/_common/breadcrumbs/dynamic-breadcrumbs";
-import { ChatPopover } from "@/components/_common/chat-popover";
+// import { ChatPopover } from "@/components/_common/chat-popover";
 import { ModeToggle } from "@/components/_common/mode-toggle";
-import { NotificationPopover } from "@/components/_common/notification-popover";
+// import { NotificationPopover } from "@/components/_common/notification-popover";
 import { AppSidebar } from "@/components/layouts/sidebar/app-sidebar";
 import { Card } from "@/components/ui/card"; // Thêm Card component
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { RootState } from "@/lib/redux/store";
-import React from "react";
+import { Role } from "@/types/entities/user";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function DashboardLayout({
@@ -17,7 +23,16 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const user = useSelector((state: RootState) => state.user.user);
+
+  useEffect(() => {
+    if (user?.role === Role.Customer) {
+      router.push("/");
+    }
+  }, [user, router]);
+
+  if (user?.role === Role.Customer) return null;
 
   return (
     <SidebarProvider
@@ -40,8 +55,8 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-2 px-4">
             <ModeToggle />
-            <NotificationPopover />
-            <ChatPopover /> {/* Thêm lại nếu cần */}
+            {/* <NotificationPopover /> */}
+            {/* <ChatPopover /> */}
             <AuthDropdown user={user} />
           </div>
         </Card>
