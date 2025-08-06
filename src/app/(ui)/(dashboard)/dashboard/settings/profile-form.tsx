@@ -27,6 +27,7 @@ import { UpdateCommand } from "@/types/commands/base/base-command";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { userService } from "@/services/user-serice";
+import { UserUpdateCommand } from "@/types/commands/user-command";
 
 const profileFormSchema = z.object({
   id: z.string().optional(),
@@ -112,9 +113,17 @@ export function ProfileForm({ user }: { user?: User }) {
 
   async function onSubmit(data: ProfileFormValues) {
 
-    const updatedValues: UpdateCommand = {
+    const updatedValues: UserUpdateCommand = {
       ...data,
+      dob:
+        data.dob instanceof Date
+          ? data.dob.toISOString()
+          : data.dob ?? undefined,
       file: file,
+      isEmailVerified: false,
+      isPhoneVerified: false,
+      twoFactorEnabled: false,
+      failedLoginAttempts: 0
     };
     const response = await userService.update(updatedValues);
     if (response.status != 1) throw new Error(response.message);

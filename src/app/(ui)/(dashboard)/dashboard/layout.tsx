@@ -45,21 +45,22 @@ export default function DashboardLayout({
       }
     >
       <AppSidebar />
-      <SidebarInset className="overflow-hidden p-2">
-        <Card className="bg-sidebar/50  flex h-16 z-10 rounded-lg shadow-sm items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
+      <SidebarInset className="overflow-hidden">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+          <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <DynamicBreadcrumbs />
-          </div>
-
-          <div className="flex items-center gap-2 px-4">
+            <div className="ml-auto flex items-center gap-2">
             <ModeToggle />
             {/* <NotificationPopover /> */}
             {/* <ChatPopover /> */}
             <AuthDropdown user={user} />
           </div>
-        </Card>
+          </div>
+
+          
+        </header>
 
         <div className="flex flex-1 flex-col overflow-hidden gap-4 mt-4">
           <Card className="flex-1 overflow-hidden p-0">

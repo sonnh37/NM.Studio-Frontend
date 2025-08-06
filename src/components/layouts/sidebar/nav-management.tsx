@@ -21,6 +21,7 @@ import { IconType } from "react-icons/lib";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function NavManagement({
   items,
@@ -41,6 +42,7 @@ export function NavManagement({
     " group-data-[collapsible=icon]:!p-[6px] transition-colors duration-200 ease-in-out";
   const pathName = usePathname();
   return (
+    <ScrollArea className="h-full">
     <SidebarGroup>
       <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
       <SidebarMenu>
@@ -124,5 +126,6 @@ export function NavManagement({
         })}
       </SidebarMenu>
     </SidebarGroup>
+    </ScrollArea>
   );
 }

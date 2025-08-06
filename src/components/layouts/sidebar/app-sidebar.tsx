@@ -17,6 +17,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavMain } from "./nav-main";
 import { NavManagement } from "./nav-management";
+import { ScrollArea } from "@/components/ui/scroll-area";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user?.user);
@@ -33,14 +34,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   );
 
   return (
-    <Sidebar collapsible="offcanvas" {...props} variant="floating">
+    <Sidebar collapsible="offcanvas" {...props} variant="inset">
       <SidebarHeader>
         <SidebarMenuButton
           asChild
           size="lg"
           className="group overflow-visible data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground gap-3 hover:bg-accent/50 transition-colors"
         >
-          <Link href="/">
+          <Link href="/dashboard">
             <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors">
               <Icons.logo className="w-8" />
             </div>
@@ -54,16 +55,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
           </Link>
         </SidebarMenuButton>
-        <Separator />
       </SidebarHeader>
-
-      <Separator />
 
       <SidebarContent>
         <NavMain items={filteredNavMain} />
         {filteredNavManage.length > 0 && (
           <>
-            <Separator className="my-2" />
+            
             <NavManagement items={filteredNavManage} />
           </>
         )}

@@ -210,7 +210,6 @@ export default function AlbumTable() {
     rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     initialState: {
-       sorting: [{ id: "createdDate", desc: true }],
       columnPinning: { right: ["actions"] },
     },
     onPaginationChange: setPagination,
