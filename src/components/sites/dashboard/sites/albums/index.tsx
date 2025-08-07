@@ -37,6 +37,7 @@ import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
+import { AlbumGetAllQuery } from "@/types/queries/album-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -115,9 +116,9 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
     ),
   },
   {
-    name: "title",
-    label: "Title",
-    defaultValue: "",
+    name: "slug",
+    label: "Slug",
+    defaultValue: null,
     render: ({ field }: { field: any }) => (
       <FormItem>
         <FormLabel>Title</FormLabel>
@@ -145,7 +146,7 @@ const defaultSchema = z.object({
     })
     .refine((date) => !!date.to, { message: "End Date is required." })
     .optional(),
-  title: z.string().nullable().optional(),
+  slug: z.string().nullable().optional(),
   isDeleted: z.boolean().nullable().optional(),
 });
 //#endregion
@@ -155,7 +156,7 @@ export default function AlbumTable() {
   const tabsRef = useRef<HTMLDivElement>(null);
 
   const { data: album, isLoading } = useQuery({
-    queryKey: ["album", queryParam?.toLowerCase()], // Cache theo queryParam
+    queryKey: ["album", queryParam?.toLowerCase()],
     queryFn: async () => {
       const response = await albumService.getById(queryParam as string);
       return response.data;
@@ -193,14 +194,16 @@ export default function AlbumTable() {
     control: form.control,
   });
 
-  const getQueryParams = useQueryParams(
-    formValues,
-    columnFilters,
-    pagination,
-    sorting
-  );
+  const queryParams = useMemo(() => {
+    const params: AlbumGetAllQuery = useQueryParams(
+      formValues,
+      columnFilters,
+      pagination,
+      sorting
+    );
 
-  const queryParams = useMemo(() => getQueryParams(), [getQueryParams]);
+    return { ...params };
+  }, [formValues, columnFilters, pagination, sorting]);
 
   const { data, isFetching, error } = useQuery({
     queryKey: [query_key, queryParams],

@@ -22,14 +22,6 @@ export function DataTableToolbar<TData>({
   columnSearch = null,
   children,
 }: DataTableToolbarProps<TData>) {
-  //#region DEFAULT
-
-  const pathname = usePathname();
-
-  const getCurrentTableData = () => {
-    return table.getRowModel().rows.map((row) => row.original);
-  };
-
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -80,10 +72,6 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center gap-2">
         <>
           <div className="flex items-center gap-1">{children}</div>
-
-          
-
-          
         </>
       </div>
     </div>
