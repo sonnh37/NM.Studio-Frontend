@@ -52,7 +52,7 @@ export default function DataTableSubCategorys({
 
     subCategoryService.update(subCategory_).then(async (response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["category", categoryId] });
+        queryClient.refetchQueries({ queryKey: ["category", categoryId] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -68,8 +68,8 @@ export default function DataTableSubCategorys({
 
     subCategoryService.update(subCategory_).then((response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["category", categoryId] });
-        queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
+        queryClient.refetchQueries({ queryKey: ["category", categoryId] });
+        queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
         toast.success(response.message);
       } else {
         toast.error(response.message);

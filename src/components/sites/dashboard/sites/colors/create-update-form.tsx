@@ -71,7 +71,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
         };
         const response = await colorService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchColorById", initialData.id],
         });
         toast.success(response.message);

@@ -88,7 +88,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
         };
         const response = await sizeService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchSizeById", initialData.id],
         });
         toast.success(response.message);

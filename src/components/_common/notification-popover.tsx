@@ -57,7 +57,7 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
   const markAsReadMutation = useMutation({
     mutationFn: (id: string) => notificationService.markAsRead(id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      await queryClient.refetchQueries({ queryKey: ["notifications"] });
       toast.success("Đánh dấu đã đọc thành công");
     },
   });
@@ -65,7 +65,7 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => notificationService.delete(id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      await queryClient.refetchQueries({ queryKey: ["notifications"] });
       toast.success("Xóa thông báo thành công");
     },
   });
@@ -73,7 +73,7 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
   const handleMarkAllAsRead = async () => {
     try {
       await notificationService.markAllAsRead();
-      await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      await queryClient.refetchQueries({ queryKey: ["notifications"] });
       toast.success("Đã đánh dấu tất cả là đã đọc");
     } catch (error) {
       toast.error("Đã xảy ra lỗi");

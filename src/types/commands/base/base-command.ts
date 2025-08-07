@@ -2,7 +2,8 @@ export interface CreateCommand extends CreateOrUpdateCommand{
 }
 
 export interface UpdateCommand extends CreateOrUpdateCommand{
-    id?: string;
+    id: string;
+    isDeleted: boolean;
 }
 
 export interface DeleteCommand extends BaseCommand{

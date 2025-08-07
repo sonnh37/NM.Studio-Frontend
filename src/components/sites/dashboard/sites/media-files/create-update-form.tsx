@@ -94,7 +94,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
         };
         const response = await mediaFileService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchPhotoById", initialData.id],
         });
         toast.success(response.message);

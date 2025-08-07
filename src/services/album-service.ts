@@ -43,7 +43,7 @@ class AlbumService extends BaseService<Album> {
     async deletePermanently(
         command: AlbumDeleteCommand
     ): Promise<BusinessResult<null>> {
-        const data = await this.getById(command.id);
+        const data = await this.getById(command.id ?? "");
         const filePath = data.data?.background;
 
         const response = await super.delete(command);

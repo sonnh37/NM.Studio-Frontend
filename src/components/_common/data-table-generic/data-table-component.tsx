@@ -61,12 +61,12 @@ export function DataTableComponent<TData>({
       try {
         const command: UpdateCommand = {
           ...model,
+          isDeleted: false,
         };
         const result = await updateUndoFunc(command);
         if (result.status == 1) {
-          queryClient.invalidateQueries({ queryKey: [queryKey] });
-          toast.success(`Row with id ${model.id} restored successfully.`);
-          // Optionally, updateUndoFunc the local state or refetch data
+          queryClient.refetchQueries({ queryKey: [queryKey] });
+          toast.success(result.message);
         } else {
           toast.error(`Failed to updateUndoFunc row with id ${model.id}:`);
         }
@@ -85,7 +85,7 @@ export function DataTableComponent<TData>({
       try {
         const result = await deletePermanentFunc(model);
         if (result.status == 1) {
-          queryClient.invalidateQueries({ queryKey: [queryKey] });
+          queryClient.refetchQueries({ queryKey: [queryKey] });
           toast.success(`Row with id ${id} deleted permanently.`);
           // Optionally, updateUndoFunc the local state or refetch data
         } else {

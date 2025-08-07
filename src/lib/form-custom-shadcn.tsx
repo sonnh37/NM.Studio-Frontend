@@ -8,7 +8,9 @@ import {
 } from "@/components/_common/select";
 import { PlateEditor } from "@/components/_common/editor/plate-editor";
 import { SettingsProvider } from "@/components/_common/editor/settings";
-import TiptapEditor, { type TiptapEditorRef } from "@/components/_common/tiptaps/TiptapEditor";
+import TiptapEditor, {
+  type TiptapEditorRef,
+} from "@/components/_common/tiptaps/TiptapEditor";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -44,15 +46,22 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { savePost } from "@/services/post";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
+import {
+  FieldPath,
+  FieldValues,
+  useFormContext,
+  UseFormReturn,
+} from "react-hook-form";
 import { Toaster } from "sonner";
+import { PhoneInput } from "@/components/_common/phone-input";
+import { vi } from "date-fns/locale";
 const Editor = dynamic(
   () => import("@/components/_common/react-tiptap-editor/editor")
 );
@@ -65,68 +74,6 @@ interface FormInputProps<TFieldValues extends FieldValues> {
   className?: string;
   disabled?: boolean;
 }
-
-export const FormInput = <TFieldValues extends FieldValues>({
-  label,
-  name,
-  placeholder = "",
-  description,
-  form,
-  className = "",
-  disabled = false,
-}: FormInputProps<TFieldValues>) => {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Input
-              disabled={disabled}
-              placeholder={placeholder}
-              {...field}
-              className={className}
-            />
-          </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
-
-export const FormInputTextArea = <TFieldValues extends FieldValues>({
-  label,
-  name,
-  placeholder = "",
-  description,
-  form,
-  className = "",
-}: FormInputProps<TFieldValues>) => {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Textarea
-              {...field}
-              placeholder={placeholder}
-              className={className}
-            />
-          </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
 
 // export const FormInputEditor = <TFieldValues extends FieldValues>({
 //   name,
@@ -289,6 +236,146 @@ export const FormInputPlateJsEditor = <TFieldValues extends FieldValues>({
   );
 };
 
+// ------------------------------------------------------------------------------
+
+interface FormInputProps<TFieldValues extends FieldValues>
+  extends Omit<React.ComponentPropsWithoutRef<"input">, "form"> {
+  label?: string;
+  name: FieldPath<TFieldValues>;
+  description?: string;
+  form: UseFormReturn<TFieldValues>;
+}
+
+interface BaseProps<TFieldValues extends FieldValues> {
+  label?: string;
+  name: FieldPath<TFieldValues>;
+  description?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  form: UseFormReturn<TFieldValues>;
+}
+export const FormInput = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  description,
+  form,
+  ...props
+}: FormInputProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className={"font-bold"}>{label}</FormLabel>
+          <FormControl>
+            <Input {...props} {...field} />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+interface FormInputTextAreaProps<TFieldValues extends FieldValues>
+  extends Omit<React.ComponentPropsWithoutRef<"textarea">, "form"> {
+  label?: string;
+  name: FieldPath<TFieldValues>;
+  description?: string;
+  form: UseFormReturn<TFieldValues>;
+}
+
+export const FormInputTextArea = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  description,
+  form,
+  ...props
+}: FormInputTextAreaProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className={"font-bold"}>{label}</FormLabel>
+          <FormControl>
+            <Textarea {...field} {...props} />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+// export const FormInputEditor = <TFieldValues extends FieldValues>({
+//   name,
+//   form,
+//   label = "",
+//   className = "",
+// }: FormInputProps<TFieldValues>) => {
+//   const editorRef = useRef<Editor | null>(null);
+
+//   const handleCreate = useCallback(
+//     ({ editor }: { editor: Editor }) => {
+//       const initialValue = form.getValues(name); // Lấy giá trị từ form
+//       if (initialValue && editor.isEmpty) {
+//         editor.commands.setContent(initialValue); // Đặt nội dung khởi tạo
+//       }
+//       editorRef.current = editor;
+//     },
+//     [form, name]
+//   );
+
+//   // #IMPORTANT Thêm useEffect để đồng bộ giá trị từ form với editor khi có sự thay đổi
+//   useEffect(() => {
+//     if (
+//       editorRef.current &&
+//       form.getValues(name) !== editorRef.current.getHTML()
+//     ) {
+//       editorRef.current.commands.setContent(form.getValues(name));
+//     }
+//   }, [form.getValues(name)]);
+//   return (
+//     <FormField
+//       control={form.control}
+//       name={name}
+//       render={({ field }) => {
+//         return (
+//           <FormItem>
+//             <FormLabel className="sr-only">{label}</FormLabel>
+//             <FormControl>
+//               <div className="flex h-screen overflow-hidden">
+//                 <MinimalTiptapEditor
+//                   {...field}
+//                   className={cn("w-full max-h-full overflow-y-auto", {
+//                     "border-destructive focus-within:border-destructive":
+//                       form.formState.errors.description,
+//                   })}
+//                   editorContentClassName="some-class"
+//                   output="html"
+//                   placeholder="Type your description here..."
+//                   onCreate={handleCreate}
+//                   autofocus={true}
+//                   immediatelyRender={true}
+//                   editable={true}
+//                   injectCSS={true}
+//                   editorClassName="focus:outline-none p-5"
+//                 />
+//               </div>
+//             </FormControl>
+//             <FormMessage />
+//           </FormItem>
+//         );
+//       }}
+//     />
+//   );
+// };
+
 interface FormSelectEnumProps<TFieldValues extends FieldValues> {
   label: string;
   name: FieldPath<TFieldValues>;
@@ -297,6 +384,7 @@ interface FormSelectEnumProps<TFieldValues extends FieldValues> {
   enumOptions: { label: string; value: number | string }[]; // Các tùy chọn enum
   placeholder?: string;
   disabled?: boolean;
+  default?: boolean;
 }
 
 export const FormSelectEnum = <TFieldValues extends FieldValues>({
@@ -307,7 +395,15 @@ export const FormSelectEnum = <TFieldValues extends FieldValues>({
   enumOptions,
   placeholder = "Select an option",
   disabled = false,
+  default: shouldSetDefault = false, // New prop with default value false
 }: FormSelectEnumProps<TFieldValues>) => {
+  // Set default value if shouldSetDefault is true and enumOptions has items
+  useEffect(() => {
+    if (shouldSetDefault && enumOptions.length > 0 && !form.getValues(name)) {
+      form.setValue(name, Number(enumOptions[0].value));
+    }
+  }, [shouldSetDefault, enumOptions, form, name]);
+
   return (
     <FormField
       control={form.control}
@@ -361,7 +457,7 @@ export const FormRadioGroup = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className="space-y-3">
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={"font-bold"}>{label}</FormLabel>
           <FormControl>
             <RadioGroup
               onValueChange={(value) => {
@@ -392,13 +488,90 @@ export const FormRadioGroup = <TFieldValues extends FieldValues>({
   );
 };
 
+interface InputNumberBaseProps<TFieldValues extends FieldValues> {
+  label?: string;
+  name: FieldPath<TFieldValues>;
+  description?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  form: UseFormReturn<TFieldValues>;
+  min?: number;
+  max?: number;
+  step?: string;
+  decimalScale?: number;
+}
+
 export const FormInputNumber = <TFieldValues extends FieldValues>({
   label,
   name,
-  placeholder = "",
   description,
   form,
-  className = "",
+  min = 0,
+  max,
+  step = "1",
+  decimalScale = 0,
+  ...props
+}: InputNumberBaseProps<TFieldValues>) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { control } = useFormContext<TFieldValues>();
+
+  return (
+    <FormField
+      control={form?.control || control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          {label && <FormLabel>{label}</FormLabel>}
+          <FormControl>
+            <Input
+              {...field}
+              ref={inputRef}
+              {...props}
+              type="number"
+              min={min}
+              max={max}
+              step={step}
+              value={field.value ?? ""}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                // Xử lý số thập phân nếu cần
+                if (decimalScale > 0) {
+                  const regex = new RegExp(
+                    `^-?\\d*\\.?\\d{0,${decimalScale}}$`
+                  );
+                  if (!regex.test(value)) return;
+                } else {
+                  // Chỉ cho phép số nguyên
+                  value = value.replace(/[^0-9]/g, "");
+                }
+
+                // Chuyển đổi sang number
+                const numValue =
+                  value === ""
+                    ? null
+                    : decimalScale > 0
+                      ? parseFloat(value)
+                      : parseInt(value);
+
+                field.onChange(numValue);
+              }}
+            />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export const FormInputNumberCurrency = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  description,
+  form,
+  ...props
 }: FormInputProps<TFieldValues>) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -413,9 +586,7 @@ export const FormInputNumber = <TFieldValues extends FieldValues>({
             <Input
               {...field}
               ref={inputRef}
-              placeholder={placeholder}
-              type="text"
-              className={className}
+              {...props}
               min="0"
               value={
                 field.value !== undefined ? formatCurrency(field.value) : ""
@@ -440,6 +611,38 @@ export const FormInputNumber = <TFieldValues extends FieldValues>({
               }}
             />
           </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export const FormInputPhone = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  description,
+  form,
+  ...props
+}: FormInputProps<TFieldValues>) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className={"font-bold"}>{label}</FormLabel>
+          <FormControl>
+            <PhoneInput
+              placeholder="Placeholder"
+              {...field}
+              defaultCountry="VN"
+            />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}
@@ -450,11 +653,10 @@ export const FormInputNumber = <TFieldValues extends FieldValues>({
 export const FormSwitch = <TFieldValues extends FieldValues>({
   label,
   name,
-  description = "",
+  description,
+  disabled = false,
   form,
-}: FormInputProps<TFieldValues>) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
+}: BaseProps<TFieldValues>) => {
   return (
     <div className="space-y-4">
       <FormField
@@ -464,10 +666,14 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
               <FormLabel className="text-base">{label}</FormLabel>
-              <FormDescription>{description}</FormDescription>
+              {description && <FormDescription>{description}</FormDescription>}
             </div>
             <FormControl>
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
+              <Switch
+                disabled={disabled}
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
             </FormControl>
           </FormItem>
         )}
@@ -587,132 +793,86 @@ export const FormSelectColor = <TFieldValues extends FieldValues>({
   );
 };
 
+interface DateBaseProps<TFieldValues extends FieldValues> {
+  label?: string;
+  name: FieldPath<TFieldValues>;
+  description?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  form: UseFormReturn<TFieldValues>;
+  pattern?: string;
+}
+
+interface FormInputDateProps<TFieldValues extends FieldValues> {
+  label?: string;
+  name: FieldPath<TFieldValues>;
+  description?: string;
+  form: UseFormReturn<TFieldValues>;
+  min?: string;
+  max?: string;
+}
+
 export const FormInputDate = <TFieldValues extends FieldValues>({
   label,
   name,
+  description,
   form,
-  placeholder = "",
-  disabled = false,
-}: FormInputProps<TFieldValues>) => {
+  min,
+  max,
+  ...props
+}: FormInputDateProps<TFieldValues>) => {
+  const { control } = useFormContext<TFieldValues>();
+
   return (
     <FormField
-      control={form.control}
+      control={form?.control || control}
       name={name}
-      render={({ field }) => {
-        return (
-          <FormItem>
-            <FormLabel>{label}</FormLabel>
-            <FormControl>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    disabled={disabled}
-                    variant={"outline"}
-                    className={cn(
-                      "w-full flex flex-row justify-between pl-3 text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    {field.value ? (
-                      format(field.value, "dd/MM/yyyy")
-                    ) : (
-                      <span>{format(new Date(), "dd/MM/yyyy")}</span>
-                    )}
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={field.value || new Date()}
-                    onSelect={field.onChange}
-                    initialFocus
-                    disabled={disabled}
-                  />
-                </PopoverContent>
-              </Popover>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        );
-      }}
-    />
-  );
-};
-
-export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
-  label,
-  name,
-  form,
-  placeholder = "",
-  disabled = false,
-}: FormInputProps<TFieldValues>) => {
-  const [time, setTime] = useState<string>("00:00");
-  const [date, setDate] = useState<Date | null>(null);
-  return (
-    <div className="flex justify-start gap-3">
-      <FormField
-        control={form.control}
-        name={name}
-        render={({ field }) => (
-          <FormItem className="flex flex-col w-full">
-            <FormLabel>{label}</FormLabel>
+      render={({ field }) => (
+        <FormItem>
+          {label && <FormLabel>{label}</FormLabel>}
+          <FormControl>
             <Popover>
               <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    {field.value ? (
-                      `${format(field.value, "PPP")}`
-                    ) : (
-                      <span>{placeholder}</span>
-                    )}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </FormControl>
+                <Button
+                  {...props}
+                  variant={"outline"}
+                  className={cn(
+                    "w-full flex flex-row justify-between pl-3 text-left font-normal",
+                    !field.value && "text-muted-foreground"
+                  )}
+                >
+                  {field.value ? (
+                    format(field.value, "dd/MM/yyyy")
+                  ) : (
+                    <span>{format(new Date(), "dd/MM/yyyy")}</span>
+                  )}
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  captionLayout="dropdown"
-                  selected={date || field.value}
-                  onSelect={(selectedDate) => {
-                    const [hours, minutes] = time?.split(":")!;
-                    selectedDate?.setHours(parseInt(hours), parseInt(minutes));
-                    field.onChange(selectedDate);
-                  }}
+                  selected={field.value || new Date()}
+                  onSelect={field.onChange}
                   initialFocus
-                  //onDayClick={() => setIsOpen(false)}
-                  fromYear={2000}
-                  toYear={new Date().getFullYear()}
-                  // disabled={(date) =>
-                  //   Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-                  //   Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
-                  // }
-                  defaultMonth={field.value}
                 />
               </PopoverContent>
             </Popover>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
-
 export const FormInputDateRangePicker = <TFieldValues extends FieldValues>({
   label,
   name,
   form,
-  placeholder = "",
+  placeholder = "dd/MM/yyyy",
   disabled = false,
-}: FormInputProps<TFieldValues>) => {
+}: BaseProps<TFieldValues>) => {
   return (
     <div className="flex justify-start gap-3">
       <FormField
@@ -768,24 +928,25 @@ export const FormInputDateRangePicker = <TFieldValues extends FieldValues>({
   );
 };
 
-export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
+export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
   label,
   name,
   form,
   placeholder = "",
   disabled = false,
-}: FormInputProps<TFieldValues>) => {
+  isShowTimePicker = false,
+}: FormInputProps<TFieldValues> & { isShowTimePicker?: boolean }) => {
   return (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => {
-        const [time, setTime] = useState<string>("05:00");
+        const [time, setTime] = useState<string>("07:00");
         const [date, setDate] = useState<Date | null>(null);
 
         return (
           <FormItem className="flex flex-col w-full">
-            <FormLabel>{label}</FormLabel>
+            <FormLabel className={"font-bold"}>{label}</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -797,7 +958,9 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
                     )}
                   >
                     {field.value ? (
-                      `${format(field.value, "PPP")}, ${time}`
+                      `${formatDate(field.value, false)}${
+                        isShowTimePicker ? ", " + time : ""
+                      }`
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -811,59 +974,90 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
               >
                 <Calendar
                   mode="single"
-                  captionLayout="dropdown"
+                  showOutsideDays={true}
+                  captionLayout="dropdown-buttons"
                   selected={date || field.value}
                   onSelect={(selectedDate) => {
-                    const [hours, minutes] = time.split(":");
-                    selectedDate?.setHours(parseInt(hours), parseInt(minutes));
-                    setDate(selectedDate!);
-                    field.onChange(selectedDate);
-                  }}
-                  fromYear={2000}
-                  toYear={new Date().getFullYear()}
-                  disabled={(date) =>
-                    Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
-                    Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
-                  }
-                />
-                <SelectV2
-                  defaultValue={time}
-                  onValueChange={(newTime) => {
-                    setTime(newTime);
-                    if (date) {
-                      const [hours, minutes] = newTime.split(":");
-                      const newDate = new Date(date.getTime());
-                      newDate.setHours(parseInt(hours), parseInt(minutes));
-                      setDate(newDate);
-                      field.onChange(newDate);
+                    if (isShowTimePicker) {
+                      const [hours, minutes] = time.split(":");
+                      selectedDate?.setHours(
+                        parseInt(hours),
+                        parseInt(minutes)
+                      );
                     }
+                    setDate(selectedDate!);
+                    field.onChange(selectedDate?.toISOString());
                   }}
-                  open={true}
-                >
-                  <SelectV2Trigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
-                    <SelectV2Value />
-                  </SelectV2Trigger>
-                  <SelectV2Content className="border-none shadow-none mr-2 fixed top-2 left-0">
-                    <ScrollArea className="h-[15rem]">
-                      {Array.from({ length: 96 }).map((_, i) => {
-                        const hour = Math.floor(i / 4)
-                          .toString()
-                          .padStart(2, "0");
-                        const minute = ((i % 4) * 15)
-                          .toString()
-                          .padStart(2, "0");
-                        return (
-                          <SelectV2Item key={i} value={`${hour}:${minute}`}>
-                            {hour}:{minute}
-                          </SelectV2Item>
-                        );
-                      })}
-                    </ScrollArea>
-                  </SelectV2Content>
-                </SelectV2>
+                  fromYear={1900}
+                  toYear={new Date().getFullYear() + 10}
+                  defaultMonth={field.value}
+                  footer={
+                    <>
+                      <Select
+                        onValueChange={(value) => {
+                          const selectedDate = addDays(
+                            new Date(),
+                            parseInt(value)
+                          );
+                          setDate(selectedDate!);
+                          field.onChange(selectedDate.toISOString());
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          <SelectItem value="0">Today</SelectItem>
+                          <SelectItem value="1">Tomorrow</SelectItem>
+                          <SelectItem value="3">In 3 days</SelectItem>
+                          <SelectItem value="7">In a week</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </>
+                  }
+                  locale={vi}
+                  fixedWeeks={true}
+                />
+                {isShowTimePicker && (
+                  <Select
+                    defaultValue={time}
+                    onValueChange={(newTime) => {
+                      setTime(newTime);
+                      if (date) {
+                        const [hours, minutes] = newTime.split(":");
+                        const newDate = new Date(date.getTime());
+                        newDate.setHours(parseInt(hours), parseInt(minutes));
+                        setDate(newDate);
+                        field.onChange(newDate.toISOString());
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="border-none shadow-none mr-2 fixed top-2 left-0">
+                      <div className="overflow-hidden">
+                        <ScrollArea>
+                          {Array.from({ length: 96 }).map((_, i) => {
+                            const hour = Math.floor(i / 4)
+                              .toString()
+                              .padStart(2, "0");
+                            const minute = ((i % 4) * 15)
+                              .toString()
+                              .padStart(2, "0");
+                            return (
+                              <SelectItem key={i} value={`${hour}:${minute}`}>
+                                {hour}:{minute}
+                              </SelectItem>
+                            );
+                          })}
+                        </ScrollArea>
+                      </div>
+                    </SelectContent>
+                  </Select>
+                )}
               </PopoverContent>
             </Popover>
-            {/* <FormDescription>Set your date and time.</FormDescription> */}
             <FormMessage />
           </FormItem>
         );

@@ -129,7 +129,7 @@ export function ProfileForm({ user }: { user?: User }) {
     if (response.status != 1) throw new Error(response.message);
 
     toast.success("Thay đổi của bạn đã lưu.");
-    queryClient.invalidateQueries({
+    queryClient.refetchQueries({
       queryKey: ["getUserInfo"],
     });
   }

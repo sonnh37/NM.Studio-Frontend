@@ -78,7 +78,7 @@ export default function DataTableColors({
 
     productColorService.delete(command).then(async (response) => {
       if (response.status === 1) {
-        await queryClient.invalidateQueries({
+        await queryClient.refetchQueries({
           queryKey: ["product", productId],
         });
         toast.success(response.message);
@@ -97,8 +97,8 @@ export default function DataTableColors({
 
     productColorService.create(productColor_).then((response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["product", productId] });
-        queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
+        queryClient.refetchQueries({ queryKey: ["product", productId] });
+        queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -115,7 +115,7 @@ export default function DataTableColors({
 
     productColorService.update(productColor_).then((response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        queryClient.refetchQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -240,7 +240,7 @@ export default function DataTableColors({
             };
             productColorService.create(productColor_).then((response) => {
               if (response.status === 1) {
-                queryClient.invalidateQueries({
+                queryClient.refetchQueries({
                   queryKey: ["product", productId],
                 });
 

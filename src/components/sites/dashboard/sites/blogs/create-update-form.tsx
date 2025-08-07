@@ -102,7 +102,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
         };
         const response = await blogService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchBlogById", initialData.id],
         });
         toast.success(response.message);

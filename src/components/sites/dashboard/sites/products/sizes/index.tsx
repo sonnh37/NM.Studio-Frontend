@@ -78,7 +78,7 @@ export default function DataTableSizes({
 
     productSizeService.delete(productSize).then(async (response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        queryClient.refetchQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -95,8 +95,8 @@ export default function DataTableSizes({
 
     productSizeService.create(productSize_).then((response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["product", productId] });
-        queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
+        queryClient.refetchQueries({ queryKey: ["product", productId] });
+        queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -113,7 +113,7 @@ export default function DataTableSizes({
 
     productSizeService.update(productSize_).then((response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        queryClient.refetchQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -238,7 +238,7 @@ export default function DataTableSizes({
             };
             productSizeService.create(productSize_).then((response) => {
               if (response.status === 1) {
-                queryClient.invalidateQueries({
+                queryClient.refetchQueries({
                   queryKey: ["product", productId],
                 });
 

@@ -84,7 +84,7 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
         };
         const response = await subCategoryService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchSubCategoryById", initialData.id],
         });
         toast.success(response.message);

@@ -20,7 +20,10 @@ import { FileUpload } from "@/components/_common/custom/file-upload";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
+  FormInputDate,
+  FormInputDateTimePicker,
   FormInputTextArea,
+  FormSwitch,
 } from "@/lib/form-custom-shadcn";
 import { Album } from "@/types/entities/album";
 import {
@@ -33,6 +36,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 
 interface AlbumFormProps {
   initialData: Album | null;
@@ -41,21 +45,21 @@ interface AlbumFormProps {
 const formSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, "Title is required").nullable(),
+  slug: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   background: z.string().nullable().optional(),
-  createdDate: z
-    .date()
-    .optional()
-    .default(() => new Date()),
-  createdBy: z.string().nullable().optional().default(null),
-  lastUpdatedBy: z.string().nullable().optional().default(null),
-  isDeleted: z.boolean().default(false),
+  eventDate: z.string().nullable().optional(),
+  brideName: z.string().nullable().optional(),
+  groomName: z.string().nullable().optional(),
+  location: z.string().nullable().optional(),
+  photographer: z.string().nullable().optional(),
+  isPublic: z.boolean().default(false),
 });
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Edit album" : "Create album";
-  const action = initialData ? "Save and continue" : "Create";
+  const title = initialData ? "Update album" : "New album";
+  const action = "Submit";
   const router = useRouter();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [pendingValues, setPendingValues] = useState<z.infer<
@@ -71,9 +75,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     defaultValues: initialData
       ? {
           ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
         }
       : {},
   });
@@ -87,11 +88,13 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       if (initialData) {
         const updatedValues: AlbumUpdateCommand = {
           ...values,
+          id: initialData.id,
           file: file,
+          isDeleted: false
         };
         const response = await albumService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchAlbumById", initialData.id],
         });
         toast.success(response.message);
@@ -139,7 +142,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   };
 
   return (
-    <>
+    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
         isOpen={showConfirmationDialog}
@@ -166,73 +169,109 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
               loading={loading}
               action={action}
             />
+            <TypographyH1>{title}</TypographyH1>
           </div>
           <div className="grid gap-4">
-            <div className="grid gap-4 lg:grid-cols-3">
-              <div className="grid gap-4 lg:col-span-2">
-                {/* main */}
-                <Card className="overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="title"
-                          label="Title"
-                          placeholder="Enter title"
-                        />
+            {/* main */}
+            <div className="grid gap-6">
+              <div className="grid gap-3">
+                <FormSwitch
+                  form={form}
+                  name="isPublic"
+                  label="Is Public"
+                  description="If enabled, this album will be publicly accessible."
+                />
 
-                        <FormInputTextArea
-                          form={form}
-                          name="description"
-                          label="Description"
-                          placeholder="Enter description"
-                        />
+                <FormInput
+                  form={form}
+                  name="title"
+                  label="Title"
+                  placeholder="Enter title"
+                />
 
-                        <FormField
-                          control={form.control}
-                          name="background"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Background</FormLabel>
-                              <FormControl>
-                                <div className="grid gap-2">
-                                  {field.value ? (
-                                    <>
-                                      <Image
-                                        alt="Picture"
-                                        className="w-[30%] rounded-md "
-                                        height={9999}
-                                        src={field.value ?? "/image-notfound.jpg"}
-                                        width={9999}
-                                      />
-                                    </>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                                    <FileUpload onChange={handleFileUpload} />
-                                  </div>
-                                  <FormMessage />
-                                </div>
-                              </FormControl>
-                            </FormItem>
+                <FormInput
+                  form={form}
+                  name="slug"
+                  label="Slug"
+                  placeholder="Enter slug"
+                />
+
+                <FormInputTextArea
+                  form={form}
+                  name="description"
+                  label="Description"
+                  placeholder="Enter description"
+                />
+
+                <FormField
+                  control={form.control}
+                  name="background"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Background</FormLabel>
+                      <FormControl>
+                        <div className="grid gap-2">
+                          {field.value ? (
+                            <>
+                              <Image
+                                alt="Picture"
+                                className="w-[30%] rounded-md "
+                                height={9999}
+                                src={field.value ?? "/image-notfound.jpg"}
+                                width={9999}
+                              />
+                            </>
+                          ) : (
+                            <></>
                           )}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                          <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                            <FileUpload onChange={handleFileUpload} />
+                          </div>
+                          <FormMessage />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-              <div className="grid gap-4 h-fit">
-                <InformationBaseCard form={form} initialData={initialData} />
+                <FormInputDateTimePicker
+                  form={form}
+                  name="eventDate"
+                  label="Event Date"
+                />
+
+                <FormInput
+                  form={form}
+                  name="brideName"
+                  label="Bride Name"
+                  placeholder="Enter bride name"
+                />
+
+                <FormInput
+                  form={form}
+                  name="groomName"
+                  label="Groom Name"
+                  placeholder="Enter groom name"
+                />
+
+                <FormInput
+                  form={form}
+                  name="location"
+                  label="Location"
+                  placeholder="Enter location"
+                />
+
+                <FormInput
+                  form={form}
+                  name="photographer"
+                  label="Photographer"
+                  placeholder="Enter photographer"
+                />
               </div>
             </div>
-            <div>{/* sub */}</div>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };

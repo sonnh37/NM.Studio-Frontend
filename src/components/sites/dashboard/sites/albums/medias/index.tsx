@@ -187,7 +187,7 @@ export default function AlbumMediasTable({
 
     albumMediaService.delete(command).then(async (response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["album", albumId] });
+        queryClient.refetchQueries({ queryKey: ["album", albumId] });
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -203,8 +203,8 @@ export default function AlbumMediasTable({
 
     albumMediaService.create(command).then((response) => {
       if (response.status === 1) {
-        queryClient.invalidateQueries({ queryKey: ["album", albumId] });
-        queryClient.invalidateQueries({ queryKey: ["data", getQueryParams] });
+        queryClient.refetchQueries({ queryKey: ["album", albumId] });
+        queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
         toast.success(response.message);
       } else {
         toast.error(response.message);

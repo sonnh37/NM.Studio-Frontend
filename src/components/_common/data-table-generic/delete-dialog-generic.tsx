@@ -93,77 +93,85 @@ export function DeleteBaseEntitysDialog<TData>({
   }
 
   if (isDesktop) {
-    return showTrigger && list.length > 0 ? (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-            Delete ({list.length})
-          </Button>
-        </DialogTrigger>
+    return (
+      list.length > 0 && (
+        <>
+          {showTrigger && list.length > 0 ? (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+                  Delete ({list.length})
+                </Button>
+              </DialogTrigger>
 
-        <DialogContent className="shadow-lg">
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently deleteFunc
-              your <span className="font-medium">{list.length}</span>
-              {list.length === 1 ? " task" : " list"} from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:space-x-0">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button
-              aria-label="Delete selected rows"
-              variant="destructive"
-              onClick={onDelete}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && (
-                <Icons.spinner
-                  className="mr-2 size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    ) : (
-      <Dialog {...props}>
-        <DialogContent className="shadow-lg">
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently deleteFunc
-              your <span className="font-medium">{list.length}</span>
-              {list.length === 1 ? " task" : " list"} from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:space-x-0">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button
-              aria-label="Delete selected rows"
-              variant="destructive"
-              onClick={onDelete}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && (
-                <Icons.spinner
-                  className="mr-2 size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              <DialogContent className="shadow-lg">
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently
+                    deleteFunc your{" "}
+                    <span className="font-medium">{list.length}</span>
+                    {list.length === 1 ? " task" : " list"} from our servers.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="gap-2 sm:space-x-0">
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    aria-label="Delete selected rows"
+                    variant="destructive"
+                    onClick={onDelete}
+                    disabled={isDeletePending}
+                  >
+                    {isDeletePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Dialog {...props}>
+              <DialogContent className="shadow-lg">
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently
+                    deleteFunc your{" "}
+                    <span className="font-medium">{list.length}</span>
+                    {list.length === 1 ? " task" : " list"} from our servers.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="gap-2 sm:space-x-0">
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    aria-label="Delete selected rows"
+                    variant="destructive"
+                    onClick={onDelete}
+                    disabled={isDeletePending}
+                  >
+                    {isDeletePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </>
+      )
     );
   }
 

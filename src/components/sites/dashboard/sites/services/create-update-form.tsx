@@ -88,7 +88,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
         };
         const response = await serviceService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchServiceById", initialData.id],
         });
         toast.success(response.message);

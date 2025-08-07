@@ -131,6 +131,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 ];
 
 const columnSearch = "title";
+const query_key = "data";
 const filterEnums: FilterEnum[] = [
   { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
 ];
@@ -202,7 +203,7 @@ export default function AlbumTable() {
   const queryParams = useMemo(() => getQueryParams(), [getQueryParams]);
 
   const { data, isFetching, error } = useQuery({
-    queryKey: ["data", queryParams],
+    queryKey: [query_key, queryParams],
     queryFn: () => albumService.getAll(queryParams),
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
@@ -281,9 +282,10 @@ export default function AlbumTable() {
           <DataTableComponent
             className="p-1"
             isLoading={isFetching}
-            deletePermanentFunc={albumService.delete}
-            updateUndoFunc={albumService.update}
+            deletePermanentFunc={(command) => albumService.delete(command)}
+            updateUndoFunc={(command) => albumService.update(command)}
             table={table}
+            queryKey={query_key}
           >
             <DataTableToolbar
               table={table}
@@ -294,7 +296,7 @@ export default function AlbumTable() {
                 list={table
                   .getFilteredSelectedRowModel()
                   .rows.map((row) => row.original)}
-                deleteFunc={albumService.delete}
+                deleteFunc={(command) => albumService.delete(command)}
                 onSuccess={() => table.toggleAllRowsSelected(false)}
               />
               <DataTableFilterSheet

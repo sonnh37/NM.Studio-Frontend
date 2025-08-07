@@ -101,7 +101,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         };
         const response = await productService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchProductById", initialData.id],
         });
         toast.success(response.message);

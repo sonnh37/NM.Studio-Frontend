@@ -77,7 +77,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
         };
         const response = await categoryService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["fetchCategoryById", initialData.id],
         });
         toast.success(response.message);
