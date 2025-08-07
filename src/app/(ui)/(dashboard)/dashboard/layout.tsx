@@ -63,8 +63,8 @@ export default function DashboardLayout({
         </header>
 
         <div className="flex flex-1 flex-col overflow-hidden gap-4 mt-4">
-          <Card className="flex-1 overflow-hidden p-0">
-            <div className="p-4 h-full w-full overflow-auto">
+          <div className="flex-1 overflow-hidden p-0">
+            <div className="px-4 lg:gap-2 lg:px-6 h-full w-full overflow-auto">
               {/* {!isLock ? (
                 <>{children}</>
               ) : (
@@ -78,7 +78,7 @@ export default function DashboardLayout({
                */}
               {children}
             </div>
-          </Card>
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>

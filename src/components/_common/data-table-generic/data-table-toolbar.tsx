@@ -1,240 +1,69 @@
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
 import { FilterEnum } from "@/types/filter-enum";
-import { BusinessResult } from "@/types/response/business-result";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
-import { motion } from "framer-motion";
-import { PlusCircle, X } from "lucide-react";
+import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CSVLink } from "react-csv";
-import { UseFormReturn } from "react-hook-form";
-import { FiFilter } from "react-icons/fi";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import { DeleteBaseEntitysDialog } from "./delete-dialog-generic";
-import { ReactNode, useEffect, useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CiViewTable } from "react-icons/ci";
-import { GrCheckbox } from "react-icons/gr";
-import { IoCheckboxSharp } from "react-icons/io5";
-import {
-  DndContext,
-  DragEndEvent,
-  useDraggable,
-  useDroppable,
-} from "@dnd-kit/core";
-import { Slider } from "@/components/ui/slider";
-import { useDispatch, useSelector } from "react-redux";
-import { setSelectedWidths } from "@/lib/redux/slices/widthsSlice";
-import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { DeleteCommand } from "@/types/commands/base/base-command";
 
-interface DataTableToolbarProps<TData> {
-  form: UseFormReturn<
-    {
-      [x: string]: any;
-    },
-    any,
-    undefined
-  >;
+interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
-  filterEnums: FilterEnum[];
-  deleteFunc?: (command: DeleteCommand) => Promise<BusinessResult<null>>;
-  isSheetOpen: boolean;
-  columnSearch: string;
-  handleSheetChange?: (open: boolean) => void;
-  formFilterAdvanceds?: FormFilterAdvanced[];
-  childrenLeftUI?: ReactNode;
-  childrenRightUI?: ReactNode;
+  filterEnums?: FilterEnum[] | null;
+  columnSearch?: string | null;
 }
 
-const DraggableColumnItem = ({ column, onToggleVisibility }: any) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: column.id,
-  });
-
-  const { setNodeRef: setDroppableRef } = useDroppable({
-    id: column.id,
-  });
-
-  return (
-    <div
-      ref={(node) => {
-        setNodeRef(node);
-        setDroppableRef(node);
-      }}
-      {...listeners}
-      {...attributes}
-      style={{
-        transform: `translate3d(${transform ? transform.x : 0}px, ${
-          transform ? transform.y : 0
-        }px, 0)`,
-        cursor: "move",
-      }}
-      className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
-      onClick={onToggleVisibility}
-    >
-      {/* <span className="">
-        {column.getIsVisible() ? (
-          <IoCheckboxSharp className="w-6 h-6 text-black" />
-        ) : (
-          <GrCheckbox className="w-6 h-6 text-gray-500" />
-        )}
-      </span> */}
-      <span className="capitalize">{column.id}</span>
-    </div>
-  );
-};
-
 export function DataTableToolbar<TData>({
-  form,
   table,
-  filterEnums,
-  columnSearch,
-  deleteFunc,
-  isSheetOpen = false,
-  handleSheetChange = undefined,
-  formFilterAdvanceds = [],
-  childrenLeftUI = null,
-  childrenRightUI = null,
+  filterEnums = null,
+  columnSearch = null,
+  children,
 }: DataTableToolbarProps<TData>) {
   //#region DEFAULT
-  const side = "left";
+
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isToggleColumn, setIsToggleColumn] = useState(false);
-
-  // Initialize column order and visibility
-  const initialColumns = table
-    .getAllColumns()
-    .filter(
-      (column) =>
-        typeof column.accessorFn !== "undefined" && column.getCanHide()
-    );
-
-  const [columnOrder, setColumnOrder] = useState(
-    initialColumns.map((col) => col.id)
-  );
-  const [columnVisibility, setColumnVisibility] = useState(
-    initialColumns.reduce((acc, col) => {
-      acc[col.id] = col.getIsVisible();
-      return acc;
-    }, {} as Record<string, boolean>)
-  );
-
-  // Update table column order and visibility
-  useEffect(() => {
-    table.setColumnOrder(columnOrder);
-    Object.entries(columnVisibility).forEach(([id, isVisible]) => {
-      const column = table.getColumn(id);
-      if (column) {
-        column.toggleVisibility(isVisible);
-      }
-    });
-  }, [columnOrder, columnVisibility, table]);
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (!event.over) return;
-
-    const sourceIndex = columnOrder.findIndex((id) => id === event.active.id);
-    const targetIndex = columnOrder.findIndex((id) => id === event.over!.id);
-
-    if (
-      sourceIndex !== -1 &&
-      targetIndex !== -1 &&
-      sourceIndex !== targetIndex
-    ) {
-      const updatedOrder = [...columnOrder];
-      const [movedId] = updatedOrder.splice(sourceIndex, 1);
-      updatedOrder.splice(targetIndex, 0, movedId);
-
-      setColumnOrder(updatedOrder);
-      table.setColumnOrder(updatedOrder);
-    }
-  };
-
-  const toggleColumnVisibility = (columnId: string) => {
-    setColumnVisibility((prev) => ({
-      ...prev,
-      [columnId]: !prev[columnId],
-    }));
-  };
 
   const getCurrentTableData = () => {
     return table.getRowModel().rows.map((row) => row.original);
-  };
-  // redux
-  const dispatch = useDispatch();
-  const tableWidth = useSelector(
-    (state: any) => state.widths.selectedWidths[0] || 100
-  ); // Get initial value from Redux
-
-  const handleWidthChange = (value: number) => {
-    dispatch(setSelectedWidths([value])); // Update state width in Redux
-  };
-
-  //end redux
-  const renderFormFields = () => {
-    return formFilterAdvanceds.map((fieldConfig: any) => (
-      <FormField
-        key={fieldConfig.name}
-        control={form.control}
-        name={fieldConfig.name}
-        render={fieldConfig.render}
-      />
-    ));
-  };
-  const fields = renderFormFields ? renderFormFields() : [];
-  //#endregion
-
-  const handleClear = () => {
-    form.reset();
   };
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <>
-          <Input
-            placeholder={`Enter ${columnSearch}...`}
-            value={(form.getValues(columnSearch) as string) ?? ""}
-            onChange={(event) =>
-              form.setValue(columnSearch, event.target.value)
-            }
-            className="h-8 w-[150px] lg:w-[250px]"
-          />
-          {filterEnums.map((filter: any) => {
-            const column = table.getColumn(filter.columnId);
-            if (column) {
-              return (
-                <DataTableFacetedFilter
-                  key={filter.columnId}
-                  column={column}
-                  title={filter.title}
-                  options={filter.options}
-                />
-              );
-            }
-            return null;
-          })}
+          {columnSearch && (
+            <Input
+              placeholder={`Enter ${columnSearch}...`}
+              value={
+                (table.getColumn(columnSearch)?.getFilterValue() as string) ??
+                ""
+              }
+              onChange={(event) =>
+                table
+                  .getColumn(columnSearch)
+                  ?.setFilterValue(event.target.value)
+              }
+              className="h-8 w-[150px] lg:w-[250px]"
+            />
+          )}
+          {filterEnums &&
+            filterEnums.map((filter: any) => {
+              const column = table.getColumn(filter.columnId);
+              if (column) {
+                return (
+                  <DataTableFacetedFilter
+                    key={filter.columnId}
+                    column={column}
+                    title={filter.title}
+                    options={filter.options}
+                  />
+                );
+              }
+              return null;
+            })}
 
           {table.getState().columnFilters.length > 0 && (
             <Button
@@ -246,146 +75,12 @@ export function DataTableToolbar<TData>({
               <X className="ml-2 h-4 w-4" />
             </Button>
           )}
-
-          {childrenLeftUI}
         </>
       </div>
       <div className="flex items-center gap-2">
         <>
-          {/* Hand by hand */}
-          {table.getFilteredSelectedRowModel().rows.length > 0 && deleteFunc ? (
-            <DeleteBaseEntitysDialog
-              list={table
-                .getFilteredSelectedRowModel()
-                .rows.map((row) => row.original)}
-              deleteFunc={deleteFunc}
-              onSuccess={() => table.toggleAllRowsSelected(false)}
-            />
-          ) : null}
-          {fields.length > 0 && (
-            <Sheet
-              key={side}
-              open={isSheetOpen}
-              onOpenChange={handleSheetChange}
-            >
-              <SheetTrigger>
-                <Button size="sm" variant="outline" className="h-8 gap-1">
-                  <FiFilter className="h-4 w-4" />
-                  Filter
-                  {/* <span className=" sm:whitespace-nowrap">Filter Advanced</span> */}
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side={side}
-                className="dark:backdrop-blur-3  z-[1001] dark:bg-white/5"
-              >
-                <Form {...form}>
-                  <form className="space-y-8">
-                    <SheetHeader>
-                      <SheetTitle>Filter advanced</SheetTitle>
-                      <SheetDescription>
-                        This action can update when you click the button at the
-                        footer.
-                      </SheetDescription>
-                    </SheetHeader>
-                    <div className="grid gap-4 py-4">{fields}</div>
-                    <SheetFooter>
-                      <SheetClose asChild>
-                        <Button onClick={handleClear}>Clear filter</Button>
-                      </SheetClose>
-                    </SheetFooter>
-                  </form>
-                </Form>
-              </SheetContent>
-            </Sheet>
-          )}
-          <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 gap-1"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <CiViewTable className="h-4 w-4" />
-                Sort Columns
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="end"
-              className="w-fit p-2 shadow-lg rounded-md border bg-white"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="font-medium mb-2">Select position columns</div>
-              <div className="border-t my-2"></div>
-              <DndContext onDragEnd={handleDragEnd}>
-                {columnOrder.map((columnId) => {
-                  const column = table.getColumn(columnId);
-                  return (
-                    <DraggableColumnItem
-                      key={column!.id}
-                      column={column}
-                      onToggleVisibility={() =>
-                        toggleColumnVisibility(column!.id)
-                      }
-                    />
-                  );
-                })}
-              </DndContext>
-            </PopoverContent>
-          </Popover>
-          {/* <div className="flex items-center space-x-2">
-          <span>Table Width:</span>
-          <Slider
-            defaultValue={[tableWidth]}
-            onValueChange={(value) => handleWidthChange(value[0])}
-            min={50}
-            max={100}
-            step={1}
-            className="w-24"
-          />
-          <span>{tableWidth}%</span>
-        </div> */}
-          <Popover open={isToggleColumn} onOpenChange={setIsToggleColumn}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 gap-1"
-                onClick={() => setIsToggleColumn(!isToggleColumn)}
-              >
-                <MixerHorizontalIcon className="h-4 w-4" />
-                Select columns
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="end"
-              className="w-fit p-2 shadow-lg rounded-md border bg-white"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="font-medium mb-2">Toggle columns</div>
-              <div className="border-t my-2"></div>
-              {columnOrder.map((columnId) => {
-                const column = table.getColumn(columnId);
-                return (
-                  <div
-                    key={column!.id}
-                    className="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
-                    onClick={() => toggleColumnVisibility(column!.id)}
-                  >
-                    <span className="">
-                      {columnVisibility[column!.id] ? (
-                        <IoCheckboxSharp className="w-6 h-6 text-black" />
-                      ) : (
-                        <GrCheckbox className="w-6 h-6 text-gray-500" />
-                      )}
-                    </span>
-                    <span className="capitalize">{column!.id}</span>
-                  </div>
-                );
-              })}
-            </PopoverContent>
-          </Popover>
+          <div className="flex items-center gap-1">{children}</div>
+
           <CSVLink
             filename="export_data.csv"
             data={JSON.stringify(getCurrentTableData() || [])}
@@ -397,30 +92,17 @@ export function DataTableToolbar<TData>({
             </Button>
           </CSVLink>
 
-          {fields.length > 0 && (
-            <Link
-              className="text-primary-foreground sm:whitespace-nowrap"
-              href={`${pathname}/new`}
+          <Link
+            className="text-primary-foreground sm:whitespace-nowrap"
+            href={`${pathname}/new`}
+          >
+            <Button
+              size={"sm"}
+              className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
             >
-              <motion.div
-                whileHover={{
-                  scale: 1.1,
-                  boxShadow: "0px 6px 20px rgba(0,118,255,0.23)",
-                }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  size="sm"
-                  className="gap-1 transition duration-300 ease-linear"
-                >
-                  <PlusCircle className="fill-primary-background h-5 w-5" />
-                  New
-                </Button>
-              </motion.div>
-            </Link>
-          )}
-
-          {childrenRightUI}
+              Add
+            </Button>
+          </Link>
         </>
       </div>
     </div>

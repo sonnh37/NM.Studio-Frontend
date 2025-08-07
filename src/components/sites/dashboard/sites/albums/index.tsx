@@ -1,12 +1,19 @@
 import { columns } from "./columns";
 
-import { isDeleted_options } from "@/components/_common/filters";
-
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
-import { DataTablePagination } from "@/components/_common/data-table-generic/data-table-pagination";
-import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-table-skelete";
+import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
+import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
+import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
 import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
-import DataTablePhotos from "@/components/sites/dashboard/sites/albums/photos";
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
+import { isDeleted_options } from "@/components/_common/filters";
+import DataTablePhotos from "@/components/sites/dashboard/sites/albums/medias";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
@@ -25,16 +32,15 @@ import {
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { cn } from "@/lib/utils";
+import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
   getCoreRowModel,
-  getFilteredRowModel,
   PaginationState,
   SortingState,
   useReactTable,
@@ -107,14 +113,14 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
     ),
   },
   {
-    name: "name",
-    label: "Name",
+    name: "title",
+    label: "Title",
     defaultValue: "",
     render: ({ field }: { field: any }) => (
       <FormItem>
-        <FormLabel>Name</FormLabel>
+        <FormLabel>Title</FormLabel>
         <FormControl>
-          <Input placeholder="Product name..." {...field} />
+          <Input placeholder="Title..." {...field} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -122,7 +128,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
   },
 ];
 
-const columnSearch = "name";
+const columnSearch = "title";
 const filterEnums: FilterEnum[] = [
   { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
 ];
@@ -136,6 +142,7 @@ const defaultSchema = z.object({
     })
     .refine((date) => !!date.to, { message: "End Date is required." })
     .optional(),
+  title: z.string().nullable().optional(),
   isDeleted: z.boolean().nullable().optional(),
 });
 //#endregion
@@ -174,10 +181,9 @@ export default function AlbumTable() {
   const [isTyping, setIsTyping] = useState(false);
   //#endregion
 
-  //#region CREATE TABLE
   const form = useForm<z.infer<typeof defaultSchema>>({
     resolver: zodResolver(defaultSchema),
-    defaultValues: {},
+    defaultValues: getDefaultFormFilterValues(formFilterAdvanceds),
   });
 
   const formValues = useWatch({
@@ -196,7 +202,6 @@ export default function AlbumTable() {
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
     queryFn: () => albumService.getAll(queryParams),
-    placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
   });
@@ -220,8 +225,6 @@ export default function AlbumTable() {
     manualPagination: true,
     getRowId: (originalRow) => originalRow.id,
   });
-
-  //#endregion
 
   //#region useEffect
   useEffect(() => {
@@ -254,76 +257,87 @@ export default function AlbumTable() {
     }
   };
 
+  const accordion = {
+    defaultValue: ["Albums"],
+    type: "multiple" as const,
+    collapsible: true,
+    item1: "Albums",
+    item2: "Medias",
+  };
+
   return (
-    <Tabs defaultValue="item-1">
-      <TabsList>
-        <TabsTrigger value="item-1">Albums</TabsTrigger>
-        <TabsTrigger value="item-2">Photos</TabsTrigger>
-      </TabsList>
-      <TabsContent value="item-1">
-        <Card className="space-y-4 p-4">
-          <DataTableToolbar
-            form={form}
+    <Accordion
+      type={accordion.type}
+      className="w-full"
+      defaultValue={accordion.defaultValue}
+    >
+      <AccordionItem value={accordion.item1}>
+        <AccordionTrigger>{accordion.item1.toString()}</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <DataTableComponent
+            isLoading={isFetching}
+            deletePermanentFunc={albumService.delete}
+            updateUndoFunc={albumService.update}
             table={table}
-            filterEnums={filterEnums}
-            columnSearch={columnSearch}
-            deleteFunc={albumService.delete}
-            isSheetOpen={isSheetOpen}
-            handleSheetChange={handleSheetChange}
-            formFilterAdvanceds={formFilterAdvanceds}
-          />
-
-          {isFetching && !isTyping ? (
-            <DataTableSkeleton
-              columnCount={1}
-              showViewOptions={false}
-              withPagination={false}
-              rowCount={pagination.pageSize}
-              searchableColumnCount={0}
-              filterableColumnCount={0}
-              shrinkZero
-            />
-          ) : (
-            <DataTableComponent
-              deletePermanentFunc={albumService.delete}
-              updateUndoFunc={albumService.update}
+          >
+            <DataTableToolbar
               table={table}
-            />
-          )}
-          <DataTablePagination table={table} />
-        </Card>
-      </TabsContent>
-      <TabsContent value="item-2">
-        {isLoading || !album ? (
-          <></>
-        ) : (
-          <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="selected">Selected</TabsTrigger>
-              <TabsTrigger value="available">Available</TabsTrigger>
-            </TabsList>
+              filterEnums={filterEnums}
+              columnSearch={columnSearch}
+            >
+              <DeleteBaseEntitysDialog
+                list={table
+                  .getFilteredSelectedRowModel()
+                  .rows.map((row) => row.original)}
+                deleteFunc={albumService.delete}
+                onSuccess={() => table.toggleAllRowsSelected(false)}
+              />
+              <DataTableFilterSheet
+                form={form}
+                isSheetOpen={isSheetOpen}
+                handleSheetChange={handleSheetChange}
+                formFilterAdvanceds={formFilterAdvanceds}
+              />
+              <DataTableSortColumnsPopover table={table} />
+              <DataTableToggleColumnsPopover table={table} />
+            </DataTableToolbar>
+          </DataTableComponent>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value={accordion.item2}>
+        <AccordionTrigger>{accordion.item2.toString()}</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          {isLoading || !album ? (
+            <></>
+          ) : (
+            <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="selected">Selected</TabsTrigger>
+                <TabsTrigger value="available">Available</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="selected">
-              <Card className="p-4">
-                <DataTablePhotos
-                  albumId={album.id}
-                  albumMedias={album.albumMedias ?? []}
-                  tab={0}
-                />
-              </Card>
-            </TabsContent>
-            <TabsContent value="available">
-              <Card className="p-4">
-                <DataTablePhotos
-                  albumId={album.id}
-                  albumMedias={album.albumMedias ?? []}
-                  tab={1}
-                />
-              </Card>
-            </TabsContent>
-          </Tabs>
-        )}
-      </TabsContent>
-    </Tabs>
+              <TabsContent value="selected">
+                <Card className="p-4">
+                  <DataTablePhotos
+                    albumId={album.id}
+                    albumMedias={album.albumMedias ?? []}
+                    tab={0}
+                  />
+                </Card>
+              </TabsContent>
+              <TabsContent value="available">
+                <Card className="p-4">
+                  <DataTablePhotos
+                    albumId={album.id}
+                    albumMedias={album.albumMedias ?? []}
+                    tab={1}
+                  />
+                </Card>
+              </TabsContent>
+            </Tabs>
+          )}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

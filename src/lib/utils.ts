@@ -1,3 +1,4 @@
+import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
@@ -13,6 +14,13 @@ export function isMacOs() {
   return window.navigator.userAgent.includes("Mac");
 }
 
+export function getDefaultFormFilterValues(formFilterAdvanceds: FormFilterAdvanced[]) {
+  const defaults: Record<string, any> = {};
+  formFilterAdvanceds.forEach((item) => {
+    defaults[item.name] = item.defaultValue;
+  });
+  return defaults;
+}
 
 
 export const convertToISODate = (

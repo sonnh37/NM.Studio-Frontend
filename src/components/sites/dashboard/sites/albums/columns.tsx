@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
-import { MoreHorizontal } from "lucide-react";
+import { CircleDashed, MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -119,6 +119,8 @@ export const columns: ColumnDef<Album>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Public" />
     ),
+    
+    enableColumnFilter: true,
   },
   {
     id: "actions",

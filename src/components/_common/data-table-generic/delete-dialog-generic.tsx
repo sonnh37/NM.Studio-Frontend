@@ -93,7 +93,7 @@ export function DeleteBaseEntitysDialog<TData>({
   }
 
   if (isDesktop) {
-    return showTrigger ? (
+    return showTrigger && list.length > 0 ? (
       <Dialog>
         <DialogTrigger asChild>
           <Button variant="outline" size="sm">
