@@ -21,7 +21,11 @@ import { IconType } from "react-icons/lib";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@radix-ui/react-tooltip";
 import { useState, useRef, useEffect } from "react";
 
 export function NavMain({
@@ -39,7 +43,8 @@ export function NavMain({
     }[];
   }[];
 }) {
-  const styleCommon = " group-data-[collapsible=icon]:!p-[6px] transition-colors duration-200 ease-in-out"
+  const styleCommon =
+    " group-data-[collapsible=icon]:!p-[6px] transition-colors duration-200 ease-in-out";
   const pathName = usePathname();
   return (
     <SidebarGroup>
@@ -47,9 +52,8 @@ export function NavMain({
       <SidebarMenu>
         {items.map((item) => {
           const isActive =
-            pathName === item.url ||
-            (pathName.startsWith(item.url + "/"));
-            
+            pathName === item.url || pathName.startsWith(item.url + "/");
+
           return (
             <Collapsible
               key={item.title}
@@ -60,7 +64,7 @@ export function NavMain({
               {item.items ? (
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton 
+                    <SidebarMenuButton
                       tooltip={item.title}
                       className={cn(
                         styleCommon,
@@ -72,6 +76,8 @@ export function NavMain({
                         {item.icon && <item.icon />}
                       </div>
                       <span>{item.title}</span>
+                      {isActive && <div className="ml-auto">|</div>}
+
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
@@ -81,13 +87,12 @@ export function NavMain({
                         const isActiveSub = pathName === subItem.url;
                         return (
                           <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton 
+                            <SidebarMenuSubButton
                               className={cn(
                                 styleCommon,
                                 isActiveSub ? "!bg-muted !text-white" : "",
                                 "py-2.5"
                               )}
-                                
                               asChild
                             >
                               <Link href={subItem.url}>
@@ -95,6 +100,9 @@ export function NavMain({
                                   {subItem.icon && <subItem.icon />}
                                 </div>
                                 <span>{subItem.title}</span>
+                                {isActiveSub && (
+                                  <div className="ml-auto">|</div>
+                                )}
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -119,6 +127,7 @@ export function NavMain({
                       {item.icon && <item.icon />}
                     </div>
                     <span>{item.title}</span>
+                    {isActive && <div className="ml-auto">|</div>}
                   </Link>
                 </SidebarMenuButton>
               )}

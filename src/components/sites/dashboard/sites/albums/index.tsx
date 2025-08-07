@@ -1,6 +1,7 @@
 import { columns } from "./columns";
 
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
+import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
 import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
 import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
 import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
@@ -48,7 +49,8 @@ import {
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -265,6 +267,8 @@ export default function AlbumTable() {
     item2: "Medias",
   };
 
+  const pathname = usePathname();
+
   return (
     <Accordion
       type={accordion.type}
@@ -275,6 +279,7 @@ export default function AlbumTable() {
         <AccordionTrigger>{accordion.item1.toString()}</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
           <DataTableComponent
+            className="p-1"
             isLoading={isFetching}
             deletePermanentFunc={albumService.delete}
             updateUndoFunc={albumService.update}
@@ -300,6 +305,19 @@ export default function AlbumTable() {
               />
               <DataTableSortColumnsPopover table={table} />
               <DataTableToggleColumnsPopover table={table} />
+              <DataTableDownload table={table} />
+
+              <Link
+                className="text-primary-foreground sm:whitespace-nowrap"
+                href={`${pathname}/new`}
+              >
+                <Button
+                  size={"sm"}
+                  className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+                >
+                  Add
+                </Button>
+              </Link>
             </DataTableToolbar>
           </DataTableComponent>
         </AccordionContent>
@@ -307,9 +325,7 @@ export default function AlbumTable() {
       <AccordionItem value={accordion.item2}>
         <AccordionTrigger>{accordion.item2.toString()}</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          {isLoading || !album ? (
-            <></>
-          ) : (
+          {isLoading || !album ? null : (
             <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="selected">Selected</TabsTrigger>

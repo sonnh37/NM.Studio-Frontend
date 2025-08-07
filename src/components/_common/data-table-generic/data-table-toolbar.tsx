@@ -81,28 +81,9 @@ export function DataTableToolbar<TData>({
         <>
           <div className="flex items-center gap-1">{children}</div>
 
-          <CSVLink
-            filename="export_data.csv"
-            data={JSON.stringify(getCurrentTableData() || [])}
-            target="_blank"
-          >
-            <Button size="sm" variant="outline" className="h-8 gap-1">
-              <MdOutlineFileDownload className="h-4 w-4" />
-              Download csv
-            </Button>
-          </CSVLink>
+          
 
-          <Link
-            className="text-primary-foreground sm:whitespace-nowrap"
-            href={`${pathname}/new`}
-          >
-            <Button
-              size={"sm"}
-              className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
-            >
-              Add
-            </Button>
-          </Link>
+          
         </>
       </div>
     </div>

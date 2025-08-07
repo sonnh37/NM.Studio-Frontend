@@ -43,89 +43,95 @@ export function NavManagement({
   const pathName = usePathname();
   return (
     <ScrollArea className="h-full">
-    <SidebarGroup>
-      <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
-      <SidebarMenu>
-        {items.map((item) => {
-          const isActive =
-            pathName === item.url || pathName.startsWith(item.url + "/");
+      <SidebarGroup>
+        <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
+        <SidebarMenu>
+          {items.map((item) => {
+            const isActive =
+              pathName === item.url || pathName.startsWith(item.url + "/");
 
-          return (
-            <Collapsible
-              key={item.title}
-              asChild
-              defaultOpen={isActive}
-              className="group/collapsible"
-            >
-              {item.items ? (
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      className={cn(
-                        styleCommon,
-                        isActive ? "!bg-muted !text-white" : "",
-                        "py-4"
-                      )}
-                    >
+            return (
+              <Collapsible
+                key={item.title}
+                asChild
+                defaultOpen={isActive}
+                className="group/collapsible"
+              >
+                {item.items ? (
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        className={cn(
+                          styleCommon,
+                          isActive ? "!bg-muted " : "",
+                          "py-4"
+                        )}
+                      >
+                        <div className="flex aspect-square size-4 items-center justify-start">
+                          {item.icon && <item.icon />}
+                        </div>
+                        <span>{item.title}</span>
+                        {isActive && <div className="ml-auto">|</div>}
+
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="overflow-hidden text-sm transition-all data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                      <SidebarMenuSub className="pr-0 mx-0 ml-3.5">
+                        {item.items?.map((subItem) => {
+                          const isActiveSub = pathName === subItem.url;
+                          return (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton
+                                className={cn(
+                                  styleCommon,
+                                  isActiveSub ? "!bg-muted " : "",
+                                  "py-2.5"
+                                )}
+                                asChild
+                              >
+                                <Link href={subItem.url}>
+                                  <div className="flex aspect-square size-4 items-center justify-start">
+                                    {subItem.icon && <subItem.icon />}
+                                  </div>
+                                  <span>{subItem.title}</span>
+                                  {isActiveSub && (
+                                    <div className="ml-auto">|</div>
+                                  )}
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          );
+                        })}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                ) : (
+                  <SidebarMenuButton
+                    className={cn(
+                      styleCommon,
+                      "py-4",
+                      isActive ? "!bg-muted " : ""
+                    )}
+                    tooltip={item.title}
+                    asChild
+                    // isActive={isActive}
+                  >
+                    <Link href={item.url} className="flex items-center w-full">
                       <div className="flex aspect-square size-4 items-center justify-start">
                         {item.icon && <item.icon />}
                       </div>
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="overflow-hidden text-sm transition-all data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                    <SidebarMenuSub className="pr-0 mx-0 ml-3.5">
-                      {item.items?.map((subItem) => {
-                        const isActiveSub = pathName === subItem.url;
-                        return (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton
-                              className={cn(
-                                styleCommon,
-                                isActiveSub ? "!bg-muted !text-white" : "",
-                                "py-2.5"
-                              )}
-                              asChild
-                            >
-                              <Link href={subItem.url}>
-                                <div className="flex aspect-square size-4 items-center justify-start">
-                                  {subItem.icon && <subItem.icon />}
-                                </div>
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        );
-                      })}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              ) : (
-                <SidebarMenuButton
-                  className={cn(
-                    styleCommon,
-                    "py-4",
-                    isActive ? "!bg-muted !text-white" : ""
-                  )}
-                  tooltip={item.title}
-                  asChild
-                  // isActive={isActive}
-                >
-                  <Link href={item.url}>
-                    <div className="flex aspect-square size-4 items-center justify-start">
-                      {item.icon && <item.icon />}
-                    </div>
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              )}
-            </Collapsible>
-          );
-        })}
-      </SidebarMenu>
-    </SidebarGroup>
+                      <span className="ml-2">{item.title}</span>
+                      {isActive && <div className="ml-auto">|</div>}
+                    </Link>
+                  </SidebarMenuButton>
+                )}
+              </Collapsible>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroup>
     </ScrollArea>
   );
 }

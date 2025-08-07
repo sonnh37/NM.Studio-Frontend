@@ -11,7 +11,7 @@
 body {
   max-width: 100vw;
   overflow-x: hidden;
-}
+} 
 
 .swiper-pagination-bullet {
   background-color: #7e7e7e !important; /* Màu của chấm chưa active */
@@ -102,9 +102,8 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground;
   }
@@ -124,4 +123,3 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
   }
 }
-
