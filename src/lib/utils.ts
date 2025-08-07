@@ -14,14 +14,15 @@ export function isMacOs() {
   return window.navigator.userAgent.includes("Mac");
 }
 
-export function getDefaultFormFilterValues(formFilterAdvanceds: FormFilterAdvanced[]) {
+export function getDefaultFormFilterValues(
+  formFilterAdvanceds: FormFilterAdvanced[]
+) {
   const defaults: Record<string, any> = {};
   formFilterAdvanceds.forEach((item) => {
     defaults[item.name] = item.defaultValue;
   });
   return defaults;
 }
-
 
 export const convertToISODate = (
   date: Date | string | null | undefined
@@ -58,14 +59,14 @@ export const isValidImage = async (src: string): Promise<boolean> => {
 
 export const toSlug = (title: string): string => {
   return title
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')  // Loại bỏ các dấu
-      .replace(/đ/g, 'd')  // Thay thế "đ" bằng "d"
-      .replace(/[^a-z0-9 ]/g, '')  // Loại bỏ các ký tự không phải chữ cái, số, hoặc khoảng trắng
-      .replace(/\s+/g, '-')  // Thay thế khoảng trắng bằng dấu gạch ngang
-      .replace(/-+$/, '')  // Loại bỏ các dấu gạch ngang dư thừa ở cuối
-      .trim();  // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ các dấu
+    .replace(/đ/g, "d") // Thay thế "đ" bằng "d"
+    .replace(/[^a-z0-9 ]/g, "") // Loại bỏ các ký tự không phải chữ cái, số, hoặc khoảng trắng
+    .replace(/\s+/g, "-") // Thay thế khoảng trắng bằng dấu gạch ngang
+    .replace(/-+$/, "") // Loại bỏ các dấu gạch ngang dư thừa ở cuối
+    .trim(); // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
 };
 
 export const formatTimeSpan = (time: string): string => {
@@ -149,7 +150,6 @@ export const formatPrice = (price: number) => {
 //   return null;
 // };
 
-
 export const convertHtmlToPlainText = (description: string): string => {
   try {
     // Sử dụng DOMParser để chuyển đổi HTML sang text
@@ -184,59 +184,74 @@ export function toLocalISOString(date: Date) {
 }
 
 export const cleanQueryParams = (query: any) => {
-    const cleanedQuery: Record<string, any> = {};
+  const cleanedQuery: Record<string, any> = {};
 
-    for (const key in query) {
-        const value = query[key as keyof any];
+  for (const key in query) {
+    const value = query[key];
 
-        // Xử lý trường hợp các giá trị boolean
-        if (key.startsWith("is")) {
-            if (Array.isArray(value)) {
-                // Nếu chứa cả true và false, đặt là undefined
-                if (value.includes(true) && value.includes(false)) {
-                    // cleanedQuery[key] = null;
-                } else {
-                    cleanedQuery[key] = value
-                        .filter((item) => item !== null)
-                        .map((item) => item.toString());
-                }
-            } else if (value !== undefined && value !== null) {
-                cleanedQuery[key] = value.toString();
-            }
+    // Flatten pagination
+    if (key === "pagination" && typeof value === "object" && value !== null) {
+      for (const subKey in value) {
+        const subValue = value[subKey];
+        if (subValue !== undefined && subValue !== null) {
+          cleanedQuery[`pagination.${capitalize(subKey)}`] =
+            subValue.toString();
         }
-        // Xử lý giá trị array thông thường
-        else if (Array.isArray(value)) {
-            const filteredArray = value.filter((item) => item !== null);
-            if (filteredArray.length > 0) {
-                filteredArray.forEach((item, index) => {
-                    cleanedQuery[`${key}[${index}]`] = item;
-                });
-            }
-        }
-        // Xử lý đối tượng: chuyển thành chuỗi JSON
-        else if (typeof value === 'object' && value !== null) {
-            // Convert object to JSON string
-            cleanedQuery[key] = JSON.stringify(value); // Convert object to string
-        }
-        // Xử lý giá trị không phải array hay object
-        else if (value !== undefined && value !== null) {
-            cleanedQuery[key] = value;
-        }
+      }
+      continue;
     }
 
-    // Convert object cleanedQuery to query string
-    const params = new URLSearchParams();
+    // Flatten sorting
+    if (key === "sorting" && typeof value === "object" && value !== null) {
+      const { sortField, sortDirection } = value;
+      if (sortField) cleanedQuery["sorting.sortField"] = sortField;
+      if (sortDirection !== undefined && sortDirection !== null)
+        cleanedQuery["sorting.sortDirection"] = sortDirection.toString();
+      continue;
+    }
 
-    for (const key in cleanedQuery) {
-        const value = cleanedQuery[key];
-        if (Array.isArray(value)) {
-            value.forEach((val) => {
-                params.append(key, val);
-            });
+    if (key.startsWith("is")) {
+      if (Array.isArray(value)) {
+        if (value.includes(true) && value.includes(false)) {
+          // cleanedQuery[key] = null;
         } else {
-            params.append(key, value.toString());
+          cleanedQuery[key] = value
+            .filter((item) => item !== null)
+            .map((item) => item.toString());
         }
+      } else if (value !== undefined && value !== null) {
+        cleanedQuery[key] = value.toString();
+      }
     }
 
-    return params.toString(); // Return as query string
+    // Array
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        if (item !== null && item !== undefined) {
+          cleanedQuery[`${key}[${index}]`] = item.toString();
+        }
+      });
+      continue;
+    }
+
+    // Object khác
+    if (typeof value === "object" && value !== null) {
+      cleanedQuery[key] = JSON.stringify(value);
+      continue;
+    }
+
+    // Primitive
+    if (value !== undefined && value !== null) {
+      cleanedQuery[key] = value.toString();
+    }
+  }
+
+  const params = new URLSearchParams();
+  for (const key in cleanedQuery) {
+    params.append(key, cleanedQuery[key]);
+  }
+
+  return params.toString();
 };
+
+const capitalize = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);

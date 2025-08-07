@@ -18,8 +18,8 @@ export interface SortingParameters {
 }
 
 export enum SortDirection {
-    Ascending,
-    Descending
+    Ascending = 1,
+    Descending = -1
 }
 
 export interface GetQueryableQuery extends BaseQuery {
