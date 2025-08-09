@@ -123,7 +123,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 
 const columnSearch = "name";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
+  { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
 ];
 
 const defaultSchema = z.object({
@@ -140,7 +140,7 @@ const defaultSchema = z.object({
 //#endregion
 export default function SizeTable() {
   const filterEnums: FilterEnum[] = [
-    { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
+    { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
   ];
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");

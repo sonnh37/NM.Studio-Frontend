@@ -139,7 +139,7 @@ export default function Page() {
                 <SwiperSlide key={index}>
                   <img
                     alt={pxp.mediaFile?.title ?? "N/A"}
-                    src={pxp.mediaFile?.src ?? "/image-notfound.jpg"}
+                    src={pxp.mediaFile?.src ?? "/image-notfound.png"}
                   />
                 </SwiperSlide>
               ))}
@@ -181,7 +181,7 @@ export default function Page() {
                 >
                   <img
                     alt={pxp.mediaFile?.title ?? "N/A"}
-                    src={pxp.mediaFile?.src ?? "/image-notfound.jpg"}
+                    src={pxp.mediaFile?.src ?? "/image-notfound.png"}
                     className="w-full h-full object-cover"
                   />
                 </SwiperSlide>

@@ -122,7 +122,7 @@ export function MainNav({
                   {albums.map((album) => (
                     <Link key={album.id} href={`/albums/${album.slug}`}>
                       <Image
-                        src={album.background ?? "/image-notfound.jpg"}
+                        src={album.background ?? "/image-notfound.png"}
                         width={100}
                         height={100}
                         alt={album.title ?? "N/A"}

@@ -13,7 +13,8 @@ export interface BlogCreateCommand extends CreateCommand {
     viewCount: number;
     tags?: string | null;
     authorId?: string | null;
-    file?: File | null;
+    file_bannerImage?: File | null;
+    file_thumbnail?: File | null;
 }
 
 export interface BlogUpdateCommand extends UpdateCommand {
@@ -28,7 +29,8 @@ export interface BlogUpdateCommand extends UpdateCommand {
     viewCount: number;
     tags?: string | null;
     authorId?: string | null;
-    file?: File | null;
+    file_bannerImage?: File | null;
+    file_thumbnail?: File | null;
 }
 
 export interface BlogDeleteCommand extends DeleteCommand {

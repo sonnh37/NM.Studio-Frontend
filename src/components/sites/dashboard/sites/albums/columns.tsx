@@ -49,7 +49,7 @@ export const columns: ColumnDef<Album>[] = [
     accessorKey: "background",
     header: "Background Image",
     cell: ({ row }) => {
-      const backgroundUrl = row.getValue("background") as string;
+      const backgroundUrl = row.original.background as string;
       return (
         <Link href={backgroundUrl || "#"}>
           <Image
@@ -57,7 +57,7 @@ export const columns: ColumnDef<Album>[] = [
             className="aspect-square rounded-md object-cover"
             height={64}
             width={64}
-            src={backgroundUrl ?? ""}
+            src={backgroundUrl ?? "/image-notfound.png"}
           />
         </Link>
       );
@@ -89,6 +89,10 @@ export const columns: ColumnDef<Album>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Event Date" />
     ),
+    cell: ({ row }) => {
+      if (!row.original.eventDate) return "-";
+      return formatDate(row.original.eventDate, true);
+    },
   },
   {
     accessorKey: "brideName",

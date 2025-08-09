@@ -55,13 +55,18 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   FieldPath,
+  FieldPathValue,
   FieldValues,
+  Path,
   useFormContext,
   UseFormReturn,
 } from "react-hook-form";
 import { Toaster } from "sonner";
 import { PhoneInput } from "@/components/_common/phone-input";
 import { vi } from "date-fns/locale";
+import { FileUpload } from "@/components/_common/custom/file-upload";
+import Image from "next/image";
+
 const Editor = dynamic(
   () => import("@/components/_common/react-tiptap-editor/editor")
 );
@@ -143,23 +148,18 @@ interface PostForm {
   content: string;
 }
 
-export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
+export function FormInputReactTipTapEditor<TFieldValues extends FieldValues>({
   name,
   form,
   label = "",
   className = "",
-}: FormInputProps<TFieldValues>) => {
+}: FormInputProps<TFieldValues>) {
   const editorRef = useRef<TiptapEditorRef>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { control, reset, getValues, watch } = form;
 
-  // const getWordCount = useCallback(
-  //   () => editorRef.current?.getInstance()?.storage.characterCount.words() ?? 0,
-  //   [editorRef.current]
-  // );
-
   useEffect(() => {
-    const id = getValues("id");
+    const id = getValues("id" as FieldPath<TFieldValues>);
 
     if (!id) {
       setIsLoading(false);
@@ -180,7 +180,7 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  if (isLoading) return;
+  if (isLoading) return null;
 
   return (
     <FormField
@@ -203,7 +203,7 @@ export const FormInputReactTipTapEditor = <TFieldValues extends FieldValues>({
       )}
     />
   );
-};
+}
 
 export const FormInputPlateJsEditor = <TFieldValues extends FieldValues>({
   name,
@@ -400,7 +400,7 @@ export const FormSelectEnum = <TFieldValues extends FieldValues>({
   // Set default value if shouldSetDefault is true and enumOptions has items
   useEffect(() => {
     if (shouldSetDefault && enumOptions.length > 0 && !form.getValues(name)) {
-      form.setValue(name, Number(enumOptions[0].value));
+      form.setValue(name, Number(enumOptions[0].value) as FieldPathValue<TFieldValues, typeof name>);
     }
   }, [shouldSetDefault, enumOptions, form, name]);
 
@@ -1065,6 +1065,158 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
     />
   );
 };
+
+interface FormImageUploadProps<T extends FieldValues> {
+  form: UseFormReturn<T>;
+  name: FieldPath<T>;
+  label?: string;
+  onFileChange?: (file: File | null) => void;
+}
+
+export function FormImageUpload<T extends FieldValues>({
+  form,
+  name,
+  label = "Upload Image",
+  onFileChange,
+}: FormImageUploadProps<T>) {
+  const handleChange = (newFile: File | null) => {
+    onFileChange?.(newFile);
+  };
+
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <div className="grid gap-2">
+              {field.value && (
+                <Image
+                  alt="Preview"
+                  className="w-full rounded-md"
+                  height={9999}
+                  src={field.value ?? "/image-notfound.png"}
+                  width={9999}
+                />
+              )}
+              <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                <FileUpload onChange={handleChange} />
+              </div>
+              <FormMessage />
+            </div>
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  );
+}
+
+export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  form,
+  placeholder = "",
+  disabled = false,
+}: FormInputProps<TFieldValues>) => {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => {
+        const [time, setTime] = useState<string>("05:00");
+        const [date, setDate] = useState<Date | null>(null);
+
+        return (
+          <FormItem className="flex flex-col w-full">
+            <FormLabel>{label}</FormLabel>
+            <Popover>
+              <PopoverTrigger asChild>
+                <FormControl>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full font-normal",
+                      !field.value && "text-muted-foreground"
+                    )}
+                  >
+                    {field.value ? (
+                      `${format(field.value, "PPP")}, ${time}`
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-auto p-0 flex items-start"
+                align="start"
+              >
+                <Calendar
+                  mode="single"
+                  captionLayout="dropdown"
+                  selected={date || field.value}
+                  onSelect={(selectedDate) => {
+                    const [hours, minutes] = time.split(":");
+                    selectedDate?.setHours(parseInt(hours), parseInt(minutes));
+                    setDate(selectedDate!);
+                    field.onChange(selectedDate);
+                  }}
+                  fromYear={2000}
+                  toYear={new Date().getFullYear()}
+                  disabled={(date) =>
+                    Number(date) < Date.now() - 1000 * 60 * 60 * 24 ||
+                    Number(date) > Date.now() + 1000 * 60 * 60 * 24 * 30
+                  }
+                />
+                <Select
+                  defaultValue={time}
+                  onValueChange={(newTime) => {
+                    setTime(newTime);
+                    if (date) {
+                      const [hours, minutes] = newTime.split(":");
+                      const newDate = new Date(date.getTime());
+                      newDate.setHours(parseInt(hours), parseInt(minutes));
+                      setDate(newDate);
+                      field.onChange(newDate);
+                    }
+                  }}
+                  open={true}
+                >
+                  <SelectTrigger className="font-normal focus:ring-0 w-[120px] my-4 mr-2">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="border-none shadow-none mr-2 fixed top-2 left-0">
+                    <ScrollArea className="h-[15rem]">
+                      {Array.from({ length: 96 }).map((_, i) => {
+                        const hour = Math.floor(i / 4)
+                          .toString()
+                          .padStart(2, "0");
+                        const minute = ((i % 4) * 15)
+                          .toString()
+                          .padStart(2, "0");
+                        return (
+                          <SelectItem key={i} value={`${hour}:${minute}`}>
+                            {hour}:{minute}
+                          </SelectItem>
+                        );
+                      })}
+                    </ScrollArea>
+                  </SelectContent>
+                </Select>
+              </PopoverContent>
+            </Popover>
+            {/* <FormDescription>Set your date and time.</FormDescription> */}
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+};
+
 
 interface ConfirmationDialogProps {
   isOpen: boolean;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
   FormInput,
+  FormInputDateTimePicker,
   FormInputDateTimePickerV2,
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
@@ -111,12 +112,13 @@ export function BookingModal() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-4">
-            <FormInputDateTimePickerV2
+            <FormInputDateTimePicker
               form={form}
               disabled={false}
               name="bookingDate"
               label="Ngày hẹn"
               placeholder="Chọn ngày"
+              isShowTimePicker
             />
 
             <FormInput

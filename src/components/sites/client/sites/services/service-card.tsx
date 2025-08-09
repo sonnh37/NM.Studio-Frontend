@@ -16,7 +16,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           <img
             className="aspect-square h-[300px] w-full bg-gray-200 rounded-none object-cover lg:aspect-auto"
             alt={service.name ?? ""}
-            src={service.src ? service.src : "/image-notfound.jpg"}
+            src={service.src ? service.src : "/image-notfound.png"}
           />
         </a>
       </div>

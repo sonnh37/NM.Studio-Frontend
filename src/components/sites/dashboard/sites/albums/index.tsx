@@ -134,7 +134,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 const columnSearch = "title";
 const query_key = "data";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
+  { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
 ];
 
 const defaultSchema = z.object({
@@ -299,6 +299,7 @@ export default function AlbumTable() {
                 list={table
                   .getFilteredSelectedRowModel()
                   .rows.map((row) => row.original)}
+                query_keys={[query_key]}
                 deleteFunc={(command) => albumService.delete(command)}
                 onSuccess={() => table.toggleAllRowsSelected(false)}
               />

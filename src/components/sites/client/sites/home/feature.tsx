@@ -75,7 +75,7 @@ export function Feature() {
                       <Image
                         className="aspect-square w-full bg-gray-200 rounded-xl object-cover lg:aspect-auto lg:h-96"
                         alt={""}
-                        src={product.src ? product.src : "/image-notfound.jpg"}
+                        src={product.src ? product.src : "/image-notfound.png"}
                         width={9999}
                         height={9999}
                       />

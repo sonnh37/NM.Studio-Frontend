@@ -41,7 +41,7 @@ export function BlogsRecent() {
                                 <Image
                                     alt={blog.title ?? ""}
                                     className="h-[5rem] object-cover"
-                                    src={blog.thumbnail ?? "/image-notfound.jpg"}
+                                    src={blog.thumbnail ?? "/image-notfound.png"}
                                     height={9999}
                                     width={9999}
                                 />

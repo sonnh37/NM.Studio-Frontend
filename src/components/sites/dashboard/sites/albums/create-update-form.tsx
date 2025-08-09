@@ -217,7 +217,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                                 alt="Picture"
                                 className="w-[30%] rounded-md "
                                 height={9999}
-                                src={field.value ?? "/image-notfound.jpg"}
+                                src={field.value ?? "/image-notfound.png"}
                                 width={9999}
                               />
                             </>

@@ -181,6 +181,7 @@ export default function AlbumMediasTable({
   const handleRemovePhoto = (modal: MediaFile) => {
     const command: AlbumMediaDeleteCommand = {
       mediaFileId: modal.id,
+      // id: modal.,
       isPermanent: true,
       albumId: albumId,
     };

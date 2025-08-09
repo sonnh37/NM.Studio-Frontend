@@ -59,7 +59,7 @@ export const columns: ColumnDef<Service>[] = [
             className="aspect-square size-[64px] rounded-md object-cover"
             height={64}
             width={64}
-            src={backgroundUrl ?? "/image-notfound.jpg"}
+            src={backgroundUrl ?? "/image-notfound.png"}
           />
         </Link>
       );

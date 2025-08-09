@@ -78,7 +78,7 @@ const ProductHome = () => {
                 height={9999}
                 src={
                   productRepresentatives[0]?.product?.src ||
-                  "/image-notfound.jpg"
+                  "/image-notfound.png"
                 }
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -99,7 +99,7 @@ const ProductHome = () => {
                 height={9999}
                 src={
                   productRepresentatives[1]?.product?.src ||
-                  "/image-notfound.jpg"
+                  "/image-notfound.png"
                 }
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -119,7 +119,7 @@ const ProductHome = () => {
                   height={9999}
                   src={
                     productRepresentatives[2]?.product?.src ||
-                    "/image-notfound.jpg"
+                    "/image-notfound.png"
                   }
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -138,7 +138,7 @@ const ProductHome = () => {
                   height={9999}
                   src={
                     productRepresentatives[3]?.product?.src ||
-                    "/image-notfound.jpg"
+                    "/image-notfound.png"
                   }
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -160,7 +160,7 @@ const ProductHome = () => {
                 height={9999}
                 src={
                   productRepresentatives[4]?.product?.src ||
-                  "/image-notfound.jpg"
+                  "/image-notfound.png"
                 }
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"

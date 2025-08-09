@@ -25,7 +25,7 @@ export const AnimatedTestimonialsPhotos = async ({
             quote: mediaFile.tag || "Untitled",
             name: mediaFile.title || "Anonymous",
             designation: mediaFile.description || "Untitled",
-            src: await isValidImage(mediaFile.src ?? "/image-notfound.jpg") ? mediaFile.src : "/image-notfound.jpg",
+            src: await isValidImage(mediaFile.src ?? "/image-notfound.png") ? mediaFile.src : "/image-notfound.png",
         } as Testimonial))
     );
 

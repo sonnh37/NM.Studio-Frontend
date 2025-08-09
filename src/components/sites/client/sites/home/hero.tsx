@@ -105,7 +105,7 @@ export function Hero() {
                 width={9999}
                 height={9999}
                 alt={pic.title ?? ""}
-                src={pic.src ?? "/image-notfound.jpg"}
+                src={pic.src ?? "/image-notfound.png"}
               />
             </div>
           </SwiperSlide>

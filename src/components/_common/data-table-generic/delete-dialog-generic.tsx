@@ -37,11 +37,13 @@ interface DeleteBaseEntitysDialogProps<TData>
   showTrigger?: boolean;
   list: Row<TData>["original"][];
   onSuccess?: () => void;
+  query_keys?: string[];
   deleteFunc?: (command: DeleteCommand) => Promise<BusinessResult<null>>;
 }
 
 export function DeleteBaseEntitysDialog<TData>({
   showTrigger = true,
+  query_keys = ["data"],
   list,
   onSuccess,
   deleteFunc,
@@ -81,7 +83,7 @@ export function DeleteBaseEntitysDialog<TData>({
         }
         props.onOpenChange?.(false);
         if (onSuccess) {
-          queryClient.invalidateQueries({ queryKey: ["data"] });
+          queryClient.invalidateQueries({ queryKey: query_keys });
           onSuccess();
         }
         props.onOpenChange?.(false);

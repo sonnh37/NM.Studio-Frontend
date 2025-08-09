@@ -92,7 +92,7 @@ export function Blog() {
                         className="aspect-square w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
                         alt={""}
                         src={
-                          ser.thumbnail ? ser.thumbnail : "/image-notfound.jpg"
+                          ser.thumbnail ? ser.thumbnail : "/image-notfound.png"
                         }
                         width={9999}
                         height={9999}

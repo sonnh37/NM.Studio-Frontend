@@ -204,7 +204,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                                         className="w-[30%] rounded-md "
                                         height={9999}
                                         src={
-                                          field.value ?? "/image-notfound.jpg"
+                                          field.value ?? "/image-notfound.png"
                                         }
                                         width={9999}
                                       />

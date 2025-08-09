@@ -124,7 +124,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 
 const columnSearch = "name";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
+  { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
 ];
 
 const defaultSchema = z.object({

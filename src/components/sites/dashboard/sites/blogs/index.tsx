@@ -1,39 +1,37 @@
 import { columns } from "./columns";
 
-import { isDeleted_options } from "@/components/_common/filters";
-
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
-import { DataTablePagination } from "@/components/_common/data-table-generic/data-table-pagination";
-import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-table-skelete";
+import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
+import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
+import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
+import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
 import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
+import { isDeleted_options } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card } from "@/components/ui/card";
 import {
-  FormControl,
   FormDescription,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { cn } from "@/lib/utils";
+import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
+import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
   getCoreRowModel,
-  getFilteredRowModel,
   PaginationState,
   SortingState,
   useReactTable,
@@ -41,12 +39,12 @@ import {
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { categoryService } from "@/services/category-service";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
@@ -106,25 +104,16 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
       </FormItem>
     ),
   },
-  {
-    name: "name",
-    label: "Name",
-    defaultValue: "",
-    render: ({ field }: { field: any }) => (
-      <FormItem>
-        <FormLabel>Name</FormLabel>
-        <FormControl>
-          <Input placeholder="Product name..." {...field} />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    ),
-  },
 ];
 
-const columnSearch = "name";
+const columnSearch = "title";
+const query_key = "data";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Is deleted", options: isDeleted_options },
+  {
+    columnId: "isDeleted",
+    title: "Deleted status",
+    options: isDeleted_options,
+  },
 ];
 
 const defaultSchema = z.object({
@@ -140,10 +129,9 @@ const defaultSchema = z.object({
 });
 //#endregion
 export default function BlogTable() {
-  
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");
-  //#region DEFAULT
+  const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([
     {
       id: "createdDate",
@@ -162,31 +150,32 @@ export default function BlogTable() {
   const [shouldFetch, setShouldFetch] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  //#endregion
 
-  //#region CREATE TABLE
   const form = useForm<z.infer<typeof defaultSchema>>({
     resolver: zodResolver(defaultSchema),
-    defaultValues: {},
+    defaultValues: getDefaultFormFilterValues(formFilterAdvanceds),
   });
 
   const formValues = useWatch({
     control: form.control,
   });
 
-  const getQueryParams = useQueryParams(
-    formValues,
-    columnFilters,
-    pagination,
-    sorting
-  );
+  const queryParams = useMemo(() => {
+    const params: BlogGetAllQuery = useQueryParams(
+      formValues,
+      columnFilters,
+      pagination,
+      sorting
+    );
 
-  const queryParams = useMemo(() => getQueryParams(), [getQueryParams]);
+    params.includeProperties = ["author"];
+
+    return { ...params };
+  }, [formValues, columnFilters, pagination, sorting]);
 
   const { data, isFetching, error } = useQuery({
-    queryKey: ["data", queryParams],
+    queryKey: [query_key, queryParams],
     queryFn: () => blogService.getAll(queryParams),
-    placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
   });
@@ -200,7 +189,6 @@ export default function BlogTable() {
     rowCount: data?.data?.totalCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     initialState: {
-      // sorting: [{ id: "createdDate", desc: true }],
       columnPinning: { right: ["actions"] },
     },
     onPaginationChange: setPagination,
@@ -211,8 +199,6 @@ export default function BlogTable() {
     manualPagination: true,
     getRowId: (originalRow) => originalRow.id,
   });
-
-  //#endregion
 
   //#region useEffect
   useEffect(() => {
@@ -246,37 +232,48 @@ export default function BlogTable() {
   };
 
   return (
-    <Card className="space-y-4 p-4">
+    <DataTableComponent
+      isLoading={isFetching}
+      deletePermanentFunc={(command) => blogService.delete(command)}
+      updateUndoFunc={(command) => blogService.update(command)}
+      table={table}
+      queryKey={query_key}
+    >
       <DataTableToolbar
-        form={form}
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteFunc={blogService.delete}
-        isSheetOpen={isSheetOpen}
-        handleSheetChange={handleSheetChange}
-        formFilterAdvanceds={formFilterAdvanceds}
-      />
+      >
+        <DeleteBaseEntitysDialog
+          list={table
+            .getFilteredSelectedRowModel()
+            .rows.map((row) => row.original)}
+          query_keys={[query_key]}
+          deleteFunc={(command) => blogService.delete(command)}
+          onSuccess={() => table.toggleAllRowsSelected(false)}
+        />
+        <DataTableFilterSheet
+          form={form}
+          isSheetOpen={isSheetOpen}
+          handleSheetChange={handleSheetChange}
+          formFilterAdvanceds={formFilterAdvanceds}
+        />
+        <DataTableSortColumnsPopover table={table} />
+        <DataTableToggleColumnsPopover table={table} />
+        <DataTableDownload table={table} />
 
-      {isFetching && !isTyping ? (
-        <DataTableSkeleton
-          columnCount={1}
-          showViewOptions={false}
-          withPagination={false}
-          rowCount={pagination.pageSize}
-          searchableColumnCount={0}
-          filterableColumnCount={0}
-          shrinkZero
-        />
-      ) : (
-        <DataTableComponent
-          deletePermanentFunc={blogService.delete}
-          updateUndoFunc={blogService.update}
-          table={table}
-          isLoading={isFetching}
-        />
-      )}
-      <DataTablePagination table={table} />
-    </Card>
+        <Link
+          className="text-primary-foreground sm:whitespace-nowrap"
+          href={`${pathname}/new`}
+        >
+          <Button
+            size={"sm"}
+            className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+          >
+            Add
+          </Button>
+        </Link>
+      </DataTableToolbar>
+    </DataTableComponent>
   );
 }

@@ -6,8 +6,8 @@ import {categoryService} from "@/services/category-service";
 import {useQuery} from "@tanstack/react-query";
 
 export const isDeleted_options = [
-    {label: "Active", value: "false"},
-    {label: "Deactivated", value: "true"},
+    {label: "Live", value: "false"},
+    {label: "Removed", value: "true"},
 ];
 
 export const isActive_options = [

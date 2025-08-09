@@ -63,7 +63,7 @@ export function AlbumList() {
               >
                 <Image
                   alt="image"
-                  src={album.background ?? "/image-notfound.jpg"}
+                  src={album.background ?? "/image-notfound.png"}
                   width={9999}
                   height={9999}
                   className="w-full h-full object-cover"

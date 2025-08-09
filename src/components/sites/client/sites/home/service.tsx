@@ -143,7 +143,7 @@ export function Service() {
                         <Image
                           className="aspect-square h-[300px] w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
                           alt={""}
-                          src={ser.src ? ser.src : "/image-notfound.jpg"}
+                          src={ser.src ? ser.src : "/image-notfound.png"}
                           width={9999}
                           height={9999}
                         />

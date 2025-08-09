@@ -101,12 +101,12 @@ export default function Page({ params }: { params: { serviceId: string } }) {
       <article className="py-10 px-6 flex flex-col items-center ">
         <PostReadingProgress />
         <PostHeader
-          avatar={"/image-notfound.jpg"}
+          avatar={"/image-notfound.png"}
           title={service.name ?? "Đang cập nhật..."}
           author={service.createdBy ?? "N/A"}
           createdAt={service.createdDate?.toLocaleString() ?? "N/A"}
           readingTime={readingTime}
-          cover={service.src ?? "/image-notfound.jpg"}
+          cover={service.src ?? "/image-notfound.png"}
         />
         <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
           <PostSharing />

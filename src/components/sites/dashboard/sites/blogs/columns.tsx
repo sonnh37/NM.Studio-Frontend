@@ -48,9 +48,9 @@ export const columns: ColumnDef<Blog>[] = [
 
   {
     accessorKey: "thumbnail",
-    header: "Thumbnail Image",
+    header: "Thumbnail",
     cell: ({ row }) => {
-      const backgroundUrl = row.getValue("thumbnail") as string;
+      const backgroundUrl = row.original.thumbnail as string;
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Blog>[] = [
             className="aspect-square size-[64px] rounded-md object-cover"
             height={9999}
             width={9999}
-            src={backgroundUrl ?? ""}
+            src={backgroundUrl ?? "/image-notfound.png"}
           />
         </Link>
       );
@@ -96,6 +96,20 @@ export const columns: ColumnDef<Blog>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Banner" />
     ),
+    cell: ({ row }) => {
+      const image = row.original.bannerImage as string;
+      return (
+        <Link href={image ?? ""}>
+          <Image
+            alt={`Blog background`}
+            className="aspect-square size-[32px] rounded-md object-cover"
+            height={9999}
+            width={9999}
+            src={image ?? "/image-notfound.png"}
+          />
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -130,6 +144,20 @@ export const columns: ColumnDef<Blog>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Tags" />
     ),
+  },
+  {
+    accessorKey: "author",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Author" />
+    ),
+    cell: ({ row }) => {
+      const author = row.original.author;
+      return (
+        <Link href={`/dashboard/users/${author?.id}`}>
+          {author?.email ?? "Unknown Author"}
+        </Link>
+      );
+    },
   },
   {
     id: "actions",

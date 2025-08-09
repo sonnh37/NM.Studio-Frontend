@@ -65,7 +65,7 @@ export class BaseService<TEntity> {
   async delete(command: DeleteCommand): Promise<BusinessResult<null>> {
     try {
       const cleanedQuery = cleanQueryParams(command);
-        console.log("check_endpoint", this.endpoint);
+      console.log("check_endpoint", this.endpoint);
       const res = await axiosInstance.delete<BusinessResult<null>>(
         `${this.endpoint}?${cleanedQuery}`
       );
@@ -96,6 +96,23 @@ export class BaseService<TEntity> {
         }
       );
     });
+  }
+
+  protected async handleFiles<T extends { [key: string]: any }>(
+    command: T,
+    fileFields: { fileKey: keyof T; urlKey: keyof T }[],
+    folderName: string,
+    isUpdate = false
+  ) {
+    for (const { fileKey, urlKey } of fileFields) {
+      if (command[fileKey]) {
+        const link = await this.uploadImage(command[fileKey], folderName);
+        if (isUpdate && link && command[urlKey]) {
+          await this.deleteImage(command[urlKey]);
+        }
+        command[urlKey] = (link ?? command[urlKey]) as T[keyof T];
+      }
+    }
   }
 
   async deleteImage(link: string): Promise<boolean> {

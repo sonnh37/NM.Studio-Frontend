@@ -53,8 +53,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                   product.productMedias!.length > 0 &&
                   product.productMedias![0].mediaFile
                     ? product.productMedias![0].mediaFile.src ??
-                      "/image-notfound.jpg"
-                    : "/image-notfound.jpg"
+                      "/image-notfound.png"
+                    : "/image-notfound.png"
                 }
                 width={9999}
                 height={9999}
