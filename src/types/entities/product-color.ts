@@ -3,9 +3,9 @@ import {Product} from "./product";
 import {Color} from "./color";
 
 export interface ProductColor extends BaseEntity {
-    productId?: string | null;
-    colorId?: string | null;
+    productId?: string;
+    colorId?: string;
     isActive: boolean;
-    product?: Product | null;
-    color?: Color | null;
+    product?: Product;
+    color?: Color;
 }

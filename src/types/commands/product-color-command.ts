@@ -1,18 +1,22 @@
-import {CreateCommand, DeleteCommand, UpdateCommand} from "@/types/commands/base/base-command";
+import {
+  CreateCommand,
+  DeleteCommand,
+  UpdateCommand,
+} from "@/types/commands/base/base-command";
 
 export interface ProductColorCreateCommand extends CreateCommand {
-    productId?: string | null;
-    colorId?: string | null;
-    isActive: boolean;
+  productId?: string | null | undefined;
+  colorId?: string | null | undefined;
+  isActive: boolean;
 }
 
 export interface ProductColorUpdateCommand extends UpdateCommand {
-    productId?: string | null;
-    colorId?: string | null;
-    isActive: boolean;
+  productId?: string | null | undefined;
+  colorId?: string | null | undefined;
+  isActive: boolean;
 }
 
 export interface ProductColorDeleteCommand extends DeleteCommand {
-    productId?: string | null;
-    colorId?: string | null;
+  productId?: string | null | undefined;
+  colorId?: string | null | undefined;
 }

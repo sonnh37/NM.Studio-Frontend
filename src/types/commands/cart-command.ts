@@ -1,29 +1,29 @@
-import {CreateCommand, UpdateCommand} from "./base/base-command";
+import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface CartCreateCommand extends CreateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  title?: string | null | undefined;
+  slug?: string | null | undefined;
+  description?: string | null | undefined;
+  background?: string | null | undefined;
+  eventDate?: string | null | undefined;
+  brideName?: string | null | undefined;
+  groomName?: string | null | undefined;
+  location?: string | null | undefined;
+  photographer?: string | null | undefined;
+  isPublic: boolean;
+  file?: File | null | undefined;
 }
 
 export interface CartUpdateCommand extends UpdateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  title?: string | null | undefined;
+  slug?: string | null | undefined;
+  description?: string | null | undefined;
+  background?: string | null | undefined;
+  eventDate?: string | null | undefined;
+  brideName?: string | null | undefined;
+  groomName?: string | null | undefined;
+  location?: string | null | undefined;
+  photographer?: string | null | undefined;
+  isPublic: boolean;
+  file?: File | null | undefined;
 }

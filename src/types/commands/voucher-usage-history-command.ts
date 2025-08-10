@@ -1,29 +1,17 @@
-import {CreateCommand, UpdateCommand} from "./base/base-command";
+import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface VoucherUsageHistoryCreateCommand extends CreateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  voucherId?: string | null | undefined;
+  userId?: string | null | undefined;
+  orderId?: string | null | undefined;
+  discountAmount: number;
+  usedDate: string;
 }
 
 export interface VoucherUsageHistoryUpdateCommand extends UpdateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  voucherId?: string | null | undefined;
+  userId?: string | null | undefined;
+  orderId?: string | null | undefined;
+  discountAmount: number;
+  usedDate: string;
 }

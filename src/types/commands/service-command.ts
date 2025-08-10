@@ -1,46 +1,47 @@
-import {CreateCommand, DeleteCommand, UpdateCommand} from "./base/base-command";
+import {
+  CreateCommand,
+  DeleteCommand,
+  UpdateCommand,
+} from "./base/base-command";
 
 export interface ServiceCreateCommand extends CreateCommand {
-    name?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    src?: string | null;
-    price?: number | null;
-    category?: string | null;
-    isFeatured: boolean;
-    isActive: boolean;
-    sortOrder: number;
-    imageUrl?: string | null;
-    shortDescription?: string | null;
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    metaKeywords?: string | null;
-    termsAndConditions?: string | null;
-    maxBookingsPerDay?: number | null;
-    file?: File | null;
+  name?: string | null | undefined;
+  slug?: string | null | undefined;
+  description?: string | null | undefined;
+  src?: string | null | undefined;
+  price?: number | null | undefined;
+  category?: string | null | undefined;
+  isFeatured: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  imageUrl?: string | null | undefined;
+  shortDescription?: string | null | undefined;
+  metaTitle?: string | null | undefined;
+  metaDescription?: string | null | undefined;
+  metaKeywords?: string | null | undefined;
+  termsAndConditions?: string | null | undefined;
+  maxBookingsPerDay?: number | null | undefined;
+  file?: File | null | undefined;
 }
 
 export interface ServiceUpdateCommand extends UpdateCommand {
-    name?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    src?: string | null;
-    price?: number | null;
-    category?: string | null;
-    isFeatured: boolean;
-    isActive: boolean;
-    sortOrder: number;
-    imageUrl?: string | null;
-    shortDescription?: string | null;
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    metaKeywords?: string | null;
-    termsAndConditions?: string | null;
-    maxBookingsPerDay?: number | null;
-    file?: File | null;
+  name?: string | null | undefined;
+  slug?: string | null | undefined;
+  description?: string | null | undefined;
+  src?: string | null | undefined;
+  price?: number | null | undefined;
+  category?: string | null | undefined;
+  isFeatured: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  imageUrl?: string | null | undefined;
+  shortDescription?: string | null | undefined;
+  metaTitle?: string | null | undefined;
+  metaDescription?: string | null | undefined;
+  metaKeywords?: string | null | undefined;
+  termsAndConditions?: string | null | undefined;
+  maxBookingsPerDay?: number | null | undefined;
+  file?: File | null | undefined;
 }
 
-
-export interface ServiceDeleteCommand extends DeleteCommand {
-    
-}
+export interface ServiceDeleteCommand extends DeleteCommand {}

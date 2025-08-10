@@ -1,27 +1,27 @@
-import {CreateCommand, UpdateCommand} from "./base/base-command";
+import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface SizeCreateCommand extends CreateCommand {
-    name?: string | null;
-    displayName?: string | null;
-    description?: string | null;
-    bust?: number | null;
-    waist?: number | null;
-    hip?: number | null;
-    length?: number | null;
-    sizeGuide?: string | null;
-    isActive: boolean;
-    sortOrder: number;
+  name?: string | null | undefined;
+  displayName?: string | null | undefined;
+  description?: string | null | undefined;
+  bust?: number | null | undefined;
+  waist?: number | null | undefined;
+  hip?: number | null | undefined;
+  length?: number | null | undefined;
+  sizeGuide?: string | null | undefined;
+  isActive: boolean;
+  sortOrder: number;
 }
 
 export interface SizeUpdateCommand extends UpdateCommand {
-    name?: string | null;
-    displayName?: string | null;
-    description?: string | null;
-    bust?: number | null;
-    waist?: number | null;
-    hip?: number | null;
-    length?: number | null;
-    sizeGuide?: string | null;
-    isActive: boolean;
-    sortOrder: number;
+  name?: string | null | undefined;
+  displayName?: string | null | undefined;
+  description?: string | null | undefined;
+  bust?: number | null | undefined;
+  waist?: number | null | undefined;
+  hip?: number | null | undefined;
+  length?: number | null | undefined;
+  sizeGuide?: string | null | undefined;
+  isActive: boolean;
+  sortOrder: number;
 }

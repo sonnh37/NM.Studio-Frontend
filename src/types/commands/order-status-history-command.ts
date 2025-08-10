@@ -1,29 +1,26 @@
-import {CreateCommand, UpdateCommand} from "./base/base-command";
+import { OrderStatus } from "../entities/order";
+import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface OrderStatusHistoryCreateCommand extends CreateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  orderId?: string | null | undefined;
+  status: OrderStatus;
+  previousStatus?: OrderStatus | null | undefined;
+  comment?: string | null | undefined;
+  ipAddress?: string | null | undefined;
+  userAgent?: string | null | undefined;
+  location?: string | null | undefined;
+  isCustomerNotified: boolean;
+  notificationError?: string | null | undefined;
 }
 
 export interface OrderStatusHistoryUpdateCommand extends UpdateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  orderId?: string | null | undefined;
+  status: OrderStatus;
+  previousStatus?: OrderStatus | null | undefined;
+  comment?: string | null | undefined;
+  ipAddress?: string | null | undefined;
+  userAgent?: string | null | undefined;
+  location?: string | null | undefined;
+  isCustomerNotified: boolean;
+  notificationError?: string | null | undefined;
 }

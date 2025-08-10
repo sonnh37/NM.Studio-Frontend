@@ -400,7 +400,13 @@ export const FormSelectEnum = <TFieldValues extends FieldValues>({
   // Set default value if shouldSetDefault is true and enumOptions has items
   useEffect(() => {
     if (shouldSetDefault && enumOptions.length > 0 && !form.getValues(name)) {
-      form.setValue(name, Number(enumOptions[0].value) as FieldPathValue<TFieldValues, typeof name>);
+      form.setValue(
+        name,
+        Number(enumOptions[0].value) as FieldPathValue<
+          TFieldValues,
+          typeof name
+        >
+      );
     }
   }, [shouldSetDefault, enumOptions, form, name]);
 
@@ -413,6 +419,7 @@ export const FormSelectEnum = <TFieldValues extends FieldValues>({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Select
+              key={field.value}
               onValueChange={(value) => {
                 field.onChange(Number(value));
               }}
@@ -1216,7 +1223,6 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
     />
   );
 };
-
 
 interface ConfirmationDialogProps {
   isOpen: boolean;

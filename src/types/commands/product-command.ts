@@ -1,39 +1,41 @@
-import {ProductStatus} from "../entities/product";
-import {CreateCommand, UpdateCommand} from "./base/base-command";
-import {SubCategory} from "@/types/entities/category";
+import { ProductStatus } from "../entities/product";
+import { CreateCommand, UpdateCommand } from "./base/base-command";
+import { SubCategory } from "@/types/entities/category";
 
 export interface ProductCreateCommand extends CreateCommand {
-    sku?: string | null;
-    slug?: string | null;
-    name?: string | null;
-    subCategoryId?: string | null;
-    subCategory?: SubCategory | null;
-    price?: number | null;
-    rentalPrice?: number | null;
-    deposit?: number | null;
-    isRentable: boolean;
-    isSaleable: boolean;
-    description?: string | null;
-    material?: string | null;
-    brand?: string | null;
-    style?: string | null;
-    care?: string | null;
+  sku?: string | null | undefined;
+  slug?: string | null | undefined;
+  name?: string | null | undefined;
+  subCategoryId?: string | null | undefined;
+  subCategory?: SubCategory | null | undefined;
+  price?: number | null | undefined;
+  rentalPrice?: number | null | undefined;
+  deposit?: number | null | undefined;
+  isRentable: boolean;
+  isSaleable: boolean;
+  description?: string | null | undefined;
+  material?: string | null | undefined;
+  brand?: string | null | undefined;
+  style?: string | null | undefined;
+  care?: string | null | undefined;
+  status: ProductStatus;
 }
 
 export interface ProductUpdateCommand extends UpdateCommand {
-    sku?: string | null;
-    slug?: string | null;
-    name?: string | null;
-    subCategoryId?: string | null;
-    subCategory?: SubCategory | null;
-    price?: number | null;
-    rentalPrice?: number | null;
-    deposit?: number | null;
-    isRentable: boolean;
-    isSaleable: boolean;
-    description?: string | null;
-    material?: string | null;
-    brand?: string | null;
-    style?: string | null;
-    care?: string | null;
+  sku?: string | null | undefined;
+  slug?: string | null | undefined;
+  name?: string | null | undefined;
+  subCategoryId?: string | null | undefined;
+  subCategory?: SubCategory | null | undefined;
+  price?: number | null | undefined;
+  rentalPrice?: number | null | undefined;
+  deposit?: number | null | undefined;
+  isRentable: boolean;
+  isSaleable: boolean;
+  description?: string | null | undefined;
+  material?: string | null | undefined;
+  brand?: string | null | undefined;
+  style?: string | null | undefined;
+  care?: string | null | undefined;
+  status: ProductStatus;
 }

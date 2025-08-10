@@ -1,29 +1,27 @@
-import {CreateCommand, UpdateCommand} from "./base/base-command";
+import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface OrderItemCreateCommand extends CreateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  orderId?: string | null | undefined;
+  productId?: string | null | undefined;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  discountAmount: number;
+  totalAmount: number;
+  selectedSize?: string | null | undefined;
+  selectedColor?: string | null | undefined;
+  customizationNotes?: string | null | undefined;
 }
 
 export interface OrderItemUpdateCommand extends UpdateCommand {
-    title?: string | null;
-    slug?: string | null;
-    description?: string | null;
-    background?: string | null;
-    eventDate?: string | null;
-    brideName?: string | null;
-    groomName?: string | null;
-    location?: string | null;
-    photographer?: string | null;
-    isPublic: boolean;
-    file?: File | null;
+  orderId?: string | null | undefined;
+  productId?: string | null | undefined;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  discountAmount: number;
+  totalAmount: number;
+  selectedSize?: string | null | undefined;
+  selectedColor?: string | null | undefined;
+  customizationNotes?: string | null | undefined;
 }
