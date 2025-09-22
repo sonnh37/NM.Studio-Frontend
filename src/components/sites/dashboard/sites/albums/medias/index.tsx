@@ -11,7 +11,7 @@ import {
   AlbumMediaCreateCommand,
   AlbumMediaDeleteCommand,
 } from "@/types/commands/album-media-command";
-import { AlbumMedia } from "@/types/entities/album-media";
+import { AlbumMedia } from "@/types/entities/album-image";
 import { MediaFile } from "@/types/entities/media-file";
 import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

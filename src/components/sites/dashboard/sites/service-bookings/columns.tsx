@@ -18,13 +18,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
-import { blogService } from "@/services/blog-service";
-import { Blog } from "@/types/entities/blog";
+import { formatCurrency, formatDate } from "@/lib/utils";
+import { serviceBookingService } from "@/services/service-booking-service";
+import { ServiceBooking } from "@/types/entities/service-booking";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-export const columns: ColumnDef<Blog>[] = [
+export const columns: ColumnDef<ServiceBooking>[] = [
   {
     accessorKey: "select",
     header: ({ table }) => (
@@ -45,137 +45,143 @@ export const columns: ColumnDef<Blog>[] = [
       />
     ),
   },
-
   {
-    accessorKey: "thumbnail",
-    header: "Thumbnail",
-    cell: ({ row }) => {
-      const backgroundUrl = row.original.thumbnail as string;
-      return (
-        <Link href={backgroundUrl ?? ""}>
-          <Image
-            alt={`Blog background`}
-            className="aspect-square size-[64px] rounded-md object-cover"
-            height={9999}
-            width={9999}
-            src={backgroundUrl ?? "/image-notfound.png"}
-          />
-        </Link>
-      );
-    },
-  },
-  {
-    accessorKey: "title",
+    accessorKey: "user.gmail",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Customer gmail" />
     ),
   },
   {
-    accessorKey: "slug",
+    accessorKey: "service.name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Slug" />
+      <DataTableColumnHeader column={column} title="Service" />
     ),
   },
   {
-    accessorKey: "content",
+    accessorKey: "bookingNumber",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Content" />
+      <DataTableColumnHeader column={column} title="Booking Number" />
     ),
-    cell: ({ row }) => {
-      return <div className="truncate max-w-xs">{row.getValue("content")}</div>;
-    },
-  },
-  {
-    accessorKey: "summary",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Summary" />
-    ),
-  },
-  {
-    accessorKey: "bannerImage",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Banner" />
-    ),
-    cell: ({ row }) => {
-      const image = row.original.bannerImage as string;
-      return (
-        <Link href={image ?? ""}>
-          <Image
-            alt={`Blog background`}
-            className="aspect-square size-[32px] rounded-md object-cover"
-            height={9999}
-            width={9999}
-            src={image ?? "/image-notfound.png"}
-          />
-        </Link>
-      );
-    },
   },
   {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
-  },
-  {
-    accessorKey: "isFeatured",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Featured" />
-    ),
     cell: ({ row }) => {
-      const isFeatured = row.original.isFeatured;
-      if (!isFeatured) {
-        return <Badge variant="outline">Blog page</Badge>;
-      }
-      return <Badge>About page</Badge>;
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      return <Badge variant="outline">{row.original.status}</Badge>;
     },
   },
   {
-    accessorKey: "viewCount",
+    accessorKey: "appointmentDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="View Count" />
+      <DataTableColumnHeader column={column} title="Appointment Date" />
+    ),
+    cell: ({ row }) => formatDate(row.original.appointmentDate),
+  },
+  {
+    accessorKey: "startTime",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Start Time" />
     ),
   },
   {
-    accessorKey: "tags",
+    accessorKey: "endTime",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tags" />
+      <DataTableColumnHeader column={column} title="End Time" />
     ),
   },
   {
-    accessorKey: "author",
+    accessorKey: "durationMinutes",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Author" />
+      <DataTableColumnHeader column={column} title="Duration (mins)" />
     ),
-    cell: ({ row }) => {
-      const author = row.original.author;
-      return (
-        <Link href={`/dashboard/users/${author?.id}`}>
-          {author?.email ?? "Unknown Author"}
-        </Link>
-      );
-    },
   },
   {
-    id: "actions",
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
+    accessorKey: "servicePrice",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Service Price" />
+    ),
+    cell: ({ row }) => formatCurrency(row.original.servicePrice),
   },
   {
-    id: "createdDate",
+    accessorKey: "depositAmount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Deposit Amount" />
+    ),
+    cell: ({ row }) => formatCurrency(row.original.depositAmount),
+  },
+  {
+    accessorKey: "totalAmount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total Amount" />
+    ),
+    cell: ({ row }) => formatCurrency(row.original.totalAmount),
+  },
+  {
+    accessorKey: "isDepositPaid",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Deposit Paid" />
+    ),
+    cell: ({ row }) => (
+      <Badge variant={row.original.isDepositPaid ? "default" : "destructive"}>
+        {row.original.isDepositPaid ? "Yes" : "No"}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "customerName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Customer Name" />
+    ),
+  },
+  {
+    accessorKey: "customerEmail",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Customer Email" />
+    ),
+  },
+  {
+    accessorKey: "customerPhone",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Customer Phone" />
+    ),
+  },
+  {
+    accessorKey: "specialRequirements",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Special Requirements" />
+    ),
+    cell: ({ row }) => row.original.specialRequirements || "-",
+  },
+  {
+    accessorKey: "staffNotes",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Staff Notes" />
+    ),
+    cell: ({ row }) => row.original.staffNotes || "-",
+  },
+  {
+    accessorKey: "cancellationReason",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Cancellation Reason" />
+    ),
+    cell: ({ row }) => row.original.cancellationReason || "-",
+  },
+  {
     accessorKey: "createdDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data created" />
+      <DataTableColumnHeader column={column} title="Date Created" />
     ),
     cell: ({ row }) => {
       if (!row.original.createdDate) return "-";
       return formatDate(row.original.createdDate);
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return <Actions row={row} />;
     },
   },
   {
@@ -187,7 +193,7 @@ export const columns: ColumnDef<Blog>[] = [
 ];
 
 interface ActionsProps {
-  row: Row<Blog>;
+  row: Row<ServiceBooking>;
 }
 
 const Actions: React.FC<ActionsProps> = ({ row }) => {
@@ -217,7 +223,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
           >
             Copy model ID
           </DropdownMenuItem>
-          {/*<DropdownMenuItem onClick={handleBlogsClick}>*/}
+          {/*<DropdownMenuItem onClick={handleServiceBookingsClick}>*/}
           {/*    View photos*/}
           {/*</DropdownMenuItem>*/}
           <DropdownMenuSeparator />
@@ -229,7 +235,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteFunc={blogService.delete}
+        deleteFunc={serviceBookingService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

@@ -1,4 +1,4 @@
-import { GetQueryableQuery, SortDirection } from "@/types/queries/base/base-query";
+import { GetQueryableQuery, SortDirection } from "@/types/cqrs/queries/base/base-query";
 import {
   ColumnFiltersState,
   PaginationState,

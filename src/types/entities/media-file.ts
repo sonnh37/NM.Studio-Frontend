@@ -1,4 +1,4 @@
-import {AlbumMedia} from "./album-media";
+import {AlbumMedia} from "./album-image";
 import {BaseEntity} from "./base/base";
 import {ProductMedia} from "@/types/entities/product-media";
 

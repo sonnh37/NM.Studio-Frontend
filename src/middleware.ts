@@ -1,14 +1,29 @@
-import { NextResponse, type NextFetchEvent, type NextRequest } from 'next/server'
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(req: NextRequest, event: NextFetchEvent) {
-  try {
-    return NextResponse.next();
-  } catch (error: any) {
-    console.error('Middleware error:', error);
-    return NextResponse.next();
-  }
+export async function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+
+  // const jwt = await getToken({ req });
+
+  // const token = jwt.
+  //   ? authHeader.split(" ")[1]
+  //   : null;
+
+  // if (pathname.startsWith("/dashboard") && !token) {
+  //   return NextResponse.redirect(new URL("/login", req.url));
+  // }
+
+  // if (pathname === "/login" && token) {
+  //   return NextResponse.redirect(new URL("/dashboard", req.url));
+  // }
+  
+
+  return NextResponse.next();
 }
 
+// specify for which routes you want to run the above middleware
+
 export const config = {
-  matcher: ["/dashboard", "/dashboard/:path*", "/login", "/settings"],
+  matcher: ["/login", "/dashboard/:path*"],
 };

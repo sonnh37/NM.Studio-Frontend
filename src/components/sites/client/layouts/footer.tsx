@@ -77,12 +77,14 @@ function Footer() {
           <TypographyH2 className="text-white uppercase">
             Show room
           </TypographyH2>
-          <TypographyP>
+          <div>
             <TypographyLarge className="text-white uppercase">
               Show room SG Nhà Bè
             </TypographyLarge>
-            1806 Huỳnh Tấn Phát, TT. Nhà Bè, Nhà Bè, Hồ Chí Minh, Vietnam
-          </TypographyP>
+            <TypographyP>
+              1806 Huỳnh Tấn Phát, TT. Nhà Bè, Nhà Bè, Hồ Chí Minh, Vietnam
+            </TypographyP>
+          </div>
         </div>
         <div>
           <TypographyH2 className="text-white uppercase">

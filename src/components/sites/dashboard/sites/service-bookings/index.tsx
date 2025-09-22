@@ -23,10 +23,10 @@ import {
 } from "@/components/ui/popover";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn, getDefaultFormFilterValues } from "@/lib/utils";
-import { servicebookingService } from "@/services/servicebooking-service";
+import { serviceBookingService } from "@/services/service-booking-service";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { ServiceBookingGetAllQuery } from "@/types/queries/servicebooking-query";
+import { ServiceBookingGetAllQuery } from "@/types/queries/service-booking-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -175,7 +175,7 @@ export default function ServiceBookingTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: [query_key, queryParams],
-    queryFn: () => servicebookingService.getAll(queryParams),
+    queryFn: () => serviceBookingService.getAll(queryParams),
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
   });
@@ -234,8 +234,8 @@ export default function ServiceBookingTable() {
   return (
     <DataTableComponent
       isLoading={isFetching}
-      deletePermanentFunc={(command) => servicebookingService.delete(command)}
-      updateUndoFunc={(command) => servicebookingService.update(command)}
+      deletePermanentFunc={(command) => serviceBookingService.delete(command)}
+      updateUndoFunc={(command) => serviceBookingService.update(command)}
       table={table}
       queryKey={query_key}
     >
@@ -249,7 +249,7 @@ export default function ServiceBookingTable() {
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           query_keys={[query_key]}
-          deleteFunc={(command) => servicebookingService.delete(command)}
+          deleteFunc={(command) => serviceBookingService.delete(command)}
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
         <DataTableFilterSheet

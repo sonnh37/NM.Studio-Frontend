@@ -16,7 +16,7 @@ import {
   CategoryCreateCommand,
   CategoryUpdateCommand,
 } from "@/types/commands/category-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
@@ -134,7 +134,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
-          if (res.status != 1) {
+          if (res.status != Status.OK) {
             return;
           }
           router.push(previousPath);

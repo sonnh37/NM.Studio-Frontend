@@ -6,7 +6,7 @@ import {
   DeleteCommand,
   UpdateCommand,
 } from "@/types/commands/base/base-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import {
   deleteObject,
   getDownloadURL,
@@ -15,7 +15,7 @@ import {
 } from "firebase/storage";
 import { storage } from "../../../firebase";
 import { GetQueryableQuery } from "@/types/queries/base/base-query";
-import { QueryResult } from "@/types/response/query-result";
+import { QueryResult } from "@/types/models/query-result";
 
 export class BaseService<TEntity> {
   public endpoint: string;

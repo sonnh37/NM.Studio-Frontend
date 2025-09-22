@@ -1,17 +1,17 @@
-import {AlbumMedia} from "./album-media";
-import {BaseEntity} from "./base/base";
+import { AlbumImage } from "./album-image";
+import { BaseEntity } from "./base/base";
 
-export interface Album extends BaseEntity{
-    title?: string;
-    slug?: string;
-    description?: string;
-    background?: string;
-    eventDate?: string;
-    brideName?: string;
-    groomName?: string;
-    location?: string;
-    photographer?: string;
-    isPublic: boolean;
-    albumMedias: AlbumMedia[];
+export interface Album {
+  title?: string;
+  slug?: string;
+  description?: string;
+  eventDate?: string; // DateTimeOffset? -> string | undefined
+  brideName?: string;
+  groomName?: string;
+  location?: string;
+  photographer?: string;
+  sortOrder: number;
+  isFeatured: boolean;
+  homeSortOrder?: number;
+  albumImages: AlbumImage[];
 }
-

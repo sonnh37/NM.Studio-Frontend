@@ -27,7 +27,7 @@ import {
   ServiceCreateCommand,
   ServiceUpdateCommand,
 } from "@/types/commands/service-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { Service } from "@/types/entities/service";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -145,7 +145,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
-          if (res.status != 1) {
+          if (res.status != Status.OK) {
             return;
           }
           router.push(previousPath);

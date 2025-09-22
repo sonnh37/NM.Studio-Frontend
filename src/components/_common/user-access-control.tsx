@@ -5,7 +5,7 @@ import axiosInstance from "@/lib/interceptors/axios-instance";
 import { logout, setUser } from "@/lib/redux/slices/userSlice";
 import store, { AppDispatch } from "@/lib/redux/store";
 
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { Role, User } from "@/types/entities/user";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
@@ -65,28 +65,28 @@ export const UserAccessControl: React.FC<UserAccessControlProps> = ({
   }
 
   if (result?.status === 1) {
-    const user = result.data!;
-    // Check if the user has the correct role to access the page
-    store.dispatch(setUser(user));
-    if (pathName.startsWith("/login")) {
-      if (user.role === Role.Customer) {
-        router.push("/");
-      } else {
-        router.push("/dashboard");
-      }
-    }
+    // const user = result.data!;
+    // // Check if the user has the correct role to access the page
+    // store.dispatch(setUser(user));
+    // if (pathName.startsWith("/login")) {
+    //   if (user.role === Role.Customer) {
+    //     router.push("/");
+    //   } else {
+    //     router.push("/dashboard");
+    //   }
+    // }
 
-    if (pathName.startsWith("/dashboard")) {
-      if (user.role === Role.Customer) {
-        router.push("/");
-      }
-    }
+    // if (pathName.startsWith("/dashboard")) {
+    //   if (user.role === Role.Customer) {
+    //     router.push("/");
+    //   }
+    // }
   } else {
-    store.dispatch(logout());
+    // store.dispatch(logout());
 
-    if (pathName.startsWith("/dashboard")) {
-      router.push("/login");
-    }
+    // if (pathName.startsWith("/dashboard")) {
+    //   router.push("/login");
+    // }
   }
 
   return <>

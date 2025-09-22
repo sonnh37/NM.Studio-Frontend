@@ -1,7 +1,7 @@
 import { Album } from "@/types/entities/album";
 import { BaseService } from "./base/base-service";
 import { Const } from "@/lib/constants/const";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import {
   AlbumCreateCommand,
   AlbumDeleteCommand,

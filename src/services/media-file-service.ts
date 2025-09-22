@@ -1,7 +1,7 @@
 import {MediaFile} from "@/types/entities/media-file";
 import {BaseService} from "./base/base-service";
 import {Const} from "@/lib/constants/const";
-import {BusinessResult} from "@/types/response/business-result";
+import {BusinessResult} from "@/types/models/business-result";
 import {MediaFileCreateCommand, MediaFileUpdateCommand} from "@/types/commands/media-file-command";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 

@@ -17,47 +17,47 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.user?.user);
-  const router = useRouter();
-  const { setTheme } = useTheme();
-  const [initialized, setInitialized] = React.useState(false);
+  // const dispatch = useDispatch<AppDispatch>();
+  // const user = useSelector((state: RootState) => state.user?.user);
+  // const router = useRouter();
+  // const { setTheme } = useTheme();
+  // const [initialized, setInitialized] = React.useState(false);
 
-  useEffect(() => {
-    if (initialized || typeof window === "undefined") return;
-    if (!user) {
-      router.replace("/login");
-      return;
-    }
+  // useEffect(() => {
+  //   if (initialized || typeof window === "undefined") return;
+  //   if (!user) {
+  //     router.replace("/login");
+  //     return;
+  //   }
 
-    // Xử lý khởi tạo
-    if (localStorage.getItem("showToast") === "true") {
-      toast.success(`${user.firstName} ơi, hôm nay có dự định gì nào?`);
-      localStorage.removeItem("showToast");
-    }
+  //   // Xử lý khởi tạo
+  //   if (localStorage.getItem("showToast") === "true") {
+  //     toast.success(`${user.firstName} ơi, hôm nay có dự định gì nào?`);
+  //     localStorage.removeItem("showToast");
+  //   }
 
-    if (user.cache) {
-      const cache = JSON.parse(user.cache) as UserCache;
-      setTheme(cache.theme ?? "light");
-      dispatch(initializeCache(user.cache));
-    } else {
-      const roleCurrent = user.role?.toString();
-      if (roleCurrent) {
-        setTheme("light");
-        dispatch(
-          updateUserCache({
-            role: roleCurrent,
-            theme: "light",
-          })
-        );
-      }
-    }
-    setInitialized(true);
-  }, [user, dispatch, router, setTheme, initialized]);
+  //   if (user.cache) {
+  //     const cache = JSON.parse(user.cache) as UserCache;
+  //     setTheme(cache.theme ?? "light");
+  //     dispatch(initializeCache(user.cache));
+  //   } else {
+  //     const roleCurrent = user.role?.toString();
+  //     if (roleCurrent) {
+  //       setTheme("light");
+  //       dispatch(
+  //         updateUserCache({
+  //           role: roleCurrent,
+  //           theme: "light",
+  //         })
+  //       );
+  //     }
+  //   }
+  //   setInitialized(true);
+  // }, [user, dispatch, router, setTheme, initialized]);
 
-  if (!user) {
-    return null;
-  }
+  // if (!user) {
+  //   return null;
+  // }
 
   return <>{children}</>;
 }

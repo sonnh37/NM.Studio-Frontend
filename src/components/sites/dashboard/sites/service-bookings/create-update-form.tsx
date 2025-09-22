@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { blogService } from "@/services/blog-service";
+import { serviceBookingService } from "@/services/service-booking-service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -29,12 +29,12 @@ import ConfirmationDialog, {
   FormSelectObject,
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
-import { Blog, BlogStatus } from "@/types/entities/blog";
+import { ServiceBooking, ServiceBookingStatus } from "@/types/entities/service-booking";
 import {
-  BlogCreateCommand,
-  BlogUpdateCommand,
-} from "@/types/commands/blog-command";
-import { BusinessResult } from "@/types/response/business-result";
+  ServiceBookingCreateCommand,
+  ServiceBookingUpdateCommand,
+} from "@/types/commands/service-booking-command";
+import { BusinessResult } from "@/types/models/business-result";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -53,8 +53,8 @@ import {
 import { useDebounce } from "@/hooks/use-debounce";
 import { AuthorSelect } from "./author-select";
 
-interface BlogFormProps {
-  initialData: Blog | null;
+interface ServiceBookingFormProps {
+  initialData: ServiceBooking | null;
 }
 
 const formSchema = z.object({
@@ -65,16 +65,16 @@ const formSchema = z.object({
   summary: z.string().nullable().optional(),
   thumbnail: z.string().nullable().optional(),
   bannerImage: z.string().nullable().optional(),
-  status: z.nativeEnum(BlogStatus),
+  status: z.nativeEnum(ServiceBookingStatus),
   isFeatured: z.boolean().default(false),
   viewCount: z.number().default(0),
   tags: z.string().nullable().optional(),
   authorId: z.string().nullable().optional(),
 });
 
-export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
+export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Update blog" : "New blog";
+  const title = initialData ? "Update servicebooking" : "New servicebooking";
   const action = "Submit";
   const router = useRouter();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
@@ -100,17 +100,15 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: BlogUpdateCommand = {
+        const updatedValues: ServiceBookingUpdateCommand = {
           ...values,
           id: initialData.id,
-          file_thumbnail: file,
-          file_bannerImage: file2,
           isDeleted: false,
         };
-        const response = await blogService.update(updatedValues);
+        const response = await serviceBookingService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
         // queryClient.refetchQueries({
-        //   queryKey: ["fetchBlogById", initialData.id],
+        //   queryKey: ["fetchServiceBookingById", initialData.id],
         // });
         toast.success(response.message);
         router.push(previousPath);
@@ -126,19 +124,17 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
   };
 
-  const handleCreateConfirmation = async (): Promise<BusinessResult<Blog>> => {
+  const handleCreateConfirmation = async (): Promise<BusinessResult<ServiceBooking>> => {
     if (!pendingValues) {
-      toast.error("No pending values to create blog.");
+      toast.error("No pending values to create servicebooking.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
     try {
-      const createdValues: BlogCreateCommand = {
+      const createdValues: ServiceBookingCreateCommand = {
         ...pendingValues,
-        file_thumbnail: file,
-        file_bannerImage: file2,
       };
-      const response = await blogService.create(createdValues);
+      const response = await serviceBookingService.create(createdValues);
       if (response.status !== 1) throw new Error(response.message);
 
       toast.success(response.message);
@@ -148,8 +144,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
 
       return response;
     } catch (error: any) {
-      console.error("Error creating blog:", error);
-      toast.error(error.message || "Failed to create blog.");
+      console.error("Error creating servicebooking:", error);
+      toast.error(error.message || "Failed to create servicebooking.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -165,12 +161,12 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
-          if (res.status != 1) {
+          if (res.status != Status.OK) {
             return;
           }
           router.push(previousPath);
         }}
-        title="Do you want to continue adding this blog?"
+        title="Do you want to continue adding this servicebooking?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"
@@ -195,7 +191,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                   form={form}
                   name="isFeatured"
                   label="Is Main"
-                  description="If enabled, this blog will be about page."
+                  description="If enabled, this servicebooking will be about page."
                 />
 
                 <FormInput
@@ -237,7 +233,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                   form={form}
                   name="status"
                   label="Status"
-                  enumOptions={getEnumOptions(BlogStatus)}
+                  enumOptions={getEnumOptions(ServiceBookingStatus)}
                 />
 
                 <FormInput form={form} name="tags" label="Tags" />

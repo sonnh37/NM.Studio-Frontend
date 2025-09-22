@@ -30,7 +30,7 @@ import {
   AlbumCreateCommand,
   AlbumUpdateCommand,
 } from "@/types/commands/album-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -149,7 +149,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
-          if (res.status != 1) {
+          if (res.status != Status.OK) {
             return;
           }
           router.push(previousPath);

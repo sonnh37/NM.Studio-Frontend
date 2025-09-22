@@ -28,7 +28,7 @@ import {
 import { Icons } from "@/components/ui/icons";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { DeleteCommand } from "@/types/commands/base/base-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 

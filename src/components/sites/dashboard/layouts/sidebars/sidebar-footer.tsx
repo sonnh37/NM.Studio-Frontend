@@ -37,7 +37,7 @@ export function SidebarFooter({ user }: { user: User }) {
   const router = useRouter();
   const handleLogout = () => {
     authService.logout().then((res) => {
-      if (res.status == 1) {
+      if (res.status == Status.OK) {
         window.location.href = "/";
       }
     });

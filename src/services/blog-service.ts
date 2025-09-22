@@ -1,7 +1,7 @@
 import { Blog } from "@/types/entities/blog";
 import { BaseService } from "./base/base-service";
 import { Const } from "@/lib/constants/const";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import {
   BlogCreateCommand,

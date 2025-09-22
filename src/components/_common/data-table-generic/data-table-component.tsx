@@ -14,7 +14,7 @@ import {
   DeleteCommand,
   UpdateCommand,
 } from "@/types/commands/base/base-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";

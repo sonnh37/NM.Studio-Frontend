@@ -12,6 +12,9 @@ const nextConfig = {
       },
     ],
   },
+  sassOptions: {
+    silenceDeprecations: ["legacy-js-api"],
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

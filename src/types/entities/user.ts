@@ -1,10 +1,9 @@
 import { BaseEntity } from "./base/base";
-import { Blog } from "./blog";
-import { Order } from "./order";
-import { RefreshToken } from "./refresh-token";
-import { ServiceBooking } from "./service-booking";
-import { VoucherUsageHistory } from "./voucher-usage-history";
-import { Cart } from "@/types/entities/cart";
+import { MediaBase } from "./media-base";
+import { UserOtp } from "./user-otp";
+import { UserSession } from "./user-session";
+import { UserSetting } from "./user-setting";
+import { UserToken } from "./user-token";
 
 export enum Gender {
   Male,
@@ -28,36 +27,37 @@ export interface User extends BaseEntity {
   firstName?: string;
   lastName?: string;
   fullName?: string;
-  avatar?: string;
+  displayName?: string;
+  avatarId?: string;
   email?: string;
-  dob?: string;
+  dob?: string; // DateTimeOffset
   address?: string;
   gender?: Gender;
   phone?: string;
   username?: string;
-  password?: string;
   role?: Role;
   status?: UserStatus;
-  cache?: string;
-  otp?: string;
-  otpExpiration?: string;
+
   isEmailVerified: boolean;
   isPhoneVerified: boolean;
   twoFactorEnabled: boolean;
-  lastLoginDate?: string;
-  lastLoginIp?: string;
-  failedLoginAttempts: number;
-  lockoutEnd?: string;
+
   nationality?: string;
   preferredLanguage?: string;
   timeZone?: string;
-  passwordChangedDate?: string;
-  passwordResetToken?: string;
-  passwordResetExpiration?: string;
-  refreshTokens: RefreshToken[];
-  serviceBookings: ServiceBooking[];
-  orders: Order[];
-  voucherUsageHistories: VoucherUsageHistory[];
-  blogs: Blog[];
-  carts: Cart[];
+
+  avatar?: MediaBase;
+  userSetting?: UserSetting;
+  userOtps: UserOtp[];
+  userTokens: UserToken[];
+  userSessions: UserSession[];
 }
+
+
+
+
+
+
+
+
+

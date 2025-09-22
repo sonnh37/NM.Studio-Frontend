@@ -28,7 +28,7 @@ import {
   MediaFileUpdateCommand,
 } from "@/types/commands/media-file-command";
 import { MediaFile } from "@/types/entities/media-file";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -149,7 +149,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
-          if (res.status != 1) {
+          if (res.status != Status.OK) {
             return;
           }
           router.push(previousPath);

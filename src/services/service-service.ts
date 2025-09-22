@@ -6,7 +6,7 @@ import {
   ServiceUpdateCommand,
 } from "@/types/commands/service-command";
 import { Service } from "@/types/entities/service";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { BaseService } from "./base/base-service";
 
 class ServiceService extends BaseService<Service> {

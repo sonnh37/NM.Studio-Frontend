@@ -6,12 +6,20 @@ import {
   UserUpdatePasswordCommand,
 } from "@/types/commands/user-command";
 import { User } from "@/types/entities/user";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { BaseService } from "./base/base-service";
+import { UserContextResponse } from "@/types/models/user-context";
 
 class UserService extends BaseService<User> {
   constructor() {
     super(Const.USERS);
+  }
+
+  async getUserByContext(): Promise<BusinessResult<UserContextResponse>> {
+    const res = await axiosInstance.get<BusinessResult<UserContextResponse>>(
+      `${this.endpoint}/context`
+    );
+    return res.data;
   }
 
   async create(command: UserCreateCommand): Promise<BusinessResult<User>> {

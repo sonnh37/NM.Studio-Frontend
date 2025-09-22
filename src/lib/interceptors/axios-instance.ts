@@ -1,11 +1,22 @@
-import { BusinessResult } from "@/types/response/business-result";
-import { LoginResponse } from "@/types/response/login-response";
+import { BusinessResult, Status } from "@/types/models/business-result";
+import { TokenResult } from "@/types/models/token-result";
 import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE + "/api",
   withCredentials: true,
   timeout: 60000,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const session = localStorage.getItem("current_session");
+  if (session) {
+    const tokenResult = JSON.parse(session);
+    if (tokenResult?.accessToken) {
+      config.headers.Authorization = `Bearer ${tokenResult.accessToken}`;
+    }
+  }
+  return config;
 });
 
 axiosInstance.interceptors.response.use(
@@ -24,9 +35,9 @@ axiosInstance.interceptors.response.use(
             {},
             { withCredentials: true }
           )
-        ).data as BusinessResult<LoginResponse>;
+        ).data as BusinessResult<TokenResult>;
 
-        if (refreshResponse.status !== 1) {
+        if (refreshResponse.status != Status.OK) {
           // Nếu refresh token đã hết hạn tự đăng xuất ra ở frontend tránh còn lưu cache
 
           if (window.location.pathname.startsWith("/dashboard")) {
@@ -55,8 +66,8 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error); // Ngăn không gửi lại yêu cầu
     }
 
-      console.error(`API Error:`, error);
-      return Promise.reject(error);
+    console.error(`API Error:`, error);
+    return Promise.reject(error);
   }
 );
 

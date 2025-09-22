@@ -2,8 +2,8 @@ import {Const} from "@/lib/constants/const";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import {logout, setUser} from "@/lib/redux/slices/userSlice";
 import store from "@/lib/redux/store";
-import {BusinessResult} from "@/types/response/business-result";
-import {LoginResponse} from "@/types/response/login-response";
+import {BusinessResult} from "@/types/models/business-result";
+import {LoginResponse} from "@/types/models/login-response";
 import {User} from "@/types/entities/user";
 import axios from "axios";
 

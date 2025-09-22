@@ -10,6 +10,8 @@ import { Toaster } from "@/components/_common/toast";
 import { UserAccessControl } from "@/components/_common/user-access-control";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterGuard } from "@/guard/route-guard";
+import { userContextHelper } from "@/lib/helpers/user-context-helper";
 export default function LayoutClient({
   children,
 }: {
@@ -39,7 +41,13 @@ export default function LayoutClient({
           <QueryClientProvider client={queryClient}>
             <TooltipProvider delayDuration={100}>
               <HelmetProvider>
-                <UserAccessControl>{children}</UserAccessControl>
+                <RouterGuard
+                  matcher={["/dashboard/*", "/profile"]}
+                  redirect="/login"
+                >
+                  {children}
+                </RouterGuard>
+                {/* {children} */}
               </HelmetProvider>
             </TooltipProvider>
           </QueryClientProvider>

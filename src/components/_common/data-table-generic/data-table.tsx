@@ -6,7 +6,7 @@ import {
   GetQueryableQuery,
   SortDirection,
 } from "@/types/queries/base/base-query";
-import { BusinessResult } from "@/types/response/business-result";
+import { BusinessResult } from "@/types/models/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   keepPreviousData,
@@ -32,7 +32,7 @@ import { DataTableComponent } from "./data-table-component";
 import { DeleteCommand, UpdateCommand } from "@/types/commands/base/base-command";
 import { Card } from "@/components/ui/card";
 import { DataTablePagination } from "./data-table-pagination";
-import { QueryResult } from "@/types/response/query-result";
+import { QueryResult } from "@/types/models/query-result";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];

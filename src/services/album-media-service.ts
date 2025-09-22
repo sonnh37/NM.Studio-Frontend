@@ -1,4 +1,4 @@
-import {AlbumMedia} from "@/types/entities/album-media";
+import {AlbumMedia} from "@/types/entities/album-image";
 import {BaseService} from "./base/base-service";
 import {Const} from "@/lib/constants/const";
 
