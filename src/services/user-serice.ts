@@ -8,15 +8,15 @@ import {
 import { User } from "@/types/entities/user";
 import { BusinessResult } from "@/types/models/business-result";
 import { BaseService } from "./base/base-service";
-import { UserContextResponse } from "@/types/models/user-context";
+import { UserContext } from "@/types/models/user-context";
 
 class UserService extends BaseService<User> {
   constructor() {
     super(Const.USERS);
   }
 
-  async getUserByContext(): Promise<BusinessResult<UserContextResponse>> {
-    const res = await axiosInstance.get<BusinessResult<UserContextResponse>>(
+  async getUserByContext(): Promise<BusinessResult<UserContext>> {
+    const res = await axiosInstance.get<BusinessResult<UserContext>>(
       `${this.endpoint}/context`
     );
     return res.data;

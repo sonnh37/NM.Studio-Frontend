@@ -16,9 +16,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { TypographySmall } from "./typography/typography-small";
 import { TypographyMuted } from "./typography/typography-muted";
 import { Separator } from "../ui/separator";
+import { UserContext } from "@/types/models/user-context";
 
 interface ChatPopoverProps {
-  user?: User | null;
+  user?: UserContext | null;
   unreadCount?: number;
 }
 

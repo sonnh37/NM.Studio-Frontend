@@ -12,6 +12,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { userContextHelper } from "@/lib/helpers/user-context-helper";
 import { RootState } from "@/lib/redux/store";
 import { Role } from "@/types/entities/user";
 import { useRouter } from "next/navigation";
@@ -24,16 +25,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const user = useSelector((state: RootState) => state.user.user);
-
-  useEffect(() => {
-    if (user?.role === Role.Customer) {
-      router.push("/");
-    }
-  }, [user, router]);
-
-  if (user?.role === Role.Customer) return null;
-
+  const user = userContextHelper.get();
   return (
     <SidebarProvider
       className="h-screen overflow-hidden"

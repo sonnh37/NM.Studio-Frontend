@@ -23,15 +23,15 @@ import {
 } from "@/components/ui/sheet";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import { User } from "@/types/user";
 import dynamic from "next/dynamic";
 import { AuthDropdown } from "../../_common/auth-dropdown";
 import { ProductsCombobox } from "@/components/_common/products-combobox";
 import { ModeToggle } from "../../_common/mode-toggle";
+import { UserContext } from "@/types/models/user-context";
 
 interface MobileNavProps {
   items?: MainNavItem[];
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export function MobileNav({ items, user = null }: MobileNavProps) {

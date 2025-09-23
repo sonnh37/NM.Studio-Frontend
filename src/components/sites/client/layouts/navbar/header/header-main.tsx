@@ -22,7 +22,7 @@ interface HeaderMainProps {
   categories: Category[];
   services: Service[];
   albums: Album[];
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export const HeaderMain = ({

@@ -15,14 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Icons } from "@/components/ui/icons";
-import { User } from "@/types/user";
+import { UserContext } from "@/types/models/user-context";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
 
 interface MainNavProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export function MainNav({ user = null }: MainNavProps) {

@@ -15,7 +15,7 @@ const MobileNav = dynamic(
 );
 
 interface HeaderMainProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export const HeaderMain = ({ user }: HeaderMainProps) => {

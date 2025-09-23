@@ -1,17 +1,17 @@
 // contextHelper.ts
 
-import { UserContextResponse } from "@/types/models/user-context";
+import { UserContext } from "@/types/models/user-context";
 
 const CONTEXT_KEY = "current_user_context";
 
 export const userContextHelper = {
-  save: (user: UserContextResponse) => {
+  save: (user: UserContext) => {
     localStorage.setItem(CONTEXT_KEY, JSON.stringify(user));
   },
 
-  get: (): UserContextResponse | null => {
+  get: (): UserContext | null => {
     const data = localStorage.getItem(CONTEXT_KEY);
-    return data ? (JSON.parse(data) as UserContextResponse) : null;
+    return data ? (JSON.parse(data) as UserContext) : null;
   },
 
   clear: () => {

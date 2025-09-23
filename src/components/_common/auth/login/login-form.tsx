@@ -60,7 +60,7 @@ export const LoginForm = () => {
             userContextHelper.save(resUser.data);
             toast.success("Chào mừng bạn đã đến với Như My Studio!");
             // await router.prefetch("/");
-            if (resUser.data.role != Role.Customer.toString()) {
+            if (resUser.data.role != Role.Customer) {
               router.push("/dashboard");
               return;
             }

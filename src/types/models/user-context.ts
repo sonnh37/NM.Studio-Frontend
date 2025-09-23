@@ -1,6 +1,6 @@
 import { Role } from "../entities/user";
 
-export interface UserContextResponse {
+export interface UserContext {
   id: string;
   firstName?: string;
   lastName?: string;

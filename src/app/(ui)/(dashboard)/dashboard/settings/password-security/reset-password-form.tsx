@@ -35,7 +35,7 @@ const formSchema = z
     message: "Passwords do not match",
   });
 
-export default function ResetPasswordForm({ user }: { user?: User }) {
+export default function ResetPasswordForm({ user }: { user?: UserContext }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

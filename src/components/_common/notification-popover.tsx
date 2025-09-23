@@ -35,9 +35,10 @@ import useNotification from "@/hooks/use-notification";
 import { NotificationGetAllByCurrentUserQuery } from "@/types/models/queries/notifications/notifications-get-all-by-current-user-query";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
+import { UserContext } from "@/types/models/user-context";
 
 interface NotificationPopoverProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export function NotificationPopover({ user = null }: NotificationPopoverProps) {

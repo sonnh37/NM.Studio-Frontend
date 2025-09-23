@@ -90,7 +90,7 @@ const profileFormSchema = z.object({
 });
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-export function ProfileForm({ user }: { user?: User }) {
+export function ProfileForm({ user }: { user?: UserContext }) {
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const handleFileUpload = (file: File | null) => {

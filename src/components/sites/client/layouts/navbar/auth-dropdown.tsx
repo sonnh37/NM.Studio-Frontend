@@ -26,7 +26,7 @@ import { authService } from "@/services/auth-service";
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
     ButtonProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export function AuthDropdown({ user = null }: AuthDropdownProps) {
@@ -97,7 +97,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
 }
 
 interface AuthDropdownGroupProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 function AuthDropdownGroup({ user }: AuthDropdownGroupProps) {

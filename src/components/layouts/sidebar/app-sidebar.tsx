@@ -18,9 +18,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavMain } from "./nav-main";
 import { NavManagement } from "./nav-management";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { userContextHelper } from "@/lib/helpers/user-context-helper";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.user?.user);
+  const user = userContextHelper.get();
 
   if (!user) return null;
 

@@ -47,7 +47,7 @@ const CartSheet = dynamic(
 
 interface MobileNavProps {
   items?: MainNavItem[];
-  user?: User | null;
+  user?: UserContext | null;
   categories: Category[];
   services: Service[];
   albums: Album[];

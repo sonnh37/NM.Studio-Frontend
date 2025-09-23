@@ -24,11 +24,13 @@ import { useTheme } from "next-themes";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/redux/store";
 import { resetCache } from "@/lib/redux/slices/cacheSlice";
+import { Status } from "@/types/models/business-result";
+import { UserContext } from "@/types/models/user-context";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
     ButtonProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 export function AuthDropdown({ user = null }: AuthDropdownProps) {
@@ -67,7 +69,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
         >
           <Avatar className="h-full w-full">
             <AvatarImage
-              src={user.avatar?.trim() || undefined}
+              src={user.avatarUrl?.trim() || undefined}
               alt={user.username || "User avatar"}
               className="object-cover"
               onError={(e) => {
@@ -122,7 +124,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
 }
 
 interface AuthDropdownGroupProps {
-  user?: User | null;
+  user?: UserContext | null;
 }
 
 function AuthDropdownGroup({ user }: AuthDropdownGroupProps) {
