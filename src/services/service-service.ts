@@ -4,61 +4,41 @@ import {
   ServiceCreateCommand,
   ServiceDeleteCommand,
   ServiceUpdateCommand,
-} from "@/types/commands/service-command";
+} from "@/types/cqrs/commands/service-command";
 import { Service } from "@/types/entities/service";
-import { BusinessResult } from "@/types/models/business-result";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { BaseService } from "./base/base-service";
+import { CreateOrUpdateCommand } from "@/types/cqrs/commands/base/base-command";
+import { mediaUploadService } from "./media-upload-service";
 
 class ServiceService extends BaseService<Service> {
   constructor() {
     super(`${Const.SERVICES}`);
   }
-  async create(
-    command: ServiceCreateCommand
+  public async save(
+    command: CreateOrUpdateCommand
   ): Promise<BusinessResult<Service>> {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "Service");
+    if (command instanceof ServiceUpdateCommand) {
+      await this.handleMediaUploads(command);
+      return await super.update(command);
+    } else if (command instanceof ServiceCreateCommand) {
+      await this.handleMediaUploads(command);
+      return await super.create(command);
     }
 
-    command.src = link ?? undefined;
-
-    return await super.create(command);
+    throw new Error("Unsupported command type");
   }
 
-  async update(
-    command: ServiceUpdateCommand
-  ): Promise<BusinessResult<Service>> {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "Service");
+  private async handleMediaUploads(
+    command: ServiceCreateCommand | ServiceUpdateCommand
+  ) {
+    if (command.thumbnailFile) {
+      const uploadResult = await mediaUploadService.uploadFile(
+        command.thumbnailFile,
+        "Service"
+      );
+      command.srcThumbnail = uploadResult?.secureUrl ?? null;
     }
-
-    if (link && command.src) {
-      await this.deleteImage(command.src);
-    }
-
-    command.src = link ?? command.src;
-
-    const res = await axiosInstance.put<BusinessResult<Service>>(
-      this.endpoint,
-      command
-    );
-    return res.data;
-  }
-
-  async deletePermanently(
-    command: ServiceDeleteCommand
-  ): Promise<BusinessResult<null>> {
-    const data = await this.getById(command.id);
-    const filePath = data.data?.src;
-
-    const response = await super.delete(command);
-    if (response.status === 1 && filePath) {
-      await this.deleteImage(filePath);
-    }
-
-    return response;
   }
 }
 

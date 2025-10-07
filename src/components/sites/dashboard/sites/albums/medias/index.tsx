@@ -5,15 +5,8 @@ import {
   isDeleted_options,
 } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
-import { albumMediaService } from "@/services/album-media-service";
-import { mediaFileService } from "@/services/media-file-service";
-import {
-  AlbumMediaCreateCommand,
-  AlbumMediaDeleteCommand,
-} from "@/types/commands/album-media-command";
-import { AlbumMedia } from "@/types/entities/album-image";
-import { MediaFile } from "@/types/entities/media-file";
-import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
+import { albumImageService } from "@/services/album-image-service";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -36,22 +29,28 @@ import { DataTableFilterSheet } from "@/components/_common/data-table-generic/da
 import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
 import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
 import React from "react";
+import { Status } from "@/types/models/business-result";
+import { AlbumImage } from "@/types/entities/album-image";
+import { AlbumImageCreateCommand, AlbumImageDeleteCommand } from "@/types/cqrs/commands/album-media-command";
+import { MediaBaseGetAllQuery } from "@/types/cqrs/queries/media-file-query";
+import { MediaBase } from "@/types/entities/media-base";
+import { mediaBaseService } from "@/services/media-base-service";
 
-interface AlbumMediasTableProps {
+interface AlbumImagesTableProps {
   albumId?: string;
-  albumMedias?: AlbumMedia[];
+  albumImages?: AlbumImage[];
   tab?: number;
 }
 
-export default function AlbumMediasTable({
+export default function AlbumImagesTable({
   albumId,
   tab,
-  albumMedias,
-}: AlbumMediasTableProps) {
-  const [getQueryParams, setGetQueryParams] = useState<MediaFileGetAllQuery>();
+  albumImages,
+}: AlbumImagesTableProps) {
+  const [getQueryParams, setGetQueryParams] = useState<MediaBaseGetAllQuery>();
 
   useEffect(() => {
-    const query: MediaFileGetAllQuery = {
+    const query: MediaBaseGetAllQuery = {
       pagination: {
         isPagingEnabled: true,
       },
@@ -84,7 +83,7 @@ export default function AlbumMediasTable({
 
   const queryClient = useQueryClient();
 
-  const columns_tab0: ColumnDef<MediaFile>[] = [
+  const columns_tab0: ColumnDef<MediaBase>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => (
@@ -112,7 +111,7 @@ export default function AlbumMediasTable({
     ...columns,
   ];
 
-  const columns_tab1: ColumnDef<MediaFile>[] = [
+  const columns_tab1: ColumnDef<MediaBase>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => (
@@ -143,7 +142,7 @@ export default function AlbumMediasTable({
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", getQueryParams],
-    queryFn: () => mediaFileService.getAll(getQueryParams),
+    queryFn: () => mediaBaseService.getAll(getQueryParams),
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
   });
@@ -178,51 +177,50 @@ export default function AlbumMediasTable({
     }
   }, [columnFilters]);
 
-  const handleRemovePhoto = (modal: MediaFile) => {
-    const command: AlbumMediaDeleteCommand = {
-      mediaFileId: modal.id,
-      // id: modal.,
+  const handleRemovePhoto = (modal: MediaBase) => {
+    const command: AlbumImageDeleteCommand = {
+      imageId: modal.id,
       isPermanent: true,
       albumId: albumId,
     };
 
-    albumMediaService.delete(command).then(async (response) => {
-      if (response.status === 1) {
+    albumImageService.delete(command).then(async (response) => {
+      if (response.status === Status.OK) {
         queryClient.refetchQueries({ queryKey: ["album", albumId] });
-        toast.success(response.message);
+        toast.success("Removed from album.");
       } else {
-        toast.error(response.message);
+        toast.error(response.error?.detail || "Failed to remove.");
       }
     });
   };
 
-  const handleAddPhoto = (row: MediaFile) => {
-    const command: AlbumMediaCreateCommand = {
-      mediaFileId: row.id,
+  const handleAddPhoto = (row: MediaBase) => {
+    const command: AlbumImageCreateCommand = {
+      imageId: row.id,
       albumId,
     };
 
-    albumMediaService.create(command).then((response) => {
-      if (response.status === 1) {
+    albumImageService.create(command).then((response) => {
+      if (response.status == Status.OK) {
         queryClient.refetchQueries({ queryKey: ["album", albumId] });
         queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
-        toast.success(response.message);
+        toast.success("Removed from album.");
       } else {
-        toast.error(response.message);
+        toast.error(response.error?.detail || "Failed to remove.");
       }
     });
   };
 
   return (
     <>
-      {tab == 0 && albumMedias ? (
+      {tab == 0 && albumImages ? (
         <>
           <DataOnlyTable
             columns={columns_tab0}
             data={
-              albumMedias
-                .map((m) => m.mediaFile)
-                .filter((mediaFile) => mediaFile !== undefined) as MediaFile[]
+              albumImages
+                .map((m) => m.image)
+                .filter((image) => image !== undefined) as MediaBase[]
             }
           />
         </>

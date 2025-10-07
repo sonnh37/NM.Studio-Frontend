@@ -130,7 +130,8 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     <>
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        open={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();

@@ -5,7 +5,7 @@ import {
   CreateOrUpdateCommand,
   DeleteCommand,
   UpdateCommand,
-} from "@/types/commands/base/base-command";
+} from "@/types/cqrs/commands/base/base-command";
 import { BusinessResult } from "@/types/models/business-result";
 import {
   deleteObject,
@@ -14,7 +14,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "../../../firebase";
-import { GetQueryableQuery } from "@/types/queries/base/base-query";
+import { GetQueryableQuery } from "@/types/cqrs/queries/base/base-query";
 import { QueryResult } from "@/types/models/query-result";
 
 export class BaseService<TEntity> {
@@ -63,63 +63,10 @@ export class BaseService<TEntity> {
   }
 
   async delete(command: DeleteCommand): Promise<BusinessResult<null>> {
-    try {
-      const cleanedQuery = cleanQueryParams(command);
-      console.log("check_endpoint", this.endpoint);
-      const res = await axiosInstance.delete<BusinessResult<null>>(
-        `${this.endpoint}?${cleanedQuery}`
-      );
-      return res.data;
-    } catch (error) {
-      console.error("Error deleting:", error);
-      throw error;
-    }
-  }
-
-  async uploadImage(
-    file: File | null,
-    folder: string = "Other"
-  ): Promise<string | null> {
-    if (file == null) return null;
-
-    return new Promise<string>((resolve, reject) => {
-      const storageRef = ref(storage, `${folder}/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        null,
-        (error) => reject(error),
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          resolve(downloadURL);
-        }
-      );
-    });
-  }
-
-  protected async handleFiles<T extends { [key: string]: any }>(
-    command: T,
-    fileFields: { fileKey: keyof T; urlKey: keyof T }[],
-    folderName: string,
-    isUpdate = false
-  ) {
-    for (const { fileKey, urlKey } of fileFields) {
-      if (command[fileKey]) {
-        const link = await this.uploadImage(command[fileKey], folderName);
-        if (isUpdate && link && command[urlKey]) {
-          await this.deleteImage(command[urlKey]);
-        }
-        command[urlKey] = (link ?? command[urlKey]) as T[keyof T];
-      }
-    }
-  }
-
-  async deleteImage(link: string): Promise<boolean> {
-    if (!link) return false;
-    const fileRef = ref(storage, link);
-    await deleteObject(fileRef);
-
-    return true;
+    const cleanedQuery = cleanQueryParams(command);
+    const res = await axiosInstance.delete<BusinessResult<null>>(
+      `${this.endpoint}?${cleanedQuery}`
+    );
+    return res.data;
   }
 }

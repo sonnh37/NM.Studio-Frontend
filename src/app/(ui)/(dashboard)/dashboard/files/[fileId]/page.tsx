@@ -1,7 +1,7 @@
 "use client";
-import { MediaFile } from "@/types/entities/media-file";
+import { MediaBase } from "@/types/entities/media-file";
 import { useEffect, useState } from "react";
-import { mediaFileService } from "@/services/media-file-service";
+import { mediaBaseService } from "@/services/image-service";
 import { toast } from "sonner";
 import { PhotoForm } from "@/components/sites/dashboard/sites/media-files/create-update-form";
 import { useParams } from "next/navigation";
@@ -12,14 +12,14 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 export default function Page() {
   const params = useParams();
   const {
-    data = {} as MediaFile,
+    data = {} as MediaBase,
     isLoading,
     isError,
     error,
   } = useQuery({
     queryKey: ["fetchPhotoById", params.photoId],
     queryFn: async () => {
-      const response = await mediaFileService.getById(params.photoId as string);
+      const response = await mediaBaseService.getById(params.photoId as string);
       return response.data;
     },
     enabled: !!params.photoId,

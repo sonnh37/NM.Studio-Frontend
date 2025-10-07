@@ -2,9 +2,9 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { CarouselApi } from "@/components/ui/carousel";
-import { mediaFileService } from "@/services/media-file-service";
-import { MediaFile } from "@/types/entities/media-file";
-import { MediaFileGetAllQuery } from "@/types/queries/media-file-query";
+import { mediaBaseService } from "@/services/image-service";
+import { MediaBase } from "@/types/entities/media-file";
+import { MediaBaseGetAllQuery } from "@/types/queries/media-file-query";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import {
   Zoom,
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-const query: MediaFileGetAllQuery = {
+const query: MediaBaseGetAllQuery = {
   pagination: {
     isPagingEnabled: true,
   },
@@ -46,14 +46,14 @@ export function Hero() {
   }, [api]);
 
   const {
-    data: photos = [] as MediaFile[],
+    data: photos = [] as MediaBase[],
     isLoading,
     isError,
     error,
   } = useQuery({
     queryKey: ["fetchPhotosHero", query],
     queryFn: async () => {
-      const response = await mediaFileService.getAll(query);
+      const response = await mediaBaseService.getAll(query);
       const photos = response.data?.results ?? [];
 
       return photos;

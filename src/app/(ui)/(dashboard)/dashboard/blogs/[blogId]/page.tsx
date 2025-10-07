@@ -19,7 +19,7 @@ export default function Page() {
         queryKey: ["fetchBlogById", params.blogId],
         queryFn: async () => {
             const response = await blogService.getById(
-                params.blogId as string
+                params.blogId as string, ["thumbnail", "backgroundCover"]
             );
             return response.data;
         },

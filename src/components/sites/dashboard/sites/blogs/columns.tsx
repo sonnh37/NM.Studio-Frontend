@@ -50,7 +50,8 @@ export const columns: ColumnDef<Blog>[] = [
     accessorKey: "thumbnail",
     header: "Thumbnail",
     cell: ({ row }) => {
-      const backgroundUrl = row.original.thumbnail as string;
+      const backgroundUrl = row.original.thumbnail?.mediaUrl;
+      console.log("check_backgroundUrl", backgroundUrl);
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image
@@ -92,12 +93,12 @@ export const columns: ColumnDef<Blog>[] = [
     ),
   },
   {
-    accessorKey: "bannerImage",
+    accessorKey: "backgroundCover",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Banner" />
+      <DataTableColumnHeader column={column} title="Background" />
     ),
     cell: ({ row }) => {
-      const image = row.original.bannerImage as string;
+      const image = row.original.backgroundCover?.mediaUrl;
       return (
         <Link href={image ?? ""}>
           <Image
@@ -229,7 +230,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteFunc={blogService.delete}
+        deleteFunc={(command) => blogService.delete(command)}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

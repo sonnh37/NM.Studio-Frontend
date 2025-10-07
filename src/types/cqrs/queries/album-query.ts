@@ -10,5 +10,5 @@ export interface AlbumGetAllQuery extends GetQueryableQuery {
   groomName?: string | null | undefined;
   location?: string | null | undefined;
   photographer?: string | null | undefined;
-  isPublic?: boolean | null | undefined;
+  isFeatured?: boolean | null | undefined;
 }

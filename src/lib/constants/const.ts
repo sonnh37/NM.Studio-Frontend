@@ -12,13 +12,14 @@ export class Const {
     //#endregion
     static readonly SERVICE_BOOKINGS = "servicebookings";
     static readonly ALBUMS = "albums";
-    static readonly ALBUM_MEDIAS = "albummedias";
+    static readonly ALBUM_IMAGES = "albumimages";
+    static readonly MEDIA_BASES = "mediabases";
     static readonly PRODUCTS = "products";
     static readonly PRODUCT_MEDIAS = "productmedias";
     static readonly PRODUCT_SIZES = "productsizes";
-    static readonly PRODUCT_COLORS = "productcolors";
+    static readonly PRODUCT_VARIANTS = "productvariants";
     static readonly SERVICES = "services";
-    static readonly MEDIA_FILES = "mediafiles";
+    static readonly IMAGES = "images";
     static readonly CATEGORIES = "categories";
     static readonly SUBCATEGORIES = "subcategories";
     static readonly COLORS = "colors";

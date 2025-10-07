@@ -54,7 +54,7 @@ export interface UploadWidgetInfo {
   placeholder: boolean;
   public_id: string;
   resource_type: "image" | "raw" | "video" | "auto";
-  secure_url: string;
+  secureUrl: string;
   signature: string;
   tags: string[];
   thumbnail_url: string;

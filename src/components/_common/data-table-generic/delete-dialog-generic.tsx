@@ -27,8 +27,8 @@ import {
 } from "@/components/ui/drawer";
 import { Icons } from "@/components/ui/icons";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { DeleteCommand } from "@/types/commands/base/base-command";
-import { BusinessResult } from "@/types/models/business-result";
+import { DeleteCommand } from "@/types/cqrs/commands/base/base-command";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 
@@ -72,10 +72,10 @@ export function DeleteBaseEntitysDialog<TData>({
               isPermanent: false,
             };
             const response = await deleteFunc(command);
-            if (response.status === 1) {
-              toast.success(response.message);
+            if (response.status == Status.OK) {
+              toast.success("Moved to trash.");
             } else {
-              toast.error(response.message);
+              toast.error(response.error?.detail || "Failed to delete.");
             }
           } else {
             toast.error("Fail!");
@@ -112,7 +112,7 @@ export function DeleteBaseEntitysDialog<TData>({
                   <DialogTitle>Are you absolutely sure?</DialogTitle>
                   <DialogDescription>
                     This action cannot be undone. This will permanently
-                    deleteFunc your{" "}
+                    delete your{" "}
                     <span className="font-medium">{list.length}</span>
                     {list.length === 1 ? " task" : " list"} from our servers.
                   </DialogDescription>
@@ -145,7 +145,7 @@ export function DeleteBaseEntitysDialog<TData>({
                   <DialogTitle>Are you absolutely sure?</DialogTitle>
                   <DialogDescription>
                     This action cannot be undone. This will permanently
-                    deleteFunc your{" "}
+                    delete your{" "}
                     <span className="font-medium">{list.length}</span>
                     {list.length === 1 ? " task" : " list"} from our servers.
                   </DialogDescription>
@@ -191,7 +191,7 @@ export function DeleteBaseEntitysDialog<TData>({
         <DrawerHeader>
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
-            This action cannot be undone. This will permanently deleteFunc your{" "}
+            This action cannot be undone. This will permanently delete your{" "}
             <span className="font-medium">{list.length}</span>
             {list.length === 1 ? " task" : " list"} from our servers.
           </DrawerDescription>

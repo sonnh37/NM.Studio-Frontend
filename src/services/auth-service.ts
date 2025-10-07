@@ -47,14 +47,6 @@ class AuthService {
         return response.data;
     };
 
-    public getUserInfo = async (): Promise<BusinessResult<User>> => {
-        const response = await axios.get<BusinessResult<User>>(
-            `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/info`,
-            {withCredentials: true}
-        );
-        return response.data;
-    };
-
     public registerByGoogle = async (
         token: string,
         password: string

@@ -44,7 +44,7 @@ export interface Voucher extends BaseEntity {
   applicableCategories?: string;
   maximumSpend?: number;
   isCombinableWithOther: boolean;
-  isPublic: boolean;
+  isFeatured: boolean;
   userGroupRestrictions?: string;
   orders: Order[];
   voucherUsageHistories: VoucherUsageHistory[];

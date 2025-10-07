@@ -5,7 +5,7 @@ import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import { convertToISODate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
-import { MediaFile } from "@/types/entities/media-file";
+import { MediaBase } from "@/types/entities/media-file";
 import { AlbumGetAllQuery } from "@/types/queries/album-query";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -47,10 +47,10 @@ export function AlbumGallery() {
     return <ErrorSystem />;
   }
 
-  const photos = album?.albumMedias
-    ? album.albumMedias
-        .map((x) => x.mediaFile)
-        .filter((mediaFile): mediaFile is MediaFile => mediaFile !== undefined)
+  const photos = album?.albumImages
+    ? album.albumImages
+        .map((x) => x.mediaBase)
+        .filter((mediaBase): mediaBase is MediaBase => mediaBase !== undefined)
     : [];
 
   return (

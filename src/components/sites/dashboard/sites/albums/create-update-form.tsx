@@ -29,17 +29,18 @@ import { Album } from "@/types/entities/album";
 import {
   AlbumCreateCommand,
   AlbumUpdateCommand,
-} from "@/types/commands/album-command";
-import { BusinessResult } from "@/types/models/business-result";
+} from "@/types/cqrs/commands/album-command";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 import { TypographyH1 } from "@/components/_common/typography/typography-h1";
+import { mediaUploadService } from "@/services/media-upload-service";
 
 interface AlbumFormProps {
-  initialData: Album | null;
+  initialData?: Album | null;
 }
 
 const formSchema = z.object({
@@ -47,13 +48,12 @@ const formSchema = z.object({
   title: z.string().min(1, "Title is required").nullable(),
   slug: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
-  background: z.string().nullable().optional(),
   eventDate: z.string().nullable().optional(),
   brideName: z.string().nullable().optional(),
   groomName: z.string().nullable().optional(),
   location: z.string().nullable().optional(),
   photographer: z.string().nullable().optional(),
-  isPublic: z.boolean().default(false),
+  isFeatured: z.boolean().default(false),
 });
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
@@ -83,32 +83,32 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
     setFile(file);
   };
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      if (initialData) {
-        const updatedValues: AlbumUpdateCommand = {
-          ...values,
-          id: initialData.id,
-          file: file,
-          isDeleted: false
-        };
-        const response = await albumService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
-        queryClient.refetchQueries({
-          queryKey: ["fetchAlbumById", initialData.id],
-        });
-        toast.success(response.message);
-        router.push(previousPath);
-      } else {
-        setPendingValues(values);
-        setShowConfirmationDialog(true);
+    setLoading(true);
+    if (initialData) {
+      const combinedValues = initialData
+        ? { ...initialData, ...values }
+        : values;
+      const command: AlbumUpdateCommand = {
+        ...combinedValues,
+      };
+
+      const response = await albumService.update(command);
+      if (response.status == Status.ERROR) {
+        toast.error(response.error?.detail);
+        setLoading(false);
+        return;
       }
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+      queryClient.refetchQueries({
+        queryKey: ["fetchAlbumById", initialData.id],
+      });
+      toast.success("Album updated successfully.");
+      router.push(previousPath);
+    } else {
+      setPendingValues(values);
+      setShowConfirmationDialog(true);
     }
+
+    setLoading(false);
   };
 
   const handleCreateConfirmation = async (): Promise<BusinessResult<Album>> => {
@@ -117,35 +117,34 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
-    try {
-      const createdValues: AlbumCreateCommand = {
-        ...pendingValues,
-        file: file,
-      };
-      const response = await albumService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
 
-      toast.success(response.message);
+    const command: AlbumCreateCommand = {
+      ...pendingValues,
+    };
+    const response = await albumService.create(command);
+    
+    if (response.status == Status.ERROR) {
+      toast.error(response.error?.detail);
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
-
-      return response;
-    } catch (error: any) {
-      console.error("Error creating album:", error);
-      toast.error(error.message || "Failed to create album.");
-      setShowConfirmationDialog(false);
-      setPendingValues(null);
-      setIsLoading(false);
-      return Promise.reject(error);
+      return Promise.reject(response);
     }
+
+    toast.success("Album created successfully.");
+    setShowConfirmationDialog(false);
+    setPendingValues(null);
+    setIsLoading(false);
+
+    return response;
   };
 
   return (
     <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
+        open={showConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
@@ -177,8 +176,8 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
               <div className="grid gap-3">
                 <FormSwitch
                   form={form}
-                  name="isPublic"
-                  label="Is Public"
+                  name="isFeatured"
+                  label="Is Featured"
                   description="If enabled, this album will be publicly accessible."
                 />
 
@@ -203,7 +202,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                   placeholder="Enter description"
                 />
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="background"
                   render={({ field }) => (
@@ -232,7 +231,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
                       </FormControl>
                     </FormItem>
                   )}
-                />
+                /> */}
 
                 <FormInputDateTimePicker
                   form={form}

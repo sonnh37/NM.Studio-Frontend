@@ -4,7 +4,7 @@ import {
   UserCreateCommand,
   UserUpdateCommand,
   UserUpdatePasswordCommand,
-} from "@/types/commands/user-command";
+} from "@/types/cqrs/commands/user-command";
 import { User } from "@/types/entities/user";
 import { BusinessResult } from "@/types/models/business-result";
 import { BaseService } from "./base/base-service";
@@ -23,30 +23,31 @@ class UserService extends BaseService<User> {
   }
 
   async create(command: UserCreateCommand): Promise<BusinessResult<User>> {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "User");
-    }
+    // let link = null;
+    // if (command.file) {
+    //   link = await this.uploadImage(command.file, "User");
+    // }
 
-    command.avatar = link ?? undefined;
+    // command.avatar = link ?? undefined;
 
     return await super.create(command);
   }
 
   async update(command: UserUpdateCommand): Promise<BusinessResult<User>> {
-    let link = null;
-    if (command.file) {
-      link = await this.uploadImage(command.file, "User");
-    }
+    // let link = null;
+    // if (command.file) {
+    //   link = await this.uploadImage(command.file, "User");
+    // }
 
-    if (link && command.avatar) {
-      await this.deleteImage(command.avatar);
-    }
+    // if (link && command.avatar) {
+    //   await this.deleteImage(command.avatar);
+    // }
 
-    command.avatar = link ?? command.avatar;
+    // command.avatar = link ?? command.avatar;
 
     return await super.update(command);
   }
+  
 
   public updatePassword = async (
     command: UserUpdatePasswordCommand

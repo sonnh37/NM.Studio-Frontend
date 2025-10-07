@@ -3,7 +3,6 @@ import {BaseService} from "./base/base-service";
 import {Const} from "@/lib/constants/const";
 import {BusinessResult} from "@/types/models/business-result";
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import {UpdateCommand} from "@/types/commands/base/base-command";
 
 class ServiceBookingService extends BaseService<ServiceBooking> {
     constructor() {

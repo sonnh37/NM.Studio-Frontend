@@ -39,7 +39,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
   };
 
   const handleColorChange = (colorName: string) => {
-    const color = product.productColors?.find(
+    const color = product.productVariants?.find(
       (pxc) => pxc.color?.name === colorName
     );
     if (color) {
@@ -90,8 +90,8 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                                 className="aspect-[2/3]  w-full"
                                 width={9999}
                                 height={9999}
-                                alt={pic.mediaFile?.title ?? ""}
-                                src={pic.mediaFile?.src ?? ""}
+                                alt={pic.mediaBase?.title ?? ""}
+                                src={pic.mediaBase?.src ?? ""}
                               />
                             </CardContent>
                           </Card>
@@ -160,7 +160,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                           Color
                         </legend>
                         <div className="flex flex-row space-x-2 mt-4">
-                          {product.productColors?.map((pxc) => (
+                          {product.productVariants?.map((pxc) => (
                             <div
                               key={pxc.id}
                               className="flex flex-col items-center"

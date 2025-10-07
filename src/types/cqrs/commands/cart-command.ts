@@ -10,7 +10,7 @@ export interface CartCreateCommand extends CreateCommand {
   groomName?: string | null | undefined;
   location?: string | null | undefined;
   photographer?: string | null | undefined;
-  isPublic: boolean;
+  isFeatured: boolean;
   file?: File | null | undefined;
 }
 
@@ -24,6 +24,6 @@ export interface CartUpdateCommand extends UpdateCommand {
   groomName?: string | null | undefined;
   location?: string | null | undefined;
   photographer?: string | null | undefined;
-  isPublic: boolean;
+  isFeatured: boolean;
   file?: File | null | undefined;
 }

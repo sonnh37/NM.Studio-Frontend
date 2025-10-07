@@ -10,10 +10,10 @@ import DataTablePhotos from "@/components/sites/dashboard/sites/products/medias"
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { productService } from "@/services/product-service";
-import { productColorService } from "@/services/product-color-service";
+import { productVariantService } from "@/services/product-variant-service";
 import { productSizeService } from "@/services/product-size-service";
 import { FilterEnum } from "@/types/filter-enum";
-import { ProductColorGetAllQuery } from "@/types/queries/product-color-query";
+import { ProductVariantGetAllQuery } from "@/types/queries/product-color-query";
 import { ProductSizeGetAllQuery } from "@/types/queries/product-size-query";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
@@ -369,7 +369,7 @@ export default function DataTableProducts() {
               </TabsContent>
             </Tabs>
 
-            {/* Tab cho productColors */}
+            {/* Tab cho productVariants */}
             <Tabs defaultValue="colors-selected" className="w-full mt-4">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="colors-selected">
@@ -384,7 +384,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTableColors
                     productId={product.id}
-                    productColors={product.productColors ?? []}
+                    productVariants={product.productVariants ?? []}
                     tab={0}
                   />
                 </Card>
@@ -393,7 +393,7 @@ export default function DataTableProducts() {
                 <Card className="p-4">
                   <DataTableColors
                     productId={product.id}
-                    productColors={product.productColors ?? []}
+                    productVariants={product.productVariants ?? []}
                     tab={1}
                   />
                 </Card>

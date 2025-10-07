@@ -1,4 +1,4 @@
-import { ServiceBookingStatus } from "../entities/service-booking";
+import { ServiceBookingStatus } from "@/types/entities/service-booking";
 import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface ServiceBookingCreateCommand extends CreateCommand {

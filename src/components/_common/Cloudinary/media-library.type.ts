@@ -82,7 +82,7 @@ export interface MediaLibraryInsertResultsAsset {
   metadata: any; // Array of?
   public_id: string;
   resource_type: string;
-  secure_url: string;
+  secureUrl: string;
   tags: Array<string>;
   type: string;
   uploaded_by: { type: string; id: string };

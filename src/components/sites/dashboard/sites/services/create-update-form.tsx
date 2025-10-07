@@ -141,7 +141,8 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     <>
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        open={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();

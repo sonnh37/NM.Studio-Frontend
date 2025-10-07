@@ -11,7 +11,7 @@ import { FileUp } from 'lucide-react';
 import { Caption, CaptionTextarea } from './caption';
 import { PlateElement } from './plate-element';
 
-export const MediaFileElement = withHOC(
+export const MediaBaseElement = withHOC(
   ResizableProvider,
   withRef<typeof PlateElement>(
     ({ children, className, nodeProps, ...props }, ref) => {

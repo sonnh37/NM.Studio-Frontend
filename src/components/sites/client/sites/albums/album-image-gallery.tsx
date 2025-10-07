@@ -8,11 +8,11 @@ import "yet-another-react-lightbox/styles.css";
 import "react-photo-album/masonry.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-import {MediaFile} from "@/types/entities/media-file";
+import {MediaBase} from "@/types/entities/media-file";
 import Image from "next/image";
 
 interface AlbumImageGalleryProps {
-    photos: MediaFile[];
+    photos: MediaBase[];
 }
 
 const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {
@@ -49,8 +49,8 @@ const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {
             const slidesData: Slide[] = [];
 
             // Loop through the photos and process each image asynchronously.
-            for (const mediaFile of photos) {
-                const imageSrc = mediaFile.src ?? "/image-notfound.png";
+            for (const mediaBase of photos) {
+                const imageSrc = mediaBase.src ?? "/image-notfound.png";
 
                 const img = new window.Image();
                 img.src = imageSrc;

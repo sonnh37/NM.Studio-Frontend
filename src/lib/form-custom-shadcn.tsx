@@ -1080,43 +1080,41 @@ interface FormImageUploadProps<T extends FieldValues> {
   onFileChange?: (file: File | null) => void;
 }
 
-export function FormImageUpload<T extends FieldValues>({
-  form,
-  name,
-  label = "Upload Image",
-  onFileChange,
-}: FormImageUploadProps<T>) {
-  const handleChange = (newFile: File | null) => {
-    onFileChange?.(newFile);
+interface ImageUploadProps {
+  label?: string;
+  defaultValue?: string;
+  onFileChange?: (file: File | null) => void;
+}
+
+export function ImageUpload({ label = "Upload Image", defaultValue, onFileChange }: ImageUploadProps) {
+  const [preview, setPreview] = useState<string | null>(defaultValue ?? null);
+
+  const handleChange = (file: File | null) => {
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+    } else {
+      setPreview(null);
+    }
+    onFileChange?.(file);
   };
 
   return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <div className="grid gap-2">
-              {field.value && (
-                <Image
-                  alt="Preview"
-                  className="w-full rounded-md"
-                  height={9999}
-                  src={field.value ?? "/image-notfound.png"}
-                  width={9999}
-                />
-              )}
-              <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                <FileUpload onChange={handleChange} />
-              </div>
-              <FormMessage />
-            </div>
-          </FormControl>
-        </FormItem>
+    <div className="grid gap-2">
+      <label className="font-medium">{label}</label>
+      {preview && (
+        <Image
+          alt="Preview"
+          src={preview}
+          width={9999}
+          height={9999}
+          className="w-full rounded-md"
+        />
       )}
-    />
+      <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <FileUpload onChange={handleChange} />
+      </div>
+    </div>
   );
 }
 
@@ -1225,7 +1223,8 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
 };
 
 interface ConfirmationDialogProps {
-  isOpen: boolean;
+  open: boolean;
+  setOpen: (open: boolean) => void;
   onConfirm: () => void;
   onClose: () => void;
   title: string;
@@ -1237,7 +1236,8 @@ interface ConfirmationDialogProps {
 }
 
 const ConfirmationDialog = ({
-  isOpen,
+  open,
+  setOpen,
   onConfirm,
   title,
   onClose,
@@ -1250,7 +1250,7 @@ const ConfirmationDialog = ({
   const router = useRouter();
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="overflow-hidden shadow-lg">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>

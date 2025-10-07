@@ -4,44 +4,32 @@ import {
   UpdateCommand,
 } from "./base/base-command";
 
-export interface ServiceCreateCommand extends CreateCommand {
-  name?: string | null | undefined;
-  slug?: string | null | undefined;
-  description?: string | null | undefined;
-  src?: string | null | undefined;
-  price?: number | null | undefined;
-  category?: string | null | undefined;
-  isFeatured: boolean;
-  isActive: boolean;
-  sortOrder: number;
-  imageUrl?: string | null | undefined;
-  shortDescription?: string | null | undefined;
-  metaTitle?: string | null | undefined;
-  metaDescription?: string | null | undefined;
-  metaKeywords?: string | null | undefined;
-  termsAndConditions?: string | null | undefined;
-  maxBookingsPerDay?: number | null | undefined;
-  file?: File | null | undefined;
+export class ServiceCreateCommand extends CreateCommand {
+  name: string | null;
+  slug: string | null;
+  description: string | null;
+  price: number | null;
+  isFeatured: boolean | null;
+  backgroundCoverId: string | null;
+  thumbnailId: string | null;
+  termsAndConditions: string | null;
+  srcThumbnail?: string | null;
+  thumbnailFile?: File | null;
 }
 
-export interface ServiceUpdateCommand extends UpdateCommand {
-  name?: string | null | undefined;
-  slug?: string | null | undefined;
-  description?: string | null | undefined;
-  src?: string | null | undefined;
-  price?: number | null | undefined;
-  category?: string | null | undefined;
-  isFeatured: boolean;
-  isActive: boolean;
-  sortOrder: number;
-  imageUrl?: string | null | undefined;
-  shortDescription?: string | null | undefined;
-  metaTitle?: string | null | undefined;
-  metaDescription?: string | null | undefined;
-  metaKeywords?: string | null | undefined;
-  termsAndConditions?: string | null | undefined;
-  maxBookingsPerDay?: number | null | undefined;
-  file?: File | null | undefined;
+export interface PackageServiceCommand {}
+
+export class ServiceUpdateCommand extends UpdateCommand {
+  name: string | null;
+  slug: string | null;
+  description: string | null;
+  price: number | null;
+  isFeatured: boolean | null;
+  backgroundCoverId: string | null;
+  thumbnailId: string | null;
+  termsAndConditions: string | null;
+  srcThumbnail?: string | null;
+  thumbnailFile?: File | null;
 }
 
 export interface ServiceDeleteCommand extends DeleteCommand {}

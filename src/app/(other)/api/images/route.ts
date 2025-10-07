@@ -18,7 +18,7 @@ export async function GET() {
 
     const map = resources.map((item: any) => ({
       id: item.public_id,
-      url: item.secure_url,
+      url: item.secureUrl,
       created_at: item.created_at,
       bytes: item.bytes,
       format: item.format,
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     if (result) {
       return NextResponse.json({
         id: result.public_id,
-        url: result.secure_url,
+        url: result.secureUrl,
         created_at: result.created_at,
         bytes: result.bytes,
         format: result.format,

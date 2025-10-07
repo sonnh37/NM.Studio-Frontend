@@ -7,7 +7,7 @@ import { cn } from '@udecode/cn';
 import { SlateElement } from '@udecode/plate';
 import { FileUp } from 'lucide-react';
 
-export const MediaFileElementStatic = ({
+export const MediaBaseElementStatic = ({
   children,
   className,
   ...props

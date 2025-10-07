@@ -25,7 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn } from "@/lib/utils";
-import { mediaFileService } from "@/services/media-file-service";
+import { mediaBaseService } from "@/services/image-service";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -194,7 +194,7 @@ export default function PhotoTable() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
-    queryFn: () => mediaFileService.getAll(queryParams),
+    queryFn: () => mediaBaseService.getAll(queryParams),
     placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
@@ -257,7 +257,7 @@ export default function PhotoTable() {
         table={table}
         filterEnums={filterEnums}
         columnSearch={columnSearch}
-        deleteFunc={mediaFileService.delete}
+        deleteFunc={mediaBaseService.delete}
         isSheetOpen={isSheetOpen}
         handleSheetChange={handleSheetChange}
         formFilterAdvanceds={formFilterAdvanceds}
@@ -275,8 +275,8 @@ export default function PhotoTable() {
         />
       ) : (
         <DataTableComponent
-          deletePermanentFunc={mediaFileService.delete}
-          updateUndoFunc={mediaFileService.update}
+          deletePermanentFunc={mediaBaseService.delete}
+          updateUndoFunc={mediaBaseService.update}
           table={table}
         />
       )}

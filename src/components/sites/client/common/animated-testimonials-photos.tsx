@@ -1,7 +1,7 @@
 "use client";
 import {AnimatedTestimonials} from "@/components/ui/animated-testimonials";
 import {isValidImage} from "@/lib/utils";
-import {MediaFile} from "@/types/entities/media-file";
+import {MediaBase} from "@/types/entities/media-file";
 
 interface Testimonial {
     quote: string;
@@ -14,18 +14,18 @@ export const AnimatedTestimonialsPhotos = async ({
                                                      photos = [],
                                                      autoplay = false,
                                                  }: {
-    photos: MediaFile[];
+    photos: MediaBase[];
     autoplay?: boolean;
 }) => {
     if (photos.length === 0) {
         return <div>No photos available</div>;
     }
     const testimonials: Testimonial[] = await Promise.all(
-        photos.map(async (mediaFile) => ({
-            quote: mediaFile.tag || "Untitled",
-            name: mediaFile.title || "Anonymous",
-            designation: mediaFile.description || "Untitled",
-            src: await isValidImage(mediaFile.src ?? "/image-notfound.png") ? mediaFile.src : "/image-notfound.png",
+        photos.map(async (mediaBase) => ({
+            quote: mediaBase.tag || "Untitled",
+            name: mediaBase.title || "Anonymous",
+            designation: mediaBase.description || "Untitled",
+            src: await isValidImage(mediaBase.src ?? "/image-notfound.png") ? mediaBase.src : "/image-notfound.png",
         } as Testimonial))
     );
 

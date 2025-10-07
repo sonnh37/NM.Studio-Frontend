@@ -49,7 +49,7 @@ export const columns: ColumnDef<Album>[] = [
     accessorKey: "background",
     header: "Background Image",
     cell: ({ row }) => {
-      const backgroundUrl = row.original.background as string;
+      const backgroundUrl = row.original.coverUrl;
       return (
         <Link href={backgroundUrl || "#"}>
           <Image
@@ -119,7 +119,7 @@ export const columns: ColumnDef<Album>[] = [
     ),
   },
   {
-    accessorKey: "isPublic",
+    accessorKey: "isFeatured",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Public" />
     ),

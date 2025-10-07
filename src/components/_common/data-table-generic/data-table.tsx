@@ -29,7 +29,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { z, ZodObject, ZodType } from "zod";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTableComponent } from "./data-table-component";
-import { DeleteCommand, UpdateCommand } from "@/types/commands/base/base-command";
+import { DeleteCommand, UpdateCommand } from "@/types/cqrs/commands/base/base-command";
 import { Card } from "@/components/ui/card";
 import { DataTablePagination } from "./data-table-pagination";
 import { QueryResult } from "@/types/models/query-result";

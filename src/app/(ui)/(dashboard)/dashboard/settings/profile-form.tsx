@@ -23,7 +23,7 @@ import { getEnumOptions } from "@/lib/utils";
 import { Gender, Role, User } from "@/types/entities/user";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { UpdateCommand } from "@/types/commands/base/base-command";
+import { UpdateCommand } from "@/types/cqrs/commands/base/base-command";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { userService } from "@/services/user-serice";

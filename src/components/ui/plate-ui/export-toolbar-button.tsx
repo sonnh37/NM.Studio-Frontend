@@ -95,7 +95,7 @@ import {
 import { KbdLeafStatic } from '@/components/ui/plate-ui/kbd-leaf-static';
 import { LinkElementStatic } from '@/components/ui/plate-ui/link-element-static';
 import { MediaAudioElementStatic } from '@/components/ui/plate-ui/media-audio-element-static';
-import { MediaFileElementStatic } from '@/components/ui/plate-ui/media-file-element-static';
+import { MediaBaseElementStatic } from '@/components/ui/plate-ui/media-file-element-static';
 import { MediaVideoElementStatic } from '@/components/ui/plate-ui/media-video-element-static';
 import { MentionElementStatic } from '@/components/ui/plate-ui/mention-element-static';
 import { ParagraphElementStatic } from '@/components/ui/plate-ui/paragraph-element-static';
@@ -204,7 +204,7 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
       [BaseCommentsPlugin.key]: CommentLeafStatic,
       [BaseDatePlugin.key]: DateElementStatic,
       [BaseEquationPlugin.key]: EquationElementStatic,
-      [BaseFilePlugin.key]: MediaFileElementStatic,
+      [BaseFilePlugin.key]: MediaBaseElementStatic,
       [BaseHighlightPlugin.key]: HighlightLeafStatic,
       [BaseHorizontalRulePlugin.key]: HrElementStatic,
       [BaseImagePlugin.key]: ImageElementStatic,

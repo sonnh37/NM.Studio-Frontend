@@ -1,4 +1,4 @@
-import { BlogStatus } from "../entities/blog";
+import { BlogStatus } from "@/types/entities/blog";
 import {
   CreateCommand,
   DeleteCommand,
@@ -6,35 +6,39 @@ import {
 } from "./base/base-command";
 
 export interface BlogCreateCommand extends CreateCommand {
-  title?: string | null | undefined;
-  slug?: string | null | undefined;
-  content?: string | null | undefined;
-  summary?: string | null | undefined;
-  thumbnail?: string | null | undefined;
-  bannerImage?: string | null | undefined;
+  authorId?: string | null;
+  title?: string | null;
+  slug?: string | null;
+  content?: string | null;
+  summary?: string | null;
+  thumbnailId?: string | null;
+  backgroundCoverId?: string | null;
   status: BlogStatus;
   isFeatured: boolean;
   viewCount: number;
-  tags?: string | null | undefined;
-  authorId?: string | null | undefined;
-  file_bannerImage?: File | null | undefined;
-  file_thumbnail?: File | null | undefined;
+  tags?: string | null;
+
+  srcThumbnail?: string | null;
+  srcBackgroundCover?: string | null;
+
 }
 
 export interface BlogUpdateCommand extends UpdateCommand {
-  title?: string | null | undefined;
-  slug?: string | null | undefined;
-  content?: string | null | undefined;
-  summary?: string | null | undefined;
-  thumbnail?: string | null | undefined;
-  bannerImage?: string | null | undefined;
+  authorId?: string | null;
+  title?: string | null;
+  slug?: string | null;
+  content?: string | null;
+  summary?: string | null;
+  thumbnailId?: string | null;
+  backgroundCoverId?: string | null;
   status: BlogStatus;
   isFeatured: boolean;
   viewCount: number;
-  tags?: string | null | undefined;
-  authorId?: string | null | undefined;
-  file_bannerImage?: File | null | undefined;
-  file_thumbnail?: File | null | undefined;
+  tags?: string | null;
+
+  srcThumbnail?: string | null;
+  srcBackgroundCover?: string | null;
+
 }
 
 export interface BlogDeleteCommand extends DeleteCommand {}

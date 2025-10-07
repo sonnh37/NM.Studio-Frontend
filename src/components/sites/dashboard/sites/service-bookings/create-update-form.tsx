@@ -157,7 +157,8 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialD
     <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        open={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();

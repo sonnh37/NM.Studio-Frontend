@@ -15,15 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/lib/utils";
-import { mediaFileService } from "@/services/media-file-service";
-import { MediaCategory, MediaFile, MediaType } from "@/types/entities/media-file";
+import { mediaBaseService } from "@/services/image-service";
+import { MediaCategory, MediaBase, MediaType } from "@/types/entities/media-file";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-export const columns: ColumnDef<MediaFile>[] = [
+export const columns: ColumnDef<MediaBase>[] = [
   {
     accessorKey: "select",
     header: ({ table }) => (
@@ -239,7 +239,7 @@ export const columns: ColumnDef<MediaFile>[] = [
 ];
 
 interface ActionsProps {
-  row: Row<MediaFile>;
+  row: Row<MediaBase>;
 }
 
 const Actions: React.FC<ActionsProps> = ({ row }) => {
@@ -277,7 +277,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteFunc={mediaFileService.delete}
+        deleteFunc={mediaBaseService.delete}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}

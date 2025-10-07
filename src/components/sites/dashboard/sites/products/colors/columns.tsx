@@ -1,10 +1,10 @@
 "use client";
 
 import {DataTableColumnHeader} from "@/components/_common/data-table-generic/data-table-column-header";
-import {ProductColor} from "@/types/entities/product-color";
+import {ProductVariant} from "@/types/entities/product-color";
 import {ColumnDef} from "@tanstack/react-table";
 
-export const columns: ColumnDef<ProductColor>[] = [
+export const columns: ColumnDef<ProductVariant>[] = [
     {
         accessorKey: "product.name",
         header: ({column}) => (

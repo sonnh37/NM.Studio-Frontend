@@ -1,14 +1,12 @@
-import {Album} from "./album";
-import {BaseEntity} from "./base/base";
-import {MediaFile} from "./media-file";
-import {Image} from "./image";
+import { Album } from "./album";
+import { BaseEntity } from "./base/base";
+import { MediaBase } from "./media-base";
 
 export interface AlbumImage extends BaseEntity {
-  sortOrder: number;
   isCover: boolean;
   isThumbnail: boolean;
   imageId?: string;
   albumId?: string;
   album?: Album;
-  image?: Image;
+  image?: MediaBase;
 }

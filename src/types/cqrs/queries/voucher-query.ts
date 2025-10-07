@@ -20,6 +20,6 @@ export interface VoucherGetAllQuery extends GetQueryableQuery {
   applicableCategories?: string | null | undefined;
   maximumSpend?: number | null | undefined;
   isCombinableWithOther?: boolean | null | undefined;
-  isPublic?: boolean | null | undefined;
+  isFeatured?: boolean | null | undefined;
   userGroupRestrictions?: string | null | undefined;
 }

@@ -106,7 +106,7 @@ export default function Page() {
   };
 
   const handleColorChange = (colorName: string) => {
-    const color = product.productColors?.find(
+    const color = product.productVariants?.find(
       (pxc) => pxc.color?.name === colorName
     );
     if (color) {
@@ -138,8 +138,8 @@ export default function Page() {
               {product.productMedias!.map((pxp, index) => (
                 <SwiperSlide key={index}>
                   <img
-                    alt={pxp.mediaFile?.title ?? "N/A"}
-                    src={pxp.mediaFile?.src ?? "/image-notfound.png"}
+                    alt={pxp.mediaBase?.title ?? "N/A"}
+                    src={pxp.mediaBase?.src ?? "/image-notfound.png"}
                   />
                 </SwiperSlide>
               ))}
@@ -180,8 +180,8 @@ export default function Page() {
                   className="w-[25%] h-[100%] opacity-40"
                 >
                   <img
-                    alt={pxp.mediaFile?.title ?? "N/A"}
-                    src={pxp.mediaFile?.src ?? "/image-notfound.png"}
+                    alt={pxp.mediaBase?.title ?? "N/A"}
+                    src={pxp.mediaBase?.src ?? "/image-notfound.png"}
                     className="w-full h-full object-cover"
                   />
                 </SwiperSlide>
@@ -206,7 +206,7 @@ export default function Page() {
                 Color
               </legend>
               <div className="flex flex-row space-x-2 mt-4">
-                {product.productColors?.map((pxc) => (
+                {product.productVariants?.map((pxc) => (
                   <div key={pxc.id} className="flex flex-col items-center">
                     <Button
                       variant="outline"

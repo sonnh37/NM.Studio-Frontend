@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { mediaFileService } from "@/services/media-file-service";
+import { mediaBaseService } from "@/services/image-service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -24,10 +24,10 @@ import ConfirmationDialog, {
   FormSwitch,
 } from "@/lib/form-custom-shadcn";
 import {
-  MediaFileCreateCommand,
-  MediaFileUpdateCommand,
+  MediaBaseCreateCommand,
+  MediaBaseUpdateCommand,
 } from "@/types/commands/media-file-command";
-import { MediaFile } from "@/types/entities/media-file";
+import { MediaBase } from "@/types/entities/media-file";
 import { BusinessResult } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -36,7 +36,7 @@ import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 
 interface PhotoFormProps {
-  initialData: MediaFile | null;
+  initialData: MediaBase | null;
 }
 
 const formSchema = z.object({
@@ -56,7 +56,7 @@ const formSchema = z.object({
 });
 export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Edit mediaFile" : "Create mediaFile";
+  const title = initialData ? "Edit mediaBase" : "Create mediaBase";
   const action = initialData ? "Save and continue" : "Create";
   const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const router = useRouter();
@@ -88,11 +88,11 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: MediaFileUpdateCommand = {
+        const updatedValues: MediaBaseUpdateCommand = {
           ...values,
           file: file,
         };
-        const response = await mediaFileService.update(updatedValues);
+        const response = await mediaBaseService.update(updatedValues);
         if (response.status != 1) throw new Error(response.message);
         queryClient.refetchQueries({
           queryKey: ["fetchPhotoById", initialData.id],
@@ -111,18 +111,18 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     }
   };
 
-  const handleCreateConfirmation = async (): Promise<BusinessResult<MediaFile>> => {
+  const handleCreateConfirmation = async (): Promise<BusinessResult<MediaBase>> => {
     if (!pendingValues) {
-      toast.error("No pending values to create mediaFile.");
+      toast.error("No pending values to create mediaBase.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
     try {
-      const createdValues: MediaFileCreateCommand = {
+      const createdValues: MediaBaseCreateCommand = {
         ...pendingValues,
         file: file,
       };
-      const response = await mediaFileService.create(createdValues);
+      const response = await mediaBaseService.create(createdValues);
       if (response.status !== 1) throw new Error(response.message);
 
       toast.success(response.message);
@@ -132,8 +132,8 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
 
       return response;
     } catch (error: any) {
-      console.error("Error creating mediaFile:", error);
-      toast.error(error.message || "Failed to create mediaFile.");
+      console.error("Error creating mediaBase:", error);
+      toast.error(error.message || "Failed to create mediaBase.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -145,7 +145,8 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     <>
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        open={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
@@ -154,7 +155,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
           }
           router.push(previousPath);
         }}
-        title="Do you want to continue adding this mediaFile?"
+        title="Do you want to continue adding this mediaBase?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"

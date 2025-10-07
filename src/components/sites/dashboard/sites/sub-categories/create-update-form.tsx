@@ -155,7 +155,8 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
     <>
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        open={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();

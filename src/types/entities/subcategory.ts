@@ -6,7 +6,6 @@ export interface SubCategory extends BaseEntity {
   name?: string;
   slug?: string;
   description?: string;
-  sortOrder: number;
   isFeatured: boolean;
   categoryId?: string;
   category?: Category;

@@ -51,8 +51,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 alt={product.name!}
                 src={
                   product.productMedias!.length > 0 &&
-                  product.productMedias![0].mediaFile
-                    ? product.productMedias![0].mediaFile.src ??
+                  product.productMedias![0].mediaBase
+                    ? product.productMedias![0].mediaBase.src ??
                       "/image-notfound.png"
                     : "/image-notfound.png"
                 }
@@ -80,7 +80,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className="flex">
           <RadioGroup className="flex flex-row space-x-1" disabled>
-            {product.productColors?.map((pxc) => (
+            {product.productVariants?.map((pxc) => (
               <div key={pxc.id}>
                 <RadioGroupItem
                   value={pxc.color?.name as string}

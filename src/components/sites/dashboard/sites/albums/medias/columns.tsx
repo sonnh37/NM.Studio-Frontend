@@ -2,17 +2,17 @@
 
 import { DataTableColumnHeader } from "@/components/_common/data-table-generic/data-table-column-header";
 import { formatDate } from "@/lib/utils";
-import { MediaFile } from "@/types/entities/media-file";
+import { MediaBase } from "@/types/entities/media-base";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
 
-export const columns: ColumnDef<MediaFile>[] = [
+export const columns: ColumnDef<MediaBase>[] = [
   {
-    accessorKey: "src",
+    accessorKey: "mediaUrl",
     header: "Src Image",
     cell: ({ row }) => {
-      const backgroundUrl = row.original.src;
+      const backgroundUrl = row.original.mediaUrl;
       if (!backgroundUrl) return "-";
       return (
         <Link href={backgroundUrl}>
@@ -28,15 +28,9 @@ export const columns: ColumnDef<MediaFile>[] = [
     },
   },
   {
-    accessorKey: "href",
+    accessorKey: "displayName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Href link to" />
-    ),
-  },
-  {
-    accessorKey: "tag",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tag" />
+      <DataTableColumnHeader column={column} title="Display name" />
     ),
   },
   {
@@ -46,123 +40,27 @@ export const columns: ColumnDef<MediaFile>[] = [
     ),
   },
   {
-    accessorKey: "displayTitle",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Display Title" />
-    ),
-  },
-  {
-    accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
-    ),
-  },
-  {
-    accessorKey: "altText",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Alt Text" />
-    ),
-  },
-  {
-    accessorKey: "thumbnailSrc",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Thumbnail Src" />
-    ),
-  },
-  {
-    accessorKey: "mediumSrc",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Medium Src" />
-    ),
-  },
-  {
-    accessorKey: "largeSrc",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Large Src" />
-    ),
-  },
-  {
-    accessorKey: "type",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
-    ),
-  },
-  {
     accessorKey: "mimeType",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="MIME Type" />
+      <DataTableColumnHeader column={column} title="mimeType" />
     ),
   },
   {
-    accessorKey: "fileSize",
+    accessorKey: "size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="File Size" />
+      <DataTableColumnHeader column={column} title="size" />
     ),
   },
   {
     accessorKey: "width",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Width" />
+      <DataTableColumnHeader column={column} title="width" />
     ),
   },
   {
     accessorKey: "height",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Height" />
-    ),
-  },
-  {
-    accessorKey: "duration",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Duration" />
-    ),
-  },
-  {
-    accessorKey: "resolution",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Resolution" />
-    ),
-  },
-  {
-    accessorKey: "format",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Format" />
-    ),
-  },
-  {
-    accessorKey: "isFeatured",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Featured" />
-    ),
-  },
-  {
-    accessorKey: "sortOrder",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Sort Order" />
-    ),
-  },
-  {
-    accessorKey: "category",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
-    ),
-  },
-  {
-    accessorKey: "isActive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Active" />
-    ),
-  },
-  {
-    accessorKey: "isWatermarked",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Watermarked" />
-    ),
-  },
-  {
-    accessorKey: "copyright",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Copyright" />
+      <DataTableColumnHeader column={column} title="height" />
     ),
   },
   {
@@ -182,7 +80,7 @@ export const columns: ColumnDef<MediaFile>[] = [
     },
   },
   {
-    accessorKey: "location",
+    accessorKey: "mediaBaseType",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Location" />
     ),

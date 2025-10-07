@@ -1,7 +1,6 @@
 export interface BusinessResult<T> {
   status: string;
-  message?: string;
-  error?: object;
+  error?: ProblemDetails;
   data?: T;
   traceId?: string;
 }
@@ -9,4 +8,14 @@ export interface BusinessResult<T> {
 export enum Status {
   OK = "OK",
   ERROR = "ERROR",
+}
+
+export interface ProblemDetails {
+  type?: string;      
+  title?: string;    
+  status?: number;   
+  detail?: string;    
+  instance?: string; 
+
+  [key: string]: any;
 }

@@ -24,9 +24,9 @@ import {
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
+import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -168,7 +168,7 @@ export default function BlogTable() {
       sorting
     );
 
-    params.includeProperties = ["author"];
+    params.includeProperties = ["author", "thumbnail", "backgroundCover"];
 
     return { ...params };
   }, [formValues, columnFilters, pagination, sorting]);

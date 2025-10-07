@@ -1,4 +1,4 @@
-import { VoucherStatus, VoucherType } from "../entities/voucher";
+import { VoucherStatus, VoucherType } from "@/types/entities/voucher";
 import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface VoucherCreateCommand extends CreateCommand {
@@ -20,7 +20,7 @@ export interface VoucherCreateCommand extends CreateCommand {
   applicableCategories?: string | null | undefined;
   maximumSpend?: number | null | undefined;
   isCombinableWithOther: boolean;
-  isPublic: boolean;
+  isFeatured: boolean;
   userGroupRestrictions?: string | null | undefined;
 }
 
@@ -34,6 +34,6 @@ export interface VoucherUpdateCommand extends UpdateCommand {
   groomName?: string | null;
   location?: string | null;
   photographer?: string | null;
-  isPublic: boolean;
+  isFeatured: boolean;
   file?: File | null;
 }

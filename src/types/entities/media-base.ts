@@ -1,6 +1,4 @@
 import { BaseEntity } from "./base/base";
-import { Video } from "./video";
-import { Image } from "./image";
 export interface MediaBase extends BaseEntity {
   displayName?: string;
   title?: string;
@@ -8,9 +6,13 @@ export interface MediaBase extends BaseEntity {
   size: number;
   width?: number;
   height?: number;
+  mediaUrl?: string;
   createdMediaBy?: string;
   takenMediaDate?: string;
+  mediaBaseType: MediaBaseType;
+}
 
-  image?: Image;
-  video?: Video;
+export enum MediaBaseType {
+  Image,
+  Video,
 }

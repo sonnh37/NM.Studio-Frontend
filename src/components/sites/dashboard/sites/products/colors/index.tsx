@@ -10,15 +10,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FormInput, FormSwitch } from "@/lib/form-custom-shadcn";
-import { productColorService } from "@/services/product-color-service";
+import { productVariantService } from "@/services/product-variant-service";
 import { colorService } from "@/services/color-service";
 import {
-  ProductColorCreateCommand,
-  ProductColorDeleteCommand,
-  ProductColorUpdateCommand,
+  ProductVariantCreateCommand,
+  ProductVariantDeleteCommand,
+  ProductVariantUpdateCommand,
 } from "@/types/commands/product-color-command";
 import { ColorCreateCommand } from "@/types/commands/color-command";
-import { ProductColor } from "@/types/entities/product-color";
+import { ProductVariant } from "@/types/entities/product-color";
 import { ColorGetAllQuery } from "@/types/queries/color-query";
 import { Color } from "@/types/entities/color";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +39,7 @@ import { z } from "zod";
 import { columns } from "./columns";
 interface DataTableColorsProps {
   productId?: string;
-  productColors?: ProductColor[];
+  productVariants?: ProductVariant[];
   tab?: number;
 }
 
@@ -51,7 +51,7 @@ const formSchema = z.object({
 export default function DataTableColors({
   productId,
   tab,
-  productColors,
+  productVariants,
 }: DataTableColorsProps) {
   const [getQueryParams, setGetQueryParams] = useState<ColorGetAllQuery>();
 
@@ -69,14 +69,14 @@ export default function DataTableColors({
 
   const queryClient = useQueryClient();
 
-  const handleRemoveColor = (value: ProductColor) => {
-    const command: ProductColorDeleteCommand = {
+  const handleRemoveColor = (value: ProductVariant) => {
+    const command: ProductVariantDeleteCommand = {
       isPermanent: true,
       colorId: value.colorId,
       productId: productId,
     };
 
-    productColorService.delete(command).then(async (response) => {
+    productVariantService.delete(command).then(async (response) => {
       if (response.status === 1) {
         await queryClient.refetchQueries({
           queryKey: ["product", productId],
@@ -89,13 +89,13 @@ export default function DataTableColors({
   };
 
   const handleAddColor = (value: Color) => {
-    const productColor_: ProductColorCreateCommand = {
+    const productVariant_: ProductVariantCreateCommand = {
       colorId: value.id,
       productId: productId,
       isActive: true,
     };
 
-    productColorService.create(productColor_).then((response) => {
+    productVariantService.create(productVariant_).then((response) => {
       if (response.status === 1) {
         queryClient.refetchQueries({ queryKey: ["product", productId] });
         queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
@@ -106,14 +106,14 @@ export default function DataTableColors({
     });
   };
 
-  const handleUpdateColor = (row: ProductColor, isActive: boolean) => {
-    const productColor_: ProductColorUpdateCommand = {
+  const handleUpdateColor = (row: ProductVariant, isActive: boolean) => {
+    const productVariant_: ProductVariantUpdateCommand = {
       colorId: row.colorId,
       productId: productId,
       isActive: isActive,
     };
 
-    productColorService.update(productColor_).then((response) => {
+    productVariantService.update(productVariant_).then((response) => {
       if (response.status === 1) {
         queryClient.refetchQueries({ queryKey: ["product", productId] });
         toast.success(response.message);
@@ -123,7 +123,7 @@ export default function DataTableColors({
     });
   };
 
-  const columns_tab0: ColumnDef<ProductColor>[] = [
+  const columns_tab0: ColumnDef<ProductVariant>[] = [
     {
       accessorKey: "select",
       header: ({ table }) => <></>,
@@ -233,12 +233,12 @@ export default function DataTableColors({
         if (response.status === 1) {
           const colorId = response.data?.id;
           if (colorId) {
-            const productColor_: ProductColorCreateCommand = {
+            const productVariant_: ProductVariantCreateCommand = {
               colorId: colorId,
               productId,
               isActive: data.isActive,
             };
-            productColorService.create(productColor_).then((response) => {
+            productVariantService.create(productVariant_).then((response) => {
               if (response.status === 1) {
                 queryClient.refetchQueries({
                   queryKey: ["product", productId],
@@ -276,7 +276,7 @@ export default function DataTableColors({
           </form>
         </Form>
       </div>
-      <DataOnlyTable columns={columns_tab0} data={productColors ?? []} />
+      <DataOnlyTable columns={columns_tab0} data={productVariants ?? []} />
     </div>
   ) : (
     <DataTable

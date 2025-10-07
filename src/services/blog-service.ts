@@ -1,58 +1,22 @@
 import { Blog } from "@/types/entities/blog";
 import { BaseService } from "./base/base-service";
 import { Const } from "@/lib/constants/const";
-import { BusinessResult } from "@/types/models/business-result";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import {
   BlogCreateCommand,
   BlogDeleteCommand,
   BlogUpdateCommand,
-} from "@/types/commands/blog-command";
+} from "@/types/cqrs/commands/blog-command";
+import { CreateOrUpdateCommand } from "@/types/cqrs/commands/base/base-command";
+import { mediaUploadService } from "./media-upload-service";
+import { UploadResult } from "@/types/models/upload-result";
 
 class BlogService extends BaseService<Blog> {
   constructor() {
     super(`${Const.BLOGS}`);
   }
-
-  async create(command: BlogCreateCommand): Promise<BusinessResult<Blog>> {
-    await this.handleFiles(
-      command,
-      [
-        { fileKey: "file_thumbnail", urlKey: "thumbnail" },
-        { fileKey: "file_bannerImage", urlKey: "bannerImage" },
-      ],
-      "Blog",
-      false
-    );
-    return super.create(command);
-  }
-
-  async update(command: BlogUpdateCommand): Promise<BusinessResult<Blog>> {
-    await this.handleFiles(
-      command,
-      [
-        { fileKey: "file_thumbnail", urlKey: "thumbnail" },
-        { fileKey: "file_bannerImage", urlKey: "bannerImage" },
-      ],
-      "Blog",
-      true
-    );
-    return super.update(command);
-  }
-
-  async deletePermanently(
-    command: BlogDeleteCommand
-  ): Promise<BusinessResult<null>> {
-    const data = await this.getById(command.id);
-    const filePath = data.data?.thumbnail;
-
-    const response = await super.delete(command);
-    if (response.status === 1 && filePath) {
-      await this.deleteImage(filePath);
-    }
-
-    return response;
-  }
+ 
 }
 
 export const blogService = new BlogService();

@@ -13,8 +13,8 @@ import { getCommonPinningStyles } from "@/lib/data-table";
 import {
   DeleteCommand,
   UpdateCommand,
-} from "@/types/commands/base/base-command";
-import { BusinessResult } from "@/types/models/business-result";
+} from "@/types/cqrs/commands/base/base-command";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
@@ -48,9 +48,6 @@ export function DataTableComponent<TData>({
 
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
-  const columnsLength = table
-    .getHeaderGroups()
-    .flatMap((group) => group.headers).length;
 
   const tableWidth = useSelector(
     (state: any) => state.widths.selectedWidths[0] || 100
@@ -64,9 +61,9 @@ export function DataTableComponent<TData>({
           isDeleted: false,
         };
         const result = await updateUndoFunc(command);
-        if (result.status == 1) {
+        if (result.status == Status.OK) {
           queryClient.refetchQueries({ queryKey: [queryKey] });
-          toast.success(result.message);
+          toast.success("Restored");
         } else {
           toast.error(`Failed to updateUndoFunc row with id ${model.id}:`);
         }
@@ -84,9 +81,9 @@ export function DataTableComponent<TData>({
     if (deletePermanentFunc) {
       try {
         const result = await deletePermanentFunc(model);
-        if (result.status == 1) {
+        if (result.status == Status.OK) {
           queryClient.refetchQueries({ queryKey: [queryKey] });
-          toast.success(`Row with id ${id} deleted permanently.`);
+          toast.success(`Deleted`);
           // Optionally, updateUndoFunc the local state or refetch data
         } else {
           toast.error(`Failed to delete row with id ${id}:`);

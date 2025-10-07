@@ -1,57 +1,35 @@
 "use client";
 import { useForm } from "react-hook-form";
 
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { blogService } from "@/services/blog-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { FileUpload } from "@/components/_common/custom/file-upload";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
-  FormImageUpload,
   FormInput,
-  FormInputDate,
-  FormInputDateTimePicker,
   FormInputReactTipTapEditor,
-  FormInputTextArea,
   FormSelectEnum,
-  FormSelectObject,
   FormSwitch,
+  ImageUpload,
 } from "@/lib/form-custom-shadcn";
 import { Blog, BlogStatus } from "@/types/entities/blog";
+
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
+import { getEnumOptions } from "@/lib/utils";
 import {
   BlogCreateCommand,
   BlogUpdateCommand,
-} from "@/types/commands/blog-command";
-import { BusinessResult } from "@/types/models/business-result";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
+} from "@/types/cqrs/commands/blog-command";
+import { BusinessResult, Status } from "@/types/models/business-result";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
-import { TypographyH1 } from "@/components/_common/typography/typography-h1";
-import { getEnumOptions } from "@/lib/utils";
-import { UserGetAllQuery } from "@/types/queries/user-query";
-import { userService } from "@/services/user-serice";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
 import { AuthorSelect } from "./author-select";
+import { mediaUploadService } from "@/services/media-upload-service";
 
 interface BlogFormProps {
   initialData: Blog | null;
@@ -63,8 +41,6 @@ const formSchema = z.object({
   slug: z.string().nullable().optional(),
   content: z.string().nullable().optional(),
   summary: z.string().nullable().optional(),
-  thumbnail: z.string().nullable().optional(),
-  bannerImage: z.string().nullable().optional(),
   status: z.nativeEnum(BlogStatus),
   isFeatured: z.boolean().default(false),
   viewCount: z.number().default(0),
@@ -100,19 +76,40 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: BlogUpdateCommand = {
-          ...values,
-          id: initialData.id,
-          file_thumbnail: file,
-          file_bannerImage: file2,
-          isDeleted: false,
+        const combinedValues = initialData
+          ? { ...initialData, ...values }
+          : values;
+        const command: BlogUpdateCommand = {
+          ...combinedValues,
         };
-        const response = await blogService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
+
+        if (file) {
+          const uploadResultThumb = await mediaUploadService.uploadFile(
+            file,
+            "Blog"
+          );
+          if (uploadResultThumb?.secureUrl) {
+            command.srcThumbnail = uploadResultThumb.secureUrl;
+          }
+        }
+
+        if (file2) {
+          const uploadResultBg = await mediaUploadService.uploadFile(
+            file2,
+            "Blog"
+          );
+          if (uploadResultBg?.secureUrl) {
+            command.srcBackgroundCover = uploadResultBg.secureUrl;
+          }
+        }
+
+        const response = await blogService.update(command);
+        if (response.status != Status.OK)
+          throw new Error(response.error?.detail);
         // queryClient.refetchQueries({
         //   queryKey: ["fetchBlogById", initialData.id],
         // });
-        toast.success(response.message);
+        toast.success("Blog updated successfully.");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -133,15 +130,33 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
     setIsLoading(true);
     try {
-      const createdValues: BlogCreateCommand = {
+      const command: BlogCreateCommand = {
         ...pendingValues,
-        file_thumbnail: file,
-        file_bannerImage: file2,
       };
-      const response = await blogService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
+      if (file) {
+        const uploadResultThumb = await mediaUploadService.uploadFile(
+          file,
+          "Blog"
+        );
+        if (uploadResultThumb?.secureUrl) {
+          command.srcThumbnail = uploadResultThumb.secureUrl;
+        }
+      }
 
-      toast.success(response.message);
+      if (file2) {
+        const uploadResultBg = await mediaUploadService.uploadFile(
+          file2,
+          "Blog"
+        );
+        if (uploadResultBg?.secureUrl) {
+          command.srcBackgroundCover = uploadResultBg.secureUrl;
+        }
+      }
+
+      const response = await blogService.create(command);
+      if (response.status != Status.OK) throw new Error(response.error?.detail);
+
+      toast.success("Blog created successfully.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -161,7 +176,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
-        isOpen={showConfirmationDialog}
+        open={showConfirmationDialog}
+        setOpen={setShowConfirmationDialog}
         onConfirm={handleCreateConfirmation}
         onClose={async () => {
           const res = await handleCreateConfirmation();
@@ -212,24 +228,15 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                   placeholder="Enter slug"
                 />
 
-                <FormInputTextArea
-                  form={form}
-                  name="content"
-                  label="Description"
-                  placeholder="Enter description"
-                />
-
-                <FormImageUpload
-                  form={form}
-                  name="thumbnail"
+                <ImageUpload
                   label="Thumbnail"
+                  defaultValue={initialData?.thumbnail?.mediaUrl}
                   onFileChange={setFile}
                 />
 
-                <FormImageUpload
-                  form={form}
-                  name="bannerImage"
-                  label="Banner"
+                <ImageUpload
+                  label="Background Cover"
+                  defaultValue={initialData?.backgroundCover?.mediaUrl}
                   onFileChange={setFile2}
                 />
 

@@ -4,8 +4,8 @@ import {PhotoForm} from "@/components/sites/dashboard/sites/media-files/create-u
 
 const breadcrumbItems = [
     {title: "Dashboard", link: "/dashboard"},
-    {title: "MediaFile", link: "/dashboard/mediaFile"},
-    {title: "New", link: "/dashboard/mediaFile/new"},
+    {title: "MediaBase", link: "/dashboard/mediaBase"},
+    {title: "New", link: "/dashboard/mediaBase/new"},
 ];
 
 export default function Page() {

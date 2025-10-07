@@ -1,7 +1,8 @@
+import { BaseEntity } from "./base/base";
 import { MediaBase } from "./media-base";
 import { User } from "./user";
 
-export interface Blog {
+export interface Blog extends BaseEntity {
   authorId?: string;
   title?: string;
   slug?: string;

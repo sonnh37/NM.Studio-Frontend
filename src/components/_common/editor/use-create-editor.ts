@@ -82,7 +82,7 @@ import { KbdLeaf } from '@/components/ui/plate-ui/kbd-leaf';
 import { LinkElement } from '@/components/ui/plate-ui/link-element';
 import { MediaAudioElement } from '@/components/ui/plate-ui/media-audio-element';
 import { MediaEmbedElement } from '@/components/ui/plate-ui/media-embed-element';
-import { MediaFileElement } from '@/components/ui/plate-ui/media-file-element';
+import { MediaBaseElement } from '@/components/ui/plate-ui/media-file-element';
 import { MediaPlaceholderElement } from '@/components/ui/plate-ui/media-placeholder-element';
 import { MediaVideoElement } from '@/components/ui/plate-ui/media-video-element';
 import { MentionElement } from '@/components/ui/plate-ui/mention-element';
@@ -114,7 +114,7 @@ const components = {
   [EmojiInputPlugin.key]: EmojiInputElement,
   [EquationPlugin.key]: EquationElement,
   [ExcalidrawPlugin.key]: ExcalidrawElement,
-  [FilePlugin.key]: MediaFileElement,
+  [FilePlugin.key]: MediaBaseElement,
   [HEADING_KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
   [HEADING_KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
   [HEADING_KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),

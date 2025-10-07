@@ -35,9 +35,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
+import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -134,7 +134,11 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 const columnSearch = "title";
 const query_key = "data";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
+  {
+    columnId: "isDeleted",
+    title: "Deleted status",
+    options: isDeleted_options,
+  },
 ];
 
 const defaultSchema = z.object({
@@ -158,7 +162,10 @@ export default function AlbumTable() {
   const { data: album, isLoading } = useQuery({
     queryKey: ["album", queryParam?.toLowerCase()],
     queryFn: async () => {
-      const response = await albumService.getById(queryParam as string);
+      const response = await albumService.getById(queryParam as string, [
+        "albumImages",
+        "albumImages.image",
+      ]);
       return response.data;
     },
     refetchOnWindowFocus: false,
@@ -201,6 +208,8 @@ export default function AlbumTable() {
       pagination,
       sorting
     );
+
+    params.includeProperties = ["albumImages"];
 
     return { ...params };
   }, [formValues, columnFilters, pagination, sorting]);
@@ -342,7 +351,7 @@ export default function AlbumTable() {
                 <Card className="p-4">
                   <DataTablePhotos
                     albumId={album.id}
-                    albumMedias={album.albumMedias ?? []}
+                    albumImages={album.albumImages ?? []}
                     tab={0}
                   />
                 </Card>
@@ -351,7 +360,7 @@ export default function AlbumTable() {
                 <Card className="p-4">
                   <DataTablePhotos
                     albumId={album.id}
-                    albumMedias={album.albumMedias ?? []}
+                    albumImages={album.albumImages ?? []}
                     tab={1}
                   />
                 </Card>

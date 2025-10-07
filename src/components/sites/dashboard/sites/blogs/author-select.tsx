@@ -1,12 +1,24 @@
 import { FieldValues, FieldPath, UseFormReturn } from "react-hook-form";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useQuery } from "@tanstack/react-query";
 import { userService } from "@/services/user-serice";
-import { UserGetAllQuery } from "@/types/queries/user-query";
 import { useState, useMemo } from "react";
+import { UserGetAllQuery } from "@/types/cqrs/queries/user-query";
 
 interface AuthorSelectProps<TFieldValues extends FieldValues> {
   form: UseFormReturn<TFieldValues>;
@@ -50,7 +62,10 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
         <FormItem>
           <FormLabel>Author</FormLabel>
           <FormControl>
-            <Select onValueChange={field.onChange} value={field.value ?? undefined}>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value ?? undefined}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select user" />
               </SelectTrigger>
@@ -68,7 +83,9 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
                   </SelectItem>
                 ))}
                 {isFetching && (
-                  <div className="p-2 text-sm text-muted-foreground">Loading...</div>
+                  <div className="p-2 text-sm text-muted-foreground">
+                    Loading...
+                  </div>
                 )}
               </SelectContent>
             </Select>

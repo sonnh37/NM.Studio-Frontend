@@ -2,21 +2,21 @@ import {
   CreateCommand,
   DeleteCommand,
   UpdateCommand,
-} from "@/types/commands/base/base-command";
+} from "@/types/cqrs/commands/base/base-command";
 
-export interface ProductColorCreateCommand extends CreateCommand {
+export interface ProductVariantCreateCommand extends CreateCommand {
   productId?: string | null | undefined;
   colorId?: string | null | undefined;
   isActive: boolean;
 }
 
-export interface ProductColorUpdateCommand extends UpdateCommand {
+export interface ProductVariantUpdateCommand extends UpdateCommand {
   productId?: string | null | undefined;
   colorId?: string | null | undefined;
   isActive: boolean;
 }
 
-export interface ProductColorDeleteCommand extends DeleteCommand {
+export interface ProductVariantDeleteCommand extends DeleteCommand {
   productId?: string | null | undefined;
   colorId?: string | null | undefined;
 }
