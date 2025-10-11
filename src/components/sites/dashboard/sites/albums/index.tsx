@@ -1,14 +1,8 @@
 import { columns } from "./columns";
 
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
-import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
-import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
-import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
-import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
 import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
-import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
 import { isDeleted_options } from "@/components/_common/filters";
-import DataTablePhotos from "@/components/sites/dashboard/sites/albums/medias";
 import {
   Accordion,
   AccordionContent,
@@ -18,6 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   FormControl,
   FormDescription,
@@ -31,13 +31,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { cn, getDefaultFormFilterValues } from "@/lib/utils";
+import { cn, formatDate, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
+import { mediaBaseService } from "@/services/media-base-service";
+import { mediaUploadService } from "@/services/media-upload-service";
+import { AlbumWithImagesCreateCommand } from "@/types/cqrs/commands/album-command";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
+import { Album } from "@/types/entities/album";
+import { BaseEntity } from "@/types/entities/base/base";
+import { MediaBase, MediaBaseType } from "@/types/entities/media-base";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
+import { Status } from "@/types/models/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -49,12 +55,13 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 //#region INPUT
@@ -159,18 +166,25 @@ export default function AlbumTable() {
   const queryParam = searchParams.get("q");
   const tabsRef = useRef<HTMLDivElement>(null);
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const { data: album, isLoading } = useQuery({
     queryKey: ["album", queryParam?.toLowerCase()],
     queryFn: async () => {
       const response = await albumService.getById(queryParam as string, [
-        "albumImages",
         "albumImages.image",
       ]);
       return response.data;
     },
     refetchOnWindowFocus: false,
+    enabled: !!queryParam,
   });
 
+  useEffect(() => {
+    if (album) {
+      setIsOpen(true);
+    }
+  }, [album]);
   //#region DEFAULT
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -190,6 +204,8 @@ export default function AlbumTable() {
   const [shouldFetch, setShouldFetch] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
   //#endregion
 
   const form = useForm<z.infer<typeof defaultSchema>>({
@@ -280,95 +296,348 @@ export default function AlbumTable() {
     item2: "Medias",
   };
 
-  const pathname = usePathname();
+  const handleDialogChange = (open: boolean) => {
+    setIsOpen(open);
+
+    if (!open) {
+      // Xóa param q
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("q");
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  };
 
   return (
-    <Accordion
-      type={accordion.type}
-      className="w-full"
-      defaultValue={accordion.defaultValue}
-    >
-      <AccordionItem value={accordion.item1}>
-        <AccordionTrigger>{accordion.item1.toString()}</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <DataTableComponent
-            className="p-1"
-            isLoading={isFetching}
-            deletePermanentFunc={(command) => albumService.delete(command)}
-            updateUndoFunc={(command) => albumService.update(command)}
-            table={table}
-            queryKey={query_key}
-          >
-            <DataTableToolbar
+    <>
+      <Accordion type="single" className="w-full" defaultValue="albums">
+        <AccordionItem value="albums">
+          <AccordionTrigger>Albums</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            <DataTableComponent
+              className="p-1"
+              isLoading={isFetching}
+              deletePermanentFunc={(command) => albumService.delete(command)}
+              updateUndoFunc={(command) => albumService.update(command)}
               table={table}
-              filterEnums={filterEnums}
-              columnSearch={columnSearch}
+              queryKey={query_key}
             >
-              <DeleteBaseEntitysDialog
-                list={table
-                  .getFilteredSelectedRowModel()
-                  .rows.map((row) => row.original)}
-                query_keys={[query_key]}
-                deleteFunc={(command) => albumService.delete(command)}
-                onSuccess={() => table.toggleAllRowsSelected(false)}
-              />
-              <DataTableFilterSheet
-                form={form}
-                isSheetOpen={isSheetOpen}
-                handleSheetChange={handleSheetChange}
-                formFilterAdvanceds={formFilterAdvanceds}
-              />
-              <DataTableSortColumnsPopover table={table} />
-              <DataTableToggleColumnsPopover table={table} />
-              <DataTableDownload table={table} />
-
-              <Link
-                className="text-primary-foreground sm:whitespace-nowrap"
-                href={`${pathname}/new`}
+              <DataTableToolbar
+                table={table}
+                filterEnums={filterEnums}
+                columnSearch={columnSearch}
               >
-                <Button
-                  size={"sm"}
-                  className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+                <Link
+                  className="text-primary-foreground sm:whitespace-nowrap"
+                  href={`${pathname}/new`}
                 >
-                  Add
-                </Button>
-              </Link>
-            </DataTableToolbar>
-          </DataTableComponent>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value={accordion.item2}>
-        <AccordionTrigger>{accordion.item2.toString()}</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          {isLoading || !album ? null : (
-            <Tabs ref={tabsRef} defaultValue="selected" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="selected">Selected</TabsTrigger>
-                <TabsTrigger value="available">Available</TabsTrigger>
-              </TabsList>
+                  <Button
+                    size={"sm"}
+                    className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+                  >
+                    Add
+                  </Button>
+                </Link>
+              </DataTableToolbar>
+            </DataTableComponent>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
-              <TabsContent value="selected">
-                <Card className="p-4">
-                  <DataTablePhotos
-                    albumId={album.id}
-                    albumImages={album.albumImages ?? []}
-                    tab={0}
-                  />
-                </Card>
-              </TabsContent>
-              <TabsContent value="available">
-                <Card className="p-4">
-                  <DataTablePhotos
-                    albumId={album.id}
-                    albumImages={album.albumImages ?? []}
-                    tab={1}
-                  />
-                </Card>
-              </TabsContent>
-            </Tabs>
-          )}
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+      {/* Dialog hiển thị ảnh album */}
+      <AlbumDialog
+        isOpen={isOpen}
+        handleDialogChange={handleDialogChange}
+        album={album}
+        isFetching={isLoading}
+      />
+    </>
+  );
+}
+
+interface AlbumDialogProps {
+  isOpen: boolean;
+  handleDialogChange: (open: boolean) => void;
+  album?: Album;
+  isFetching?: boolean;
+}
+
+interface MediaBaseState extends BaseEntity {
+  displayName?: string;
+  title?: string;
+  mimeType?: string;
+  size: number;
+  width?: number;
+  height?: number;
+  mediaUrl?: string;
+  createdMediaBy?: string;
+  takenMediaDate?: string;
+  mediaBaseType: MediaBaseType;
+  file?: File;
+}
+
+export function AlbumDialog({
+  isOpen,
+  handleDialogChange,
+  album,
+  isFetching = false,
+}: AlbumDialogProps) {
+  if (!album) return null;
+  const [availableImages, setAvailableImages] = useState<MediaBaseState[]>([]);
+  const [pickedImages, setPickedImages] = useState<MediaBaseState[]>([]);
+  const [defaultImages, setDefaultImages] = useState<MediaBaseState[]>([]);
+  const [hasChange, setHasChange] = useState(false);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (album?.albumImages) {
+        const images = album.albumImages
+          .map((a) => a.image)
+          .filter((img): img is MediaBaseState => !!img) ?? [];
+
+        setPickedImages(images);
+        setDefaultImages(images);
+
+        const mediaBaseRes = await mediaBaseService.getAll();
+        if (mediaBaseRes.status == Status.OK && mediaBaseRes.data) {
+          const existingImageIds = images
+            .map((img) => img.id)
+            .filter((id): id is string => !!id);
+          // Lọc ra những ảnh chưa có trong album
+          const converted: MediaBaseState[] = (mediaBaseRes.data.results ?? [])
+            .filter((img) => !existingImageIds.includes(img.id)) // Chỉ lấy ảnh chưa có trong album
+            .map((img) => ({
+              ...img,
+              file: undefined,
+            }));
+          setAvailableImages(converted);
+        }
+      }
+    };
+
+    fetchImages();
+  }, [album]);
+
+  // check có thay đổi không
+  const checkIfChanged = (newPicked: MediaBaseState[]) => {
+    const defaultIds = new Set(defaultImages.map((img) => img.id));
+    const pickedIds = new Set(newPicked.map((img) => img.id));
+
+    if (defaultIds.size !== pickedIds.size) return true;
+    for (const id of Array.from(pickedIds))
+      if (!defaultIds.has(id)) return true;
+    return false;
+  };
+
+  // upload ảnh mới
+  const handleAddImage = (section: "available" | "picked") => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const tempImg: MediaBaseState = {
+        id: Date.now(),
+        title: file.name,
+        displayName: file.name,
+        mimeType: file.type,
+        size: file.size,
+        mediaUrl: URL.createObjectURL(file),
+        createdDate: new Date().toUTCString(),
+        file,
+      };
+
+      if (section === "available") {
+        setAvailableImages((prev) => [...prev, tempImg]);
+      } else {
+        setPickedImages((prev) => [...prev, tempImg]);
+        setHasChange(true);
+      }
+    };
+
+    input.click();
+  };
+
+  // chuyển ảnh giữa available <-> picked
+  const handleToggleImage = (
+    img: MediaBaseState,
+    section: "available" | "picked"
+  ) => {
+    if (section === "available") {
+      const updatedAvailable = availableImages.filter((i) => i.id !== img.id);
+      const updatedPicked = [...pickedImages, img];
+      setAvailableImages(updatedAvailable);
+      setPickedImages(updatedPicked);
+      setHasChange(checkIfChanged(updatedPicked));
+    } else {
+      const updatedPicked = pickedImages.filter((i) => i.id !== img.id);
+      const updatedAvailable = [...availableImages, img];
+      setAvailableImages(updatedAvailable);
+      setPickedImages(updatedPicked);
+      setHasChange(checkIfChanged(updatedPicked));
+    }
+  };
+
+  // lưu thay đổi (upload ảnh mới)
+  const handleSave = async () => {
+    try {
+      setHasChange(false);
+
+      // 1. Phân loại ảnh
+      const newFiles = pickedImages.filter((img) => img.file);
+      const existingImages = pickedImages.filter((img) => !img.file);
+
+      if (newFiles.length === 0 && existingImages.length === 0) {
+        throw new Error("No images selected.");
+      }
+
+      const uploadedImages: MediaBaseState[] = [];
+
+      // 2. Upload ảnh mới trước
+      if (newFiles.length > 0) {
+        for (const img of newFiles) {
+          try {
+            const result = await mediaUploadService.uploadFile(
+              img.file!,
+              "Blog"
+            );
+            if (result?.status === Status.OK && result.data) {
+              uploadedImages.push(result.data);
+            }
+          } catch (error) {
+            console.error(`Error uploading file ${img.displayName}:`, error);
+          }
+        }
+      }
+
+      // 3. Chuẩn bị danh sách ID để gửi lên API
+      // Bao gồm cả ID của ảnh đã tồn tại và ID của ảnh mới upload
+      const allImageIds = [
+        ...existingImages.map((img) => img.id!).filter((id) => id),
+        ...uploadedImages.map((img) => img.id!).filter((id) => id),
+      ];
+
+      // 4. Gọi API để liên kết ảnh với album
+      if (allImageIds.length > 0) {
+        const albumWithImagesCreateCommand: AlbumWithImagesCreateCommand = {
+          albumId: album?.id,
+          imageIds: allImageIds,
+        };
+
+        const result = await albumService.createWithImages(
+          albumWithImagesCreateCommand
+        );
+
+        if (result?.status !== Status.OK) {
+          throw new Error(result.error?.detail);
+        }
+      }
+
+      // 5. Merge kết quả
+      const finalPicked = [
+        ...existingImages.filter((img) => !img.mediaUrl?.startsWith("blob:")),
+        ...uploadedImages,
+      ];
+
+      // 6. Cập nhật state và đóng dialog
+      setPickedImages(finalPicked);
+      setHasChange(false);
+
+      // Thông báo thành công
+      toast.success("Album saved successfully!");
+      // handleDialogChange(false);
+    } catch (error) {
+      console.error("Error saving album images:", error);
+      setHasChange(true);
+      toast.error(error as any);
+    }
+  };
+
+  // render grid
+  const renderImageGrid = (
+    images: MediaBaseState[],
+    section: "available" | "picked"
+  ) => (
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+      {images.map((img) => (
+        <div
+          key={img.id}
+          onClick={() => handleToggleImage(img, section)}
+          className="relative aspect-square overflow-hidden rounded-md cursor-pointer group w-full max-w-[100px] max-h-[100px] mx-auto"
+        >
+          <img
+            src={img.mediaUrl ?? "/image-notfound.png"}
+            alt={img.displayName ?? "photo"}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-1 py-[2px] text-[10px] text-white text-center">
+            {formatDate(img.createdDate)}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleDialogChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        {isFetching || !album ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>{album.title || "Album"}</DialogTitle>
+            </DialogHeader>
+
+            {/* Available */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold">Available</h3>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => handleAddImage("available")}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <Card className="p-3">
+                {renderImageGrid(availableImages, "available")}
+              </Card>
+            </div>
+
+            {/* Picked */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold">Picked</h3>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => handleAddImage("picked")}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <Card className="p-3">
+                {renderImageGrid(pickedImages, "picked")}
+              </Card>
+            </div>
+
+            {/* Save */}
+            <div className="flex justify-end mt-6">
+              <Button
+                onClick={handleSave}
+                disabled={!hasChange}
+                // className={!hasChange ? "opacity-50 cursor-not-allowed" : ""}
+              >
+                Save
+              </Button>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

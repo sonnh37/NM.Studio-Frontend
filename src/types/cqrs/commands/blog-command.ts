@@ -17,10 +17,6 @@ export interface BlogCreateCommand extends CreateCommand {
   isFeatured: boolean;
   viewCount: number;
   tags?: string | null;
-
-  srcThumbnail?: string | null;
-  srcBackgroundCover?: string | null;
-
 }
 
 export interface BlogUpdateCommand extends UpdateCommand {
@@ -35,10 +31,6 @@ export interface BlogUpdateCommand extends UpdateCommand {
   isFeatured: boolean;
   viewCount: number;
   tags?: string | null;
-
-  srcThumbnail?: string | null;
-  srcBackgroundCover?: string | null;
-
 }
 
 export interface BlogDeleteCommand extends DeleteCommand {}

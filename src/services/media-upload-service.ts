@@ -1,5 +1,6 @@
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import { cleanQueryParams } from "@/lib/utils";
+import { MediaBase } from "@/types/entities/media-base";
 import { BusinessResult } from "@/types/models/business-result";
 import { UploadResult } from "@/types/models/upload-result";
 
@@ -11,16 +12,16 @@ class MediaUploadService {
   }
 
   async uploadFile(
-    file: File | null,
+    file?: File | null,
     folder: string = "Other"
-  ): Promise<UploadResult | null> {
+  ): Promise<BusinessResult<MediaBase> | null> {
     if (!file) return null;
 
     const formData = new FormData();
     formData.append("File", file);
     formData.append("FolderName", folder);
 
-    const res = await axiosInstance.post<BusinessResult<UploadResult>>(
+    const res = await axiosInstance.post<BusinessResult<MediaBase>>(
       this.endpoint,
       formData,
       {
@@ -30,7 +31,7 @@ class MediaUploadService {
       }
     );
 
-    return res.data.data ?? null;
+    return res.data ?? null;
   }
 
   async deleteFile(link: string): Promise<BusinessResult<void>> {

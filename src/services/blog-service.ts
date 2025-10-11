@@ -16,6 +16,7 @@ class BlogService extends BaseService<Blog> {
   constructor() {
     super(`${Const.BLOGS}`);
   }
+
  
 }
 

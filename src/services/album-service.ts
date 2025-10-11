@@ -6,9 +6,12 @@ import {
   AlbumCreateCommand,
   AlbumUpdateCommand,
   AlbumDeleteCommand,
+  AlbumWithImagesCreateCommand,
+  AlbumSetCoverUpdateCommand,
 } from "@/types/cqrs/commands/album-command";
 import { CreateOrUpdateCommand } from "@/types/cqrs/commands/base/base-command";
 import { mediaUploadService } from "./media-upload-service";
+import axiosInstance from "@/lib/interceptors/axios-instance";
 
 class AlbumService extends BaseService<Album> {
   constructor() {
@@ -27,6 +30,25 @@ class AlbumService extends BaseService<Album> {
 
   //   return response;
   // }
+
+  async createWithImages(
+    command: AlbumWithImagesCreateCommand
+  ): Promise<BusinessResult<void>> {
+    const res = await axiosInstance.post<BusinessResult<void>>(
+      `${this.endpoint}/images`,
+      command
+    );
+    return res.data;
+  }
+  async setCoverAlbum(
+    command: AlbumSetCoverUpdateCommand
+  ): Promise<BusinessResult<void>> {
+    const res = await axiosInstance.post<BusinessResult<void>>(
+      `${this.endpoint}/images/set-cover`,
+      command
+    );
+    return res.data;
+  }
 }
 
 export const albumService = new AlbumService();

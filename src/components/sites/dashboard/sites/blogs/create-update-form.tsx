@@ -88,8 +88,11 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
             file,
             "Blog"
           );
-          if (uploadResultThumb?.secureUrl) {
-            command.srcThumbnail = uploadResultThumb.secureUrl;
+          if (
+            uploadResultThumb?.status == Status.OK &&
+            uploadResultThumb?.data
+          ) {
+            command.thumbnailId = uploadResultThumb.data.id;
           }
         }
 
@@ -98,8 +101,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
             file2,
             "Blog"
           );
-          if (uploadResultBg?.secureUrl) {
-            command.srcBackgroundCover = uploadResultBg.secureUrl;
+          if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
+            command.thumbnailId = uploadResultBg.data.id;
           }
         }
 
@@ -138,8 +141,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
           file,
           "Blog"
         );
-        if (uploadResultThumb?.secureUrl) {
-          command.srcThumbnail = uploadResultThumb.secureUrl;
+        if (uploadResultThumb?.status == Status.OK && uploadResultThumb?.data) {
+          command.thumbnailId = uploadResultThumb.data.id;
         }
       }
 
@@ -148,8 +151,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
           file2,
           "Blog"
         );
-        if (uploadResultBg?.secureUrl) {
-          command.srcBackgroundCover = uploadResultBg.secureUrl;
+        if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
+          command.thumbnailId = uploadResultBg.data.id;
         }
       }
 

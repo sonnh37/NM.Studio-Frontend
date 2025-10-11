@@ -30,5 +30,16 @@ export interface AlbumUpdateCommand extends UpdateCommand {
   isFeatured?: boolean;
 }
 
+export interface AlbumWithImagesCreateCommand extends CreateCommand {
+  albumId: string;
+  imageIds: string[];
+}
+
+export interface AlbumSetCoverUpdateCommand extends UpdateCommand {
+  albumId: string;
+  imageId: string;
+}
+
+
 // Delete
 export interface AlbumDeleteCommand extends DeleteCommand {}
