@@ -110,6 +110,7 @@ export function DataTableComponent<TData>({
                   transform: `scale(${tableWidth / 100})`,
                   transformOrigin: "left",
                 }}
+                className="bg-muted/50 transition-colors"
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead
@@ -160,7 +161,7 @@ export function DataTableComponent<TData>({
                       transformOrigin: "left",
                       pointerEvents: isDeleted ? "none" : "auto",
                     }}
-                    className={isDeleted ? "hover:opacity-100" : ""}
+                    className={cn("", isDeleted ? "hover:opacity-100" : "")}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -169,7 +170,7 @@ export function DataTableComponent<TData>({
                           ...getCommonPinningStyles({ column: cell.column }),
                           opacity: isDeleted ? 0.5 : 1,
                         }}
-                        // className="p-3"
+                       className="px-4 py-3 text-sm"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

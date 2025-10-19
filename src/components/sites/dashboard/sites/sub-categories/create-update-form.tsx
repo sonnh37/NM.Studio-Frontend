@@ -1,11 +1,9 @@
 "use client";
 import { useForm } from "react-hook-form";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { subCategoryService } from "@/services/sub-category-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -13,18 +11,23 @@ import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormSelectObject,
+  FormSwitch,
 } from "@/lib/form-custom-shadcn";
+import { SubCategory } from "@/types/entities/subcategory";
+
+import { BusinessResult, Status } from "@/types/models/business-result";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { HeaderForm } from "../../common/create-update-forms/header-form";
+
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 import { categoryService } from "@/services/category-service";
-import { Category, SubCategory } from "@/types/entities/category";
+import { subCategoryService } from "@/services/sub-category-service";
 import {
   SubCategoryCreateCommand,
   SubCategoryUpdateCommand,
-} from "@/types/commands/category-command";
-import { BusinessResult } from "@/types/models/business-result";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { HeaderForm } from "../../common/create-update-forms/header-form";
-import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
+} from "@/types/cqrs/commands/category-command";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 
 interface SubCategoryFormProps {
   initialData: SubCategory | null;
@@ -33,21 +36,19 @@ interface SubCategoryFormProps {
 const formSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required").nullable(),
-  categoryId: z.string().nullable(),
-  createdDate: z
-    .date()
-    .optional()
-    .default(() => new Date()),
-  createdBy: z.string().nullable().optional().default(null),
-  isDeleted: z.boolean().default(false),
+  slug: z.string().min(1, "Slug is required").nullable().optional(),
+  categoryId: z.string().nullable().optional(),
+  description: z.string().min(1, "Description is required").nullable(),
+  isFeatured: z.boolean().default(false),
 });
 
 export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
   initialData,
 }) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Edit subCategory" : "Create subCategory";
-  const action = initialData ? "Save and continue" : "Create";
+  const title = initialData?.id ? "Edit subcategory" : "Create subcategory";
+  const action = initialData?.id ? "Save and continue" : "Create";
+  const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
   const router = useRouter();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [pendingValues, setPendingValues] = useState<z.infer<
@@ -57,37 +58,51 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
   const previousPath = usePreviousPath();
   const [file, setFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
           ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
         }
       : {},
   });
 
-  const handleFileUpload = (file: File | null) => {
-    setFile(file);
+  const queryCategory: CategoryGetAllQuery = {
+    pagination: {
+      isPagingEnabled: false,
+    },
   };
+
+  const {
+    data: categories = [],
+    isFetching,
+    error,
+  } = useQuery({
+    queryKey: ["query_category", queryCategory],
+    queryFn: () => categoryService.getAll(queryCategory),
+    select: (res) => res.data?.results,
+    refetchOnWindowFocus: false,
+  });
+
+  if (error) return <div>Error loading data</div>;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      if (initialData) {
-        const updatedValues: SubCategoryUpdateCommand = {
+      if (initialData?.id) {
+        const command: SubCategoryUpdateCommand = {
+          ...initialData,
           ...values,
-          file: file,
         };
-        const response = await subCategoryService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
+
+        const response = await subCategoryService.update(command);
+        if (response.status != Status.OK)
+          throw new Error(response.error?.detail);
         queryClient.refetchQueries({
           queryKey: ["fetchSubCategoryById", initialData.id],
         });
-        toast.success(response.message);
+        toast.success("Updated!");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -105,27 +120,25 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
     BusinessResult<SubCategory>
   > => {
     if (!pendingValues) {
-      toast.error("No pending values to create subCategory.");
+      toast.error("No pending values to create subcategory.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
     try {
-      const createdValues: SubCategoryCreateCommand = {
+      const command: SubCategoryCreateCommand = {
         ...pendingValues,
-        file: file,
       };
-      const response = await subCategoryService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
-
-      toast.success(response.message);
+      const response = await subCategoryService.create(command);
+      if (response.status != Status.OK) throw new Error(response.error?.detail);
+      toast.success("Created!");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
 
       return response;
     } catch (error: any) {
-      console.error("Error creating subCategory:", error);
-      toast.error(error.message || "Failed to create subCategory.");
+      console.error("Error creating subcategory:", error);
+      toast.error(error.message || "Failed to create subcategory.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -133,26 +146,8 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
     }
   };
 
-  const fetchCategories = async () => {
-    const response = await categoryService.getAll();
-    return response.data?.results;
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [categories] = await Promise.all([fetchCategories()]);
-        setCategories(categories || []);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <>
+    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
         open={showConfirmationDialog}
@@ -165,7 +160,7 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
           }
           router.push(previousPath);
         }}
-        title="Do you want to continue adding this subCategory?"
+        title="Do you want to continue adding this subcategory?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"
@@ -180,49 +175,54 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
               loading={loading}
               action={action}
             />
+            <TypographyH1>{title}</TypographyH1>
           </div>
           <div className="grid gap-4">
-            <div className="grid gap-4 lg:grid-cols-3">
-              <div className="grid gap-4 lg:col-span-2">
-                {/* main */}
-                <Card className="overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="name"
-                          label="Name"
-                          description="This is your public display name."
-                          placeholder="Enter name"
-                        />
+            {/* main */}
+            <div className="grid gap-6">
+              <div className="grid gap-3">
+                <FormSwitch
+                  form={form}
+                  name="isFeatured"
+                  label="Is Main"
+                  description="If enabled, this subcategory will be about page."
+                />
 
-                        <div className="grid grid-cols-2 gap-3">
-                          <FormSelectObject
-                            form={form}
-                            name="categoryId"
-                            label="Category"
-                            description="Select the size for this product."
-                            options={categories}
-                            selectLabel="name"
-                            selectValue="id"
-                            placeholder="Select size"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                <FormInput
+                  form={form}
+                  name="name"
+                  label="Name"
+                  placeholder="Enter name"
+                />
 
-              <div className="grid gap-4 h-fit">
-                <InformationBaseCard form={form} initialData={initialData} />
+                <FormInput
+                  form={form}
+                  name="slug"
+                  label="Slug"
+                  placeholder="Enter slug"
+                />
+
+                <FormInput
+                  form={form}
+                  name="description"
+                  label="Description"
+                  placeholder="Enter description"
+                />
+
+                <FormSelectObject
+                  form={form}
+                  name="categoryId"
+                  label="Thể loại"
+                  options={categories}
+                  selectLabel="name"
+                  selectValue="id"
+                  placeholder="Chọn thể loại"
+                />
               </div>
             </div>
-            <div>{/* sub */}</div>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };

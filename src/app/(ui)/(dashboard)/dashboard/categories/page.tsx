@@ -1,11 +1,11 @@
 "use client";
 
-import DataTableCategorys from "@/components/sites/dashboard/sites/categories";
+import CategoryTable from "@/components/sites/dashboard/sites/categories";
 
 export default function Page() {
     return (
         <div className="space-y-6">
-            <DataTableCategorys/>
+            <CategoryTable/>
         </div>
     );
 }

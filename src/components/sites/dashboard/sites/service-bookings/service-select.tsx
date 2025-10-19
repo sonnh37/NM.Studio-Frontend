@@ -19,20 +19,22 @@ import { useQuery } from "@tanstack/react-query";
 import { userService } from "@/services/user-serice";
 import { useState, useMemo } from "react";
 import { UserGetAllQuery } from "@/types/cqrs/queries/user-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
+import { serviceService } from "@/services/service-service";
 
-interface AuthorSelectProps<TFieldValues extends FieldValues> {
+interface ServiceSelectProps<TFieldValues extends FieldValues> {
   form: UseFormReturn<TFieldValues>;
   name: FieldPath<TFieldValues>;
 }
 
-export function AuthorSelect<TFieldValues extends FieldValues>({
+export function ServiceSelect<TFieldValues extends FieldValues>({
   form,
   name,
-}: AuthorSelectProps<TFieldValues>) {
+}: ServiceSelectProps<TFieldValues>) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
-  const query: UserGetAllQuery = useMemo(
+  const query: ServiceGetAllQuery = useMemo(
     () => ({
       pagination: {
         isPagingEnabled: true,
@@ -40,15 +42,15 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
         pageNumber: 1,
       },
       isDeleted: false,
-      email: debouncedSearch || undefined,
+      name: debouncedSearch || undefined,
     }),
     [debouncedSearch]
   );
 
-  const { data: authors = [], isFetching } = useQuery({
-    queryKey: ["fetchAuthors", query],
+  const { data: Services = [], isFetching } = useQuery({
+    queryKey: ["fetchServices", query],
     queryFn: async () => {
-      const res = await userService.getAll(query);
+      const res = await serviceService.getAll(query);
       return res.data?.results;
     },
     refetchOnWindowFocus: false,
@@ -60,7 +62,7 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Author</FormLabel>
+          <FormLabel>Service</FormLabel>
           <FormControl>
             <Select
               onValueChange={field.onChange}
@@ -77,9 +79,9 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
-                {authors.map((option) => (
+                {Services.map((option) => (
                   <SelectItem key={option.id} value={option.id}>
-                    {option.email}
+                    {option.name}
                   </SelectItem>
                 ))}
                 {isFetching && (

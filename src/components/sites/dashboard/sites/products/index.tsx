@@ -1,61 +1,51 @@
 import { columns } from "./columns";
 
-import { isDeleted_options } from "@/components/_common/filters";
-
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
-import { DataTablePagination } from "@/components/_common/data-table-generic/data-table-pagination";
-import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-table-skelete";
+import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
+import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
+import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
+import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
 import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
-import DataTablePhotos from "@/components/sites/dashboard/sites/products/medias";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { productService } from "@/services/product-service";
-import { productVariantService } from "@/services/product-variant-service";
-import { productSizeService } from "@/services/product-size-service";
-import { FilterEnum } from "@/types/filter-enum";
-import { ProductVariantGetAllQuery } from "@/types/queries/product-color-query";
-import { ProductSizeGetAllQuery } from "@/types/queries/product-size-query";
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { z } from "zod";
-import DataTableColors from "./colors";
-import DataTableSizes from "./sizes";
-
-import { useQueryParams } from "@/hooks/use-query-params";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { keepPreviousData } from "@tanstack/react-query";
-import {
-    ColumnFiltersState,
-    getCoreRowModel,
-    getFilteredRowModel,
-    PaginationState,
-    SortingState,
-    useReactTable,
-    VisibilityState,
-} from "@tanstack/react-table";
-import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
-
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
+import { isDeleted_options } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-    FormControl,
-    FormDescription,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  FormDescription,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { cn, getDefaultFormFilterValues } from "@/lib/utils";
+import { productService } from "@/services/product-service";
+import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
+import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ColumnFiltersState,
+  getCoreRowModel,
+  PaginationState,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
+
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
   {
@@ -114,25 +104,16 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
       </FormItem>
     ),
   },
-  {
-    name: "name",
-    label: "Name",
-    defaultValue: "",
-    render: ({ field }: { field: any }) => (
-      <FormItem>
-        <FormLabel>Name</FormLabel>
-        <FormControl>
-          <Input placeholder="Product name..." {...field} />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    ),
-  },
 ];
 
-const columnSearch = "name";
+const columnSearch = "title";
+const query_key = "data";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
+  {
+    columnId: "isDeleted",
+    title: "Deleted status",
+    options: isDeleted_options,
+  },
 ];
 
 const defaultSchema = z.object({
@@ -147,27 +128,10 @@ const defaultSchema = z.object({
   isDeleted: z.boolean().nullable().optional(),
 });
 //#endregion
-
-export default function DataTableProducts() {
-  const filterEnums: FilterEnum[] = [
-    { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
-  ];
-
+export default function ProductTable() {
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");
-
-  // Fetch product
-  const { data: product, isLoading } = useQuery({
-    queryKey: ["product", queryParam?.toLowerCase()],
-    queryFn: async () => {
-      const response = await productService.getById(queryParam as string);
-      return response.data;
-    },
-    enabled: !!queryParam,
-    refetchOnWindowFocus: false
-  });
-
-  //#region DEFAULT
+  const pathname = usePathname();
   const [sorting, setSorting] = React.useState<SortingState>([
     {
       id: "createdDate",
@@ -186,31 +150,32 @@ export default function DataTableProducts() {
   const [shouldFetch, setShouldFetch] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  //#endregion
 
-  //#region CREATE TABLE
   const form = useForm<z.infer<typeof defaultSchema>>({
     resolver: zodResolver(defaultSchema),
-    defaultValues: {},
+    defaultValues: getDefaultFormFilterValues(formFilterAdvanceds),
   });
 
   const formValues = useWatch({
     control: form.control,
   });
 
-  const getQueryParams = useQueryParams(
-    formValues,
-    columnFilters,
-    pagination,
-    sorting
-  );
+  const queryParams = useMemo(() => {
+    const params: ProductGetAllQuery = useQueryParams(
+      formValues,
+      columnFilters,
+      pagination,
+      sorting
+    );
 
-  const queryParams = useMemo(() => getQueryParams(), [getQueryParams]);
+    params.includeProperties = ["author", "thumbnail", "backgroundCover"];
+
+    return { ...params };
+  }, [formValues, columnFilters, pagination, sorting]);
 
   const { data, isFetching, error } = useQuery({
-    queryKey: ["data", queryParams],
+    queryKey: [query_key, queryParams],
     queryFn: () => productService.getAll(queryParams),
-    placeholderData: keepPreviousData,
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
   });
@@ -220,19 +185,20 @@ export default function DataTableProducts() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalCount ?? 0,
+    pageCount: data?.data?.pageCount ?? -1,
+    rowCount: data?.data?.totalItemCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
+    initialState: {
+      columnPinning: { right: ["actions"] },
+    },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
-    debugTable: true,
+    getRowId: (originalRow) => originalRow.id,
   });
-
-  //#endregion
 
   //#region useEffect
   useEffect(() => {
@@ -266,142 +232,48 @@ export default function DataTableProducts() {
   };
 
   return (
-    <Tabs defaultValue="item-1">
-      <TabsList>
-        <TabsTrigger value="item-1">Products</TabsTrigger>
-        <TabsTrigger value="item-2">Features</TabsTrigger>
-      </TabsList>
-      <TabsContent value="item-1">
-        <Card className="space-y-4 p-4">
-          <DataTableToolbar
-            form={form}
-            table={table}
-            filterEnums={filterEnums}
-            columnSearch={columnSearch}
-            deleteFunc={productService.delete}
-            isSheetOpen={isSheetOpen}
-            handleSheetChange={handleSheetChange}
-            formFilterAdvanceds={formFilterAdvanceds}
-          />
+    <DataTableComponent
+      isLoading={isFetching}
+      deletePermanentFunc={(command) => productService.delete(command)}
+      updateUndoFunc={(command) => productService.update(command)}
+      table={table}
+      queryKey={query_key}
+    >
+      <DataTableToolbar
+        table={table}
+        filterEnums={filterEnums}
+        columnSearch={columnSearch}
+      >
+        <DeleteBaseEntitysDialog
+          list={table
+            .getFilteredSelectedRowModel()
+            .rows.map((row) => row.original)}
+          query_keys={[query_key]}
+          deleteFunc={(command) => productService.delete(command)}
+          onSuccess={() => table.toggleAllRowsSelected(false)}
+        />
+        <DataTableFilterSheet
+          form={form}
+          isSheetOpen={isSheetOpen}
+          handleSheetChange={handleSheetChange}
+          formFilterAdvanceds={formFilterAdvanceds}
+        />
+        <DataTableSortColumnsPopover table={table} />
+        <DataTableToggleColumnsPopover table={table} />
+        <DataTableDownload table={table} />
 
-          {isFetching && !isTyping ? (
-            <DataTableSkeleton
-              columnCount={1}
-              showViewOptions={false}
-              withPagination={false}
-              rowCount={pagination.pageSize}
-              searchableColumnCount={0}
-              filterableColumnCount={0}
-              shrinkZero
-            />
-          ) : (
-            <DataTableComponent
-              deletePermanentFunc={productService.delete}
-              updateUndoFunc={productService.update}
-              table={table}
-            />
-          )}
-          <DataTablePagination table={table} />
-        </Card>
-      </TabsContent>
-      <TabsContent value="item-2">
-        {isLoading || !product ? (
-          <></>
-        ) : (
-          <>
-            {/* Tab cho productMedias */}
-            <Tabs defaultValue="photos-selected" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="photos-selected">
-                  Selected Photos
-                </TabsTrigger>
-                <TabsTrigger value="photos-available">
-                  Available Photos
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="photos-selected">
-                <Card className="p-4">
-                  <DataTablePhotos
-                    productId={product.id}
-                    productMedias={product.productMedias ?? []}
-                    tab={0}
-                  />
-                </Card>
-              </TabsContent>
-              <TabsContent value="photos-available">
-                <Card className="p-4">
-                  <DataTablePhotos
-                    productId={product.id}
-                    productMedias={product.productMedias ?? []}
-                    tab={1}
-                  />
-                </Card>
-              </TabsContent>
-            </Tabs>
-
-            {/* Tab cho productSizes */}
-            <Tabs defaultValue="sizes-selected" className="w-full mt-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="sizes-selected">Selected Sizes</TabsTrigger>
-                <TabsTrigger value="sizes-available">
-                  Available Sizes
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="sizes-selected">
-                <Card className="p-4">
-                  <DataTableSizes
-                    productId={product.id}
-                    productSizes={product.productSizes ?? []}
-                    tab={0}
-                  />
-                </Card>
-              </TabsContent>
-              <TabsContent value="sizes-available">
-                <Card className="p-4">
-                  <DataTableSizes
-                    productId={product.id}
-                    productSizes={product.productSizes ?? []}
-                    tab={1}
-                  />
-                </Card>
-              </TabsContent>
-            </Tabs>
-
-            {/* Tab cho productVariants */}
-            <Tabs defaultValue="colors-selected" className="w-full mt-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="colors-selected">
-                  Selected Colors
-                </TabsTrigger>
-                <TabsTrigger value="colors-available">
-                  Available Colors
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="colors-selected">
-                <Card className="p-4">
-                  <DataTableColors
-                    productId={product.id}
-                    productVariants={product.productVariants ?? []}
-                    tab={0}
-                  />
-                </Card>
-              </TabsContent>
-              <TabsContent value="colors-available">
-                <Card className="p-4">
-                  <DataTableColors
-                    productId={product.id}
-                    productVariants={product.productVariants ?? []}
-                    tab={1}
-                  />
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </>
-        )}
-      </TabsContent>
-    </Tabs>
+        <Link
+          className="text-primary-foreground sm:whitespace-nowrap"
+          href={`${pathname}/new`}
+        >
+          <Button
+            size={"sm"}
+            className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+          >
+            Add
+          </Button>
+        </Link>
+      </DataTableToolbar>
+    </DataTableComponent>
   );
 }

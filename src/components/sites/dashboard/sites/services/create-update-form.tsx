@@ -21,19 +21,23 @@ import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormInputNumber,
-  FormInputReactTipTapEditor
+  FormInputReactTipTapEditor,
+  FormSwitch,
+  ImageUpload,
 } from "@/lib/form-custom-shadcn";
-import {
-  ServiceCreateCommand,
-  ServiceUpdateCommand,
-} from "@/types/commands/service-command";
-import { BusinessResult } from "@/types/models/business-result";
+
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { Service } from "@/types/entities/service";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
+import { mediaUploadService } from "@/services/media-upload-service";
+import {
+  ServiceUpdateCommand,
+  ServiceCreateCommand,
+} from "@/types/cqrs/commands/service-command";
 
 interface ServiceFormProps {
   initialData: Service | null;
@@ -42,12 +46,10 @@ interface ServiceFormProps {
 const formSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required").nullable(),
+  slug: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
-  src: z.string().nullable().optional(),
   price: z.number().nullable().default(0),
-  createdDate: z.date().optional().default(new Date()),
-  createdBy: z.string().nullable().optional().default(null),
-  isDeleted: z.boolean().default(false),
+  isFeatured: z.boolean().default(false),
 });
 export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
@@ -61,6 +63,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const previousPath = usePreviousPath();
   const [file, setFile] = useState<File | null>(null);
+  const [file2, setFile2] = useState<File | null>(null);
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,30 +71,49 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     defaultValues: initialData
       ? {
           ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
         }
       : {},
   });
 
-  const handleFileUpload = (file: File | null) => {
-    setFile(file);
-  };
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: ServiceUpdateCommand = {
+        const command: ServiceUpdateCommand = {
+          ...initialData,
           ...values,
-          file: file,
         };
-        const response = await serviceService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
-        queryClient.refetchQueries({
-          queryKey: ["fetchServiceById", initialData.id],
-        });
-        toast.success(response.message);
+
+        if (file) {
+          const uploadResultThumb = await mediaUploadService.uploadFile(
+            file,
+            "Service"
+          );
+          if (
+            uploadResultThumb?.status == Status.OK &&
+            uploadResultThumb?.data
+          ) {
+            command.thumbnailId = uploadResultThumb.data.id;
+          }
+        }
+
+        if (file2) {
+          const uploadResultBg = await mediaUploadService.uploadFile(
+            file2,
+            "Service"
+          );
+          if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
+            command.thumbnailId = uploadResultBg.data.id;
+          }
+        }
+
+        const response = await serviceService.update(command);
+        if (response.status != Status.OK)
+          throw new Error(response.error?.detail);
+        // queryClient.refetchQueries({
+        //   queryKey: ["fetchServiceById", initialData.id],
+        // });
+        toast.success("Updated!");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -114,14 +136,32 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     }
     setIsLoading(true);
     try {
-      const createdValues: ServiceCreateCommand = {
+      const command: ServiceCreateCommand = {
         ...pendingValues,
-        file: file,
       };
-      const response = await serviceService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
 
-      toast.success(response.message);
+      if (file) {
+        const uploadResultThumb = await mediaUploadService.uploadFile(
+          file,
+          "Service"
+        );
+        if (uploadResultThumb?.status == Status.OK && uploadResultThumb?.data) {
+          command.thumbnailId = uploadResultThumb.data.id;
+        }
+      }
+
+      if (file2) {
+        const uploadResultBg = await mediaUploadService.uploadFile(
+          file2,
+          "Service"
+        );
+        if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
+          command.thumbnailId = uploadResultBg.data.id;
+        }
+      }
+      const response = await serviceService.create(pendingValues);
+      if (response.status != Status.OK) throw new Error(response.error?.detail);
+      toast.success("Created!");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -175,6 +215,13 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                   <CardContent className="p-6">
                     <div className="grid gap-6">
                       <div className="grid gap-3">
+                        <FormSwitch
+                          form={form}
+                          name="isFeatured"
+                          label="Is Main"
+                          description="If enabled, this blog will be about page."
+                        />
+
                         <FormInput
                           form={form}
                           name="name"
@@ -183,44 +230,30 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                           placeholder="Enter name"
                         />
 
+                        <FormInput
+                          form={form}
+                          name="slug"
+                          label="Slug"
+                          placeholder="Enter slug"
+                        />
+
                         <FormInputNumber
                           form={form}
                           name="price"
                           label="Price"
                           placeholder="Enter price"
-                          className="mt-2 w-full"
                         />
-                        <FormField
-                          control={form.control}
-                          name="src"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Background</FormLabel>
-                              <FormControl>
-                                <div className="grid gap-2">
-                                  {field.value ? (
-                                    <>
-                                      <Image
-                                        alt="Picture"
-                                        className="w-[30%] rounded-md "
-                                        height={9999}
-                                        src={
-                                          field.value ?? "/image-notfound.png"
-                                        }
-                                        width={9999}
-                                      />
-                                    </>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                                    <FileUpload onChange={handleFileUpload} />
-                                  </div>
-                                  <FormMessage />
-                                </div>
-                              </FormControl>
-                            </FormItem>
-                          )}
+
+                        <ImageUpload
+                          label="Thumbnail"
+                          defaultValue={initialData?.thumbnail?.mediaUrl}
+                          onFileChange={setFile}
+                        />
+
+                        <ImageUpload
+                          label="Background Cover"
+                          defaultValue={initialData?.backgroundCover?.mediaUrl}
+                          onFileChange={setFile2}
                         />
                       </div>
                     </div>
@@ -240,7 +273,10 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="">
-                    <FormInputReactTipTapEditor form={form} name="description" />
+                    <FormInputReactTipTapEditor
+                      form={form}
+                      name="description"
+                    />
                   </div>
                 </CardContent>
               </Card>

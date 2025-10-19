@@ -152,8 +152,8 @@ export default function AlbumImagesTable({
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns: tab == 0 ? columns_tab0 : columns_tab1,
-    pageCount: data?.data?.totalPages ?? -1,
-    rowCount: data?.data?.totalCount ?? 0,
+    pageCount: data?.data?.pageCount ?? -1,
+    rowCount: data?.data?.totalItemCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     initialState: {
       columnPinning: { right: ["actions"] },

@@ -1,5 +1,6 @@
 import {
   Bell,
+  BookImage,
   BookMarked,
   Briefcase,
   CalendarCheck,
@@ -12,6 +13,7 @@ import {
   FileUser,
   History,
   Home,
+  LibraryBig,
   List,
   ListChecks,
   Pencil,
@@ -25,6 +27,7 @@ import {
   SquareUserRound,
   StickyNote,
   Telescope,
+  User2,
   UserCog,
   UserPlus,
   Users,
@@ -52,7 +55,6 @@ export const NAV_CONFIG = {
       icon: Settings,
       roles: ["*"],
     },
- 
   ],
 
   // Based on entities folder, you can add more items here
@@ -60,25 +62,25 @@ export const NAV_CONFIG = {
     {
       title: "Albums",
       url: "/dashboard/albums",
-      icon: BookMarked,
+      icon: BookImage,
       roles: ["*"],
     },
     {
       title: "Blogs",
       url: "/dashboard/blogs",
-      icon: Pencil,
+      icon: LibraryBig,
+      roles: ["*"],
+    },
+    {
+      title: "Services",
+      url: "/dashboard/services",
+      icon: CalendarCheck,
       roles: ["*"],
     },
     {
       title: "Service Bookings",
       url: "/dashboard/service-bookings",
       icon: CalendarCheck,
-      roles: ["*"],
-    },
-    {
-      title: "Customers",
-      url: "/dashboard/users",
-      icon: UserPlus,
       roles: ["*"],
     },
     {
@@ -94,39 +96,36 @@ export const NAV_CONFIG = {
       roles: ["*"],
     },
     {
-      title: "Reviews",
-      url: "/dashboard/reviews",
-      icon: MdOutlineRateReview,
-      roles: ["*"],
-    },
-    {
       title: "Categories",
       url: "/dashboard/categories",
       icon: Command,
       roles: ["*"],
     },
     {
-      title: "Colors",
-      url: "/dashboard/colors",
-      icon: PencilRuler,
+      title: "Sub-Categories",
+      url: "/dashboard/sub-categories",
+      icon: Command,
       roles: ["*"],
     },
     {
-      title: "Sizes",
-      url: "/dashboard/sizes",
-      icon: SquareUserRound,
+      title: "Reviews",
+      url: "/dashboard/reviews",
+      disable: true,
+      icon: MdOutlineRateReview,
       roles: ["*"],
     },
     {
       title: "Payments",
       url: "/dashboard/payments",
       icon: FileCheck,
+      disable: true,
       roles: ["*"],
     },
     {
       title: "Vouchers",
       url: "/dashboard/vouchers",
       icon: StickyNote,
+      disable: true,
       roles: ["*"],
     },
     {
@@ -134,6 +133,12 @@ export const NAV_CONFIG = {
       url: "/dashboard/media-files",
       icon: ProjectorIcon,
       roles: ["*"],
+    },
+    {
+      title: "Users",
+      url: "/dashboard/users",
+      icon: User2,
+      roles: ["Admin"],
     },
   ],
 };

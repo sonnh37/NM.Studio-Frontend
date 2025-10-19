@@ -8,8 +8,6 @@ export interface Service extends BaseEntity {
   description?: string;
   price?: number;
   isFeatured: boolean;
-  homeSortOrder?: number;
-  sortOrder: number;
   backgroundCoverId?: string;
   thumbnailId?: string;
   termsAndConditions?: string;

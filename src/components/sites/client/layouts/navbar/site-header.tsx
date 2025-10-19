@@ -8,9 +8,9 @@ import {useSelector} from "react-redux";
 import {HeaderMain} from "./header/header-main";
 import {HeaderTop} from "./header/header-top";
 import {Separator} from "@/components/ui/separator";
-import {AlbumGetAllQuery} from "@/types/queries/album-query";
-import {CategoryGetAllQuery} from "@/types/queries/category-query";
-import {ServiceGetAllQuery} from "@/types/queries/service-query";
+import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 
 export function SiteHeader() {
     const user = useSelector((state: RootState) => state.user.user);

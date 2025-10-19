@@ -1,26 +1,28 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { SizeForm } from "@/components/sites/dashboard/sites/sizes/create-update-form";
-import { sizeService } from "@/services/size-service";
-import { Size } from "@/types/entities/size";
+import { ServiceBookingForm } from "@/components/sites/dashboard/sites/service-bookings/create-update-form";
+import { serviceBookingService } from "@/services/service-booking-service";
+import { ServiceBooking } from "@/types/entities/service-booking";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 export default function Page() {
   const params = useParams();
   const {
-    data = {} as Size,
+    data = {} as ServiceBooking,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["fetchSizeById", params.sizeId],
+    queryKey: ["fetchServiceBookingById", params.serviceBookingId],
     queryFn: async () => {
-      const response = await sizeService.getById(params.sizeId as string);
+      const response = await serviceBookingService.getById(
+        params.serviceBookingId as string
+      );
       return response.data;
     },
-    enabled: !!params.sizeId,
+    enabled: !!params.serviceBookingId,
   });
 
   if (isLoading) return <LoadingPageComponent />;
@@ -32,7 +34,7 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
-      <SizeForm initialData={data} />
+      <ServiceBookingForm initialData={data} />
     </div>
   );
 }

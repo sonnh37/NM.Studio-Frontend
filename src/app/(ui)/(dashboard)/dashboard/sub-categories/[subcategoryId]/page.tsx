@@ -1,26 +1,28 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { ColorForm } from "@/components/sites/dashboard/sites/colors/create-update-form";
-import { colorService } from "@/services/color-service";
-import { Color } from "@/types/entities/color";
+import { SubCategoryForm } from "@/components/sites/dashboard/sites/sub-categories/create-update-form";
+import { subCategoryService } from "@/services/sub-category-service";
+import { SubCategory } from "@/types/entities/subcategory";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 export default function Page() {
   const params = useParams();
   const {
-    data = {} as Color,
+    data = {} as SubCategory,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["fetchColorById", params.colorId],
+    queryKey: ["fetchSubCategoryById", params.subcategoryId],
     queryFn: async () => {
-      const response = await colorService.getById(params.colorId as string);
+      const response = await subCategoryService.getById(
+        params.subcategoryId as string
+      );
       return response.data;
     },
-    enabled: !!params.colorId,
+    enabled: !!params.subcategoryId,
   });
 
   if (isLoading) return <LoadingPageComponent />;
@@ -32,7 +34,7 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
-      <ColorForm initialData={data} />
+      <SubCategoryForm initialData={data} />
     </div>
   );
 }

@@ -1,16 +1,17 @@
 import { BaseEntity } from "./base/base";
-import { Category, SubCategory } from "./category";
+import { Category } from "./category";
 import { ProductVariant } from "./product-variant";
+import { SubCategory } from "./subcategory";
 
 export interface ProductRepresentativeByCategory {
-  category?: Category | null | undefined;
-  product?: ProductRepresentative | null | undefined;
+  category?: Category | null;
+  product?: ProductRepresentative | null;
 }
 
 export interface ProductRepresentative {
-  sku?: string | null | undefined;
-  slug?: string | null | undefined;
-  src?: string | null | undefined;
+  sku?: string | null;
+  slug?: string | null;
+  src?: string | null;
 }
 
 export enum ProductStatus {
@@ -18,7 +19,7 @@ export enum ProductStatus {
   Available,
   Rented,
   InMaintenance,
-  Discontinued,
+  Unavailable,
 }
 
 export interface Product extends BaseEntity {

@@ -1,57 +1,36 @@
 "use client";
 import { useForm } from "react-hook-form";
 
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { FileUpload } from "@/components/_common/custom/file-upload";
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
-  FormImageUpload,
   FormInput,
-  FormInputDate,
-  FormInputDateTimePicker,
   FormInputReactTipTapEditor,
   FormInputTextArea,
   FormSelectEnum,
-  FormSelectObject,
   FormSwitch,
+  ImageUpload,
 } from "@/lib/form-custom-shadcn";
-import { ServiceBooking, ServiceBookingStatus } from "@/types/entities/service-booking";
+import { getEnumOptions } from "@/lib/utils";
+
 import {
-  ServiceBookingCreateCommand,
-  ServiceBookingUpdateCommand,
-} from "@/types/commands/service-booking-command";
-import { BusinessResult } from "@/types/models/business-result";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
+  ServiceBooking,
+  ServiceBookingStatus,
+} from "@/types/entities/service-booking";
+import { BusinessResult, Status } from "@/types/models/business-result";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
-import { TypographyH1 } from "@/components/_common/typography/typography-h1";
-import { getEnumOptions } from "@/lib/utils";
-import { UserGetAllQuery } from "@/types/queries/user-query";
-import { userService } from "@/services/user-serice";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
 import { AuthorSelect } from "./author-select";
+import { ServiceBookingCreateCommand, ServiceBookingUpdateCommand } from "@/types/cqrs/commands/service-booking-command";
+import { ServiceSelect } from "./service-select";
 
 interface ServiceBookingFormProps {
   initialData: ServiceBooking | null;
@@ -70,9 +49,12 @@ const formSchema = z.object({
   viewCount: z.number().default(0),
   tags: z.string().nullable().optional(),
   authorId: z.string().nullable().optional(),
+  serviceId: z.string().nullable().optional(),
 });
 
-export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialData }) => {
+export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
+  initialData,
+}) => {
   const [loading, setLoading] = useState(false);
   const title = initialData ? "Update servicebooking" : "New servicebooking";
   const action = "Submit";
@@ -100,17 +82,17 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialD
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: ServiceBookingUpdateCommand = {
+        const command: ServiceBookingUpdateCommand = {
+          ...initialData,
           ...values,
-          id: initialData.id,
-          isDeleted: false,
         };
-        const response = await serviceBookingService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
+        const response = await serviceBookingService.update(command);
+        if (response.status != Status.OK)
+          throw new Error(response.error?.detail);
         // queryClient.refetchQueries({
         //   queryKey: ["fetchServiceBookingById", initialData.id],
         // });
-        toast.success(response.message);
+        toast.success("Updated!");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -124,7 +106,9 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialD
     }
   };
 
-  const handleCreateConfirmation = async (): Promise<BusinessResult<ServiceBooking>> => {
+  const handleCreateConfirmation = async (): Promise<
+    BusinessResult<ServiceBooking>
+  > => {
     if (!pendingValues) {
       toast.error("No pending values to create servicebooking.");
       return Promise.reject(new Error("No pending values"));
@@ -135,9 +119,8 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialD
         ...pendingValues,
       };
       const response = await serviceBookingService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
-
-      toast.success(response.message);
+      if (response.status != Status.OK) throw new Error(response.error?.detail);
+      toast.success("Created!");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -216,20 +199,6 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialD
                   placeholder="Enter description"
                 />
 
-                <FormImageUpload
-                  form={form}
-                  name="thumbnail"
-                  label="Thumbnail"
-                  onFileChange={setFile}
-                />
-
-                <FormImageUpload
-                  form={form}
-                  name="bannerImage"
-                  label="Banner"
-                  onFileChange={setFile2}
-                />
-
                 <FormSelectEnum
                   form={form}
                   name="status"
@@ -240,6 +209,8 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({ initialD
                 <FormInput form={form} name="tags" label="Tags" />
 
                 <AuthorSelect form={form} name="authorId" />
+
+                <ServiceSelect form={form} name="serviceId" />
 
                 <FormInputReactTipTapEditor form={form} name="content" />
               </div>

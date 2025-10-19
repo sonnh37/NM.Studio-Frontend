@@ -80,9 +80,11 @@ export const columns: ColumnDef<Album>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
     ),
-    cell: ({ row }) => (
-      <div className="truncate max-w-xs">{row.getValue("description")}</div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <div className="truncate max-w-xs">{row.getValue("description")}</div>
+      );
+    },
   },
   {
     accessorKey: "eventDate",

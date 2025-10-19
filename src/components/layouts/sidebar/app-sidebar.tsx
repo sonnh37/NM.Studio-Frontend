@@ -19,6 +19,7 @@ import { NavMain } from "./nav-main";
 import { NavManagement } from "./nav-management";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { Role } from "@/types/entities/user";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();
   const user = userContextHelper.get();
@@ -27,11 +28,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const filteredNavMain = filterNavItemsByRole(
     NAV_CONFIG.main,
-    user.role?.toString() ?? ""
+    Role[user.role ?? -1]
   );
   const filteredNavManage = filterNavItemsByRole(
     NAV_CONFIG.management,
-    user.role?.toString() ?? ""
+    Role[user.role ?? -1]
   );
 
   return (
@@ -62,7 +63,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={filteredNavMain} />
         {filteredNavManage.length > 0 && (
           <>
-            
             <NavManagement items={filteredNavManage} />
           </>
         )}

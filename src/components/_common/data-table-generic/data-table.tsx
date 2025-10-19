@@ -5,7 +5,7 @@ import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import {
   GetQueryableQuery,
   SortDirection,
-} from "@/types/queries/base/base-query";
+} from "@/types/cqrs/queries/base/base-query";
 import { BusinessResult } from "@/types/models/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -115,7 +115,6 @@ export function DataTable<TData>({
       })
       .refine((date) => !!date.to, { message: "End Date is required." })
       .optional(),
-    isDeleted: z.boolean().nullable().optional(),
   });
 
   const form = useForm<
@@ -191,7 +190,7 @@ export function DataTable<TData>({
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalCount ?? 0,
+    rowCount: data?.data?.totalItemCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,

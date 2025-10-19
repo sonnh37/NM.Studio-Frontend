@@ -51,7 +51,6 @@ export const columns: ColumnDef<Blog>[] = [
     header: "Thumbnail",
     cell: ({ row }) => {
       const backgroundUrl = row.original.thumbnail?.mediaUrl;
-      console.log("check_backgroundUrl", backgroundUrl);
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image

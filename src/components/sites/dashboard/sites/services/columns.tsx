@@ -48,17 +48,17 @@ export const columns: ColumnDef<Service>[] = [
     ),
   },
   {
-    accessorKey: "src",
-    header: "Src Image",
+    accessorKey: "thumbnail",
+    header: "Thumbnail",
     cell: ({ row }) => {
-      const backgroundUrl = row.getValue("src") as string;
+      const backgroundUrl = row.original.thumbnail?.mediaUrl;
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image
-            alt="Service background"
+            alt={`Blog background`}
             className="aspect-square size-[64px] rounded-md object-cover"
-            height={64}
-            width={64}
+            height={9999}
+            width={9999}
             src={backgroundUrl ?? "/image-notfound.png"}
           />
         </Link>
@@ -87,17 +87,6 @@ export const columns: ColumnDef<Service>[] = [
     ),
   },
   {
-    accessorKey: "shortDescription",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Short Description" />
-    ),
-    cell: ({ row }) => (
-      <div className="truncate max-w-xs">
-        {row.getValue("shortDescription")}
-      </div>
-    ),
-  },
-  {
     accessorKey: "price",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Price" />
@@ -113,10 +102,24 @@ export const columns: ColumnDef<Service>[] = [
     },
   },
   {
-    accessorKey: "category",
+    accessorKey: "backgroundCover",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
+      <DataTableColumnHeader column={column} title="Background" />
     ),
+    cell: ({ row }) => {
+      const image = row.original.backgroundCover?.mediaUrl;
+      return (
+        <Link href={image ?? ""}>
+          <Image
+            alt={`Blog background`}
+            className="aspect-square size-[32px] rounded-md object-cover"
+            height={9999}
+            width={9999}
+            src={image ?? "/image-notfound.png"}
+          />
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "isFeatured",
@@ -124,59 +127,6 @@ export const columns: ColumnDef<Service>[] = [
       <DataTableColumnHeader column={column} title="Featured" />
     ),
     cell: ({ row }) => (row.getValue("isFeatured") ? "Yes" : "No"),
-  },
-  {
-    accessorKey: "isActive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Active" />
-    ),
-    cell: ({ row }) => (row.getValue("isActive") ? "Yes" : "No"),
-  },
-  {
-    accessorKey: "sortOrder",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Sort Order" />
-    ),
-  },
-  {
-    accessorKey: "imageUrl",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Image URL" />
-    ),
-    cell: ({ row }) => {
-      const url = row.getValue("imageUrl") as string;
-      return url ? (
-        <Link href={url} className="text-blue-600 underline" target="_blank">
-          Link
-        </Link>
-      ) : (
-        "-"
-      );
-    },
-  },
-  {
-    accessorKey: "metaTitle",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Meta Title" />
-    ),
-  },
-  {
-    accessorKey: "metaDescription",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Meta Description" />
-    ),
-    cell: ({ row }) => (
-      <div className="truncate max-w-xs">{row.getValue("metaDescription")}</div>
-    ),
-  },
-  {
-    accessorKey: "metaKeywords",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Meta Keywords" />
-    ),
-    cell: ({ row }) => (
-      <div className="truncate max-w-xs">{row.getValue("metaKeywords")}</div>
-    ),
   },
   {
     accessorKey: "termsAndConditions",
@@ -187,12 +137,6 @@ export const columns: ColumnDef<Service>[] = [
       <div className="truncate max-w-xs">
         {row.getValue("termsAndConditions")}
       </div>
-    ),
-  },
-  {
-    accessorKey: "maxBookingsPerDay",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Max Bookings/Day" />
     ),
   },
   {

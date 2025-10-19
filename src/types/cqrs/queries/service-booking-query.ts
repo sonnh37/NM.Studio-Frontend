@@ -1,23 +1,23 @@
-import { ServiceBookingStatus } from "../entities/service-booking";
+import { ServiceBookingStatus } from "@/types/entities/service-booking";
 import { GetQueryableQuery } from "./base/base-query";
 
 export interface ServiceBookingGetAllQuery extends GetQueryableQuery {
-  userId?: string | null | undefined;
-  serviceId?: string | null | undefined;
-  bookingNumber?: string | null | undefined;
-  status?: ServiceBookingStatus | null | undefined;
-  appointmentDate?: string | null | undefined;
-  startTime?: string | null | undefined;
-  endTime?: string | null | undefined;
-  durationMinutes?: number | null | undefined;
-  servicePrice?: number | null | undefined;
-  depositAmount?: number | null | undefined;
-  totalAmount?: number | null | undefined;
-  isDepositPaid?: boolean | null | undefined;
-  customerName?: string | null | undefined;
-  customerEmail?: string | null | undefined;
-  customerPhone?: string | null | undefined;
-  specialRequirements?: string | null | undefined;
-  staffNotes?: string | null | undefined;
-  cancellationReason?: string | null | undefined;
+  userId?: string | null;
+  serviceId?: string | null;
+  bookingNumber?: string | null;
+  status?: ServiceBookingStatus | null;
+  appointmentDate?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  durationMinutes?: number | null;
+  servicePrice?: number | null;
+  depositAmount?: number | null;
+  totalAmount?: number | null;
+  isDepositPaid?: boolean | null;
+  customerName?: string | null;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
+  specialRequirements?: string | null;
+  staffNotes?: string | null;
+  cancellationReason?: string | null;
 }

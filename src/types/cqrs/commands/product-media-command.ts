@@ -5,16 +5,16 @@ import {
 } from "@/types/cqrs/commands/base/base-command";
 
 export interface ProductMediaCreateCommand extends CreateCommand {
-  productId?: string | null | undefined;
-  mediaBaseId?: string | null | undefined;
+  productVariantId?: string | null;
+  mediaBaseId?: string | null;
 }
 
 export interface ProductMediaUpdateCommand extends UpdateCommand {
-  productId?: string | null | undefined;
-  mediaBaseId?: string | null | undefined;
+  productVariantId?: string | null;
+  mediaBaseId?: string | null;
 }
 
 export interface ProductMediaDeleteCommand extends DeleteCommand {
-  productId?: string | null | undefined;
-  mediaBaseId?: string | null | undefined;
+  productVariantId?: string | null;
+  mediaBaseId?: string | null;
 }

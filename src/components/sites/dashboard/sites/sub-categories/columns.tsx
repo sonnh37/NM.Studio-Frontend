@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/lib/utils";
 import { subCategoryService } from "@/services/sub-category-service";
-import { SubCategory } from "@/types/entities/category";
+import { SubCategory } from "@/types/entities/subcategory";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -49,12 +49,6 @@ export const columns: ColumnDef<SubCategory>[] = [
     ),
   },
   {
-    accessorKey: "displayName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Display Name" />
-    ),
-  },
-  {
     accessorKey: "slug",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Slug" />
@@ -65,43 +59,11 @@ export const columns: ColumnDef<SubCategory>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
     ),
-  },
-  {
-    accessorKey: "shortDescription",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Short Description" />
-    ),
-  },
-  {
-    accessorKey: "imageUrl",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Image URL" />
-    ),
-  },
-  {
-    accessorKey: "isActive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Active" />
-    ),
-    cell: ({ row }) => (row.getValue("isActive") ? "Active" : "Inactive"),
-  },
-  {
-    accessorKey: "sortOrder",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Sort Order" />
-    ),
-  },
-  {
-    accessorKey: "metaTitle",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Meta Title" />
-    ),
-  },
-  {
-    accessorKey: "metaDescription",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Meta Description" />
-    ),
+    cell: ({ row }) => {
+      return (
+        <div className="truncate max-w-xs">{row.getValue("description")}</div>
+      );
+    },
   },
   {
     accessorKey: "isFeatured",

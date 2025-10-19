@@ -16,23 +16,23 @@ import {
 } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useQuery } from "@tanstack/react-query";
-import { userService } from "@/services/user-serice";
 import { useState, useMemo } from "react";
-import { UserGetAllQuery } from "@/types/cqrs/queries/user-query";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
+import { categoryService } from "@/services/category-service";
 
-interface AuthorSelectProps<TFieldValues extends FieldValues> {
+interface CategorySelectProps<TFieldValues extends FieldValues> {
   form: UseFormReturn<TFieldValues>;
   name: FieldPath<TFieldValues>;
 }
 
-export function AuthorSelect<TFieldValues extends FieldValues>({
+export function CategorySelect<TFieldValues extends FieldValues>({
   form,
   name,
-}: AuthorSelectProps<TFieldValues>) {
+}: CategorySelectProps<TFieldValues>) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
-  const query: UserGetAllQuery = useMemo(
+  const query: CategoryGetAllQuery = useMemo(
     () => ({
       pagination: {
         isPagingEnabled: true,
@@ -40,15 +40,15 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
         pageNumber: 1,
       },
       isDeleted: false,
-      email: debouncedSearch || undefined,
+      name: debouncedSearch || undefined,
     }),
     [debouncedSearch]
   );
 
-  const { data: authors = [], isFetching } = useQuery({
-    queryKey: ["fetchAuthors", query],
+  const { data: categorys = [], isFetching } = useQuery({
+    queryKey: ["fetchCategorys", query],
     queryFn: async () => {
-      const res = await userService.getAll(query);
+      const res = await categoryService.getAll(query);
       return res.data?.results;
     },
     refetchOnWindowFocus: false,
@@ -60,26 +60,26 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Author</FormLabel>
+          <FormLabel>Category</FormLabel>
           <FormControl>
             <Select
               onValueChange={field.onChange}
               value={field.value ?? undefined}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select user" />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 <div className="p-2">
                   <Input
-                    placeholder="Search email..."
+                    placeholder="Search name..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
-                {authors.map((option) => (
+                {categorys.map((option) => (
                   <SelectItem key={option.id} value={option.id}>
-                    {option.email}
+                    {option.name}
                   </SelectItem>
                 ))}
                 {isFetching && (

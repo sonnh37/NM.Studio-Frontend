@@ -29,6 +29,7 @@ import ConfirmationDialog, {
   FormInputNumber,
   FormInputTextArea,
   FormSelectEnum,
+  FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { getEnumOptions } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
@@ -36,13 +37,14 @@ import { Category } from "@/types/entities/category";
 import {
   ProductCreateCommand,
   ProductUpdateCommand,
-} from "@/types/commands/product-command";
+} from "@/types/cqrs/commands/product-command";
 import { Product, ProductStatus } from "@/types/entities/product";
-import { BusinessResult } from "@/types/models/business-result";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 
 interface ProductFormProps {
   initialData: Product | null;
@@ -51,14 +53,12 @@ interface ProductFormProps {
 const formSchema = z.object({
   id: z.string().optional(),
   subCategoryId: z.string().nullable(),
+  categoryId: z.string().nullable(),
   name: z.string().min(1, "Name is required").nullable(),
   sku: z.string().nullable(),
   description: z.string().nullable().optional(),
   price: z.number().nullable().default(0),
   status: z.nativeEnum(ProductStatus).nullable(),
-  createdDate: z.date().optional().default(new Date()),
-  createdBy: z.string().nullable().optional().default(null),
-  isDeleted: z.boolean().default(false),
 });
 
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
@@ -73,9 +73,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const previousPath = usePreviousPath();
 
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
   const [categories, setCategories] = useState<Category[]>([]);
 
   const queryClient = useQueryClient();
@@ -85,9 +82,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     defaultValues: initialData
       ? {
           ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
         }
       : {},
   });
@@ -100,11 +94,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
           ...values,
         };
         const response = await productService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
+        if (response.status != Status.OK)
+          throw new Error(response.error?.detail);
         queryClient.refetchQueries({
           queryKey: ["fetchProductById", initialData.id],
         });
-        toast.success(response.message);
+        toast.success("Updated!");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -131,9 +126,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         ...pendingValues,
       };
       const response = await productService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
+      if (response.status != Status.OK) throw new Error(response.error?.detail);
 
-      toast.success(response.message);
+      toast.success("Created!");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -150,7 +145,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   };
 
   const fetchCategories = async () => {
-    const response = await categoryService.getAll();
+    const query: CategoryGetAllQuery = {
+      pagination: {
+        isPagingEnabled: false,
+      },
+      includeProperties: ["subcategories"],
+    };
+    const response = await categoryService.getAll(query);
     return response.data?.results;
   };
 
@@ -159,13 +160,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       try {
         const categories = await fetchCategories();
         setCategories(categories!);
-        if (categories) {
-          setSelectedCategory(
-            categories.find(
-              (ca) => ca.id == initialData?.subCategory?.categoryId
-            ) ?? null
-          );
-        }
+        // if (categories) {
+        //   setSelectedCategory(
+        //     categories.find(
+        //       (ca) => ca.id == initialData?.subCategory?.categoryId
+        //     ) ?? null
+        //   );
+        // }
       } catch (error) {
         console.error(error);
       }
@@ -173,6 +174,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
     fetchData();
   }, []);
+
+  const categoryIdWatch = form.watch("categoryId");
+  const selectedCategory =
+    categories.find((cat) => cat.id === categoryIdWatch) ?? null;
 
   return (
     <>
@@ -249,78 +254,31 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                           name="price"
                           label="Price"
                           placeholder="Enter price"
-                          className="mt-2 w-full"
+                        />
+                        <FormSelectObject
+                          form={form}
+                          name="categoryId"
+                          label="Thể loại"
+                          options={categories}
+                          selectLabel="name"
+                          selectValue="id"
+                          placeholder="Chọn thể loại"
                         />
 
-                        <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <Select
-                            onValueChange={(value) => {
-                              const selectedCategory = categories.find(
-                                (cat) => cat.id === value
-                              );
-                              setSelectedCategory(selectedCategory ?? null);
-                            }}
-                            value={
-                              selectedCategory ? selectedCategory.id : undefined
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {categories.map((category) => (
-                                <SelectItem
-                                  key={category.id}
-                                  value={category.id!}
-                                >
-                                  {category.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-
-                        <FormField
-                          control={form.control}
-                          name="subCategoryId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>SubCategory</FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={(value) =>
-                                    field.onChange(value)
-                                  }
-                                  value={field.value ?? undefined} // Ensure the value is set correctly
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select subcategory" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {selectedCategory ? (
-                                      <>
-                                        {selectedCategory?.subCategories!.map(
-                                          (subCategory) => (
-                                            <SelectItem
-                                              key={subCategory.id}
-                                              value={subCategory.id!}
-                                            >
-                                              {subCategory.name}
-                                            </SelectItem>
-                                          )
-                                        )}
-                                      </>
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        {selectedCategory &&
+                        selectedCategory.subCategories &&
+                        selectedCategory.subCategories.length > 0 ? (
+                          <FormSelectObject
+                            form={form}
+                            name="subCategoryId"
+                            label="Thể loại con"
+                            options={selectedCategory.subCategories}
+                            selectLabel="name"
+                            selectValue="id"
+                            placeholder="Chọn thể loại"
+                          />
+                        ) : null}
+                        
                       </div>
                     </div>
                   </CardContent>

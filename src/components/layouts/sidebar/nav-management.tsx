@@ -31,9 +31,11 @@ export function NavManagement({
     url: string;
     icon?: LucideIcon | IconType;
     isActive?: boolean;
+    disable?: boolean;
     items?: {
       title: string;
       icon?: LucideIcon | IconType;
+      disable?: boolean;
       url: string;
     }[];
   }[];
@@ -49,12 +51,15 @@ export function NavManagement({
           {items.map((item) => {
             const isActive =
               pathName === item.url || pathName.startsWith(item.url + "/");
+            const isDisabled = item.disable ?? false;
+            console.log("check_isDisabled", isDisabled);
 
             return (
               <Collapsible
                 key={item.title}
                 asChild
                 defaultOpen={isActive}
+                disabled={isDisabled}
                 className="group/collapsible"
               >
                 {item.items ? (
@@ -81,14 +86,17 @@ export function NavManagement({
                       <SidebarMenuSub className="pr-0 mx-0 ml-3.5">
                         {item.items?.map((subItem) => {
                           const isActiveSub = pathName === subItem.url;
+                          const isDisabledSub = subItem.disable ?? false;
                           return (
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton
                                 className={cn(
                                   styleCommon,
                                   isActiveSub ? "!bg-muted " : "",
+                                  isDisabledSub ? "opacity-50 cursor-not-allowed" : "",
                                   "py-2.5"
                                 )}
+                                isActive={isActiveSub}
                                 asChild
                               >
                                 <Link href={subItem.url}>
@@ -112,11 +120,13 @@ export function NavManagement({
                     className={cn(
                       styleCommon,
                       "py-4",
-                      isActive ? "!bg-muted " : ""
+                      isActive ? "!bg-muted " : "",
+                      isDisabled ? "opacity-50 cursor-not-allowed" : ""
                     )}
+                    disabled={isDisabled}
                     tooltip={item.title}
                     asChild
-                    // isActive={isActive}
+                    isActive={isActive}
                   >
                     <Link href={item.url} className="flex items-center w-full">
                       <div className="flex aspect-square size-4 items-center justify-start">

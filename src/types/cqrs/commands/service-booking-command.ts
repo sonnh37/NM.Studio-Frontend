@@ -2,9 +2,9 @@ import { ServiceBookingStatus } from "@/types/entities/service-booking";
 import { CreateCommand, UpdateCommand } from "./base/base-command";
 
 export interface ServiceBookingCreateCommand extends CreateCommand {
-  userId?: string | null | undefined;
-  serviceId?: string | null | undefined;
-  bookingNumber?: string | null | undefined;
+  userId?: string | null;
+  serviceId?: string | null;
+  bookingNumber?: string | null;
   status: ServiceBookingStatus;
   appointmentDate: string;
   startTime: string;
@@ -14,18 +14,18 @@ export interface ServiceBookingCreateCommand extends CreateCommand {
   depositAmount: number;
   totalAmount: number;
   isDepositPaid: boolean;
-  customerName?: string | null | undefined;
-  customerEmail?: string | null | undefined;
-  customerPhone?: string | null | undefined;
-  specialRequirements?: string | null | undefined;
-  staffNotes?: string | null | undefined;
-  cancellationReason?: string | null | undefined;
+  customerName?: string | null;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
+  specialRequirements?: string | null;
+  staffNotes?: string | null;
+  cancellationReason?: string | null;
 }
 
 export interface ServiceBookingUpdateCommand extends UpdateCommand {
-  userId?: string | null | undefined;
-  serviceId?: string | null | undefined;
-  bookingNumber?: string | null | undefined;
+  userId?: string | null;
+  serviceId?: string | null;
+  bookingNumber?: string | null;
   status: ServiceBookingStatus;
   appointmentDate: string;
   startTime: string;
@@ -35,10 +35,10 @@ export interface ServiceBookingUpdateCommand extends UpdateCommand {
   depositAmount: number;
   totalAmount: number;
   isDepositPaid: boolean;
-  customerName?: string | null | undefined;
-  customerEmail?: string | null | undefined;
-  customerPhone?: string | null | undefined;
-  specialRequirements?: string | null | undefined;
-  staffNotes?: string | null | undefined;
-  cancellationReason?: string | null | undefined;
+  customerName?: string | null;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
+  specialRequirements?: string | null;
+  staffNotes?: string | null;
+  cancellationReason?: string | null;
 }

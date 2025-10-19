@@ -3,9 +3,12 @@ import { columns } from "./columns";
 import { isDeleted_options } from "@/components/_common/filters";
 
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
-import { DataTablePagination } from "@/components/_common/data-table-generic/data-table-pagination";
-import { DataTableSkeleton } from "@/components/_common/data-table-generic/data-table-skelete";
+import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
+import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
+import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
+import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
 import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
@@ -41,12 +44,14 @@ import {
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import DataTableSubCategorys from "./sub-categories";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
@@ -123,8 +128,13 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 ];
 
 const columnSearch = "name";
+const query_key = "data";
 const filterEnums: FilterEnum[] = [
-  { columnId: "isDeleted", title: "Deleted status", options: isDeleted_options },
+  {
+    columnId: "isDeleted",
+    title: "Deleted status",
+    options: isDeleted_options,
+  },
 ];
 
 const defaultSchema = z.object({
@@ -140,6 +150,7 @@ const defaultSchema = z.object({
 });
 //#endregion
 export default function CategoryTable() {
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");
   const { data: category, isLoading } = useQuery({
@@ -180,15 +191,19 @@ export default function CategoryTable() {
     control: form.control,
   });
 
-  const getQueryParams = useQueryParams(
-    formValues,
-    columnFilters,
-    pagination,
-    sorting
-  );
+  const queryParams = useMemo(() => {
+    const params: CategoryGetAllQuery = useQueryParams(
+      formValues,
+      columnFilters,
+      pagination,
+      sorting
+    );
 
-  const queryParams = useMemo(() => getQueryParams(), [getQueryParams]);
+    params.includeProperties = ["subCategories"];
 
+    return { ...params };
+  }, [formValues, columnFilters, pagination, sorting]);
+  
   const { data, isFetching, error } = useQuery({
     queryKey: ["data", queryParams],
     queryFn: () => categoryService.getAll(queryParams),
@@ -202,16 +217,19 @@ export default function CategoryTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalCount ?? 0,
+    pageCount: data?.data?.pageCount ?? -1,
+    rowCount: data?.data?.totalItemCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
+    initialState: {
+      columnPinning: { right: ["actions"] },
+    },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     manualPagination: true,
-    debugTable: true,
+    getRowId: (originalRow) => originalRow.id,
   });
 
   //#endregion
@@ -254,37 +272,49 @@ export default function CategoryTable() {
         <TabsTrigger value="item-2">Sub-Categories</TabsTrigger>
       </TabsList>
       <TabsContent value="item-1">
-        <Card className="space-y-4 p-4">
+        <DataTableComponent
+          isLoading={isFetching}
+          deletePermanentFunc={(command) => categoryService.delete(command)}
+          updateUndoFunc={(command) => categoryService.update(command)}
+          table={table}
+          queryKey={query_key}
+        >
           <DataTableToolbar
-            form={form}
             table={table}
             filterEnums={filterEnums}
             columnSearch={columnSearch}
-            deleteFunc={categoryService.delete}
-            isSheetOpen={isSheetOpen}
-            handleSheetChange={handleSheetChange}
-            formFilterAdvanceds={formFilterAdvanceds}
-          />
+          >
+            <DeleteBaseEntitysDialog
+              list={table
+                .getFilteredSelectedRowModel()
+                .rows.map((row) => row.original)}
+              query_keys={[query_key]}
+              deleteFunc={(command) => categoryService.delete(command)}
+              onSuccess={() => table.toggleAllRowsSelected(false)}
+            />
+            <DataTableFilterSheet
+              form={form}
+              isSheetOpen={isSheetOpen}
+              handleSheetChange={handleSheetChange}
+              formFilterAdvanceds={formFilterAdvanceds}
+            />
+            <DataTableSortColumnsPopover table={table} />
+            <DataTableToggleColumnsPopover table={table} />
+            <DataTableDownload table={table} />
 
-          {isFetching && !isTyping ? (
-            <DataTableSkeleton
-              columnCount={1}
-              showViewOptions={false}
-              withPagination={false}
-              rowCount={pagination.pageSize}
-              searchableColumnCount={0}
-              filterableColumnCount={0}
-              shrinkZero
-            />
-          ) : (
-            <DataTableComponent
-              deletePermanentFunc={categoryService.delete}
-              updateUndoFunc={categoryService.update}
-              table={table}
-            />
-          )}
-          <DataTablePagination table={table} />
-        </Card>
+            <Link
+              className="text-primary-foreground sm:whitespace-nowrap"
+              href={`${pathname}/new`}
+            >
+              <Button
+                size={"sm"}
+                className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+              >
+                Add
+              </Button>
+            </Link>
+          </DataTableToolbar>
+        </DataTableComponent>
       </TabsContent>
       <TabsContent value="item-2">
         {isLoading || !category ? (

@@ -17,13 +17,12 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate, formatPrice } from "@/lib/utils";
 import { productService } from "@/services/product-service";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { formatDate } from "@/lib/utils";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -65,6 +64,12 @@ export const columns: ColumnDef<Product>[] = [
     ),
   },
   {
+    accessorKey: "category.name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+  },
+  {
     accessorKey: "subCategory.name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="SubCategory" />
@@ -79,87 +84,52 @@ export const columns: ColumnDef<Product>[] = [
       <div className="truncate max-w-xs">{row.getValue("description")}</div>
     ),
   },
-  {
-    accessorKey: "price",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Price" />
-    ),
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("price"));
-      if (isNaN(amount)) return "-";
-      const formatted = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(amount);
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "rentalPrice",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Rental Price" />
-    ),
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("rentalPrice"));
-      if (isNaN(amount)) return "-";
-      const formatted = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(amount);
-      return <div>{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "deposit",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Deposit" />
-    ),
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("deposit"));
-      if (isNaN(amount)) return "-";
-      const formatted = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(amount);
-      return <div>{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "isRentable",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Rentable" />
-    ),
-    cell: ({ row }) => (row.getValue("isRentable") ? "Yes" : "No"),
-  },
-  {
-    accessorKey: "isSaleable",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Saleable" />
-    ),
-    cell: ({ row }) => (row.getValue("isSaleable") ? "Yes" : "No"),
-  },
+  // {
+  //   accessorKey: "price",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Price" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const amount = row.original.
+  //     if (isNaN(amount)) return "-";
+  //     const formatted = formatPrice(amount);
+  //     return <div className="font-medium">{formatted}</div>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "rentalPrice",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Rental Price" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const amount = parseFloat(row.getValue("rentalPrice"));
+  //     if (isNaN(amount)) return "-";
+  //     const formatted = new Intl.NumberFormat("vi-VN", {
+  //       style: "currency",
+  //       currency: "VND",
+  //     }).format(amount);
+  //     return <div>{formatted}</div>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "deposit",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Deposit" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const amount = parseFloat(row.getValue("deposit"));
+  //     if (isNaN(amount)) return "-";
+  //     const formatted = new Intl.NumberFormat("vi-VN", {
+  //       style: "currency",
+  //       currency: "VND",
+  //     }).format(amount);
+  //     return <div>{formatted}</div>;
+  //   },
+  // },
   {
     accessorKey: "material",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Material" />
-    ),
-  },
-  {
-    accessorKey: "brand",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Brand" />
-    ),
-  },
-  {
-    accessorKey: "style",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Style" />
-    ),
-  },
-  {
-    accessorKey: "care",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Care" />
     ),
   },
   {
@@ -168,7 +138,7 @@ export const columns: ColumnDef<Product>[] = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status") as ProductStatus;
+      const status = row.original.status;
       const statusText = ProductStatus[status];
       let badgeVariant: "secondary" | "destructive" | "default" | "outline" =
         "default";
@@ -179,7 +149,7 @@ export const columns: ColumnDef<Product>[] = [
         case ProductStatus.Available:
           badgeVariant = "default";
           break;
-        case ProductStatus.Discontinued:
+        case ProductStatus.Unavailable:
           badgeVariant = "destructive";
           break;
         default:
@@ -217,7 +187,6 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: false,
   },
 ];
-
 
 interface ActionsProps {
   row: Row<Product>;

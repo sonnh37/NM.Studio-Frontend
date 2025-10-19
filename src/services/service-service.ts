@@ -15,31 +15,6 @@ class ServiceService extends BaseService<Service> {
   constructor() {
     super(`${Const.SERVICES}`);
   }
-  public async save(
-    command: CreateOrUpdateCommand
-  ): Promise<BusinessResult<Service>> {
-    if (command instanceof ServiceUpdateCommand) {
-      await this.handleMediaUploads(command);
-      return await super.update(command);
-    } else if (command instanceof ServiceCreateCommand) {
-      await this.handleMediaUploads(command);
-      return await super.create(command);
-    }
-
-    throw new Error("Unsupported command type");
-  }
-
-  private async handleMediaUploads(
-    command: ServiceCreateCommand | ServiceUpdateCommand
-  ) {
-    if (command.thumbnailFile) {
-      const uploadResult = await mediaUploadService.uploadFile(
-        command.thumbnailFile,
-        "Service"
-      );
-      command.srcThumbnail = uploadResult?.secureUrl ?? null;
-    }
-  }
 }
 
 export const serviceService = new ServiceService();

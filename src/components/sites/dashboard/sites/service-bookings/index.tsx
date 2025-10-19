@@ -24,9 +24,9 @@ import {
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { serviceBookingService } from "@/services/service-booking-service";
+import { ServiceBookingGetAllQuery } from "@/types/cqrs/queries/service-booking-query";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
-import { ServiceBookingGetAllQuery } from "@/types/queries/service-booking-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -168,7 +168,7 @@ export default function ServiceBookingTable() {
       sorting
     );
 
-    params.includeProperties = ["author"];
+    params.includeProperties = ["user", "service"];
 
     return { ...params };
   }, [formValues, columnFilters, pagination, sorting]);
@@ -185,8 +185,8 @@ export default function ServiceBookingTable() {
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    pageCount: data?.data?.totalPages ?? -1,
-    rowCount: data?.data?.totalCount ?? 0,
+    pageCount: data?.data?.pageCount ?? -1,
+    rowCount: data?.data?.totalItemCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     initialState: {
       columnPinning: { right: ["actions"] },

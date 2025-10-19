@@ -76,11 +76,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const combinedValues = initialData
-          ? { ...initialData, ...values }
-          : values;
         const command: BlogUpdateCommand = {
-          ...combinedValues,
+          ...initialData, ...values
         };
 
         if (file) {

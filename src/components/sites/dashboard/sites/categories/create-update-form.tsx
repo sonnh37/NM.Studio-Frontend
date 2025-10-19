@@ -10,17 +10,23 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { usePreviousPath } from "@/hooks/use-previous-path";
-import ConfirmationDialog, { FormInput } from "@/lib/form-custom-shadcn";
+import ConfirmationDialog, {
+  FormInput,
+  FormSwitch,
+} from "@/lib/form-custom-shadcn";
 import { Category } from "@/types/entities/category";
-import {
-  CategoryCreateCommand,
-  CategoryUpdateCommand,
-} from "@/types/commands/category-command";
-import { BusinessResult } from "@/types/models/business-result";
+
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
+import {
+  CategoryUpdateCommand,
+  CategoryCreateCommand,
+} from "@/types/cqrs/commands/category-command";
+import { sl } from "date-fns/locale";
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 
 interface CategoryFormProps {
   initialData: Category | null;
@@ -29,12 +35,9 @@ interface CategoryFormProps {
 const formSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required").nullable(),
-  createdDate: z
-    .date()
-    .optional()
-    .default(() => new Date()),
-  createdBy: z.string().nullable().optional().default(null),
-  isDeleted: z.boolean().default(false),
+  slug: z.string().min(1, "Slug is required").nullable().optional(),
+  description: z.string().min(1, "Description is required").nullable(),
+  isFeatured: z.boolean().default(false),
 });
 
 export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
@@ -57,9 +60,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     defaultValues: initialData
       ? {
           ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
         }
       : {},
   });
@@ -71,16 +71,18 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: CategoryUpdateCommand = {
+        const command: CategoryUpdateCommand = {
+          ...initialData,
           ...values,
-          file: file,
         };
-        const response = await categoryService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
+
+        const response = await categoryService.update(command);
+        if (response.status != Status.OK)
+          throw new Error(response.error?.detail);
         queryClient.refetchQueries({
           queryKey: ["fetchCategoryById", initialData.id],
         });
-        toast.success(response.message);
+        toast.success("Updated!");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -103,14 +105,12 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     }
     setIsLoading(true);
     try {
-      const createdValues: CategoryCreateCommand = {
+      const command: CategoryCreateCommand = {
         ...pendingValues,
-        file: file,
       };
-      const response = await categoryService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
-
-      toast.success(response.message);
+      const response = await categoryService.create(command);
+      if (response.status != Status.OK) throw new Error(response.error?.detail);
+      toast.success("Created!");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -127,7 +127,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
   };
 
   return (
-    <>
+    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
         open={showConfirmationDialog}
@@ -155,36 +155,45 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
               loading={loading}
               action={action}
             />
+            <TypographyH1>{title}</TypographyH1>
           </div>
           <div className="grid gap-4">
-            <div className="grid gap-4 lg:grid-cols-3">
-              <div className="grid gap-4 lg:col-span-2">
-                {/* main */}
-                <Card className="overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormInput
-                          form={form}
-                          name="name"
-                          label="Name"
-                          description="This is your public display name."
-                          placeholder="Enter name"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+            {/* main */}
+            <div className="grid gap-6">
+              <div className="grid gap-3">
+                <FormSwitch
+                  form={form}
+                  name="isFeatured"
+                  label="Is Main"
+                  description="If enabled, this category will be about page."
+                />
 
-              <div className="grid gap-4 h-fit">
-                <InformationBaseCard form={form} initialData={initialData} />
+                <FormInput
+                  form={form}
+                  name="name"
+                  label="Name"
+                  placeholder="Enter name"
+                />
+
+                <FormInput
+                  form={form}
+                  name="slug"
+                  label="Slug"
+                  placeholder="Enter slug"
+                />
+
+                
+                <FormInput
+                  form={form}
+                  name="description"
+                  label="Description"
+                  placeholder="Enter description"
+                />
               </div>
             </div>
-            <div>{/* sub */}</div>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };

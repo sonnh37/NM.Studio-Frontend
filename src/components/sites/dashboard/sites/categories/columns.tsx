@@ -50,12 +50,6 @@ export const columns: ColumnDef<Category>[] = [
     ),
   },
   {
-    accessorKey: "displayName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Display Name" />
-    ),
-  },
-  {
     accessorKey: "slug",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Slug" />
@@ -66,36 +60,11 @@ export const columns: ColumnDef<Category>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
     ),
-  },
-  {
-    accessorKey: "shortDescription",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Short Description" />
-    ),
-  },
-  {
-    accessorKey: "iconUrl",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Icon URL" />
-    ),
-  },
-  {
-    accessorKey: "imageUrl",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Image URL" />
-    ),
-  },
-  {
-    accessorKey: "thumbnailUrl",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Thumbnail URL" />
-    ),
-  },
-  {
-    accessorKey: "isActive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Active" />
-    ),
+    cell: ({ row }) => {
+      return (
+        <div className="truncate max-w-xs">{row.getValue("description")}</div>
+      );
+    },
   },
   {
     accessorKey: "isFeatured",
@@ -149,8 +118,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
   };
 
   const handleCategorysClick = () => {
-    //row.toggleSelected();
-    router.push(`${pathName}?q=${model.id}`);
+    router.push(`${pathName}/${model.id}/sub-categories`);
   };
 
   const [showDeleteTaskDialog, setShowDeleteTaskDialog] = useState(false);

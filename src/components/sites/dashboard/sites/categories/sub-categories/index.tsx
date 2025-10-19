@@ -6,9 +6,6 @@ import {
 } from "@/components/_common/filters";
 import { Button } from "@/components/ui/button";
 import { subCategoryService } from "@/services/sub-category-service";
-import { SubCategory } from "@/types/entities/category";
-import { SubCategoryUpdateCommand } from "@/types/commands/category-command";
-import { SubCategoryGetAllQuery } from "@/types/queries/category-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -16,6 +13,10 @@ import { GrSubtract } from "react-icons/gr";
 import { HiOutlinePlus } from "react-icons/hi";
 import { toast } from "sonner";
 import { columns } from "./columns";
+import { SubCategoryUpdateCommand } from "@/types/cqrs/commands/category-command";
+import { SubCategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
+import { SubCategory } from "@/types/entities/subcategory";
+import { Status } from "@/types/models/business-result";
 
 interface DataTableSubCategorysProps {
   categoryId?: string;
@@ -51,11 +52,11 @@ export default function DataTableSubCategorys({
     };
 
     subCategoryService.update(subCategory_).then(async (response) => {
-      if (response.status === 1) {
+      if (response.status === Status.OK) {
         queryClient.refetchQueries({ queryKey: ["category", categoryId] });
-        toast.success(response.message);
+        toast.success("Removed!");
       } else {
-        toast.error(response.message);
+        toast.error(response.error?.detail);
       }
     });
   };
@@ -67,12 +68,12 @@ export default function DataTableSubCategorys({
     };
 
     subCategoryService.update(subCategory_).then((response) => {
-      if (response.status === 1) {
+      if (response.status === Status.OK) {
         queryClient.refetchQueries({ queryKey: ["category", categoryId] });
         queryClient.refetchQueries({ queryKey: ["data", getQueryParams] });
-        toast.success(response.message);
+        toast.success("Removed!");
       } else {
-        toast.error(response.message);
+        toast.error(response.error?.detail);
       }
     });
   };
