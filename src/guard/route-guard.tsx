@@ -4,6 +4,9 @@ import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { userContextHelper } from "@/lib/helpers/user-context-helper";
 import { Role } from "@/types/entities/user";
+import { tokenHelper } from "@/lib/helpers/token-helper";
+import { userService } from "@/services/user-serice";
+import { Status } from "@/types/models/business-result";
 
 type RouterGuardProps = {
   children: ReactNode;
@@ -33,40 +36,62 @@ export function RouterGuard({
     });
   };
   useEffect(() => {
-    if (!pathname) return;
+    let mounted = true;
+    const check = async () => {
+      if (!pathname) return;
 
-    const isMatch = matchPath(pathname, matcher);
+      const isMatch = matchPath(pathname, matcher);
 
-    const user = userContextHelper.get();
-    const isLoggedIn = !!user;
+      let user = userContextHelper.get();
 
-    // xử lí trường hợp match từ pathname và chưa đăng nhập
-    if (isMatch && !isLoggedIn) {
-      setAuthorized(false);
-      router.push(redirect);
-      return;
-    }
-
-    // xử lí trường hợp ko match từ pathname và đã đăng nhập
-    if (!isMatch && isLoggedIn) {
-      setAuthorized(true);
-
-      // xử lí ngược lại, ví dụ người dùng đã đăng nhập nhưng truy cập vào trang login
-      if (pathname === redirect) {
-        setAuthorized(false);
-        if (user?.role == Role.Customer) {
-          router.push("/");
-          return;
+      if (!user && tokenHelper.get()) {
+        const resUser = await userService.getUserByContext();
+        if (resUser.status == Status.OK && resUser.data) {
+          userContextHelper.save(resUser.data);
+          user = userContextHelper.get();
         }
+      }
 
-        router.push("/dashboard");
+      const isLoggedIn = !!user;
+
+      // xử lí trường hợp match từ pathname và chưa đăng nhập
+      if (isMatch && !isLoggedIn) {
+        if (!mounted) return;
+        setAuthorized(false);
+        router.push(redirect);
         return;
       }
-      return;
-    }
 
-    // xử lí ko rơi vào 2 trường hợp trên
-    setAuthorized(true);
+      // xử lí trường hợp ko match từ pathname và đã đăng nhập
+      if (!isMatch && isLoggedIn) {
+        if (!mounted) return;
+        setAuthorized(true);
+
+        // xử lí ngược lại, ví dụ người dùng đã đăng nhập nhưng truy cập vào trang login
+        if (pathname === redirect) {
+          if (!mounted) return;
+          setAuthorized(false);
+          if (user?.role == Role.Customer) {
+            router.push("/");
+            return;
+          }
+
+          router.push("/dashboard");
+          return;
+        }
+        return;
+      }
+
+      // xử lí ko rơi vào 2 trường hợp trên
+      if (!mounted) return;
+      setAuthorized(true);
+    };
+
+    check();
+
+    return () => {
+      mounted = false;
+    };
   }, [pathname, matcher, redirect, router]);
 
   return <>{authorized && children}</>;

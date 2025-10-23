@@ -1,23 +1,36 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import React from "react";
 import { LuCalendarDays, LuClock } from "react-icons/lu";
 
 interface PostHeaderProps {
   title: string;
-  cover: string;
+  cover?: string | undefined;
   author: string;
   createdAt: string;
   readingTime: number;
-  avatar: string;
+  avatar?: string | undefined;
 }
 
-const PostHeader = ({ title, author, cover, createdAt, readingTime, avatar }: PostHeaderProps) => {
+const PostHeader = ({
+  title,
+  author,
+  cover = "/image-notfound.png",
+  createdAt,
+  readingTime,
+  avatar = "/image-notfound.png",
+}: PostHeaderProps) => {
   return (
     <div className="lg:max-w-[45rem] mx-auto">
-      <h1 className="text-3xl leading-snug md:text-4xl md:leading-normal font-bold">{title}</h1>
+      <h1 className="text-3xl leading-snug md:text-4xl md:leading-normal font-bold">
+        {title}
+      </h1>
 
       <div className="flex items-center mt-6 gap-4">
-        <Image src={avatar} width={50} height={50} alt="" className="rounded-full" />
+        <Avatar>
+          <AvatarImage src={avatar} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
         <div className="">
           <div className="font-semibold mb-3">
             By <u>{author}</u>

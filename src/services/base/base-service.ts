@@ -2,19 +2,11 @@ import axiosInstance from "@/lib/interceptors/axios-instance";
 import { cleanQueryParams } from "@/lib/utils";
 import {
   CreateCommand,
-  CreateOrUpdateCommand,
   DeleteCommand,
-  UpdateCommand,
+  UpdateCommand
 } from "@/types/cqrs/commands/base/base-command";
-import { BusinessResult } from "@/types/models/business-result";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { storage } from "../../../firebase";
 import { GetQueryableQuery } from "@/types/cqrs/queries/base/base-query";
+import { BusinessResult } from "@/types/models/business-result";
 import { QueryResult } from "@/types/models/query-result";
 
 export class BaseService<TEntity> {

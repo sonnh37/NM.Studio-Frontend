@@ -69,7 +69,7 @@ export const LoginForm = () => {
           }
         }
 
-        toast.warning(res.message);
+        toast.warning(res.error?.detail);
         return;
       });
     } catch (error: any) {

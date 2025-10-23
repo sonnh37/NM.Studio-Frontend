@@ -22,6 +22,10 @@ import { Role, User } from "@/types/entities/user";
 import { Suspense } from "react";
 import { userService } from "@/services/user-serice";
 import { authService } from "@/services/auth-service";
+import { UserContext } from "@/types/models/user-context";
+import { Status } from "@/types/models/business-result";
+import { useRouter } from "next/navigation";
+import { userContextHelper } from "@/lib/helpers/user-context-helper";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
@@ -30,6 +34,7 @@ interface AuthDropdownProps
 }
 
 export function AuthDropdown({ user = null }: AuthDropdownProps) {
+  const router = useRouter();
   if (user == null) {
     return (
       <Link href="/login" className="uppercase text-xs">
@@ -38,14 +43,15 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
     );
   }
 
-  const initials = `${user.firstName?.charAt(0) ?? ""} ${
-    user.lastName?.charAt(0) ?? ""
+  const initials = `${user.firstName?.toUpperCase().charAt(0) ?? ""} ${
+    user.lastName?.toUpperCase().charAt(0) ?? ""
   }`;
 
   const handleLogout = () => {
     authService.logout().then((res) => {
       if (res.status == Status.OK) {
-        window.location.href = "/";
+        userContextHelper.clear();
+        router.push("/");
       }
     });
   };
@@ -55,7 +61,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" className={cn("size-8 rounded-full")}>
           <Avatar className="size-8">
-            <AvatarImage src={user.avatar ?? ""} alt={user.username ?? ""} />
+            <AvatarImage src={user.avatarUrl ?? ""} alt={user.username ?? ""} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         </Button>

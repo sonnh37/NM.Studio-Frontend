@@ -14,6 +14,7 @@ export class Const {
     static readonly ALBUMS = "albums";
     static readonly ALBUM_IMAGES = "albumimages";
     static readonly MEDIA_BASES = "mediabases";
+    static readonly HOME_SLIDES = "homeslides";
     static readonly PRODUCTS = "products";
     static readonly PRODUCT_MEDIAS = "productmedias";
     static readonly PRODUCT_SIZES = "productsizes";

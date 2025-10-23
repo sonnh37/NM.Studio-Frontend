@@ -2,7 +2,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import {serviceService} from "@/services/service-service";
-import {ServiceGetAllQuery} from "@/types/queries/service-query";
+import {ServiceGetAllQuery} from "@/types/cqrs/queries/service-query";
 import {useQuery} from "@tanstack/react-query";
 import {useRouter} from "next/navigation";
 import {ServiceCard} from "./service-card";
@@ -15,7 +15,8 @@ export function ServiceList() {
             isPagingEnabled: true,
             pageSize: 6,
             pageNumber: 1,
-        }
+        },
+        includeProperties: ["backgroundCover"],
     };
     const {
         data: services = [],

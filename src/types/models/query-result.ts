@@ -1,8 +1,3 @@
-export enum SortDirection {
-  Ascending,
-  Descending,
-}
-
 export interface QueryResult<T> {
   results: T[];
   pageCount: number;

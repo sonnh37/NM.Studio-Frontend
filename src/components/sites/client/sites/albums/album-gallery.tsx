@@ -1,12 +1,12 @@
-"use client"
-import { AnimatedTestimonialsPhotos } from "@/components/sites/client/common/animated-testimonials-photos";
+"use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
-import {LoadingPageComponent} from "@/components/_common/loading-page";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { AnimatedTestimonialsPhotos } from "@/components/sites/client/common/animated-testimonials-photos";
 
 import { convertToISODate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
-import { MediaBase } from "@/types/entities/media-file";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
+import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
+import { MediaBase } from "@/types/entities/media-base";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import AlbumImageGallery from "./album-image-gallery";
@@ -49,7 +49,7 @@ export function AlbumGallery() {
 
   const photos = album?.albumImages
     ? album.albumImages
-        .map((x) => x.mediaBase)
+        .map((x) => x.image)
         .filter((mediaBase): mediaBase is MediaBase => mediaBase !== undefined)
     : [];
 

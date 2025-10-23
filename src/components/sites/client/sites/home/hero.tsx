@@ -2,9 +2,13 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { CarouselApi } from "@/components/ui/carousel";
-import { mediaBaseService } from "@/services/image-service";
-import { MediaBase } from "@/types/entities/media-file";
-import { MediaBaseGetAllQuery } from "@/types/queries/media-file-query";
+import { homeSlideService } from "@/services/home-slide-service";
+import { mediaBaseService } from "@/services/media-base-service";
+import { SortDirection } from "@/types/cqrs/queries/base/base-query";
+import { HomeSlideGetAllQuery } from "@/types/cqrs/queries/home-slide-query";
+import { MediaBaseGetAllQuery } from "@/types/cqrs/queries/media-file-query";
+import { HomeSlide } from "@/types/entities/home-slide";
+import { MediaBase } from "@/types/entities/media-base";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -20,44 +24,41 @@ import {
   Zoom,
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-const query: MediaBaseGetAllQuery = {
-  pagination: {
-    isPagingEnabled: true,
-  },
-  isFeatured: true,
-  isDeleted: false
-};
+
 export function Hero() {
-  const [api, setApi] = React.useState<CarouselApi>();
+  // const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-
-  React.useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
-
-  const {
-    data: photos = [] as MediaBase[],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["fetchPhotosHero", query],
-    queryFn: async () => {
-      const response = await mediaBaseService.getAll(query);
-      const photos = response.data?.results ?? [];
-
-      return photos;
+  const query: HomeSlideGetAllQuery = {
+    pagination: {
+      isPagingEnabled: true,
+      pageSize: 10,
+      pageNumber: 1,
     },
+    sorting: {
+      sortField: "displayOrder",
+      sortDirection: SortDirection.Ascending,
+    },
+    isDeleted: false,
+    includeProperties: ["slide"],
+  };
+
+  // React.useEffect(() => {
+  //   if (!api) {
+  //     return;
+  //   }
+
+  //   setCount(api.scrollSnapList().length);
+  //   setCurrent(api.selectedScrollSnap() + 1);
+
+  //   api.on("select", () => {
+  //     setCurrent(api.selectedScrollSnap() + 1);
+  //   });
+  // }, [api]);
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["fetchPhotosHero", query],
+    queryFn: () => homeSlideService.getAll(query),
     refetchOnWindowFocus: false,
   });
 
@@ -67,6 +68,11 @@ export function Hero() {
     console.log("Error fetching hero:", error);
     return <ErrorSystem />;
   }
+
+  const photos =
+    data?.data?.results
+      .map((n) => n.slide)
+      .filter((n): n is MediaBase => n !== undefined) ?? [];
 
   return (
     <div className="">
@@ -105,7 +111,7 @@ export function Hero() {
                 width={9999}
                 height={9999}
                 alt={pic.title ?? ""}
-                src={pic.src ?? "/image-notfound.png"}
+                src={pic.mediaUrl ?? "/image-notfound.png"}
               />
             </div>
           </SwiperSlide>

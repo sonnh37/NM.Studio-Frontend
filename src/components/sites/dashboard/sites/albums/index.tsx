@@ -36,7 +36,10 @@ import { cn, formatDate, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { mediaBaseService } from "@/services/media-base-service";
 import { mediaUploadService } from "@/services/media-upload-service";
-import { AlbumWithImagesCreateCommand } from "@/types/cqrs/commands/album-command";
+import {
+  AlbumSetCoverUpdateCommand,
+  AlbumWithImagesCreateCommand,
+} from "@/types/cqrs/commands/album-command";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { Album } from "@/types/entities/album";
 import { BaseEntity } from "@/types/entities/base/base";
@@ -58,6 +61,7 @@ import { format } from "date-fns";
 import { CalendarIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { check } from "prettier";
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -332,7 +336,7 @@ export default function AlbumTable() {
                 >
                   <Button
                     size={"sm"}
-                    className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+                    
                   >
                     Add
                   </Button>
@@ -386,16 +390,28 @@ export function AlbumDialog({
   const [pickedImages, setPickedImages] = useState<MediaBaseState[]>([]);
   const [defaultImages, setDefaultImages] = useState<MediaBaseState[]>([]);
   const [hasChange, setHasChange] = useState(false);
+  const [coverImage, setCoverImage] = useState<MediaBaseState | null>(null);
 
   useEffect(() => {
     const fetchImages = async () => {
       if (album?.albumImages) {
-        const images = album.albumImages
-          .map((a) => a.image)
-          .filter((img): img is MediaBaseState => !!img) ?? [];
+        const images =
+          album.albumImages
+            .map((a) => a.image)
+            .filter((img): img is MediaBaseState => !!img) ?? [];
 
         setPickedImages(images);
         setDefaultImages(images);
+
+        // Tìm ảnh bìa hiện tại
+        if (album.coverUrl) {
+          const currentCover = images.find(
+            (img) => img.mediaUrl === album.coverUrl
+          );
+          if (currentCover) {
+            setCoverImage(currentCover);
+          }
+        }
 
         const mediaBaseRes = await mediaBaseService.getAll();
         if (mediaBaseRes.status == Status.OK && mediaBaseRes.data) {
@@ -425,8 +441,22 @@ export function AlbumDialog({
     if (defaultIds.size !== pickedIds.size) return true;
     for (const id of Array.from(pickedIds))
       if (!defaultIds.has(id)) return true;
-    return false;
+
+    // Kiểm tra xem ảnh bìa có thay đổi không
+    const currentCoverUrl = coverImage?.mediaUrl;
+    const originalCoverUrl = album?.coverUrl;
+    return currentCoverUrl !== originalCoverUrl;
   };
+
+ const checkIfChangedDefaultImg = (newPicked: MediaBaseState[]) => {
+  const defaultIds = new Set(defaultImages.map((img) => img.id));
+  const pickedIds = new Set(newPicked.map((img) => img.id));
+
+  if (defaultIds.size !== pickedIds.size) return true;
+  for (const id of Array.from(pickedIds))
+    if (!defaultIds.has(id)) return true;
+  return false;
+};
 
   // upload ảnh mới
   const handleAddImage = (section: "available" | "picked") => {
@@ -480,73 +510,128 @@ export function AlbumDialog({
     }
   };
 
-  // lưu thay đổi (upload ảnh mới)
+  // Chọn ảnh bìa
+  const handleSetCoverImage = (img: MediaBaseState) => {
+    setCoverImage(img);
+    setHasChange(true);
+  };
+
+  // Xóa ảnh bìa
+  const handleRemoveCoverImage = () => {
+    setCoverImage(null);
+    setHasChange(true);
+  };
+
+  // lưu thay đổi (upload ảnh mới và cập nhật ảnh bìa)
   const handleSave = async () => {
     try {
       setHasChange(false);
 
-      // 1. Phân loại ảnh
-      const newFiles = pickedImages.filter((img) => img.file);
-      const existingImages = pickedImages.filter((img) => !img.file);
+      // Kiểm tra riêng biệt từng loại thay đổi
+      const hasCoverChanged = coverImage?.mediaUrl !== album?.coverUrl;
+      const hasImagesChanged = checkIfChangedDefaultImg(pickedImages);
 
-      if (newFiles.length === 0 && existingImages.length === 0) {
-        throw new Error("No images selected.");
+      // Nếu không có thay đổi gì thì không làm gì cả
+      if (!hasCoverChanged && !hasImagesChanged) {
+        toast.info("No changes to save.");
+        return;
       }
 
-      const uploadedImages: MediaBaseState[] = [];
+      let successMessage = "Album saved successfully!";
 
-      // 2. Upload ảnh mới trước
-      if (newFiles.length > 0) {
-        for (const img of newFiles) {
-          try {
-            const result = await mediaUploadService.uploadFile(
-              img.file!,
-              "Blog"
-            );
-            if (result?.status === Status.OK && result.data) {
-              uploadedImages.push(result.data);
-            }
-          } catch (error) {
-            console.error(`Error uploading file ${img.displayName}:`, error);
-          }
-        }
-      }
-
-      // 3. Chuẩn bị danh sách ID để gửi lên API
-      // Bao gồm cả ID của ảnh đã tồn tại và ID của ảnh mới upload
-      const allImageIds = [
-        ...existingImages.map((img) => img.id!).filter((id) => id),
-        ...uploadedImages.map((img) => img.id!).filter((id) => id),
-      ];
-
-      // 4. Gọi API để liên kết ảnh với album
-      if (allImageIds.length > 0) {
-        const albumWithImagesCreateCommand: AlbumWithImagesCreateCommand = {
-          albumId: album?.id,
-          imageIds: allImageIds,
+      // 1. Xử lý thay đổi ảnh bìa (nếu có)
+      if (hasCoverChanged) {
+        const updateAlbumCommand: AlbumSetCoverUpdateCommand = {
+          albumId: album?.id!,
+          imageId: coverImage?.id!,
         };
 
-        const result = await albumService.createWithImages(
-          albumWithImagesCreateCommand
-        );
+        const updateResult =
+          await albumService.setCoverAlbum(updateAlbumCommand);
+        if (updateResult?.status !== Status.OK) {
+          if (updateResult.error?.status === 400) {
+            toast.warning(updateResult.error?.detail);
+            return;
+          }
+          toast.error(updateResult.error?.detail);
+          return;
+        }
+        successMessage = "Cover image updated successfully!";
+      }
 
-        if (result?.status !== Status.OK) {
-          throw new Error(result.error?.detail);
+      // 2. Xử lý thay đổi danh sách ảnh (nếu có)
+      if (hasImagesChanged) {
+        // 1. Phân loại ảnh
+        const newFiles = pickedImages.filter((img) => img.file);
+        const existingImages = pickedImages.filter((img) => !img.file);
+
+        if (newFiles.length === 0 && existingImages.length === 0) {
+          throw new Error("No images selected.");
+        }
+
+        const uploadedImages: MediaBaseState[] = [];
+
+        // 2. Upload ảnh mới trước
+        if (newFiles.length > 0) {
+          for (const img of newFiles) {
+            try {
+              const result = await mediaUploadService.uploadFile(
+                img.file!,
+                "Blog"
+              );
+              if (result?.status === Status.OK && result.data) {
+                uploadedImages.push(result.data);
+              }
+            } catch (error) {
+              console.error(`Error uploading file ${img.displayName}:`, error);
+            }
+          }
+        }
+
+        // 3. Chuẩn bị danh sách ID để gửi lên API
+        const allImageIds = [
+          ...existingImages.map((img) => img.id!).filter((id) => id),
+          ...uploadedImages.map((img) => img.id!).filter((id) => id),
+        ];
+
+        // 4. Gọi API để liên kết ảnh với album
+        if (allImageIds.length > 0) {
+          const albumWithImagesCreateCommand: AlbumWithImagesCreateCommand = {
+            albumId: album?.id,
+            imageIds: allImageIds,
+          };
+
+          const result = await albumService.createWithImages(
+            albumWithImagesCreateCommand
+          );
+
+          if (result?.status !== Status.OK) {
+            toast.error(result.error?.detail);
+            return;
+          }
+        }
+
+        // 5. Merge kết quả
+        const finalPicked = [
+          ...existingImages.filter((img) => !img.mediaUrl?.startsWith("blob:")),
+          ...uploadedImages,
+        ];
+
+        // Cập nhật state
+        setPickedImages(finalPicked);
+
+        // Cập nhật success message nếu có cả 2 thay đổi
+        if (hasCoverChanged) {
+          successMessage = "Album images and cover updated successfully!";
+        } else {
+          successMessage = "Album images updated successfully!";
         }
       }
 
-      // 5. Merge kết quả
-      const finalPicked = [
-        ...existingImages.filter((img) => !img.mediaUrl?.startsWith("blob:")),
-        ...uploadedImages,
-      ];
-
-      // 6. Cập nhật state và đóng dialog
-      setPickedImages(finalPicked);
       setHasChange(false);
 
       // Thông báo thành công
-      toast.success("Album saved successfully!");
+      toast.success(successMessage);
       // handleDialogChange(false);
     } catch (error) {
       console.error("Error saving album images:", error);
@@ -554,8 +639,7 @@ export function AlbumDialog({
       toast.error(error as any);
     }
   };
-
-  // render grid
+  // render grid với tính năng chọn ảnh bìa
   const renderImageGrid = (
     images: MediaBaseState[],
     section: "available" | "picked"
@@ -564,17 +648,40 @@ export function AlbumDialog({
       {images.map((img) => (
         <div
           key={img.id}
-          onClick={() => handleToggleImage(img, section)}
-          className="relative aspect-square overflow-hidden rounded-md cursor-pointer group w-full max-w-[100px] max-h-[100px] mx-auto"
+          className="relative group w-full max-w-[100px] max-h-[100px] mx-auto"
         >
-          <img
-            src={img.mediaUrl ?? "/image-notfound.png"}
-            alt={img.displayName ?? "photo"}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-1 py-[2px] text-[10px] text-white text-center">
-            {formatDate(img.createdDate)}
+          <div
+            onClick={() => handleToggleImage(img, section)}
+            className="relative aspect-square overflow-hidden rounded-md cursor-pointer"
+          >
+            <img
+              src={img.mediaUrl ?? "/image-notfound.png"}
+              alt={img.displayName ?? "photo"}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-1 py-[2px] text-[10px] text-white text-center">
+              {formatDate(img.createdDate)}
+            </div>
+
+            {/* Badge cho ảnh bìa hiện tại */}
+            {coverImage?.id === img.id && (
+              <div className="absolute top-1 left-1 bg-green-500 text-white text-xs px-1 py-0.5 rounded">
+                Cover
+              </div>
+            )}
           </div>
+
+          {/* Nút chọn làm ảnh bìa - chỉ hiện trong picked images */}
+          {section === "picked" && (
+            <Button
+              size="sm"
+              variant={coverImage?.id === img.id ? "default" : "outline"}
+              className="w-full mt-1 text-xs h-6"
+              onClick={() => handleSetCoverImage(img)}
+            >
+              {coverImage?.id === img.id ? "Cover" : "Set as Cover"}
+            </Button>
+          )}
         </div>
       ))}
     </div>
@@ -591,20 +698,39 @@ export function AlbumDialog({
               <DialogTitle>{album.title || "Album"}</DialogTitle>
             </DialogHeader>
 
-            {/* Available */}
+            {/* Hiển thị ảnh bìa hiện tại */}
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold">Available</h3>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => handleAddImage("available")}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
+                <h3 className="text-lg font-semibold">Cover Image</h3>
+                {coverImage && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleRemoveCoverImage}
+                  >
+                    Remove Cover
+                  </Button>
+                )}
               </div>
-              <Card className="p-3">
-                {renderImageGrid(availableImages, "available")}
+              <Card className="p-4">
+                {coverImage ? (
+                  <div className="flex flex-col items-center">
+                    <div className="relative w-32 h-32 rounded-md overflow-hidden">
+                      <img
+                        src={coverImage.mediaUrl}
+                        alt="Cover"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="mt-2 text-sm text-center text-gray-600">
+                      {coverImage.displayName}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No cover image selected
+                  </div>
+                )}
               </Card>
             </div>
 
@@ -625,13 +751,26 @@ export function AlbumDialog({
               </Card>
             </div>
 
+            {/* Available */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold">Available</h3>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => handleAddImage("available")}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <Card className="p-3">
+                {renderImageGrid(availableImages, "available")}
+              </Card>
+            </div>
+
             {/* Save */}
             <div className="flex justify-end mt-6">
-              <Button
-                onClick={handleSave}
-                disabled={!hasChange}
-                // className={!hasChange ? "opacity-50 cursor-not-allowed" : ""}
-              >
+              <Button onClick={handleSave} disabled={!hasChange}>
                 Save
               </Button>
             </div>

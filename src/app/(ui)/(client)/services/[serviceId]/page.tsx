@@ -6,7 +6,7 @@ import { ServiceCard } from "@/components/sites/client/sites/services/service-ca
 import { Separator } from "@/components/ui/separator";
 
 import { serviceService } from "@/services/service-service";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { Service } from "@/types/entities/service";
 import { useQuery } from "@tanstack/react-query";
 import { Navigation, Scrollbar } from "swiper/modules";
@@ -28,6 +28,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
       pageSize: 1,
       pageNumber: 1,
     },
+    includeProperties: ["backgroundCover", "thumbnail"],
     isDeleted: false,
     slug: serviceId,
   };
@@ -39,10 +40,9 @@ export default function Page({ params }: { params: { serviceId: string } }) {
     error,
   } = useQuery({
     queryKey: ["fetchService", serviceId],
-    queryFn: async () => {
-      const response = await serviceService.getAll(query);
-      return response.data?.results?.[0] as Service;
-    },
+    queryFn: () => serviceService.getAll(query),
+    select: (data) => data.data?.results?.[0],
+    refetchOnWindowFocus: false,
   });
 
   const getWordCount = (content: string) => {
@@ -101,12 +101,12 @@ export default function Page({ params }: { params: { serviceId: string } }) {
       <article className="py-10 px-6 flex flex-col items-center ">
         <PostReadingProgress />
         <PostHeader
-          avatar={"/image-notfound.png"}
+          avatar={service.thumbnail?.mediaUrl}
           title={service.name ?? "Đang cập nhật..."}
           author={service.createdBy ?? "N/A"}
           createdAt={service.createdDate?.toLocaleString() ?? "N/A"}
           readingTime={readingTime}
-          cover={service.src ?? "/image-notfound.png"}
+          cover={service.backgroundCover?.mediaUrl}
         />
         <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
           <PostSharing />

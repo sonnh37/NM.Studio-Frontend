@@ -8,7 +8,7 @@ import "yet-another-react-lightbox/styles.css";
 import "react-photo-album/masonry.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-import {MediaBase} from "@/types/entities/media-file";
+import {MediaBase} from "@/types/entities/media-base";
 import Image from "next/image";
 
 interface AlbumImageGalleryProps {
@@ -50,7 +50,7 @@ const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {
 
             // Loop through the photos and process each image asynchronously.
             for (const mediaBase of photos) {
-                const imageSrc = mediaBase.src ?? "/image-notfound.png";
+                const imageSrc = mediaBase.mediaUrl ?? "/image-notfound.png";
 
                 const img = new window.Image();
                 img.src = imageSrc;

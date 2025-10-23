@@ -11,9 +11,10 @@ import {Separator} from "@/components/ui/separator";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
+import { userContextHelper } from "@/lib/helpers/user-context-helper";
 
 export function SiteHeader() {
-    const user = useSelector((state: RootState) => state.user.user);
+    const user = userContextHelper.get();
 
     const albumQuery: AlbumGetAllQuery = {
         pagination: {
@@ -38,6 +39,7 @@ export function SiteHeader() {
             sortDirection: 1,
             sortField: "createdDate"
         },
+        includeProperties: ["thumbnail"],
         isDeleted: false
     }
 
@@ -49,6 +51,7 @@ export function SiteHeader() {
             sortDirection: 1,
             sortField: "createdDate"
         },
+        includeProperties: ["subCategories"],
         isDeleted: false
     }
 

@@ -25,6 +25,7 @@ import { TypographySmall } from "@/components/_common/typography/typography-smal
 import { Const } from "@/lib/constants/const";
 import Image from "next/image";
 import { AuthDropdown } from "./auth-dropdown";
+import { UserContext } from "@/types/models/user-context";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -43,7 +44,7 @@ export function MainNav({
 }: MainNavProps) {
   return (
     <>
-      <div className="hidden gap-6 text-lg lg:flex justify-between mx-auto w-full">
+      <div className="hidden gap-6 lg:flex justify-between mx-auto w-full">
         <Link href="/" className="hidden items-center space-x-2 lg:flex">
           <Icons.logo aria-hidden="true" />
           {/* <span className="hidden font-bold lg:inline-block">NHU MY</span> */}
@@ -122,7 +123,7 @@ export function MainNav({
                   {albums.map((album) => (
                     <Link key={album.id} href={`/albums/${album.slug}`}>
                       <Image
-                        src={album.background ?? "/image-notfound.png"}
+                        src={album.coverUrl ?? "/image-notfound.png"}
                         width={100}
                         height={100}
                         alt={album.title ?? "N/A"}
@@ -157,7 +158,7 @@ export function MainNav({
                         >
                           {category.name}
                         </MenuAnimationLink>
-                        {category.subCategories!.map((subCategory) => (
+                        {category.subCategories?.map((subCategory) => (
                           <div key={subCategory.id}>
                             <ListItem
                               title={subCategory.name ?? "N/A"}
@@ -253,7 +254,7 @@ const ListItemV2 = React.forwardRef<
           )}
           {...props}
         >
-          <p className="text-lg group relative w-max">
+          <p className=" group relative w-max">
             <span className="px-1 relative z-10 ">{title}</span>
             <span className="absolute left-0 bottom-0 w-full h-[0.25px] bg-neutral-300 transition-transform duration-300 scale-x-0 origin-left group-hover:scale-x-100 z-0 group-hover:bg-neutral-300 group-hover:h-full"></span>
           </p>

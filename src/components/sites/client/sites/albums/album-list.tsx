@@ -1,19 +1,16 @@
 "use client";
 
+import ErrorSystem from "@/components/_common/errors/error-system";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { Const } from "@/lib/constants/const";
 import { albumService } from "@/services/album-service";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
+import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import ErrorPage from "@/app/error/404/page";
-import ErrorSystem from "@/components/_common/errors/error-system";
-import {LoadingPageComponent} from "@/components/_common/loading-page";
+import { usePathname } from "next/navigation";
 
-import { isError } from "util";
 
 export function AlbumList() {
   const pathName = usePathname();
@@ -63,7 +60,7 @@ export function AlbumList() {
               >
                 <Image
                   alt="image"
-                  src={album.background ?? "/image-notfound.png"}
+                  src={album.coverUrl ?? "/image-notfound.png"}
                   width={9999}
                   height={9999}
                   className="w-full h-full object-cover"

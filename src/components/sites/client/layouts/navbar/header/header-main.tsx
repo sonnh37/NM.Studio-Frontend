@@ -7,6 +7,7 @@ import { Category } from "@/types/entities/category";
 import { Service } from "@/types/entities/service";
 import { Album } from "@/types/entities/album";
 import { User } from "@/types/entities/user";
+import { UserContext } from "@/types/models/user-context";
 
 // Dynamically import MainNav and MobileNav with React.memo
 const MainNav = dynamic(

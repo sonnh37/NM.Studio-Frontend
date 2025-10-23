@@ -308,7 +308,7 @@ export default function CategoryTable() {
             >
               <Button
                 size={"sm"}
-                className="ring-offset-background hover:ring-primary/90 transition-all duration-300 hover:ring-2 hover:ring-offset-2"
+                
               >
                 Add
               </Button>

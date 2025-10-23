@@ -43,7 +43,7 @@ class AlbumService extends BaseService<Album> {
   async setCoverAlbum(
     command: AlbumSetCoverUpdateCommand
   ): Promise<BusinessResult<void>> {
-    const res = await axiosInstance.post<BusinessResult<void>>(
+    const res = await axiosInstance.put<BusinessResult<void>>(
       `${this.endpoint}/images/set-cover`,
       command
     );

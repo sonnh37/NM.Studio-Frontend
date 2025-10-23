@@ -17,13 +17,10 @@ export default function Page() {
     error,
   } = useQuery({
     queryKey: ["fetchServiceById", params.serviceId],
-    queryFn: async () => {
-      const response = await serviceService.getById(
-        params.serviceId as string
-      );
-      return response.data;
-    },
+    queryFn: () => serviceService.getById(params.serviceId as string, ["backgroundCover", "thumbnail"]),
     enabled: !!params.serviceId,
+    select: (data) => data.data,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <LoadingPageComponent />;

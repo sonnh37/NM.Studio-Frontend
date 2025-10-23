@@ -38,6 +38,7 @@ import {
   ServiceUpdateCommand,
   ServiceCreateCommand,
 } from "@/types/cqrs/commands/service-command";
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 
 interface ServiceFormProps {
   initialData: Service | null;
@@ -178,7 +179,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
   };
 
   return (
-    <>
+    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
         open={showConfirmationDialog}
@@ -191,7 +192,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
           }
           router.push(previousPath);
         }}
-        title="Do you want to continue adding this service?"
+        title="Do you want to continue adding this blog?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"
@@ -206,84 +207,59 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
               loading={loading}
               action={action}
             />
+            <TypographyH1>{title}</TypographyH1>
           </div>
           <div className="grid gap-4">
-            <div className="grid gap-4 lg:grid-cols-3">
-              <div className="grid gap-4 lg:col-span-2">
-                {/* main */}
-                <Card className="overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormSwitch
-                          form={form}
-                          name="isFeatured"
-                          label="Is Main"
-                          description="If enabled, this blog will be about page."
-                        />
+            {/* main */}
+            <div className="grid gap-6">
+              <div className="grid gap-3">
+                <FormSwitch
+                  form={form}
+                  name="isFeatured"
+                  label="Is Main"
+                  description="If enabled, this blog will be about page."
+                />
 
-                        <FormInput
-                          form={form}
-                          name="name"
-                          label="Name"
-                          description="This is your public display name."
-                          placeholder="Enter name"
-                        />
+                <FormInput
+                  form={form}
+                  name="name"
+                  label="Name"
+                  description="This is your public display name."
+                  placeholder="Enter name"
+                />
 
-                        <FormInput
-                          form={form}
-                          name="slug"
-                          label="Slug"
-                          placeholder="Enter slug"
-                        />
+                <FormInput
+                  form={form}
+                  name="slug"
+                  label="Slug"
+                  placeholder="Enter slug"
+                />
 
-                        <FormInputNumber
-                          form={form}
-                          name="price"
-                          label="Price"
-                          placeholder="Enter price"
-                        />
+                <FormInputNumber
+                  form={form}
+                  name="price"
+                  label="Price"
+                  placeholder="Enter price"
+                />
 
-                        <ImageUpload
-                          label="Thumbnail"
-                          defaultValue={initialData?.thumbnail?.mediaUrl}
-                          onFileChange={setFile}
-                        />
+                <ImageUpload
+                  label="Thumbnail"
+                  defaultValue={initialData?.thumbnail?.mediaUrl}
+                  onFileChange={setFile}
+                />
 
-                        <ImageUpload
-                          label="Background Cover"
-                          defaultValue={initialData?.backgroundCover?.mediaUrl}
-                          onFileChange={setFile2}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ImageUpload
+                  label="Background Cover"
+                  defaultValue={initialData?.backgroundCover?.mediaUrl}
+                  onFileChange={setFile2}
+                />
+
+                <FormInputReactTipTapEditor form={form} name="description" />
               </div>
-
-              <div className="grid gap-4 h-fit">
-                <InformationBaseCard form={form} initialData={initialData} />
-              </div>
-            </div>
-            <div>
-              {/* sub */}
-              <Card className="overflow-x-hidden">
-                <CardHeader>
-                  <CardTitle>Editor</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="">
-                    <FormInputReactTipTapEditor
-                      form={form}
-                      name="description"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };
