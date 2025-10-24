@@ -104,7 +104,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
             "Service"
           );
           if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
-            command.thumbnailId = uploadResultBg.data.id;
+            command.backgroundCoverId = uploadResultBg.data.id;
           }
         }
 
@@ -157,7 +157,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
           "Service"
         );
         if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
-          command.thumbnailId = uploadResultBg.data.id;
+          command.backgroundCoverId = uploadResultBg.data.id;
         }
       }
       const response = await serviceService.create(pendingValues);

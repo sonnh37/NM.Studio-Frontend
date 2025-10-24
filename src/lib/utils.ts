@@ -85,8 +85,6 @@ export const formatCurrency = (value: number | undefined): string => {
   }).format(value);
 };
 
-
-
 export function getEnumOptions(enumObject: any) {
   return Object.keys(enumObject)
     .filter((key) => isNaN(Number(key))) // Lọc để chỉ lấy tên (không lấy số index)
@@ -257,3 +255,7 @@ export const cleanQueryParams = (query: any) => {
 };
 
 const capitalize = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);
+
+export const getWordCount = (content: string) => {
+  return content.trim().split(/\s+/).length;
+};

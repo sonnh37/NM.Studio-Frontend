@@ -2,7 +2,7 @@ import ChatButton from "@/components/sites/client/common/chat-button";
 import { Const } from "@/lib/constants/const";
 
 export const HeaderTop = () => (
-  <div className="bg-neutral-600 transition-colors duration-300 text-white font-thin text-sm tracking-wide dark:text-white">
+  <div className="bg-neutral-500 transition-colors duration-300 text-white font-thin text-sm tracking-wide dark:text-white">
     <div className="h-[40px] w-full flex justify-center">
       <div className="container w-full flex justify-between items-center flex-row mx-auto">
         <div className="hidden space-x-4 lg:flex">

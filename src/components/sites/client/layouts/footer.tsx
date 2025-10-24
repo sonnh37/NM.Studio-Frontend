@@ -124,7 +124,7 @@ function Footer() {
       </div>
 
       <p className="text-white text-center text-xs pt-8">
-        © 2024 NHUMY WEDDING . CÔNG TY CỔ PHẦN NHUMY WEDDING.
+        © 2024 NHUMY WEDDING . CÔNG TY TNHH NHUMY WEDDING.
       </p>
     </footer>
   );

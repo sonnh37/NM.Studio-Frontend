@@ -9,7 +9,7 @@ import { TitleProvider } from "@/components/_common/title-component";
 import { Button } from "@/components/ui/button";
 import { convertHtmlToPlainText, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
-import { BlogGetAllQuery } from "@/types/queries/blog-query";
+import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,9 +28,9 @@ export default function AlbumPage() {
       pageNumber: pageNumber,
       pageSize: 6,
     },
-
+    includeProperties: ["thumbnail", "backgroundCover", "author"],
     isDeleted: false,
-    isFeatured: false,
+    // isFeatured: false,
   };
 
   const {
@@ -54,7 +54,7 @@ export default function AlbumPage() {
   }
 
   const blogs = result?.data?.results ?? [];
-  const totalPages = result?.data?.totalPages ?? 1;
+  const totalPages = result?.data?.pageCount ?? 1;
 
   return (
     <TitleProvider title="Kinh nghiệm cưới" className="text-center">
@@ -72,7 +72,7 @@ export default function AlbumPage() {
                     <Image
                       alt={blog.title ?? ""}
                       className="h-full w-full object-cover"
-                      src={blog.thumbnail ?? "/image-notfound.png"}
+                      src={blog.thumbnail?.mediaUrl ?? "/image-notfound.png"}
                       height={9999}
                       width={9999}
                     />

@@ -1,26 +1,22 @@
 "use client";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { DisplayContent } from "@/components/sites/client/common/display-content";
-import { createEditorState, formatDate } from "@/lib/utils";
+import { getWordCount } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
+import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { Blog } from "@/types/entities/blog";
-import { BlogGetAllQuery } from "@/types/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 
 import ErrorSystem from "@/components/_common/errors/error-system";
-import PostReadingProgress from "@/components/_common/shared/PostReadingProgress";
-import PostHeader from "@/components/_common/shared/PostHeader";
-import PostSharing from "@/components/_common/shared/PostSharing";
 import PostContent from "@/components/_common/shared/PostContent";
+import PostHeader from "@/components/_common/shared/PostHeader";
+import PostReadingProgress from "@/components/_common/shared/PostReadingProgress";
+import PostSharing from "@/components/_common/shared/PostSharing";
 import PostToc from "@/components/_common/shared/PostToc";
-import Image from "next/image";
-import { useMemo } from "react";
 import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
-import { userService } from "@/services/user-serice";
+import { useMemo } from "react";
 
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
-
 
   const query: BlogGetAllQuery = {
     pagination: {
@@ -30,7 +26,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     },
     slug: slug,
     isDeleted: false,
-    isFeatured: false,
+    // isFeatured: false,
   };
 
   const {
@@ -40,17 +36,12 @@ export default function Page({ params }: { params: { slug: string } }) {
     error,
   } = useQuery({
     queryKey: ["fetchBlog"],
-    queryFn: async () => {
-      const response = await blogService.getAll(query);
-      return response.data?.results![0];
-    },
+    queryFn: async () => blogService.getAll(query),
+    select: (data) => data.data?.results?.[0],
   });
-  const getWordCount = (content: string) => {
-    return content.trim().split(/\s+/).length;
-  };
 
   const readingTime = useMemo(() => {
-    const wpm = 150; // từ mỗi phút
+    const wpm = 150;
     const wordCount = getWordCount(post.content ?? "");
     return Math.ceil(wordCount / wpm);
   }, [post.content]);
@@ -69,12 +60,12 @@ export default function Page({ params }: { params: { slug: string } }) {
       <article className="py-10 px-6 flex flex-col items-center ">
         <PostReadingProgress />
         <PostHeader
-        avatar={"/image-notfound.png"}
+          avatar={"/image-notfound.png"}
           title={post.title ?? "Đang cập nhật..."}
-          author={post.createdBy ?? "N/A"}
+          author={post.author?.fullName ?? "N/A"}
           createdAt={post.createdDate?.toLocaleString() ?? "N/A"}
           readingTime={readingTime}
-          cover={post.thumbnail ?? "/image-notfound.png"}
+          cover={post.thumbnail?.mediaUrl ?? "/image-notfound.png"}
         />
         <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
           <PostSharing />
@@ -85,13 +76,13 @@ export default function Page({ params }: { params: { slug: string } }) {
           </PostContent>
           <PostToc />
         </div>
-        <Image
+        {/* <Image
           src={"/doraemon.png"}
           width={350}
           height={350}
           alt=""
           className="mx-auto mt-20"
-        />
+        /> */}
       </article>
     </>
   );

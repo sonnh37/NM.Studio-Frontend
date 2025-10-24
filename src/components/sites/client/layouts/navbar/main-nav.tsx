@@ -52,11 +52,11 @@ export function MainNav({
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
+              <NavigationMenuTrigger className="text-neutral-600 bg-transparent uppercase">
                 Thông tin
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-x-2.5 p-[22px] sm:w-[600px] lg:grid-cols-[.75fr_1fr]">
+                <ul className="grid gap-x-2 p-[8px] sm:w-[600px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
@@ -97,7 +97,7 @@ export function MainNav({
                 Dịch vụ
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-x-2.5 p-[22px] sm:w-[400px] sm:grid-cols-1">
+                <ul className="grid p-[8px] sm:w-[400px] sm:grid-cols-1">
                   {services.map((service) => (
                     <div key={service.id}>
                       <ListItem
@@ -119,7 +119,7 @@ export function MainNav({
                 Albums
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-x-2.5 p-[22px] sm:w-[500px] sm:grid-cols-4">
+                <ul className="grid gap-x-2 p-[8px] sm:w-[500px] sm:grid-cols-4">
                   {albums.map((album) => (
                     <Link key={album.id} href={`/albums/${album.slug}`}>
                       <Image
@@ -147,7 +147,7 @@ export function MainNav({
                 Váy cưới
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid sm:w-[800px] gap-x-2.5 p-[22px] md:grid-cols-4 overflow-y-auto">
+                <ul className="grid sm:w-[800px] gap-x-2 p-[8px] md:grid-cols-4 overflow-y-auto">
                   {categories.map((category, index) => {
                     const path = `/products?categoryName=${category.name}`;
                     return (
@@ -193,7 +193,7 @@ export function MainNav({
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuIndicator />
+            <NavigationMenuIndicator /> 
           </NavigationMenuList>
         </NavigationMenu>
 
