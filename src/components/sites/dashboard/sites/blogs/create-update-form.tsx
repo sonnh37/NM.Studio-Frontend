@@ -99,7 +99,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
             "Blog"
           );
           if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
-            command.thumbnailId = uploadResultBg.data.id;
+            command.backgroundCoverId = uploadResultBg.data.id;
           }
         }
 
@@ -149,7 +149,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
           "Blog"
         );
         if (uploadResultBg?.status == Status.OK && uploadResultBg?.data) {
-          command.thumbnailId = uploadResultBg.data.id;
+          command.backgroundCoverId = uploadResultBg.data.id;
         }
       }
 

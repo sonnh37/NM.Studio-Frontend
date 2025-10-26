@@ -1,68 +1,94 @@
 "use client";
-import {DisplayContent} from "@/components/sites/client/common/display-content";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { getWordCount } from "@/lib/utils";
+import { blogService } from "@/services/blog-service";
+import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
+import { Blog } from "@/types/entities/blog";
+import { useQuery } from "@tanstack/react-query";
+
 import ErrorSystem from "@/components/_common/errors/error-system";
-
-import {formatDate} from "@/lib/utils";
-import {blogService} from "@/services/blog-service";
-import {Blog} from "@/types/entities/blog";
-import {BlogGetAllQuery} from "@/types/queries/blog-query";
-import {useQuery} from "@tanstack/react-query";
-
+import PostContent from "@/components/_common/shared/PostContent";
+import PostHeader from "@/components/_common/shared/PostHeader";
+import PostReadingProgress from "@/components/_common/shared/PostReadingProgress";
+import PostSharing from "@/components/_common/shared/PostSharing";
+import PostToc from "@/components/_common/shared/PostToc";
+import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
+import { useMemo } from "react";
 import Image from "next/image";
 
 export default function AboutPage() {
+  const query: BlogGetAllQuery = {
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: 1,
+      pageSize: 1,
+    },
+    includeProperties: ["thumbnail", "backgroundCover", "author.avatar"],
+    isDeleted: false,
+    isFeatured: true,
+  };
 
-    const query: BlogGetAllQuery = {
-        pagination: {
-            isPagingEnabled: true,
-            pageSize: 1,
-            pageNumber: 1,
-        },
+  const {
+    data: post = {} as Blog,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchBlog"],
+    queryFn: async () => blogService.getAll(query),
+    select: (data) => data.data?.results?.[0],
+  });
 
-        isDeleted: false,
-        isFeatured: true,
-    };
-    const {
-        data: blogs = [],
-        isLoading,
-        isError,
-        error,
-    } = useQuery({
-        queryKey: ["fetchBlog"],
-        queryFn: async ()=> {
-            const response = await blogService.getAll(query);
-            return response.data?.results;
-        },
-    });
+  const readingTime = useMemo(() => {
+    const wpm = 150;
+    const wordCount = getWordCount(post.content ?? "");
+    return Math.ceil(wordCount / wpm);
+  }, [post.content]);
 
-    if (isError) {
-        console.log("Error fetching:", error);
-        return <ErrorSystem/>;
-    }
+  if (isLoading) return <LoadingPageComponent />;
 
-    if (blogs?.length == 0) return "Chưa có bài viết";
+  if (isError) {
+    console.log("Error fetching:", error);
+    return <ErrorSystem />;
+  }
 
-    const blog = blogs[0];
-    return (
-        <>
-            <div className="container mx-auto space-y-8 py-16">
-                <div className="grid justify-center gap-2 ">
-                    <h1 className="text-4xl text-center">{blog.title}</h1>
-                    <div className="flex flex-row justify-center gap-4">
-                        <p className="text-gray-500 text-sm">
-                            {blog.createdBy ?? "Admin"}
-                        </p>
-                        <p className="text-gray-500 text-sm">|</p>
-                        <p className="text-gray-500 text-sm">
-                            {formatDate(blog.createdDate)}
-                        </p>
-                    </div>
-                </div>
+  if (!post) return null;
 
-                <div className="">
-                    <DisplayContent value={blog.content ?? ""}/>
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <article className="py-10 px-6 flex flex-col items-center ">
+        <PostReadingProgress />
+        <div className="lg:max-w-[45rem] mx-auto">
+          <h1 className="text-3xl leading-snug md:text-4xl md:leading-normal font-bold">
+            {post.title}
+          </h1>
+
+          <Image
+            src={post.backgroundCover?.mediaUrl ?? "/image-notfound.png"}
+            alt={post.title ?? "Image not found"}
+            width={1932}
+            height={1087}
+            className="my-10 rounded-lg"
+            priority
+          />
+        </div>
+        <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
+          <PostSharing />
+          <PostContent>
+            <TiptapRenderer>
+              {post.content ?? "Đang cập nhật..."}
+            </TiptapRenderer>
+          </PostContent>
+          <PostToc />
+        </div>
+        {/* <Image
+          src={"/doraemon.png"}
+          width={350}
+          height={350}
+          alt=""
+          className="mx-auto mt-20"
+        /> */}
+      </article>
+    </>
+  );
 }

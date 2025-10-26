@@ -98,16 +98,12 @@ export default function Page({ params }: { params: { serviceId: string } }) {
 
   return (
     <>
-      <article className="py-10 px-6 flex flex-col items-center ">
+      <article
+        
+        className="py-10 px-6 flex flex-col items-center "
+      >
         <PostReadingProgress />
-        {/* <PostHeader
-          avatar={service.thumbnail?.mediaUrl}
-          title={service.name ?? "Đang cập nhật..."}
-          author={service.createdBy ?? "N/A"}
-          createdAt={service.createdDate?.toLocaleString() ?? "N/A"}
-          readingTime={readingTime}
-          cover={service.backgroundCover?.mediaUrl}
-        /> */}
+
         <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
           <PostSharing />
           <PostContent>
@@ -117,16 +113,9 @@ export default function Page({ params }: { params: { serviceId: string } }) {
           </PostContent>
           <PostToc />
         </div>
-        <Image
-          src={"/doraemon.png"}
-          width={350}
-          height={350}
-          alt=""
-          className="mx-auto mt-20"
-        />
       </article>
       <div className="container mx-auto">
-        <Separator/>
+        <Separator />
       </div>
 
       <div className="py-6 container mx-auto gap-4 space-y-4">
