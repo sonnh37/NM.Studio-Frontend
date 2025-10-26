@@ -29,7 +29,7 @@ import { sl } from "date-fns/locale";
 import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 
 interface CategoryFormProps {
-  initialData: Category | null;
+  initialData?: Category | null;
 }
 
 const formSchema = z.object({

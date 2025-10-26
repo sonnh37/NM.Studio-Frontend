@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Const } from "@/lib/constants/const";
 import { convertHtmlToPlainText } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
-import { BlogGetAllQuery } from "@/types/queries/blog-query";
+import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export function Blog() {
       sortDirection: 1,
       sortField: "createdDate",
     },
-    isFeatured: false,
+    includeProperties: ["thumbnail"],
     isDeleted: false,
   };
   const {
@@ -91,9 +91,7 @@ export function Blog() {
                       <Image
                         className="aspect-square w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
                         alt={""}
-                        src={
-                          ser.thumbnail ? ser.thumbnail : "/image-notfound.png"
-                        }
+                        src={ser.thumbnail?.mediaUrl ?? "/image-notfound.png"}
                         width={9999}
                         height={9999}
                       />

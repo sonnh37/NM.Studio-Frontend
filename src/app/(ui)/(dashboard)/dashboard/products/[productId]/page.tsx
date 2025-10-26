@@ -18,7 +18,7 @@ export default function Page() {
       queryKey: ["fetchProductById", params.productId],
       queryFn: async () => {
         const response = await productService.getById(
-          params.productId as string
+          params.productId as string, ["category", "subCategory", "thumbnail"]
         );
         return response.data;
       },

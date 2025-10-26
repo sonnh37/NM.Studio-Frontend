@@ -30,7 +30,7 @@ import {
 import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 
 interface SubCategoryFormProps {
-  initialData: SubCategory | null;
+  initialData?: SubCategory | null;
 }
 
 const formSchema = z.object({

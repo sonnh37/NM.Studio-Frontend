@@ -1,64 +1,46 @@
 "use client";
 import { useForm } from "react-hook-form";
 
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { mediaBaseService } from "@/services/image-service";
+import { Form } from "@/components/ui/form";
+import { mediaBaseService } from "@/services/media-base-service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { FileUpload } from "@/components/_common/custom/file-upload";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
-  FormInputTextArea,
+  FormInputReactTipTapEditor,
+  FormSelectEnum,
   FormSwitch,
+  ImageUpload,
 } from "@/lib/form-custom-shadcn";
-import {
-  MediaBaseCreateCommand,
-  MediaBaseUpdateCommand,
-} from "@/types/commands/media-file-command";
-import { MediaBase } from "@/types/entities/media-file";
-import { BusinessResult } from "@/types/models/business-result";
+import { MediaBase } from "@/types/entities/media-base";
+
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
+import { getEnumOptions } from "@/lib/utils";
+
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
-import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
+import { mediaUploadService } from "@/services/media-upload-service";
 
-interface PhotoFormProps {
-  initialData: MediaBase | null;
+interface MediaBaseFormProps {
+  initialData?: MediaBase | null;
 }
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required").nullable(),
-  description: z.string().nullable().optional(),
-  src: z.string().nullable().optional(),
-  href: z.string().nullable().optional(),
-  tag: z.string().nullable().optional(),
-  createdDate: z
-    .date()
-    .optional()
-    .default(() => new Date()),
-  createdBy: z.string().nullable().optional().default(null),
-  isDeleted: z.boolean().default(false),
-  isFeatured: z.boolean().default(false),
 });
-export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
+
+export const MediaBaseForm: React.FC<MediaBaseFormProps> = ({
+  initialData,
+}) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Edit mediaBase" : "Create mediaBase";
-  const action = initialData ? "Save and continue" : "Create";
-  const [firebaseLink, setFirebaseLink] = useState<string | null>(null);
+  const title = initialData ? "Update mediaBase" : "New mediaBase";
+  const action = "Submit";
   const router = useRouter();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [pendingValues, setPendingValues] = useState<z.infer<
@@ -67,6 +49,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const previousPath = usePreviousPath();
   const [file, setFile] = useState<File | null>(null);
+  const [file2, setFile2] = useState<File | null>(null);
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,30 +57,27 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     defaultValues: initialData
       ? {
           ...initialData,
-          createdDate: initialData.createdDate
-            ? new Date(initialData.createdDate)
-            : new Date(),
         }
       : {},
   });
 
-  const handleFileUpload = (file: File | null) => {
-    setFile(file);
-  };
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
       if (initialData) {
-        const updatedValues: MediaBaseUpdateCommand = {
-          ...values,
-          file: file,
-        };
-        const response = await mediaBaseService.update(updatedValues);
-        if (response.status != 1) throw new Error(response.message);
-        queryClient.refetchQueries({
-          queryKey: ["fetchPhotoById", initialData.id],
-        });
-        toast.success(response.message);
+        if (file) {
+          const uploadResultThumb = await mediaUploadService.updateFile(
+            file,
+            "MediaBase",
+            initialData.id
+          );
+          if (uploadResultThumb.status != Status.OK) {
+            toast.error(uploadResultThumb.error?.detail);
+            return;
+          }
+        }
+
+        toast.success("MediaBase updated successfully.");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -111,26 +91,35 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
     }
   };
 
-  const handleCreateConfirmation = async (): Promise<BusinessResult<MediaBase>> => {
+  const handleCreateConfirmation = async (): Promise<
+    BusinessResult<MediaBase>
+  > => {
     if (!pendingValues) {
       toast.error("No pending values to create mediaBase.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
     try {
-      const createdValues: MediaBaseCreateCommand = {
-        ...pendingValues,
-        file: file,
-      };
-      const response = await mediaBaseService.create(createdValues);
-      if (response.status !== 1) throw new Error(response.message);
+      if (file) {
+        const uploadResultBg = await mediaUploadService.uploadFile(
+          file2,
+          "MediaBase"
+        );
 
-      toast.success(response.message);
-      setShowConfirmationDialog(false);
-      setPendingValues(null);
-      setIsLoading(false);
+        if (uploadResultBg.status != Status.OK) {
+          toast.error(uploadResultBg.error?.detail);
+          return uploadResultBg;
+        }
 
-      return response;
+        toast.success("MediaBase created successfully.");
+        setShowConfirmationDialog(false);
+        setPendingValues(null);
+        setIsLoading(false);
+
+        return uploadResultBg;
+      }
+
+      return Promise.reject(new Error("No file to upload"));
     } catch (error: any) {
       console.error("Error creating mediaBase:", error);
       toast.error(error.message || "Failed to create mediaBase.");
@@ -142,7 +131,7 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
   };
 
   return (
-    <>
+    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
       <ConfirmationDialog
         isLoading={isLoading}
         open={showConfirmationDialog}
@@ -170,97 +159,22 @@ export const PhotoForm: React.FC<PhotoFormProps> = ({ initialData }) => {
               loading={loading}
               action={action}
             />
+            <TypographyH1>{title}</TypographyH1>
           </div>
           <div className="grid gap-4">
-            <div className="grid gap-4 lg:grid-cols-3">
-              <div className="grid gap-4 lg:col-span-2">
-                {/* main */}
-                <Card className="overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <FormSwitch
-                          form={form}
-                          name="isFeatured"
-                          label="Featured"
-                          description="This is your public display."
-                        />
-                        <FormInput
-                          form={form}
-                          name="title"
-                          label="Title"
-                          description="This is your public display title."
-                          placeholder="Enter title"
-                        />
-
-                        <FormInputTextArea
-                          form={form}
-                          name="description"
-                          label="Description"
-                          description="This is your public display description."
-                          placeholder="Enter description"
-                        />
-
-                        <FormInput
-                          form={form}
-                          name="href"
-                          label="Link to (if has)"
-                          description="This is your public display href."
-                          placeholder="Enter href"
-                        />
-
-                        <FormInput
-                          form={form}
-                          name="tag"
-                          label="Tag"
-                          description="This is your public display tag."
-                          placeholder="Enter tag"
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="src"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Background</FormLabel>
-                              <FormControl>
-                                <div className="grid gap-2">
-                                  {field.value ? (
-                                    <>
-                                      <Image
-                                        alt="Picture"
-                                        className="w-[30%] rounded-md "
-                                        height={9999}
-                                        src={field.value ?? "/image-notfound.png"}
-                                        width={9999}
-                                      />
-                                    </>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  <div className="w-full mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                                    <FileUpload onChange={handleFileUpload} />
-                                  </div>
-                                  <FormMessage />
-                                </div>
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid gap-4 h-fit">
-                <InformationBaseCard form={form} initialData={initialData} />
+            {/* main */}
+            <div className="grid gap-6">
+              <div className="grid gap-3">
+                <ImageUpload
+                  label="Image File"
+                  defaultValue={initialData?.mediaUrl}
+                  onFileChange={setFile}
+                />
               </div>
             </div>
-            <div>{/* sub */}</div>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };

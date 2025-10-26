@@ -14,14 +14,39 @@ class MediaUploadService {
   async uploadFile(
     file?: File | null,
     folder: string = "Other"
-  ): Promise<BusinessResult<MediaBase> | null> {
-    if (!file) return null;
-
+  ): Promise<BusinessResult<MediaBase>> {
     const formData = new FormData();
-    formData.append("File", file);
+    if (file) {
+      formData.append("File", file);
+    }
     formData.append("FolderName", folder);
 
     const res = await axiosInstance.post<BusinessResult<MediaBase>>(
+      this.endpoint,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return res.data;
+  }
+
+  async updateFile(
+    file?: File | null,
+    folder: string = "Other",
+    mediaId?: string
+  ): Promise<BusinessResult<MediaBase>> {
+    const formData = new FormData();
+    if (file) {
+      formData.append("File", file);
+    }
+    formData.append("FolderName", folder);
+    formData.append("MediaId", mediaId || "");
+
+    const res = await axiosInstance.put<BusinessResult<MediaBase>>(
       this.endpoint,
       formData,
       {

@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/popover";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { cn, getDefaultFormFilterValues } from "@/lib/utils";
-import { productService } from "@/services/product-service";
-import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
+import { homeSlideService } from "@/services/home-slide-service";
+import { HomeSlideGetAllQuery } from "@/types/cqrs/queries/home-slide-query";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -128,7 +128,7 @@ const defaultSchema = z.object({
   isDeleted: z.boolean().nullable().optional(),
 });
 //#endregion
-export default function ProductTable() {
+export default function HomeSlideTable() {
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q");
   const pathname = usePathname();
@@ -161,21 +161,21 @@ export default function ProductTable() {
   });
 
   const queryParams = useMemo(() => {
-    const params: ProductGetAllQuery = useQueryParams(
+    const params: HomeSlideGetAllQuery = useQueryParams(
       formValues,
       columnFilters,
       pagination,
       sorting
     );
 
-    params.includeProperties = ["category", "subCategory", "thumbnail"];
+    params.includeProperties = ["slide"];
 
     return { ...params };
   }, [formValues, columnFilters, pagination, sorting]);
 
   const { data, isFetching, error } = useQuery({
     queryKey: [query_key, queryParams],
-    queryFn: () => productService.getAll(queryParams),
+    queryFn: () => homeSlideService.getAll(queryParams),
     enabled: shouldFetch,
     refetchOnWindowFocus: false,
   });
@@ -234,8 +234,8 @@ export default function ProductTable() {
   return (
     <DataTableComponent
       isLoading={isFetching}
-      deletePermanentFunc={(command) => productService.delete(command)}
-      updateUndoFunc={(command) => productService.update(command)}
+      deletePermanentFunc={(command) => homeSlideService.delete(command)}
+      updateUndoFunc={(command) => homeSlideService.update(command)}
       table={table}
       queryKey={query_key}
     >
@@ -249,7 +249,7 @@ export default function ProductTable() {
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           query_keys={[query_key]}
-          deleteFunc={(command) => productService.delete(command)}
+          deleteFunc={(command) => homeSlideService.delete(command)}
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
         <DataTableFilterSheet
@@ -264,7 +264,7 @@ export default function ProductTable() {
 
         <Link
           className="text-primary-foreground sm:whitespace-nowrap"
-          href={`${pathname}/new`}
+          href={`/dashboard/media-files/home-slides/new`}
         >
           <Button
             size={"sm"}

@@ -23,7 +23,7 @@ import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
 
 interface ColorFormProps {
-  initialData: Color | null;
+  initialData?: Color | null;
 }
 
 const formSchema = z.object({

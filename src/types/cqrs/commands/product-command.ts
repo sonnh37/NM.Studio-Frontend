@@ -7,6 +7,7 @@ export interface ProductCreateCommand extends CreateCommand {
   slug?: string | null;
   categoryId?: string | null;
   subCategoryId?: string | null;
+  thumbnailId?: string | null;
   description?: string | null;
   material?: string | null;
   status: ProductStatus | null;
@@ -18,6 +19,7 @@ export interface ProductUpdateCommand extends UpdateCommand {
   slug?: string | null;
   categoryId?: string | null;
   subCategoryId?: string | null;
+  thumbnailId?: string | null;
   description?: string | null;
   material?: string | null;
   status: ProductStatus | null;

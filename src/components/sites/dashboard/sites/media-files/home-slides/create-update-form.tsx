@@ -2,61 +2,48 @@
 import { useForm } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
-import { serviceBookingService } from "@/services/service-booking-service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
-  FormInput,
-  FormInputReactTipTapEditor,
-  FormInputTextArea,
-  FormSelectEnum,
-  FormSwitch,
+  FormInputNumber,
   ImageUpload,
 } from "@/lib/form-custom-shadcn";
-import { getEnumOptions } from "@/lib/utils";
 
-import {
-  ServiceBooking,
-  ServiceBookingStatus,
-} from "@/types/entities/service-booking";
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
+
+import { mediaUploadService } from "@/services/media-upload-service";
 import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { HeaderForm } from "../../common/create-update-forms/header-form";
-import { AuthorSelect } from "./author-select";
-import { ServiceBookingCreateCommand, ServiceBookingUpdateCommand } from "@/types/cqrs/commands/service-booking-command";
-import { ServiceSelect } from "./service-select";
+import { HeaderForm } from "../../../common/create-update-forms/header-form";
+import { HomeSlide } from "@/types/entities/home-slide";
+import { homeSlideService } from "@/services/home-slide-service";
+import {
+  HomeSlideCreateCommand,
+  HomeSlideUpdateCommand,
+} from "@/types/cqrs/commands/home-slide-command";
 
-interface ServiceBookingFormProps {
-  initialData?: ServiceBooking | null;
+interface HomeSlideFormProps {
+  initialData?: HomeSlide | null;
 }
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required").nullable(),
-  slug: z.string().nullable().optional(),
-  content: z.string().nullable().optional(),
-  summary: z.string().nullable().optional(),
-  thumbnail: z.string().nullable().optional(),
-  bannerImage: z.string().nullable().optional(),
-  status: z.nativeEnum(ServiceBookingStatus),
-  isFeatured: z.boolean().default(false),
-  viewCount: z.number().default(0),
-  tags: z.string().nullable().optional(),
-  authorId: z.string().nullable().optional(),
-  serviceId: z.string().nullable().optional(),
+  slideId: z.string().optional(),
+  displayOrder: z.number(),
+  // startDate: z.date().nullable().optional(),
+  // endDate: z.date().nullable().optional(),
 });
 
-export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
+export const HomeSlideForm: React.FC<HomeSlideFormProps> = ({
   initialData,
 }) => {
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Update servicebooking" : "New servicebooking";
+  const title = initialData ? "Update homeSlide" : "New homeSlide";
   const action = "Submit";
   const router = useRouter();
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
@@ -82,17 +69,33 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        const command: ServiceBookingUpdateCommand = {
+        const command: HomeSlideUpdateCommand = {
           ...initialData,
           ...values,
         };
-        const response = await serviceBookingService.update(command);
-        if (response.status != Status.OK)
-          throw new Error(response.error?.detail);
+
+        if (file) {
+          const uploadResultThumb = await mediaUploadService.uploadFile(
+            file,
+            "HomeSlide"
+          );
+          if (
+            uploadResultThumb?.status == Status.OK &&
+            uploadResultThumb?.data
+          ) {
+            command.slideId = uploadResultThumb.data.id;
+          }
+        }
+
+        const response = await homeSlideService.update(command);
+        if (response.status != Status.OK) {
+          toast.error(response.error?.detail);
+          return;
+        }
         // queryClient.refetchQueries({
-        //   queryKey: ["fetchServiceBookingById", initialData.id],
+        //   queryKey: ["fetchBlogById", initialData.id],
         // });
-        toast.success("Updated!");
+        toast.success("Slide updated successfully.");
         router.push(previousPath);
       } else {
         setPendingValues(values);
@@ -107,28 +110,42 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
   };
 
   const handleCreateConfirmation = async (): Promise<
-    BusinessResult<ServiceBooking>
+    BusinessResult<HomeSlide>
   > => {
     if (!pendingValues) {
-      toast.error("No pending values to create servicebooking.");
+      toast.error("No pending values to create homeSlide.");
       return Promise.reject(new Error("No pending values"));
     }
     setIsLoading(true);
     try {
-      const createdValues: ServiceBookingCreateCommand = {
+      const command: HomeSlideCreateCommand = {
         ...pendingValues,
       };
-      const response = await serviceBookingService.create(createdValues);
-      if (response.status != Status.OK) throw new Error(response.error?.detail);
-      toast.success("Created!");
+      if (file) {
+        const uploadResultThumb = await mediaUploadService.uploadFile(
+          file,
+          "HomeSlide"
+        );
+        if (uploadResultThumb?.status == Status.OK && uploadResultThumb?.data) {
+          command.slideId = uploadResultThumb.data.id;
+        }
+      }
+
+      const response = await homeSlideService.create(command);
+      if (response.status != Status.OK) {
+        toast.error(response.error?.detail);
+        return response;
+      }
+
+      toast.success("Blog created successfully.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
 
       return response;
     } catch (error: any) {
-      console.error("Error creating servicebooking:", error);
-      toast.error(error.message || "Failed to create servicebooking.");
+      console.error("Error creating homeSlide:", error);
+      toast.error(error.message || "Failed to create homeSlide.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -150,7 +167,7 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
           }
           router.push(previousPath);
         }}
-        title="Do you want to continue adding this servicebooking?"
+        title="Do you want to continue adding this homeSlide?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
         confirmText="Yes"
         cancelText="No"
@@ -171,48 +188,18 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
             {/* main */}
             <div className="grid gap-6">
               <div className="grid gap-3">
-                <FormSwitch
-                  form={form}
-                  name="isFeatured"
-                  label="Is Main"
-                  description="If enabled, this servicebooking will be about page."
+                <ImageUpload
+                  label="Image File"
+                  defaultValue={initialData?.slide?.mediaUrl}
+                  onFileChange={setFile}
                 />
 
-                <FormInput
+                <FormInputNumber
                   form={form}
-                  name="title"
-                  label="Title"
-                  placeholder="Enter title"
+                  name="displayOrder"
+                  label="Display Order"
+                  placeholder="Enter display order"
                 />
-
-                <FormInput
-                  form={form}
-                  name="slug"
-                  label="Slug"
-                  placeholder="Enter slug"
-                />
-
-                <FormInputTextArea
-                  form={form}
-                  name="content"
-                  label="Description"
-                  placeholder="Enter description"
-                />
-
-                <FormSelectEnum
-                  form={form}
-                  name="status"
-                  label="Status"
-                  enumOptions={getEnumOptions(ServiceBookingStatus)}
-                />
-
-                <FormInput form={form} name="tags" label="Tags" />
-
-                <AuthorSelect form={form} name="authorId" />
-
-                <ServiceSelect form={form} name="serviceId" />
-
-                <FormInputReactTipTapEditor form={form} name="content" />
               </div>
             </div>
           </div>

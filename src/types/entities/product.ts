@@ -1,5 +1,6 @@
 import { BaseEntity } from "./base/base";
 import { Category } from "./category";
+import { MediaBase } from "./media-base";
 import { ProductVariant } from "./product-variant";
 import { SubCategory } from "./subcategory";
 
@@ -28,11 +29,13 @@ export interface Product extends BaseEntity {
   slug?: string;
   categoryId?: string;
   subCategoryId?: string;
+  thumbnailId?: string;
   description?: string;
   material?: string;
   status: ProductStatus;
 
   category?: Category;
   subCategory?: SubCategory;
+  thumbnail?: MediaBase;
   variants: ProductVariant[];
 }

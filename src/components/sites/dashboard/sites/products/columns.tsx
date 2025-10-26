@@ -23,6 +23,8 @@ import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -44,6 +46,23 @@ export const columns: ColumnDef<Product>[] = [
         aria-label="Select row"
       />
     ),
+  },
+  {
+    accessorKey: "thumbnail.mediaUrl",
+    header: "Media Url",
+    cell: ({ row }) => {
+      const backgroundUrl = row.original?.thumbnail?.mediaUrl;
+      return (
+        <Link href={backgroundUrl ?? ""}>
+          <Image
+            alt={`Media`}
+            fill
+            className="aspect-auto rounded-md object-cover"
+            src={backgroundUrl ?? "/image-notfound.png"}
+          />
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "sku",

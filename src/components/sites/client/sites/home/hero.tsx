@@ -6,7 +6,7 @@ import { homeSlideService } from "@/services/home-slide-service";
 import { mediaBaseService } from "@/services/media-base-service";
 import { SortDirection } from "@/types/cqrs/queries/base/base-query";
 import { HomeSlideGetAllQuery } from "@/types/cqrs/queries/home-slide-query";
-import { MediaBaseGetAllQuery } from "@/types/cqrs/queries/media-file-query";
+import { MediaBaseGetAllQuery } from "@/types/cqrs/queries/media-base-query";
 import { HomeSlide } from "@/types/entities/home-slide";
 import { MediaBase } from "@/types/entities/media-base";
 import { useQuery } from "@tanstack/react-query";

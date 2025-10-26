@@ -3,7 +3,7 @@ import {LoadingPageComponent} from "@/components/_common/loading-page";
 
 import { convertHtmlToPlainText } from "@/lib/utils";
 import { serviceService } from "@/services/service-service";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -35,6 +35,7 @@ export function Service() {
         sortDirection: 1,
         sortField: "createdDate",
       },
+      includeProperties: ["thumbnail"],
       isDeleted: false,
     };
 
@@ -143,7 +144,7 @@ export function Service() {
                         <Image
                           className="aspect-square h-[300px] w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
                           alt={""}
-                          src={ser.src ? ser.src : "/image-notfound.png"}
+                          src={ser.thumbnail?.mediaUrl ?? "/image-notfound.png"}
                           width={9999}
                           height={9999}
                         />

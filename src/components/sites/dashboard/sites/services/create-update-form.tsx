@@ -41,7 +41,7 @@ import {
 import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 
 interface ServiceFormProps {
-  initialData: Service | null;
+  initialData?: Service | null;
 }
 
 const formSchema = z.object({

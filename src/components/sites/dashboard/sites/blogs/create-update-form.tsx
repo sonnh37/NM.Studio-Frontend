@@ -32,7 +32,7 @@ import { AuthorSelect } from "./author-select";
 import { mediaUploadService } from "@/services/media-upload-service";
 
 interface BlogFormProps {
-  initialData: Blog | null;
+  initialData?: Blog | null;
 }
 
 const formSchema = z.object({

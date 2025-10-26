@@ -22,9 +22,9 @@ import { formatDate } from "@/lib/utils";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { MediaBase } from "@/types/entities/media-base";
-import { mediaBaseService } from "@/services/media-base-service";
-export const columns: ColumnDef<MediaBase>[] = [
+import { homeSlideService } from "@/services/home-slide-service";
+import { HomeSlide } from "@/types/entities/home-slide";
+export const columns: ColumnDef<HomeSlide>[] = [
   {
     accessorKey: "select",
     header: ({ table }) => (
@@ -45,12 +45,11 @@ export const columns: ColumnDef<MediaBase>[] = [
       />
     ),
   },
-
   {
-    accessorKey: "mediaUrl",
+    accessorKey: "slide.mediaUrl",
     header: "Media Url",
     cell: ({ row }) => {
-      const backgroundUrl = row.original?.mediaUrl;
+      const backgroundUrl = row.original.slide?.mediaUrl;
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image
@@ -64,60 +63,66 @@ export const columns: ColumnDef<MediaBase>[] = [
     },
   },
   {
-    accessorKey: "title",
+    accessorKey: "displayOrder",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Display Order" />
+    ),
+  },
+  {
+    accessorKey: "slide.title",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Title" />
     ),
   },
   {
-    accessorKey: "displayName",
+    accessorKey: "slide.displayName",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Display Name" />
     ),
   },
   {
-    accessorKey: "mimeType",
+    accessorKey: "slide.mimeType",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="MimeType" />
     ),
   },
   {
-    accessorKey: "size",
+    accessorKey: "slide.size",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Size" />
     ),
   },
   {
-    accessorKey: "width",
+    accessorKey: "slide.width",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Width" />
     ),
   },
   {
-    accessorKey: "height",
+    accessorKey: "slide.height",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Height" />
     ),
   },
   {
-    accessorKey: "createdMediaBy",
+    accessorKey: "slide.createdMediaBy",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Author" />
     ),
   },
   {
-    accessorKey: "takenMediaDate",
+    accessorKey: "slide.takenMediaDate",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Pic Date" />
     ),
   },
   {
-    accessorKey: "mediaBaseType",
+    accessorKey: "slide.homeSlideType",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
-      const type = row.original.mediaBaseType;
+      const type = row.original.slide?.mediaBaseType;
       switch (type) {
         case 0:
           return <Badge>Image</Badge>;
@@ -159,7 +164,7 @@ export const columns: ColumnDef<MediaBase>[] = [
 ];
 
 interface ActionsProps {
-  row: Row<MediaBase>;
+  row: Row<HomeSlide>;
 }
 
 const Actions: React.FC<ActionsProps> = ({ row }) => {
@@ -167,7 +172,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
   const router = useRouter();
   const pathName = usePathname();
   const handleEditClick = () => {
-    router.push(`${pathName}/${model.id}`);
+    router.push(`/dashboard/media-files/home-slides/${model.id}`);
   };
 
   const handleDeleteClick = async () => {};
@@ -189,7 +194,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
           >
             Copy model ID
           </DropdownMenuItem>
-          {/*<DropdownMenuItem onClick={handleMediaBasesClick}>*/}
+          {/*<DropdownMenuItem onClick={handleHomeSlidesClick}>*/}
           {/*    View photos*/}
           {/*</DropdownMenuItem>*/}
           <DropdownMenuSeparator />
@@ -201,7 +206,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteFunc={(command) => mediaBaseService.delete(command)}
+        deleteFunc={(command) => homeSlideService.delete(command)}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}
