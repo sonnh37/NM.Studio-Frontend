@@ -17,7 +17,7 @@ export const columns: ColumnDef<MediaBase>[] = [
                 <Link href={backgroundUrl ?? ""}>
                     <Image
                         alt={`Photo background`}
-                        className="aspect-square rounded-md object-cover"
+                        className="aspect-auto rounded-md object-cover"
                         height={64}
                         width={64}
                         src={backgroundUrl ?? ""}

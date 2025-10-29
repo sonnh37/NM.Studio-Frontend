@@ -70,6 +70,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
           pageSize: 8,
           pageNumber: 1,
         },
+        includeProperties: ["backgroundCover", "thumbnail"],
       };
       const response = await serviceService.getAll(query_);
       const re = response.data?.results!.filter((m) => m.id != service.id);
@@ -98,10 +99,7 @@ export default function Page({ params }: { params: { serviceId: string } }) {
 
   return (
     <>
-      <article
-        
-        className="py-10 px-6 flex flex-col items-center "
-      >
+      <article className="py-10 px-6 flex flex-col items-center ">
         <PostReadingProgress />
 
         <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">

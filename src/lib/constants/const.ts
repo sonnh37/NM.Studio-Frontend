@@ -46,8 +46,8 @@ export class Const {
     static readonly DASHBOARD_ALBUM_URL = `/${Const.DASHBOARD}/${Const.ALBUMS}`;
     static readonly DASHBOARD_ALBUM_NEW_URL = `${Const.DASHBOARD_ALBUM_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_PHOTO_URL = `/${Const.DASHBOARD}/${Const.MEDIA_FILES}`;
-    static readonly DASHBOARD_PHOTO_NEW_URL = `${Const.DASHBOARD_PHOTO_URL}/${Const.NEW}`;
+    // static readonly DASHBOARD_PHOTO_URL = `/${Const.DASHBOARD}/${Const.MEDIA_FILES}`;
+    // static readonly DASHBOARD_PHOTO_NEW_URL = `${Const.DASHBOARD_PHOTO_URL}/${Const.NEW}`;
 
     static readonly DASHBOARD_SERVICE_URL = `/${Const.DASHBOARD}/${Const.SERVICES}`;
     static readonly DASHBOARD_SERVICE_NEW_URL = `${Const.DASHBOARD_SERVICE_URL}/${Const.NEW}`;

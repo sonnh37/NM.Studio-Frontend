@@ -54,7 +54,7 @@ export const columns: ColumnDef<Album>[] = [
         <Link href={backgroundUrl || "#"}>
           <Image
             alt={`Album background`}
-            className="aspect-square rounded-md object-cover"
+            className="aspect-auto rounded-md object-cover"
             height={64}
             width={64}
             src={backgroundUrl ?? "/image-notfound.png"}

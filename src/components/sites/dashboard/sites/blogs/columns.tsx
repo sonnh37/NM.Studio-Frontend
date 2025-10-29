@@ -55,7 +55,7 @@ export const columns: ColumnDef<Blog>[] = [
         <Link href={backgroundUrl ?? ""}>
           <Image
             alt={`Blog background`}
-            className="aspect-square size-[64px] rounded-md object-cover"
+            className="aspect-auto size-[64px] rounded-md object-cover"
             height={9999}
             width={9999}
             src={backgroundUrl ?? "/image-notfound.png"}
@@ -102,7 +102,7 @@ export const columns: ColumnDef<Blog>[] = [
         <Link href={image ?? ""}>
           <Image
             alt={`Blog background`}
-            className="aspect-square size-[32px] rounded-md object-cover"
+            className="aspect-auto size-[32px] rounded-md object-cover"
             height={9999}
             width={9999}
             src={image ?? "/image-notfound.png"}

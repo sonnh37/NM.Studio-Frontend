@@ -24,6 +24,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { MediaBase } from "@/types/entities/media-base";
 import { mediaBaseService } from "@/services/media-base-service";
+import { ImageMedia } from "@/components/_common/image-media";
 export const columns: ColumnDef<MediaBase>[] = [
   {
     accessorKey: "select",
@@ -53,11 +54,8 @@ export const columns: ColumnDef<MediaBase>[] = [
       const backgroundUrl = row.original?.mediaUrl;
       return (
         <Link href={backgroundUrl ?? ""}>
-          <Image
-            alt={`Media`}
-            fill
-            className="aspect-auto rounded-md object-cover"
-            src={backgroundUrl ?? "/image-notfound.png"}
+          <ImageMedia
+            media={row.original}
           />
         </Link>
       );
