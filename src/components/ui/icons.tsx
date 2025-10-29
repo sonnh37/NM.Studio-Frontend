@@ -11,7 +11,7 @@ export const Icons = {
         //     alt="Nhu My Studio"
         //     className={cn("size-11 rounded-lg", className)}
         // />
-        <p className="font-spectral font-normal text-2xl">NHU MY STUDIO</p>
+        <p className="font-spectral font-normal text-2xl">NM</p>
     ),
     menu: ({...props}: IconProps) => (
         <svg

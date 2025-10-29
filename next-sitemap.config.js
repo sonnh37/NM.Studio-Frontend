@@ -1,6 +1,6 @@
 // next-sitemap.config.js
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://localhost:3000", // Thay 'yourdomain.com' bằng tên miền của bạn
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000", // Thay 'yourdomain.com' bằng tên miền của bạn
   generateRobotsTxt: true, // Tạo file robots.txt tự động
   sitemapSize: 20,
   transform: async (config, path) => {

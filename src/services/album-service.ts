@@ -1,58 +1,54 @@
-import {Album} from "@/types/entities/album";
-import {BaseService} from "./base/base-service";
-import {Const} from "@/lib/constants/const";
-import {BusinessResult} from "@/types/response/business-result";
-import {AlbumCreateCommand, AlbumDeleteCommand, AlbumUpdateCommand,} from "@/types/commands/album-command";
+import { Album } from "@/types/entities/album";
+import { BaseService } from "./base/base-service";
+import { Const } from "@/lib/constants/const";
+import { BusinessResult, Status } from "@/types/models/business-result";
+import {
+  AlbumCreateCommand,
+  AlbumUpdateCommand,
+  AlbumDeleteCommand,
+  AlbumWithImagesCreateCommand,
+  AlbumSetCoverUpdateCommand,
+} from "@/types/cqrs/commands/album-command";
+import { CreateOrUpdateCommand } from "@/types/cqrs/commands/base/base-command";
+import { mediaUploadService } from "./media-upload-service";
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import {CreateCommand} from "@/types/commands/base/base-command";
 
 class AlbumService extends BaseService<Album> {
-    constructor() {
-        super(`${Const.ALBUMS}`);
-    }
+  constructor() {
+    super(`${Const.ALBUMS}`);
+  }
+  // async deletePermanently(
+  //   command: AlbumDeleteCommand
+  // ): Promise<BusinessResult<null>> {
+  //   const data = await this.getById(command.id);
+  //   const filePath = data.data?.background;
 
-    async create(command: AlbumCreateCommand): Promise<BusinessResult<Album>> {
-        let link = null;
-        if (command.file) {
-            link = await this.uploadImage(command.file, "Album");
-        }
+  //   const response = await super.delete(command);
+  //   if (response.status === 1 && filePath) {
+  //     await this.deleteImage(filePath);
+  //   }
 
-        command.background = link ?? undefined;
+  //   return response;
+  // }
 
-        return await super.create(command);
-    }
-
-    async update(
-        command: AlbumUpdateCommand
-    ): Promise<BusinessResult<Album>> {
-        let link = null;
-        if (command.file) {
-            link = await this.uploadImage(command.file, "Album");
-        }
-
-        if (link && command.background) {
-            await this.deleteImage(command.background);
-        }
-
-        command.background = link ?? command.background;
-
-        const res = await axiosInstance.put<BusinessResult<Album>>(this.endpoint, command);
-        return res.data;
-    };
-
-    async deletePermanently(
-        command: AlbumDeleteCommand
-    ): Promise<BusinessResult<null>> {
-        const data = await this.getById(command.id);
-        const filePath = data.data?.background;
-
-        const response = await super.delete(command);
-        if (response.status === 1 && filePath) {
-            await this.deleteImage(filePath);
-        }
-
-        return response;
-    };
+  async createWithImages(
+    command: AlbumWithImagesCreateCommand
+  ): Promise<BusinessResult<void>> {
+    const res = await axiosInstance.post<BusinessResult<void>>(
+      `${this.endpoint}/images`,
+      command
+    );
+    return res.data;
+  }
+  async setCoverAlbum(
+    command: AlbumSetCoverUpdateCommand
+  ): Promise<BusinessResult<void>> {
+    const res = await axiosInstance.put<BusinessResult<void>>(
+      `${this.endpoint}/images/set-cover`,
+      command
+    );
+    return res.data;
+  }
 }
 
 export const albumService = new AlbumService();

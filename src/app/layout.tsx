@@ -1,8 +1,8 @@
 import Script from "next/script";
 
-import type { Metadata } from "next";
-import Client from "./client";
 import { Const } from "@/lib/constants/const";
+import type { Metadata } from "next";
+import LayoutClient from "./layout-client";
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${Const.BASE_URL}`),
@@ -38,7 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning={true}>
-        <Client>{children}</Client>
+        <LayoutClient>{children}</LayoutClient>
       </body>
     </html>
   );
