@@ -16,7 +16,7 @@ export default function AdminPanelLayout({
   return (
     <div
       className={cn(
-        "bg-gradient-to-br from-orange-50 from-5% via-red-50 via-10% to-blue-100 to-80%",
+        "bg-linear-to-br from-orange-50 from-5% via-red-50 via-10% to-blue-100 to-80%",
         "dark:bg-none dark:bg-neutral-900"
       )}
     >
@@ -27,7 +27,7 @@ export default function AdminPanelLayout({
           sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-64 "
         )}
       >
-        <div className={cn("shadow-sm drop-shadow-xl")}>
+        <div className={cn("shadow-xs drop-shadow-xl")}>
           <div className="">{children}</div>
         </div>
       </main>

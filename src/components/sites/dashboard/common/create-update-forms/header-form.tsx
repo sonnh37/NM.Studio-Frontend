@@ -39,7 +39,7 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
         {/* <TypographyH3 className="tracking-normal font-thin">
           {title}
         </TypographyH3> */}
-        {/* <TypographyP className="[&:not(:first-child)]:mt-0">
+        {/* <TypographyP className="not-first:mt-0">
           {initialData ? `Last Updated: ${initialData.lastUpdatedDate}` : null}
         </TypographyP> */}
       </div>

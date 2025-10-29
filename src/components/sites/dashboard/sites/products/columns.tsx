@@ -159,7 +159,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const status = row.original.status;
       const statusText = ProductStatus[status];
-      let badgeVariant: "secondary" | "destructive" | "default" | "outline" =
+      let badgeVariant: "secondary" | "destructive" | "default" | "outline-solid" =
         "default";
       switch (status) {
         case ProductStatus.InMaintenance:
@@ -172,7 +172,7 @@ export const columns: ColumnDef<Product>[] = [
           badgeVariant = "destructive";
           break;
         default:
-          badgeVariant = "outline";
+          badgeVariant = "outline-solid";
       }
       return <Badge variant={badgeVariant}>{statusText}</Badge>;
     },

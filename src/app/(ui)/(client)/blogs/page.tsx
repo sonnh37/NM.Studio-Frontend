@@ -65,9 +65,9 @@ export default function AlbumPage() {
             {blogs.map((blog) => (
               <div
                 key={blog.id}
-                className="grid grid-cols-5 max-h-[10rem] md:max-h-full overflow-hidden bg-neutral-100"
+                className="grid grid-cols-5 max-h-40 md:max-h-full overflow-hidden bg-neutral-100"
               >
-                <div className="grid col-span-3 max-h-[10rem] md:max-h-full overflow-hidden">
+                <div className="grid col-span-3 max-h-40 md:max-h-full overflow-hidden">
                   <Link href={pathname + "/" + blog.slug}>
                     <Image
                       alt={blog.title ?? ""}

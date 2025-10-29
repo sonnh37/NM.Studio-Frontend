@@ -70,7 +70,7 @@ export function Blog() {
             <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
               <span className="border-b">Kinh nghiệm cưới</span>
             </h2>
-            <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200"></p>
+            <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200"></p>
           </motion.div>
           <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
             {blogs.map((ser) => (

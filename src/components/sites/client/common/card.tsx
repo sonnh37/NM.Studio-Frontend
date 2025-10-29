@@ -15,7 +15,7 @@ export function Card({title, description, imageUrl, hoverImageUrl}: CardProps) {
         <div className="max-w-xl  w-full">
             <div
                 className={cn(
-                    "group w-full cursor-pointer overflow-hidden relative card h-[30rem] rounded-md shadow-xl mx-auto flex flex-col justify-end p-4 border border-transparent dark:border-neutral-800",
+                    "group w-full cursor-pointer overflow-hidden relative card h-120 rounded-md shadow-xl mx-auto flex flex-col justify-end p-4 border border-transparent dark:border-neutral-800",
                     "transition-all duration-500"
                 )}
                 style={{backgroundImage: `url('${imageUrl}')`, backgroundSize: 'cover'}}

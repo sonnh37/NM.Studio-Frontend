@@ -41,7 +41,7 @@ export function NavManagement({
   }[];
 }) {
   const styleCommon =
-    " group-data-[collapsible=icon]:!p-[6px] transition-colors duration-200 ease-in-out";
+    " group-data-[collapsible=icon]:p-[6px]! transition-colors duration-200 ease-in-out";
   const pathName = usePathname();
   return (
     <ScrollArea className="h-full">
@@ -69,7 +69,7 @@ export function NavManagement({
                         tooltip={item.title}
                         className={cn(
                           styleCommon,
-                          isActive ? "!bg-muted " : "",
+                          isActive ? "bg-muted! " : "",
                           "py-4"
                         )}
                       >
@@ -92,7 +92,7 @@ export function NavManagement({
                               <SidebarMenuSubButton
                                 className={cn(
                                   styleCommon,
-                                  isActiveSub ? "!bg-muted " : "",
+                                  isActiveSub ? "bg-muted! " : "",
                                   isDisabledSub ? "opacity-50 cursor-not-allowed" : "",
                                   "py-2.5"
                                 )}
@@ -120,7 +120,7 @@ export function NavManagement({
                     className={cn(
                       styleCommon,
                       "py-4",
-                      isActive ? "!bg-muted " : "",
+                      isActive ? "bg-muted! " : "",
                       isDisabled ? "opacity-50 cursor-not-allowed" : ""
                     )}
                     disabled={isDisabled}

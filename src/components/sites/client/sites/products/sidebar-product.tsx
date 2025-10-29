@@ -289,17 +289,17 @@ export function SidebarProduct() {
             <Dialog
                 open={mobileFiltersOpen}
                 onClose={setMobileFiltersOpen}
-                className="relative z-[1001] lg:hidden"
+                className="relative z-1001 lg:hidden"
             >
                 <DialogBackdrop
                     transition
-                    className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-out data-[closed]:opacity-0"
+                    className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-out data-closed:opacity-0"
                 />
 
-                <div className="fixed inset-0 z-[1001] flex">
+                <div className="fixed inset-0 z-1001 flex">
                     <DialogPanel
                         transition
-                        className="relative ml-auto flex size-full max-w-[17rem] transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
+                        className="relative ml-auto flex size-full max-w-68 transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-closed:translate-x-full"
                     >
                         <div className="flex items-center justify-between px-4">
                             <h2 className="text-lg font-medium text-gray-900">Filters</h2>
@@ -373,7 +373,7 @@ export function SidebarProduct() {
                                             <span className="ml-6 flex items-center">
                         <PlusIcon
                             aria-hidden="true"
-                            className="size-5 group-data-[open]:hidden"
+                            className="size-5 group-data-open:hidden"
                         />
                         <MinusIcon
                             aria-hidden="true"
@@ -441,7 +441,7 @@ export function SidebarProduct() {
 
                             <MenuItems
                                 transition
-                                className="absolute right-0 z-40 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                                className="absolute right-0 z-40 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-leave:duration-75 data-enter:ease-out data-leave:ease-in"
                             >
                                 <div className="py-1">
                                     {sortOptions.map((option) => (
@@ -452,7 +452,7 @@ export function SidebarProduct() {
                                                     option.current
                                                         ? "font-medium text-gray-900"
                                                         : "text-gray-500",
-                                                    "block px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:outline-none"
+                                                    "block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden"
                                                 )}
                                             >
                                                 {option.name}
@@ -546,7 +546,7 @@ export function SidebarProduct() {
                                             <span className="ml-6 flex items-center">
                         <PlusIcon
                             aria-hidden="true"
-                            className="size-5 group-data-[open]:hidden"
+                            className="size-5 group-data-open:hidden"
                         />
                         <MinusIcon
                             aria-hidden="true"

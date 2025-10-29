@@ -58,7 +58,7 @@ export default function AboutPage() {
     <>
       <article className="py-10 px-6 flex flex-col items-center ">
         <PostReadingProgress />
-        <div className="lg:max-w-[45rem] mx-auto">
+        <div className="lg:max-w-180 mx-auto">
           <h1 className="text-3xl leading-snug md:text-4xl md:leading-normal font-bold">
             {post.title}
           </h1>

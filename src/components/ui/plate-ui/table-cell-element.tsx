@@ -63,10 +63,10 @@ export const TableCellElement = withRef<
       className={cn(
         className,
         'h-full overflow-visible border-none bg-background p-0',
-        element.background ? 'bg-[--cellBackground]' : 'bg-background',
+        element.background ? 'bg-(--cellBackground)' : 'bg-background',
 
         cn(
-          isHeader && 'text-left [&_>_*]:m-0',
+          isHeader && 'text-left *:m-0',
           'before:size-full',
           selected && 'before:z-10 before:bg-muted',
           "before:absolute before:box-border before:select-none before:content-['']",
@@ -110,7 +110,7 @@ export const TableCellElement = withRef<
             <>
               <ResizeHandle
                 {...rightProps}
-                className="-right-1 -top-2 h-[calc(100%_+_8px)] w-2"
+                className="-right-1 -top-2 h-[calc(100%+8px)] w-2"
                 data-col={colIndex}
               />
               <ResizeHandle {...bottomProps} className="-bottom-1 h-2" />

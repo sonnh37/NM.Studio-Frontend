@@ -50,7 +50,7 @@ function TocDesktop() {
     <>
       <div
         className={cn(
-          "scrollbar-hide js-toc transition--300 top-20 h-[50vh] overflow-y-auto sticky p-[2rem] pt-[4rem]"
+          "scrollbar-hide js-toc transition--300 top-20 h-[50vh] overflow-y-auto sticky p-8 pt-16"
         )}
       />
     </>
@@ -78,6 +78,6 @@ function TocMobile() {
   }, []);
 
   return (
-    <div className="toc sm:scrollbar-hide js-toc z-1 transition--300 absolute p-[2rem] pt-[4rem] "></div>
+    <div className="toc sm:scrollbar-hide js-toc z-1 transition--300 absolute p-8 pt-16 "></div>
   );
 }

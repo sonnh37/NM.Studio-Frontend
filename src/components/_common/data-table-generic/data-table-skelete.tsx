@@ -89,12 +89,12 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
                         : null}
                     {filterableColumnCount > 0
                         ? Array.from({length: filterableColumnCount}).map((_, i) => (
-                            <Skeleton key={i} className="h-7 w-[4.5rem] border-dashed"/>
+                            <Skeleton key={i} className="h-7 w-18 border-dashed"/>
                         ))
                         : null}
                 </div>
                 {showViewOptions ? (
-                    <Skeleton className="ml-auto hidden h-7 w-[4.5rem] lg:flex"/>
+                    <Skeleton className="ml-auto hidden h-7 w-18 lg:flex"/>
                 ) : null}
             </div>
             <div className="rounded-md border">
@@ -141,7 +141,7 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
                     <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
                         <div className="flex items-center space-x-2">
                             <Skeleton className="h-7 w-24"/>
-                            <Skeleton className="h-7 w-[4.5rem]"/>
+                            <Skeleton className="h-7 w-18"/>
                         </div>
                         <div className="flex items-center justify-center text-sm font-medium">
                             <Skeleton className="h-7 w-20"/>

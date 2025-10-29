@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "destructive" | "outline" | "ghost";
+  variant?: "primary" | "secondary" | "destructive" | "outline-solid" | "ghost";
   iconOnly?: boolean;
   slotBefore?: React.ReactNode;
   slotAfter?: React.ReactNode;

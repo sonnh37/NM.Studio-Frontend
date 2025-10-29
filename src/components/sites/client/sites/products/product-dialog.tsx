@@ -55,18 +55,18 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
-      className="relative z-[1001]"
+      className="relative z-1001"
     >
       <DialogBackdrop
         transition
-        className="fixed inset-0 hidden bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in md:block"
+        className="fixed inset-0 hidden bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-leave:duration-200 data-enter:ease-out data-leave:ease-in md:block"
       />
 
-      <div className="fixed inset-0 z-[1001] w-screen overflow-y-auto">
+      <div className="fixed inset-0 z-1001 w-screen overflow-y-auto">
         <div className="flex min-h-full items-stretch justify-center text-center md:items-center p-0 m-0 border-none">
           <DialogPanel
             transition
-            className="flex w-full transform text-left text-base transition data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in md:my-8 md:max-w-2xl md:px-4 data-[closed]:md:translate-y-0 data-[closed]:md:scale-95 lg:max-w-4xl"
+            className="flex w-full transform text-left text-base transition data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-leave:duration-200 data-enter:ease-out data-leave:ease-in md:my-8 md:max-w-2xl md:px-4 md:data-closed:translate-y-0 md:data-closed:scale-95 lg:max-w-4xl"
           >
             <div className="relative flex w-full items-center overflow-hidden bg-white p-0 shadow-2xl">
               <button
@@ -79,7 +79,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
               </button>
 
               <div className="grid w-full grid-cols-1 items-start sm:grid-cols-12">
-                <div className="aspect-[2/3] p-0 w-full rounded-none border-none bg-gray-100 object-cover sm:col-span-6">
+                <div className="aspect-2/3 p-0 w-full rounded-none border-none bg-gray-100 object-cover sm:col-span-6">
                   <Carousel className="w-full">
                     <CarouselContent>
                       {product.productMedias?.map((pic, index) => (
@@ -87,7 +87,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                           <Card className="border-none">
                             <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
                               <Image
-                                className="aspect-[2/3]  w-full"
+                                className="aspect-2/3  w-full"
                                 width={9999}
                                 height={9999}
                                 alt={pic.mediaBase?.title ?? ""}

@@ -17,7 +17,7 @@ const MenuAnimationLink = React.forwardRef<
       href={href}
       ref={ref}
       className={cn(
-        "relative leading-[2] text-foreground before:absolute before:bottom-[-0.25rem] before:right-0 before:w-0 before:h-[2px] before:rounded-sm before:bg-foreground before:transition-all before:duration-500 hover:before:w-full hover:before:left-0",
+        "relative leading-loose text-foreground before:absolute before:-bottom-1 before:right-0 before:w-0 before:h-[2px] before:rounded-sm before:bg-foreground before:transition-all before:duration-500 hover:before:w-full hover:before:left-0",
         className
       )}
       {...props}

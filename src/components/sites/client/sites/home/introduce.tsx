@@ -36,7 +36,7 @@ const steps = [
 
 export default function Introduce() {
   return (
-    <div className="h-full w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center backdrop-blur-sm">
+    <div className="h-full w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center backdrop-blur-xs">
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center dark:bg-black bg-white opacity-50"></div>
       <div className="container mx-auto py-10 z-10 ">
         <h2 className="text-center text-4xl relative z-20 tracking-wide uppercase text-neutral-700 py-8">

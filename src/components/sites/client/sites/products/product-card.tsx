@@ -47,7 +47,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           >
             <Link href={productLink}>
               <Image
-                className="aspect-[2/3] bg-gray-200 rounded-md object-cover"
+                className="aspect-2/3 bg-gray-200 rounded-md object-cover"
                 alt={product.name!}
                 src={
                   product.productMedias!.length > 0 &&

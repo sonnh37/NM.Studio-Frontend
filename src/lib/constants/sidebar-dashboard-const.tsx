@@ -51,13 +51,13 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Albums",
         //             active: pathname.includes(Const.DASHBOARD_ALBUM_URL),
         //             icon: () => (
-        //                 <IoAlbumsOutline className="text-neutral-700  dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <IoAlbumsOutline className="text-neutral-700  dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //                 // <Image
         //                 //     src="/gallery.png"
         //                 //     width={500}
         //                 //     height={500}
         //                 //     alt="Gallery Icon"
-        //                 //     className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        //                 //     className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"
         //                 // />
         //             ),
         //             submenus: [
@@ -81,7 +81,7 @@ export function getMenuList(pathname: string): Group[] {
         //                 <GiClothes
         //                     color="white"
         //                     style={{fill: 'white', stroke: 'black', strokeWidth: 15}}
-        //                     className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        //                     className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"
         //                 />
 
         //                 // <Image
@@ -89,7 +89,7 @@ export function getMenuList(pathname: string): Group[] {
         //                 //     width={500}
         //                 //     height={500}
         //                 //     alt="Picture of the author"
-        //                 //     className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        //                 //     className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"
         //                 // />
         //             ),
         //             submenus: [
@@ -110,7 +110,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Photos",
         //             active: pathname.includes(Const.DASHBOARD_PHOTO_URL),
         //             icon: () => (
-        //                 <AiOutlinePicture className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <AiOutlinePicture className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {
@@ -130,7 +130,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Services",
         //             active: pathname.includes(Const.DASHBOARD_SERVICE_URL),
         //             icon: () => (
-        //                 <GrServicePlay className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <GrServicePlay className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {
@@ -150,7 +150,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Blogs",
         //             active: pathname.includes(Const.DASHBOARD_BLOG_URL),
         //             icon: () => (
-        //                 <FaRegNewspaper className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <FaRegNewspaper className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {
@@ -170,7 +170,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Categories",
         //             active: pathname.includes(Const.DASHBOARD_CATEGORY_URL),
         //             icon: () => (
-        //                 <BiCategory className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <BiCategory className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {
@@ -190,7 +190,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Sub Categories",
         //             active: pathname.includes(Const.DASHBOARD_SUBCATEGORY_URL),
         //             icon: () => (
-        //                 <MdOutlineCategory className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <MdOutlineCategory className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {
@@ -210,7 +210,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Sizes",
         //             active: pathname.includes(Const.DASHBOARD_SIZE_URL),
         //             icon: () => (
-        //                 <IoIosResize className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <IoIosResize className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {
@@ -230,7 +230,7 @@ export function getMenuList(pathname: string): Group[] {
         //             label: "Colors",
         //             active: pathname.includes(Const.DASHBOARD_COLOR_URL),
         //             icon: () => (
-        //                 <MdOutlineColorLens className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+        //                 <MdOutlineColorLens className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0"/>
         //             ),
         //             submenus: [
         //                 {

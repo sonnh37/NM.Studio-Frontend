@@ -114,7 +114,7 @@ export function CollapseMenuButton({
             <CollapsibleContent
                 className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                 <div className="relative space-x-4 my-1 ml-6">
-                    <span className="bg-gray-300 w-[1px] left-0 top-0 absolute h-full"></span>
+                    <span className="bg-gray-300 w-px left-0 top-0 absolute h-full"></span>
                     <div className="grid gap-1 w-[80%]">
                         {submenus.map(({href, label, active}, index) => (
                             <Button

@@ -28,7 +28,7 @@
 //                 | "secondary"
 //                 | "destructive"
 //                 | "default"
-//                 | "outline"
+//                 | "outline-solid"
 //                 | null = "default";
 //
 //             switch (status) {

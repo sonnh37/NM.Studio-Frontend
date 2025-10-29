@@ -6,7 +6,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 
 export const RegisterForm = () => {
   return (
-    <div className="bg-gray-900 z-[100] overflow-hidden bg-opacity-80 p-8 rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-500 max-w-md w-full">
+    <div className="bg-gray-900 z-100 overflow-hidden bg-opacity-80 p-8 rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-500 max-w-md w-full">
       <h1 className="text-4xl text-neutral-200 font-extrabold text-center mb-8 animate-[neon-pulse_1.5s_infinite_alternate]">
         Đăng kí
       </h1>
@@ -15,7 +15,7 @@ export const RegisterForm = () => {
           <input
             type="text"
             placeholder="Username"
-            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
+            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-pink-500 transition-all duration-300"
           />
           <i className="fas fa-user absolute right-3 top-3 text-pink-500"></i>
         </div>
@@ -23,7 +23,7 @@ export const RegisterForm = () => {
           <input
             type="email"
             placeholder="Email"
-            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
+            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-pink-500 transition-all duration-300"
           />
           <i className="fas fa-envelope absolute right-3 top-3 text-pink-500"></i>
         </div>
@@ -31,13 +31,13 @@ export const RegisterForm = () => {
           <input
             type="password"
             placeholder="Password"
-            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
+            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-pink-500 transition-all duration-300"
           />
           <i className="fas fa-lock absolute right-3 top-3 text-pink-500"></i>
         </div>
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+          className="w-full bg-linear-to-r from-pink-500 to-purple-600 text-white font-bold py-3 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +57,7 @@ export const RegisterForm = () => {
         <div className="relative">
           <div className="flex justify-between ">
             <Button
-              className="p-0 m-0 text-gray-400 !no-underline font-extralight"
+              className="p-0 m-0 text-gray-400 no-underline! font-extralight"
               variant={"link"}
             >
               <Link

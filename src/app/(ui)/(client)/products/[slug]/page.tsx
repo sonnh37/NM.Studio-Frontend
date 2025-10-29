@@ -128,7 +128,7 @@ export default function Page() {
                   "--swiper-navigation-size": "20px",
                 } as React.CSSProperties
               }
-              className="!w-[70%] !h-[70%]"
+              className="w-[70%]! h-[70%]!"
               loop={true}
               spaceBetween={10}
               navigation={true}
@@ -177,7 +177,7 @@ export default function Page() {
               {product.productMedias!.map((pxp, index) => (
                 <SwiperSlide
                   key={index}
-                  className="w-[25%] h-[100%] opacity-40"
+                  className="w-[25%] h-full opacity-40"
                 >
                   <img
                     alt={pxp.mediaBase?.title ?? "N/A"}

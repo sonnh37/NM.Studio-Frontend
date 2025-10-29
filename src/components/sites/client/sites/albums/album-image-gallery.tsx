@@ -103,7 +103,7 @@ const AlbumImageGallery = ({photos}: AlbumImageGalleryProps) => {
                     width={9999}
                     height={9999}
                     // sizes={sizes}
-                    placeholder={"blurDataURL" in photo ? "blur" : undefined}
+                    placeholder={"blurDataURL" in photo ? "blur-sm" : undefined}
                 />
             </div>
         );

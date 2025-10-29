@@ -44,7 +44,7 @@ export function NavMain({
   }[];
 }) {
   const styleCommon =
-    " group-data-[collapsible=icon]:!p-[6px] transition-colors duration-200 ease-in-out";
+    " group-data-[collapsible=icon]:p-[6px]! transition-colors duration-200 ease-in-out";
   const pathName = usePathname();
   return (
     <SidebarGroup>
@@ -68,7 +68,7 @@ export function NavMain({
                       tooltip={item.title}
                       className={cn(
                         styleCommon,
-                        isActive ? "!bg-muted !text-white" : "",
+                        isActive ? "bg-muted! text-white!" : "",
                         "py-4"
                       )}
                     >
@@ -90,7 +90,7 @@ export function NavMain({
                             <SidebarMenuSubButton
                               className={cn(
                                 styleCommon,
-                                isActiveSub ? "!bg-muted !text-white" : "",
+                                isActiveSub ? "bg-muted! text-white!" : "",
                                 "py-2.5"
                               )}
                               asChild
@@ -116,7 +116,7 @@ export function NavMain({
                   className={cn(
                     styleCommon,
                     "py-4",
-                    isActive ? "!bg-muted !text-white" : ""
+                    isActive ? "bg-muted! text-white!" : ""
                   )}
                   tooltip={item.title}
                   asChild

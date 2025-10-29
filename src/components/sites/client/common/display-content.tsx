@@ -55,7 +55,7 @@ export const DisplayContent: React.FC<RichEditorProps> = ({ value = "" }) => {
           {/* Nút FaBars */}
           <label
             className={
-              "toc-icon fixed !top-24 !right-6 z-[1001] bg-white p-2 shadow-md rounded-full transition-all"
+              "toc-icon fixed top-24! right-6! z-1001 bg-white p-2 shadow-md rounded-full transition-all"
             }
             htmlFor="toc"
           >
@@ -75,11 +75,11 @@ export const DisplayContent: React.FC<RichEditorProps> = ({ value = "" }) => {
           </div>
         </div>
       ) : (
-        <div className="prose mx-auto max-w-[70rem] h-full">
+        <div className="prose mx-auto max-w-280 h-full">
           {/* Nút FaBars */}
           <label
             className={
-              "toc-icon fixed !top-24 !right-6 z-[1001] bg-white p-2 shadow-md rounded-full transition-all"
+              "toc-icon fixed top-24! right-6! z-1001 bg-white p-2 shadow-md rounded-full transition-all"
             }
             htmlFor="toc"
           >

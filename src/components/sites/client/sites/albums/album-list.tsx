@@ -65,7 +65,7 @@ export function AlbumList() {
                   height={9999}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/5"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-gray-900 via-gray-900/5"></div>
               </motion.div>
 
               <h3 className="z-10 mt-3 text-3xl font-bold text-white">

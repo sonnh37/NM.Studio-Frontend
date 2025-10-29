@@ -132,7 +132,7 @@ interface FormInputProps<TFieldValues extends FieldValues> {
 //                   immediatelyRender={true}
 //                   editable={true}
 //                   injectCSS={true}
-//                   editorClassName="focus:outline-none p-5"
+//                   editorClassName="focus:outline-hidden p-5"
 //                 />
 //               </div>
 //             </FormControl>
@@ -364,7 +364,7 @@ export const FormInputTextArea = <TFieldValues extends FieldValues>({
 //                   immediatelyRender={true}
 //                   editable={true}
 //                   injectCSS={true}
-//                   editorClassName="focus:outline-none p-5"
+//                   editorClassName="focus:outline-hidden p-5"
 //                 />
 //               </div>
 //             </FormControl>
@@ -1194,7 +1194,7 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="border-none shadow-none mr-2 fixed top-2 left-0">
-                    <ScrollArea className="h-[15rem]">
+                    <ScrollArea className="h-60">
                       {Array.from({ length: 96 }).map((_, i) => {
                         const hour = Math.floor(i / 4)
                           .toString()

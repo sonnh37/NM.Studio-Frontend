@@ -43,7 +43,7 @@ a.toc-link {
 }
 .is-active-link::before {
   background-color: #54bc4b;
-} /*# sourceMappingURL=tocbot.css.map */
+}
 
 body {
   background-color: #fff;
@@ -245,4 +245,4 @@ code {
   display: inline;
   font-size: 0.8em;
   max-width: 100%;
-} /*# sourceMappingURL=styles.css.map */
+}

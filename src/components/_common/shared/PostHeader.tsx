@@ -21,7 +21,7 @@ const PostHeader = ({
   avatar = "/image-notfound.png",
 }: PostHeaderProps) => {
   return (
-    <div className="lg:max-w-[45rem] mx-auto">
+    <div className="lg:max-w-180 mx-auto">
       <h1 className="text-3xl leading-snug md:text-4xl md:leading-normal font-bold">
         {title}
       </h1>

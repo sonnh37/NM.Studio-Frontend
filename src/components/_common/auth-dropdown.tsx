@@ -4,7 +4,7 @@ import Link from "next/link";
 import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,8 +28,7 @@ import { Status } from "@/types/models/business-result";
 import { UserContext } from "@/types/models/user-context";
 
 interface AuthDropdownProps
-  extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
-    ButtonProps {
+  extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger> {
   user?: UserContext | null;
 }
 
@@ -87,7 +86,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-56 z-50" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">

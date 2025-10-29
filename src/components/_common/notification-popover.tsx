@@ -255,7 +255,7 @@ function NotificationItem({
         !noti.notificationXUsers.filter(x => x.notificationId)[0].isRead && "bg-blue-50/50 dark:bg-blue-900/10"
       )}
     >
-      <div className="mt-0.5 flex-shrink-0">
+      <div className="mt-0.5 shrink-0">
         {getNotificationIcon()}
       </div>
 

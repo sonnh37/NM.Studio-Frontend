@@ -26,7 +26,7 @@ export const TitleProvider: React.FC<TitleProviderProps> = ({
         >
           {title}
         </h2>
-        <p className="text-center tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
+        <p className="text-center tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200">
           Nhu my studio
         </p>
       </div>

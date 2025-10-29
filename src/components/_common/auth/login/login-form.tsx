@@ -80,7 +80,7 @@ export const LoginForm = () => {
 
   return (
     <Form {...form}>
-      <div className="form font-normal w-full max-w-xs rounded-md shadow-xl overflow-hidden z-[100] relative snap-start shrink-0 p-8 bg-opacity-80 bg-gray-900 r flex flex-col items-center justify-center gap-3 transition-all duration-300">
+      <div className="form font-normal w-full max-w-xs rounded-md shadow-xl overflow-hidden z-100 relative snap-start shrink-0 p-8 bg-opacity-80 bg-gray-900 r flex flex-col items-center justify-center gap-3 transition-all duration-300">
         <p className="text-white translate-x-[46%] -rotate-90 tracking-[20px] transition-all hover:translate-x-[50%] -translate-y-1/2  text-2xl absolute right-0">
           Nhu My
         </p>
@@ -107,7 +107,7 @@ export const LoginForm = () => {
                         type="text"
                         {...field}
                         placeholder="Enter Your Email"
-                        className="w-full py-px pl-0 text-sm bg-transparent outline-none focus:ring-0 border-0 border-b-2 focus:outline-none "
+                        className="w-full py-px pl-0 text-sm bg-transparent outline-hidden focus:ring-0 border-0 border-b-2 focus:outline-hidden "
                       />
                     </div>
                   </FormControl>
@@ -128,7 +128,7 @@ export const LoginForm = () => {
                         type="password"
                         {...field}
                         placeholder="Enter Your Password"
-                        className="w-full py-px pl-0 text-sm bg-transparent outline-none focus:ring-0 border-0 border-b-2  focus:outline-none"
+                        className="w-full py-px pl-0 text-sm bg-transparent outline-hidden focus:ring-0 border-0 border-b-2  focus:outline-hidden"
                       />
                     </div>
                   </FormControl>
@@ -140,14 +140,14 @@ export const LoginForm = () => {
             <div className="inline-flex pt-6 gap-3">
               <button
                 type="submit"
-                className="px-6 focus:outline-none focus:scale-110  text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-[#D9D9D9] bg-customPink shadow-customPink shadow-lg"
+                className="px-6 focus:outline-hidden focus:scale-110  text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-[#D9D9D9] bg-custom-pink shadow-custom-pink shadow-lg"
               >
                 Đăng nhập
               </button>
               <button
                 type="button"
                 onClick={() => router.push("/register")}
-                className="px-6 focus:outline-none focus:scale-110  text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-customPink bg-[#D9D9D9] shadow-customPink shadow-lg"
+                className="px-6 focus:outline-hidden focus:scale-110  text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-custom-pink bg-[#D9D9D9] shadow-custom-pink shadow-lg"
               >
                 Đăng ký
               </button>

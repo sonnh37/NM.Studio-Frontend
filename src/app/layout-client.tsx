@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
-import "./globals.css";
+import "../styles/globals.css";
 
 import { Toaster } from "@/components/_common/toast";
 import { UserAccessControl } from "@/components/_common/user-access-control";

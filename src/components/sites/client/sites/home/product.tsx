@@ -59,7 +59,7 @@ const ProductHome = () => {
           <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
             <span className="border-b">Váy cưới</span>
           </h2>
-          <p className="text-center pb-6 tracking-widest text-xs uppercase font-[100] text-neutral-600 dark:text-neutral-200">
+          <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200">
             THÀNH LẬP VÀO NĂM 2017, Như My ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI VÀ TRỞ
             THÀNH THƯƠNG HIỆU HÀNG ĐẦU VỀ CHỤP ẢNH CƯỚI TPHCM VÀ CÁC TỈNH LÂN
             CẬN VỚI 10 CHI NHÁNH. TONY WEDDING LUÔN TỰ HÀO MANG ĐẾN CHO BẠN SỰ
@@ -71,7 +71,7 @@ const ProductHome = () => {
           <div className="col-span-2 sm:col-span-1 md:col-span-2 bg-gray-50 h-auto md:h-full flex flex-col">
             <a
               href={`/products?categoryName=${productRepresentatives[0]?.category?.name}`}
-              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 flex-grow"
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 grow"
             >
               <Image
                 width={9999}
@@ -83,7 +83,7 @@ const ProductHome = () => {
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+              <div className="absolute inset-0 bg-linear-to-b from-gray-900/25 to-gray-900/5"></div>
               <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
                 {productRepresentatives[0]?.category?.name || "N/A"}
               </h3>
@@ -104,7 +104,7 @@ const ProductHome = () => {
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+              <div className="absolute inset-0 bg-linear-to-b from-gray-900/25 to-gray-900/5"></div>
               <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
                 {productRepresentatives[1]?.category?.name || "N/A"}
               </h3>
@@ -124,7 +124,7 @@ const ProductHome = () => {
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+                <div className="absolute inset-0 bg-linear-to-b from-gray-900/25 to-gray-900/5"></div>
                 <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
                   {productRepresentatives[2]?.category?.name || "N/A"}
                 </h3>
@@ -143,7 +143,7 @@ const ProductHome = () => {
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+                <div className="absolute inset-0 bg-linear-to-b from-gray-900/25 to-gray-900/5"></div>
                 <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
                   {productRepresentatives[3]?.category?.name || "N/A"}
                 </h3>
@@ -153,7 +153,7 @@ const ProductHome = () => {
           <div className="col-span-2 sm:col-span-1 md:col-span-1 bg-sky-50 h-auto md:h-full flex flex-col">
             <a
               href={`/products?categoryName=${productRepresentatives[4]?.category?.name}`}
-              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 flex-grow"
+              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 grow"
             >
               <Image
                 width={9999}
@@ -165,7 +165,7 @@ const ProductHome = () => {
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+              <div className="absolute inset-0 bg-linear-to-b from-gray-900/25 to-gray-900/5"></div>
               <h3 className="z-10 text-2xl font-medium text-white absolute top-0 left-0 p-4 xs:text-xl md:text-3xl">
                 {productRepresentatives[4]?.category?.name || "N/A"}
               </h3>

@@ -18,9 +18,9 @@ const InfiniteScrollingLogosAnimation = () => {
             <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
                 <span className="border-b">Như My đồng hành cùng với các thương hiệu</span>
             </h2>
-            <p className="text-center pb-6 tracking-widest text-sm uppercase font-[100] text-neutral-600 dark:text-neutral-200"></p>
+            <p className="text-center pb-6 tracking-widest text-sm uppercase font-thin text-neutral-600 dark:text-neutral-200"></p>
             <div
-                className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10 before:bg-gradient-to-r before:from-transparent before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:bg-gradient-to-l after:from-transparent after:to-transparent after:content-['']">
+                className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10 before:bg-linear-to-r before:from-transparent before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:bg-linear-to-l after:from-transparent after:to-transparent after:content-['']">
                 <motion.div
                     transition={{
                         duration: 10,
