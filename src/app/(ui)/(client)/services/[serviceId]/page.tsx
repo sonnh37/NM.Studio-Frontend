@@ -12,15 +12,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Navigation, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import PostContent from "@/components/_common/shared/PostContent";
-import PostHeader from "@/components/_common/shared/PostHeader";
-import PostReadingProgress from "@/components/_common/shared/PostReadingProgress";
-import PostSharing from "@/components/_common/shared/PostSharing";
-import PostToc from "@/components/_common/shared/PostToc";
-import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
+import PostContent from "@/components/_common/tiptaps_v2/shared/post-content";
+import PostHeader from "@/components/_common/tiptaps_v2/shared/post-header";
+import PostSharing from "@/components/_common/tiptaps_v2/shared/post-sharing";
+import PostToc from "@/components/_common/tiptaps_v2/shared/post-toc";
+import PostReadingProgress from "@/components/_common/tiptaps_v2/shared/reading-progress";
+import TiptapRenderer from "@/components/_common/tiptaps_v2/tiptap-renderer/client-renderer";
 import Image from "next/image";
 import { useMemo, use } from "react";
-export default function Page(props: { params: Promise<{ serviceId: string }> }) {
+export default function Page(props: {
+  params: Promise<{ serviceId: string }>;
+}) {
   const params = use(props.params);
   const { serviceId } = params;
   const query: ServiceGetAllQuery = {

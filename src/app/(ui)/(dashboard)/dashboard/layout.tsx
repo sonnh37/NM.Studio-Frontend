@@ -1,4 +1,5 @@
 "use client";
+import EditForm from "@/app/(other)/(edit)/_components/EditForm";
 import { AuthDropdown } from "@/components/_common/auth-dropdown";
 import DynamicBreadcrumbs from "@/components/_common/breadcrumbs/dynamic-breadcrumbs";
 // import { ChatPopover } from "@/components/_common/chat-popover";

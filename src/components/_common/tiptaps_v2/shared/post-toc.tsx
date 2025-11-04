@@ -25,9 +25,24 @@ const PostToc = () => {
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
-    if (hash) {
-      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+    if (!hash) return;
+
+    const el = document.getElementById(hash);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      return;
     }
+
+    // chờ element xuất hiện
+    const interval = setInterval(() => {
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        clearInterval(interval);
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (!items.length) return null;
@@ -37,9 +52,9 @@ const PostToc = () => {
       <div className="lg:sticky lg:h-[calc(100vh-120px)] lg:top-24 overflow-auto">
         <h2 className="text-sm font-bold uppercase">On this page</h2>
         <ul className="mt-4 space-y-3.5 text-sm">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <li
-              key={item.id}
+              key={item.id || `toc-${index}`}
               style={{
                 paddingLeft: `${(item.level - 2) * 1}rem`,
               }}

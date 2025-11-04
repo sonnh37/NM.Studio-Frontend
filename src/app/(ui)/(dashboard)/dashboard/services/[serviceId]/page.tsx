@@ -17,7 +17,11 @@ export default function Page() {
     error,
   } = useQuery({
     queryKey: ["fetchServiceById", params.serviceId],
-    queryFn: () => serviceService.getById(params.serviceId as string, ["backgroundCover", "thumbnail"]),
+    queryFn: () =>
+      serviceService.getById(params.serviceId as string, [
+        "backgroundCover",
+        "thumbnail",
+      ]),
     enabled: !!params.serviceId,
     select: (data) => data.data,
     refetchOnWindowFocus: false,

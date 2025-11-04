@@ -21,6 +21,7 @@ import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormInputNumber,
+  FormInputNumberCurrency,
   FormInputReactTipTapEditor,
   FormSwitch,
   ImageUpload,
@@ -71,7 +72,11 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
     resolver: zodResolver(formSchema) as unknown as Resolver<
       z.infer<typeof formSchema>
     >,
-    defaultValues: formSchema.parse(initialData ?? {}),
+    defaultValues: formSchema.parse(
+      initialData ?? {
+        name: null,
+      }
+    ),
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -158,7 +163,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
           command.backgroundCoverId = uploadResultBg.data.id;
         }
       }
-      const response = await serviceService.create(pendingValues);
+      const response = await serviceService.create(command);
       if (response.status != Status.OK) throw new Error(response.error?.detail);
       toast.success("Created!");
       setShowConfirmationDialog(false);
@@ -233,7 +238,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({ initialData }) => {
                   placeholder="Enter slug"
                 />
 
-                <FormInputNumber
+                <FormInputNumberCurrency
                   form={form}
                   name="price"
                   label="Price"

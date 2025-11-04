@@ -111,9 +111,8 @@ export function DeleteBaseEntitysDialog<TData>({
                 <DialogHeader>
                   <DialogTitle>Are you absolutely sure?</DialogTitle>
                   <DialogDescription>
-                    This action cannot be undone. This will permanently
-                    delete your{" "}
-                    <span className="font-medium">{list.length}</span>
+                    This action cannot be undone. This will permanently delete
+                    your <span className="font-medium">{list.length}</span>
                     {list.length === 1 ? " task" : " list"} from our servers.
                   </DialogDescription>
                 </DialogHeader>
@@ -144,9 +143,8 @@ export function DeleteBaseEntitysDialog<TData>({
                 <DialogHeader>
                   <DialogTitle>Are you absolutely sure?</DialogTitle>
                   <DialogDescription>
-                    This action cannot be undone. This will permanently
-                    delete your{" "}
-                    <span className="font-medium">{list.length}</span>
+                    This action cannot be undone. This will permanently delete
+                    your <span className="font-medium">{list.length}</span>
                     {list.length === 1 ? " task" : " list"} from our servers.
                   </DialogDescription>
                 </DialogHeader>

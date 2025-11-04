@@ -34,23 +34,49 @@ export const components: Partial<Components> = {
   h2: (props) => <HeadingWithAnchor level={2} {...props} />,
   h3: (props) => <HeadingWithAnchor level={3} {...props} />,
   h4: (props) => <HeadingWithAnchor level={4} {...props} />,
-  img: ({ src, alt, width, ...props }: ImageProps) => (
-    <Image
-      src={src}
-      alt={alt || ""}
-      width={+props["data-width"]}
-      height={+props["data-height"]}
-      className="mx-auto rounded-lg"
-    />
-  ),
-  iframe: ({ ...props }) => (
-    <iframe className="w-full h-full aspect-video mx-auto rounded-lg" />
-    //  <div className="relative pt-[56.25%] rounded-lg overflow-hidden">
-    //    <div className="absolute inset-0">
-    //      <iframe {...props} allowFullScreen={true} className="w-full h-full" />
-    //    </div>
-    //  </div>
-  ),
+  img: ({ src, alt, width, style, ...props }: ImageProps) => {
+    // Lấy giá trị width và height từ data-attributes
+    const imageWidth = props["data-width"];
+    const imageHeight = props["data-height"];
+
+    // Nếu có style cụ thể từ editor thì dùng style này
+    const computedStyle = style ? { ...style } : {};
+
+    // Cập nhật width nếu cần thiết, có thể thay đổi bằng percentage hoặc pixel
+    if (imageWidth) {
+      computedStyle.width = `${parseFloat(style?.width || "100")}%`; // Điều chỉnh dựa trên tỷ lệ phần trăm
+    }
+
+    return (
+      <img
+        src={src}
+        alt={alt || ""}
+        width={imageWidth || 0}
+        height={imageHeight || 0}
+        className="mx-auto rounded-lg"
+        style={computedStyle} // Áp dụng các style tính toán được
+      />
+    );
+  },
+  iframe: ({ ...props }) => {
+    // <iframe className="w-full h-full aspect-video mx-auto rounded-lg" />
+    const { autoPlay, loop, ...rest } = props;
+
+    return (
+      <div className="relative pt-[56.25%] rounded-lg overflow-hidden">
+        <div className="absolute inset-0">
+          <iframe
+            {...rest}
+            autoPlay={autoPlay === true || autoPlay === "true"}
+            loop={loop === true || loop === "true"}
+            allowFullScreen
+            className="w-full h-full"
+          />
+          ;
+        </div>
+      </div>
+    );
+  },
   pre: ({ children, ...props }: PreProps) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
