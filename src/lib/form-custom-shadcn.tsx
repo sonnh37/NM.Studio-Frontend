@@ -6,11 +6,9 @@ import {
   SelectV2Trigger,
   SelectV2Value,
 } from "@/components/_common/select";
-import { PlateEditor } from "@/components/_common/editor/plate-editor";
-import { SettingsProvider } from "@/components/_common/editor/settings";
-import TiptapEditor, {
-  type TiptapEditorRef,
-} from "@/components/_common/tiptaps/TiptapEditor";
+// import TiptapEditor, {
+//   type TiptapEditorRef,
+// } from "@/components/_common/tiptaps/TiptapEditor";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -66,10 +64,14 @@ import { PhoneInput } from "@/components/_common/phone-input";
 import { vi } from "date-fns/locale";
 import { FileUpload } from "@/components/_common/custom/file-upload";
 import Image from "next/image";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import TiptapEditor, {
+  TiptapEditorRef,
+} from "@/components/_common/tiptaps/TiptapEditor";
 
-const Editor = dynamic(
-  () => import("@/components/_common/react-tiptap-editor/editor")
-);
+// const Editor = dynamic(
+//   () => import("@/components/_common/react-tiptap-editor/editor")
+// );
 interface FormInputProps<TFieldValues extends FieldValues> {
   label?: string;
   name: FieldPath<TFieldValues>;
@@ -204,37 +206,36 @@ export function FormInputReactTipTapEditor<TFieldValues extends FieldValues>({
     />
   );
 }
+// export const FormInputPlateJsEditor = <TFieldValues extends FieldValues>({
+//   name,
+//   form,
+//   label = "",
+// }: FormInputProps<TFieldValues>) => {
+//   return (
+//     <FormField
+//       control={form.control}
+//       name={name}
+//       render={({ field }) => {
+//         return (
+//           <FormItem>
+//             <FormLabel className="sr-only">{label}</FormLabel>
+//             <FormControl>
+//               {/* <Editor value={field.value} onChange={field.onChange} /> */}
+//               <div className="h-screen w-full" data-registry="plate">
+//                 <SettingsProvider>
+//                   <PlateEditor value={field.value} onChange={field.onChange} />
+//                 </SettingsProvider>
 
-export const FormInputPlateJsEditor = <TFieldValues extends FieldValues>({
-  name,
-  form,
-  label = "",
-}: FormInputProps<TFieldValues>) => {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => {
-        return (
-          <FormItem>
-            <FormLabel className="sr-only">{label}</FormLabel>
-            <FormControl>
-              {/* <Editor value={field.value} onChange={field.onChange} /> */}
-              <div className="h-screen w-full" data-registry="plate">
-                <SettingsProvider>
-                  <PlateEditor value={field.value} onChange={field.onChange} />
-                </SettingsProvider>
-
-                <Toaster />
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        );
-      }}
-    />
-  );
-};
+//                 <Toaster />
+//               </div>
+//             </FormControl>
+//             <FormMessage />
+//           </FormItem>
+//         );
+//       }}
+//     />
+//   );
+// };
 
 // ------------------------------------------------------------------------------
 
@@ -1086,7 +1087,11 @@ interface ImageUploadProps {
   onFileChange?: (file: File | null) => void;
 }
 
-export function ImageUpload({ label = "Upload Image", defaultValue, onFileChange }: ImageUploadProps) {
+export function ImageUpload({
+  label = "Upload Image",
+  defaultValue,
+  onFileChange,
+}: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(defaultValue ?? null);
 
   const handleChange = (file: File | null) => {

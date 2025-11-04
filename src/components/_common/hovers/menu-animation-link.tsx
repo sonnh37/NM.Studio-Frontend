@@ -1,21 +1,22 @@
 import React from "react";
-import { cn } from "@/lib/utils"; // Tùy chỉnh nếu bạn có hàm `cn` cho classNames
+import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
 
 interface MenuAnimationLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   className?: string;
 }
-const MenuAnimationLink = React.forwardRef<
-  HTMLAnchorElement,
-  MenuAnimationLinkProps
->(({ href, className, children, ...props }, ref) => {
+
+const MenuAnimationLink = ({
+  href,
+  className,
+  children,
+  ...props
+}: MenuAnimationLinkProps) => {
   return (
     <Link
       href={href}
-      ref={ref}
       className={cn(
         "relative leading-loose text-foreground before:absolute before:-bottom-1 before:right-0 before:w-0 before:h-[2px] before:rounded-sm before:bg-foreground before:transition-all before:duration-500 hover:before:w-full hover:before:left-0",
         className
@@ -23,12 +24,8 @@ const MenuAnimationLink = React.forwardRef<
       {...props}
     >
       {children}
-      
     </Link>
-    
   );
-});
-
-MenuAnimationLink.displayName = "MenuAnimationLink";
+};
 
 export default MenuAnimationLink;

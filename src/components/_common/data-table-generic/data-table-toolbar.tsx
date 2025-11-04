@@ -22,25 +22,24 @@ export function DataTableToolbar<TData>({
   columnSearch = null,
   children,
 }: DataTableToolbarProps<TData>) {
+  const column = columnSearch ? table.getColumn(columnSearch) : undefined;
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <>
-          {columnSearch && (
+          {columnSearch && column ? (
             <Input
               placeholder={`Enter ${columnSearch}...`}
-              value={
-                (table.getColumn(columnSearch)?.getFilterValue() as string) ??
-                ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn(columnSearch)
-                  ?.setFilterValue(event.target.value)
-              }
+              value={(column.getFilterValue() ?? "") as string}
+              onChange={(event) => column.setFilterValue(event.target.value)}
               className="h-8 w-[150px] lg:w-[250px]"
             />
-          )}
+          ) : columnSearch ? (
+            <div className="text-sm text-rose-500">
+              Column &quot;{columnSearch}&quot; not found
+            </div>
+          ) : null}
           {filterEnums &&
             filterEnums.map((filter: any) => {
               const column = table.getColumn(filter.columnId);

@@ -1,27 +1,22 @@
-import { cn } from "@/lib/utils"; // Tùy chỉnh nếu bạn có hàm `cn` cho classNames
-import React from "react";
-import "./style.css";
+import { cn } from "@/lib/utils"
+import React from "react"
+import "./style.css"
 
-interface MenuAnimationButtonProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  className?: string;
+type MenuAnimationButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  className?: string
 }
-const MenuAnimationButton = React.forwardRef<
-  HTMLAnchorElement,
-  MenuAnimationButtonProps
->(({ className, children }) => {
+
+export function MenuAnimationButton({ className, children, ...props }: MenuAnimationButtonProps) {
   return (
     <button
+      data-slot="menu-animation-button"
       className={cn(
         "menu__button rounded-sm border border-neutral-300 overflow-hidden",
         className
       )}
+      {...props}
     >
-      <span className="">{children}</span>
+      <span>{children}</span>
     </button>
-  );
-});
-
-MenuAnimationButton.displayName = "MenuAnimationButton";
-
-export default MenuAnimationButton;
+  )
+}

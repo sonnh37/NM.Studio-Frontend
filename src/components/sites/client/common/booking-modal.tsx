@@ -14,9 +14,9 @@ import {
 import { toLocalISOString } from "@/lib/utils";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
-import { ServiceBookingCreateCommand } from "@/types/commands/service-booking-command";
+import { ServiceBookingCreateCommand } from "@/types/cqrs/commands/service-booking-command";
 import { ServiceBookingStatus } from "@/types/entities/service-booking";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Status } from "@/types/models/business-result";
 
 const formSchema = z.object({
   email: z.string().email().nullable().optional(),
@@ -92,9 +93,12 @@ export function BookingModal() {
         isDepositPaid: false,
       };
       const response = await serviceBookingService.create(command);
-      if (response.status != 1) throw new Error(response.message);
+      if (response.status != Status.OK) {
+        toast.error(response.error?.detail);
+        return;
+      }
 
-      toast.success(response.message);
+      toast.success("Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);

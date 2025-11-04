@@ -8,37 +8,49 @@ import {PasswordInput} from './password-input';
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
-const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
-    ({className, type, ...props}, ref) => {
-        // Kiểm tra nếu type là 'password'
-        if (type === 'password') {
-            return (
-                <PasswordInput
-                    placeholder=" "
-                    className={cn('peer', className)}
-                    ref={ref}
-                    {...props}
-                />
-            );
-        }
-
-        // Nếu không phải 'password', sử dụng Input mặc định
+const FloatingInput = (
+    {
+        ref,
+        className,
+        type,
+        ...props
+    }: InputProps & {
+        ref: React.RefObject<HTMLInputElement>;
+    }
+) => {
+    // Kiểm tra nếu type là 'password'
+    if (type === 'password') {
         return (
-            <Input
+            <PasswordInput
                 placeholder=" "
                 className={cn('peer', className)}
                 ref={ref}
                 {...props}
             />
         );
-    },
-);
+    }
+
+    // Nếu không phải 'password', sử dụng Input mặc định
+    return (
+        <Input
+            placeholder=" "
+            className={cn('peer', className)}
+            ref={ref}
+            {...props}
+        />
+    );
+};
 FloatingInput.displayName = 'FloatingInput';
 
-const FloatingLabel = React.forwardRef<
-    React.ElementRef<typeof Label>,
-    React.ComponentPropsWithoutRef<typeof Label>
->(({className, ...props}, ref) => {
+const FloatingLabel = (
+    {
+        ref,
+        className,
+        ...props
+    }: React.ComponentPropsWithoutRef<typeof Label> & {
+        ref: React.RefObject<React.ElementRef<typeof Label>>;
+    }
+) => {
     return (
         <Label
             className={cn(
@@ -49,22 +61,28 @@ const FloatingLabel = React.forwardRef<
             {...props}
         />
     );
-});
+};
 FloatingLabel.displayName = 'FloatingLabel';
 
 type FloatingLabelInputProps = InputProps & { label?: string };
 
-const FloatingLabelInput = React.forwardRef<
-    React.ElementRef<typeof FloatingInput>,
-    React.PropsWithoutRef<FloatingLabelInputProps>
->(({id, label, ...props}, ref) => {
+const FloatingLabelInput = (
+    {
+        ref,
+        id,
+        label,
+        ...props
+    }: React.PropsWithoutRef<FloatingLabelInputProps> & {
+        ref: React.RefObject<React.ElementRef<typeof FloatingInput>>;
+    }
+) => {
     return (
         <div className="relative">
             <FloatingInput ref={ref} id={id} {...props} />
             <FloatingLabel htmlFor={id}>{label}</FloatingLabel>
         </div>
     );
-});
+};
 FloatingLabelInput.displayName = 'FloatingLabelInput';
 
 export {FloatingInput, FloatingLabel, FloatingLabelInput};

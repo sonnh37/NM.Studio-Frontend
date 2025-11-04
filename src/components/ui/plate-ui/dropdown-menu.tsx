@@ -19,12 +19,13 @@ export const DropdownMenu = DropdownMenuPrimitive.Root;
 
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
-export const DropdownMenuGroup = React.forwardRef<
-  HTMLDivElement,
-  { label?: React.ReactNode } & React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.Group
-  >
->(({ label, ...props }, ref) => {
+export const DropdownMenuGroup = (
+  {
+    ref,
+    label,
+    ...props
+  }
+) => {
   return (
     <>
       <DropdownMenuSeparator
@@ -48,18 +49,19 @@ export const DropdownMenuGroup = React.forwardRef<
       </DropdownMenuPrimitive.Group>
     </>
   );
-});
+};
 
 export const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
 
 export const DropdownMenuSub = DropdownMenuPrimitive.Sub;
 
-export const DropdownMenuRadioGroup = React.forwardRef<
-  HTMLDivElement,
-  { label?: React.ReactNode } & React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.RadioGroup
-  >
->(({ label, ...props }, ref) => {
+export const DropdownMenuRadioGroup = (
+  {
+    ref,
+    label,
+    ...props
+  }
+) => {
   return (
     <>
       <DropdownMenuSeparator
@@ -83,7 +85,7 @@ export const DropdownMenuRadioGroup = React.forwardRef<
       </DropdownMenuPrimitive.RadioGroup>
     </>
   );
-});
+};
 
 export const DropdownMenuSubTrigger = withRef<
   typeof DropdownMenuPrimitive.SubTrigger,

@@ -150,10 +150,16 @@ export const Draggable = withRef<'div', PlateRenderElementProps>(
   }
 );
 
-const Gutter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ children, className, ...props }, ref) => {
+const Gutter = (
+  {
+    ref,
+    children,
+    className,
+    ...props
+  }: React.HTMLAttributes<HTMLDivElement> & {
+    ref: React.RefObject<HTMLDivElement>;
+  }
+) => {
   const { editor, useOption } = useEditorPlugin(BlockSelectionPlugin);
   const element = useElement();
   const path = usePath();
@@ -204,7 +210,7 @@ const Gutter = React.forwardRef<
       {children}
     </div>
   );
-});
+};
 
 const DragHandle = React.memo(() => {
   const editor = useEditorRef();
@@ -235,26 +241,32 @@ const DragHandle = React.memo(() => {
 });
 
 const DropLine = React.memo(
-  React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-    ({ className, ...props }, ref) => {
-      const { dropLine } = useDropLine();
-
-      if (!dropLine) return null;
-
-      return (
-        <div
-          ref={ref}
-          {...props}
-          className={cn(
-            'slate-dropLine',
-            'absolute inset-x-0 h-0.5 opacity-100 transition-opacity',
-            'bg-brand/50',
-            dropLine === 'top' && '-top-px',
-            dropLine === 'bottom' && '-bottom-px',
-            className
-          )}
-        />
-      );
+  (
+    {
+      ref,
+      className,
+      ...props
+    }: React.HTMLAttributes<HTMLDivElement> & {
+      ref: React.RefObject<HTMLDivElement>;
     }
-  )
+  ) => {
+    const { dropLine } = useDropLine();
+
+    if (!dropLine) return null;
+
+    return (
+      <div
+        ref={ref}
+        {...props}
+        className={cn(
+          'slate-dropLine',
+          'absolute inset-x-0 h-0.5 opacity-100 transition-opacity',
+          'bg-brand/50',
+          dropLine === 'top' && '-top-px',
+          dropLine === 'bottom' && '-bottom-px',
+          className
+        )}
+      />
+    );
+  }
 );

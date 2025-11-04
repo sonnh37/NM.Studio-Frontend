@@ -79,7 +79,7 @@ export function AuthorSelect<TFieldValues extends FieldValues>({
                 </div>
                 {authors.map((option) => (
                   <SelectItem key={option.id} value={option.id}>
-                    {option.email}
+                    {option.email ?? option.username}
                   </SelectItem>
                 ))}
                 {isFetching && (

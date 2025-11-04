@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import TiptapEditor, { type TiptapEditorRef } from "@/components/_common/tiptaps/TiptapEditor";
+
 import { getPost, savePost } from "@/services/post";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 interface PostForm {
   content: string;
@@ -22,18 +23,19 @@ export default function EditForm() {
       control={control}
       name="content"
       render={({ field }) => (
-        <TiptapEditor
-          ref={editorRef}
-          ssr={true}
-          output="html"
-          placeholder={{
-            paragraph: "Type your content here...",
-            imageCaption: "Type caption for image (optional)",
-          }}
-          contentMinHeight={256}
-          contentMaxHeight={640}
-          onContentChange={field.onChange}
-          initialContent={field.value}
+        <SimpleEditor
+        // ref={editorRef}
+        // ssr={true}
+        // output="html"
+
+        // placeholder={{
+        //   paragraph: "Type your content here...",
+        //   imageCaption: "Type caption for image (optional)",
+        // }}
+        // contentMinHeight={256}
+        // contentMaxHeight={640}
+        // onContentChange={field.onChange}
+        // initialContent={field.value}
         />
       )}
     />

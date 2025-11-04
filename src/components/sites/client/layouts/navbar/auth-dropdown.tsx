@@ -2,9 +2,8 @@ import Link from "next/link";
 
 import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
 
-import MenuAnimationButton from "@/components/_common/hovers/buttons/menu-animation-button/menu-animation-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,10 +25,10 @@ import { UserContext } from "@/types/models/user-context";
 import { Status } from "@/types/models/business-result";
 import { useRouter } from "next/navigation";
 import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { MenuAnimationButton } from "@/components/_common/hovers/buttons/menu-animation-button/menu-animation-button";
 
 interface AuthDropdownProps
-  extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
-    ButtonProps {
+  extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger> {
   user?: UserContext | null;
 }
 
@@ -50,7 +49,6 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
   const handleLogout = () => {
     authService.logout().then((res) => {
       if (res.status == Status.OK) {
-        userContextHelper.clear();
         router.push("/");
       }
     });

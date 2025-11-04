@@ -98,10 +98,15 @@ const ColumnDragHandle = React.memo(() => {
   );
 });
 
-const DropLine = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+const DropLine = (
+  {
+    ref,
+    className,
+    ...props
+  }: React.HTMLAttributes<HTMLDivElement> & {
+    ref: React.RefObject<HTMLDivElement>;
+  }
+) => {
   const { dropLine } = useDropLine({ orientation: 'horizontal' });
 
   if (!dropLine) return null;
@@ -122,4 +127,4 @@ const DropLine = React.forwardRef<
       )}
     />
   );
-});
+};

@@ -43,12 +43,12 @@ export function DataTableFilterSheet({
   const fields = renderFormFields ? renderFormFields() : [];
   const handleClear = () => {
     form.reset();
-  }
+  };
   if (fields.length === 0) return null;
 
   return (
     <Sheet key={side} open={isSheetOpen} onOpenChange={handleSheetChange}>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button size="sm" variant="outline" className="h-8 gap-1">
           <FiFilter className="h-4 w-4" />
           Filter

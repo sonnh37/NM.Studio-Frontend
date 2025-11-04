@@ -334,12 +334,7 @@ export default function AlbumTable() {
                   className="text-primary-foreground sm:whitespace-nowrap"
                   href={`${pathname}/new`}
                 >
-                  <Button
-                    size={"sm"}
-                    
-                  >
-                    Add
-                  </Button>
+                  <Button size={"sm"}>Add</Button>
                 </Link>
               </DataTableToolbar>
             </DataTableComponent>
@@ -391,7 +386,7 @@ export function AlbumDialog({
   const [defaultImages, setDefaultImages] = useState<MediaBaseState[]>([]);
   const [hasChange, setHasChange] = useState(false);
   const [coverImage, setCoverImage] = useState<MediaBaseState | null>(null);
-
+  console.log("check_cover", album);
   useEffect(() => {
     const fetchImages = async () => {
       if (album?.albumImages) {
@@ -402,12 +397,11 @@ export function AlbumDialog({
 
         setPickedImages(images);
         setDefaultImages(images);
-
         // Tìm ảnh bìa hiện tại
         if (album.coverUrl) {
-          const currentCover = images.find(
-            (img) => img.mediaUrl === album.coverUrl
-          );
+          const currentCover = album.albumImages.find(
+            (ai) => ai.isCover
+          )?.image;
           if (currentCover) {
             setCoverImage(currentCover);
           }
@@ -448,15 +442,15 @@ export function AlbumDialog({
     return currentCoverUrl !== originalCoverUrl;
   };
 
- const checkIfChangedDefaultImg = (newPicked: MediaBaseState[]) => {
-  const defaultIds = new Set(defaultImages.map((img) => img.id));
-  const pickedIds = new Set(newPicked.map((img) => img.id));
+  const checkIfChangedDefaultImg = (newPicked: MediaBaseState[]) => {
+    const defaultIds = new Set(defaultImages.map((img) => img.id));
+    const pickedIds = new Set(newPicked.map((img) => img.id));
 
-  if (defaultIds.size !== pickedIds.size) return true;
-  for (const id of Array.from(pickedIds))
-    if (!defaultIds.has(id)) return true;
-  return false;
-};
+    if (defaultIds.size !== pickedIds.size) return true;
+    for (const id of Array.from(pickedIds))
+      if (!defaultIds.has(id)) return true;
+    return false;
+  };
 
   // upload ảnh mới
   const handleAddImage = (section: "available" | "picked") => {
@@ -522,121 +516,117 @@ export function AlbumDialog({
     setHasChange(true);
   };
 
-  // lưu thay đổi (upload ảnh mới và cập nhật ảnh bìa)
+  // Hàm xử lý upload ảnh mới
+  const handleUploadNewImages = async (newFiles: MediaBaseState[]) => {
+    const uploadedImages: MediaBaseState[] = [];
+    for (const img of newFiles) {
+      try {
+        const result = await mediaUploadService.uploadFile(img.file!, "Blog");
+        if (result?.status === Status.OK && result.data) {
+          uploadedImages.push(result.data);
+        }
+      } catch (error) {
+        console.error(`Error uploading file ${img.displayName}:`, error);
+        throw new Error(`Failed to upload ${img.displayName}`);
+      }
+    }
+    return uploadedImages;
+  };
+
+  // Hàm xử lý cập nhật danh sách ảnh album
+  const handleUpdateAlbumImages = async (
+    existingImages: MediaBaseState[],
+    uploadedImages: MediaBaseState[]
+  ) => {
+    const allImageIds = [
+      ...existingImages.map((img) => img.id!).filter(Boolean),
+      ...uploadedImages.map((img) => img.id!).filter(Boolean),
+    ];
+
+    if (allImageIds.length === 0) {
+      throw new Error("No images selected.");
+    }
+
+    const albumWithImagesCreateCommand: AlbumWithImagesCreateCommand = {
+      albumId: album?.id,
+      imageIds: allImageIds,
+    };
+
+    const result = await albumService.createWithImages(
+      albumWithImagesCreateCommand
+    );
+    if (result?.status !== Status.OK) {
+      throw new Error(result.error?.detail || "Failed to update album images");
+    }
+
+    return [
+      ...existingImages.filter((img) => !img.mediaUrl?.startsWith("blob:")),
+      ...uploadedImages,
+    ];
+  };
+
+  // Hàm xử lý cập nhật ảnh bìa
+  const handleUpdateCoverImage = async () => {
+    if (!coverImage?.id) {
+      throw new Error("No cover image selected");
+    }
+
+    const updateAlbumCommand: AlbumSetCoverUpdateCommand = {
+      albumId: album?.id!,
+      imageId: coverImage.id,
+    };
+
+    const updateResult = await albumService.setCoverAlbum(updateAlbumCommand);
+    if (updateResult?.status !== Status.OK) {
+      throw new Error(
+        updateResult.error?.detail || "Failed to update cover image"
+      );
+    }
+  };
+
+  // Hàm xử lý lưu tất cả thay đổi
   const handleSave = async () => {
     try {
-      setHasChange(false);
-
-      // Kiểm tra riêng biệt từng loại thay đổi
       const hasCoverChanged = coverImage?.mediaUrl !== album?.coverUrl;
       const hasImagesChanged = checkIfChangedDefaultImg(pickedImages);
 
-      // Nếu không có thay đổi gì thì không làm gì cả
       if (!hasCoverChanged && !hasImagesChanged) {
-        toast.info("No changes to save.");
+        toast.info("No changes to save");
         return;
       }
 
-      let successMessage = "Album saved successfully!";
+      let successMessages: string[] = [];
 
-      // 1. Xử lý thay đổi ảnh bìa (nếu có)
-      if (hasCoverChanged) {
-        const updateAlbumCommand: AlbumSetCoverUpdateCommand = {
-          albumId: album?.id!,
-          imageId: coverImage?.id!,
-        };
-
-        const updateResult =
-          await albumService.setCoverAlbum(updateAlbumCommand);
-        if (updateResult?.status !== Status.OK) {
-          if (updateResult.error?.status === 400) {
-            toast.warning(updateResult.error?.detail);
-            return;
-          }
-          toast.error(updateResult.error?.detail);
-          return;
-        }
-        successMessage = "Cover image updated successfully!";
-      }
-
-      // 2. Xử lý thay đổi danh sách ảnh (nếu có)
+      // Xử lý thay đổi danh sách ảnh
       if (hasImagesChanged) {
-        // 1. Phân loại ảnh
         const newFiles = pickedImages.filter((img) => img.file);
         const existingImages = pickedImages.filter((img) => !img.file);
 
-        if (newFiles.length === 0 && existingImages.length === 0) {
-          throw new Error("No images selected.");
-        }
+        // 1. Upload ảnh mới trước
+        const uploadedImages =
+          newFiles.length > 0 ? await handleUploadNewImages(newFiles) : [];
 
-        const uploadedImages: MediaBaseState[] = [];
-
-        // 2. Upload ảnh mới trước
-        if (newFiles.length > 0) {
-          for (const img of newFiles) {
-            try {
-              const result = await mediaUploadService.uploadFile(
-                img.file!,
-                "Blog"
-              );
-              if (result?.status === Status.OK && result.data) {
-                uploadedImages.push(result.data);
-              }
-            } catch (error) {
-              console.error(`Error uploading file ${img.displayName}:`, error);
-            }
-          }
-        }
-
-        // 3. Chuẩn bị danh sách ID để gửi lên API
-        const allImageIds = [
-          ...existingImages.map((img) => img.id!).filter((id) => id),
-          ...uploadedImages.map((img) => img.id!).filter((id) => id),
-        ];
-
-        // 4. Gọi API để liên kết ảnh với album
-        if (allImageIds.length > 0) {
-          const albumWithImagesCreateCommand: AlbumWithImagesCreateCommand = {
-            albumId: album?.id,
-            imageIds: allImageIds,
-          };
-
-          const result = await albumService.createWithImages(
-            albumWithImagesCreateCommand
-          );
-
-          if (result?.status !== Status.OK) {
-            toast.error(result.error?.detail);
-            return;
-          }
-        }
-
-        // 5. Merge kết quả
-        const finalPicked = [
-          ...existingImages.filter((img) => !img.mediaUrl?.startsWith("blob:")),
-          ...uploadedImages,
-        ];
-
-        // Cập nhật state
+        // 2. Cập nhật danh sách ảnh album
+        const finalPicked = await handleUpdateAlbumImages(
+          existingImages,
+          uploadedImages
+        );
         setPickedImages(finalPicked);
+        successMessages.push("Album images updated");
+      }
 
-        // Cập nhật success message nếu có cả 2 thay đổi
-        if (hasCoverChanged) {
-          successMessage = "Album images and cover updated successfully!";
-        } else {
-          successMessage = "Album images updated successfully!";
-        }
+      // Xử lý thay đổi ảnh bìa
+      if (hasCoverChanged) {
+        await handleUpdateCoverImage();
+        successMessages.push("Cover image updated");
       }
 
       setHasChange(false);
-
-      // Thông báo thành công
-      toast.success(successMessage);
-      // handleDialogChange(false);
+      toast.success(successMessages.join(" and ") + " successfully!");
     } catch (error) {
-      console.error("Error saving album images:", error);
+      console.error("Error saving album changes:", error);
       setHasChange(true);
-      toast.error(error as any);
+      toast.error((error as Error).message || "Failed to save changes");
     }
   };
   // render grid với tính năng chọn ảnh bìa

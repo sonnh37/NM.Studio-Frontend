@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { userService } from "@/services/user-serice";
 import { authService } from "@/services/auth-service";
+import { Status } from "@/types/models/business-result";
 
 export function SidebarFooter({ user }: { user: User }) {
   const { isMobile } = useSidebar();
@@ -38,7 +39,7 @@ export function SidebarFooter({ user }: { user: User }) {
   const handleLogout = () => {
     authService.logout().then((res) => {
       if (res.status == Status.OK) {
-        window.location.href = "/";
+        router.push("/login");
       }
     });
   };

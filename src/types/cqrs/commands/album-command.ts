@@ -40,6 +40,5 @@ export interface AlbumSetCoverUpdateCommand extends UpdateCommand {
   imageId: string;
 }
 
-
 // Delete
 export interface AlbumDeleteCommand extends DeleteCommand {}

@@ -26,6 +26,7 @@ import { AppDispatch } from "@/lib/redux/store";
 import { resetCache } from "@/lib/redux/slices/cacheSlice";
 import { Status } from "@/types/models/business-result";
 import { UserContext } from "@/types/models/user-context";
+import { useRouter } from "next/navigation";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger> {
@@ -35,6 +36,7 @@ interface AuthDropdownProps
 export function AuthDropdown({ user = null }: AuthDropdownProps) {
   const { setTheme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   if (user == null) {
     return (
@@ -53,7 +55,7 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
       if (res.status == Status.OK) {
         setTheme("light");
         dispatch(resetCache());
-        window.location.href = "/login";
+        router.push("/");
       }
     });
   };

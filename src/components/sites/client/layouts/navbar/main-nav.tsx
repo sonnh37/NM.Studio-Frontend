@@ -26,6 +26,7 @@ import { Const } from "@/lib/constants/const";
 import Image from "next/image";
 import { AuthDropdown } from "./auth-dropdown";
 import { UserContext } from "@/types/models/user-context";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -42,6 +43,8 @@ export function MainNav({
   services = [],
   albums = [],
 }: MainNavProps) {
+  const isMobile = useIsMobile();
+  const triggerClassName = "text-neutral-600 bg-transparent uppercase";
   return (
     <>
       <div className="hidden gap-6 lg:flex justify-between mx-auto w-full">
@@ -49,25 +52,24 @@ export function MainNav({
           <Icons.logo aria-hidden="true" />
           {/* <span className="hidden font-bold lg:inline-block">NHU MY</span> */}
         </Link>
-        <NavigationMenu>
-          <NavigationMenuList>
+        <NavigationMenu viewport={isMobile}>
+          <NavigationMenuList className="flex-wrap">
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-neutral-600 bg-transparent uppercase">
+              <NavigationMenuTrigger className={cn(triggerClassName)}>
                 Thông tin
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-x-2 p-[8px] sm:w-[600px] lg:grid-cols-[.75fr_1fr]">
+                <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-hidden focus:shadow-md"
+                        className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-4 no-underline outline-hidden transition-all duration-200 select-none focus:shadow-md md:p-6"
                         href="/"
                       >
-                        <Icons.logo className="h-6 w-6" />
-                        <div className="mb-2 mt-4 text-lg font-medium">
+                        <div className="mb-2 text-lg font-medium sm:mt-4">
                           Studio and Academic
                         </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
+                        <p className="text-muted-foreground text-sm leading-tight">
                           Chúng tôi cung cấp các dịch vụ studio chuyên nghiệp
                           cho sự kiện cưới, chụp ảnh và các dự án học thuật.
                         </p>
@@ -92,62 +94,14 @@ export function MainNav({
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
-                Dịch vụ
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid p-[8px] sm:w-[400px] sm:grid-cols-1">
-                  {services.map((service) => (
-                    <div key={service.id}>
-                      <ListItem
-                        key={service.id}
-                        title={service.name ?? "N/A"}
-                        className=" text-neutral-500 "
-                        href={`/services/${service.slug}`}
-                      >
-                        {/*{service.description}*/}
-                      </ListItem>
-                    </div>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
-                Albums
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-x-2 p-[8px] sm:w-[500px] sm:grid-cols-4">
-                  {albums.map((album) => (
-                    <Link key={album.id} href={`/albums/${album.slug}`}>
-                      <Image
-                        src={album.coverUrl ?? "/image-notfound.png"}
-                        width={100}
-                        height={100}
-                        alt={album.title ?? "N/A"}
-                      />
-                      <TypographySmall> {album.title}</TypographySmall>
-                    </Link>
-                  ))}
-                </ul>
-                <div className={"w-full grid justify-end"}>
-                  <Button variant="link">
-                    {" "}
-                    <Link href="/albums">...Xem thêm</Link>
-                  </Button>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
 
             {/* Categories Section */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-neutral-500 bg-transparent uppercase">
+              <NavigationMenuTrigger className={cn(triggerClassName)}>
                 Váy cưới
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid sm:w-[800px] gap-x-2 p-[8px] md:grid-cols-4 overflow-y-auto">
+                <ul className="grid gap-2 sm:w-[400px] md:w-[500px] md:grid-cols-4 lg:w-[600px]">
                   {categories.map((category, index) => {
                     const path = `/products?categoryName=${category.name}`;
                     return (
@@ -182,18 +136,64 @@ export function MainNav({
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/blogs" legacyBehavior passHref>
-                <NavigationMenuLink
+              <NavigationMenuTrigger className={cn(triggerClassName)}>
+                Dịch vụ
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-2 sm:w-[200px] md:w-[300px] sm:grid-cols-1">
+                  {services.map((service) => (
+                    <ListItem
+                      key={service.id}
+                      title={service.name ?? "N/A"}
+                      href={`/services/${service.slug}`}
+                    >
+                      {/*{service.description}*/}
+                    </ListItem>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className={cn(triggerClassName)}>
+                Albums
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-2 sm:w-[400px] md:w-[500px] sm:grid-cols-4 lg:w-[600px]">
+                  {albums.map((album) => (
+                    <Link key={album.id} href={`/albums/${album.slug}`}>
+                      <Image
+                        src={album.coverUrl ?? "/image-notfound.png"}
+                        width={100}
+                        height={100}
+                        alt={album.title ?? "N/A"}
+                      />
+                      <TypographySmall> {album.title}</TypographySmall>
+                    </Link>
+                  ))}
+                </ul>
+                <div className={"w-full grid justify-end"}>
+                  <Button variant="link">
+                    {" "}
+                    <Link href="/albums">...Xem thêm</Link>
+                  </Button>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  href="/blogs"
                   className={cn(
                     navigationMenuTriggerStyle(),
                     "text-neutral-500 bg-transparent uppercase"
                   )}
                 >
                   Tin tức
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuIndicator /> 
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -209,25 +209,19 @@ export function MainNav({
   );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, href, ...props }, ref) => {
+function ListItem({
+  title,
+  children,
+  href,
+  ...props
+}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
   return (
-    <li>
+    <li {...props}>
       <NavigationMenuLink asChild>
-        <Link
-          ref={ref}
-          href={String(href)}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-hidden transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          {title}
+        <Link href={href}>
+          <div className="text-sm leading-none font-medium">{title}</div>
           {children && (
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
               {children}
             </p>
           )}
@@ -235,32 +229,6 @@ const ListItem = React.forwardRef<
       </NavigationMenuLink>
     </li>
   );
-});
-ListItem.displayName = "ListItem";
+}
 
-const ListItemV2 = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, href, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <Link
-          ref={ref}
-          href={String(href)}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-hidden transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <p className=" group relative w-max">
-            <span className="px-1 relative z-10 ">{title}</span>
-            <span className="absolute left-0 bottom-0 w-full h-[0.25px] bg-neutral-300 transition-transform duration-300 scale-x-0 origin-left group-hover:scale-x-100 z-0 group-hover:bg-neutral-300 group-hover:h-full"></span>
-          </p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItemV2.displayName = "ListItemV2";
+ListItem.displayName = "ListItem";

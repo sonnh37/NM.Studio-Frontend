@@ -13,9 +13,10 @@ import PostReadingProgress from "@/components/_common/shared/PostReadingProgress
 import PostSharing from "@/components/_common/shared/PostSharing";
 import PostToc from "@/components/_common/shared/PostToc";
 import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
-import { useMemo } from "react";
+import { useMemo, use } from "react";
 
-export default function Page({ params }: { params: { slug: string } }) {
+export default function Page(props: { params: Promise<{ slug: string }> }) {
+  const params = use(props.params);
   const { slug } = params;
 
   const query: BlogGetAllQuery = {

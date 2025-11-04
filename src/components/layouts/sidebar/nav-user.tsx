@@ -29,6 +29,7 @@ import { User } from "@/types/entities/user";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/auth-service";
+import { Status } from "@/types/models/business-result";
 
 export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar();
@@ -37,7 +38,7 @@ export function NavUser({ user }: { user: User }) {
   const handleLogout = () => {
     authService.logout().then((res) => {
       if (res.status == Status.OK) {
-        window.location.href = "/login";
+        router.push("/");
       }
     });
   };
@@ -56,7 +57,7 @@ export function NavUser({ user }: { user: User }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-10 rounded-lg">
-                <AvatarImage src={user.avatar!} alt={user.username!} />
+                <AvatarImage src={user.avatar?.mediaUrl} alt={user.username!} />
                 <AvatarFallback className="rounded-lg">
                   {initials}
                 </AvatarFallback>
@@ -77,7 +78,10 @@ export function NavUser({ user }: { user: User }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar!} alt={user.username!} />
+                  <AvatarImage
+                    src={user.avatar?.mediaUrl}
+                    alt={user.username!}
+                  />
                   <AvatarFallback className="rounded-lg">
                     {initials}
                   </AvatarFallback>

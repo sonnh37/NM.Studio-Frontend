@@ -44,14 +44,12 @@ export default function DashboardLayout({
             <Separator orientation="vertical" className="mr-2 h-4" />
             <DynamicBreadcrumbs />
             <div className="ml-auto flex items-center gap-2">
-            <ModeToggle />
-            {/* <NotificationPopover /> */}
-            {/* <ChatPopover /> */}
-            <AuthDropdown user={user} />
+              <ModeToggle />
+              {/* <NotificationPopover /> */}
+              {/* <ChatPopover /> */}
+              <AuthDropdown user={user} />
+            </div>
           </div>
-          </div>
-
-          
         </header>
 
         <div className="flex flex-1 flex-col overflow-hidden gap-4 mt-4">

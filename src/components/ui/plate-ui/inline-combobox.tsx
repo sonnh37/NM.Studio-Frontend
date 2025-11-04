@@ -5,7 +5,6 @@ import React, {
   type ReactNode,
   type RefObject,
   createContext,
-  forwardRef,
   startTransition,
   useCallback,
   useContext,
@@ -211,10 +210,15 @@ const InlineCombobox = ({
   );
 };
 
-const InlineComboboxInput = forwardRef<
-  HTMLInputElement,
-  HTMLAttributes<HTMLInputElement>
->(({ className, ...props }, propRef) => {
+const InlineComboboxInput = (
+  {
+    ref: propRef,
+    className,
+    ...props
+  }: HTMLAttributes<HTMLInputElement> & {
+    ref: React.RefObject<HTMLInputElement>;
+  }
+) => {
   const {
     inputProps,
     inputRef: contextRef,
@@ -260,7 +264,7 @@ const InlineComboboxInput = forwardRef<
       </span>
     </>
   );
-});
+};
 
 InlineComboboxInput.displayName = 'InlineComboboxInput';
 

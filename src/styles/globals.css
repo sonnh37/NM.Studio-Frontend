@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
-
+/* @import "../styles/_variables.scss";
+@import "../styles/_keyframe-animations.scss"; */
 :root {
   --radius: 0.65rem;
   --background: oklch(1 0 0);
@@ -89,6 +90,10 @@
   --font-raleway: Raleway, sans-serif;
   --font-lato: Lato, sans-serif;
 
+  --color-custom-pink: rgb(241, 162, 181);
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -126,8 +131,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   /*  */
-  /* --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out; */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
   /*
   ---break---
   
@@ -140,8 +145,8 @@
   --animate-enter-from-right: enterFromRight 250ms ease;
   --animate-exit-to-left: exitToLeft 250ms ease;
   --animate-exit-to-right: exitToRight 250ms ease;
-  /* --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out; */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-collapsible-down: collapsible-down 0.2s ease-out;
   --animate-collapsible-up: collapsible-up 0.2s ease-out;
   --animate-meteor-effect: meteor 5s linear infinite;
@@ -702,8 +707,6 @@
 /*
   ---break---
 */
-
-
 
 @layer base {
   * {

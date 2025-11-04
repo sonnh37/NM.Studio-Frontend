@@ -19,8 +19,9 @@ import PostSharing from "@/components/_common/shared/PostSharing";
 import PostToc from "@/components/_common/shared/PostToc";
 import TiptapRenderer from "@/components/_common/tiptaps/TiptapRenderer/ClientRenderer";
 import Image from "next/image";
-import { useMemo } from "react";
-export default function Page({ params }: { params: { serviceId: string } }) {
+import { useMemo, use } from "react";
+export default function Page(props: { params: Promise<{ serviceId: string }> }) {
+  const params = use(props.params);
   const { serviceId } = params;
   const query: ServiceGetAllQuery = {
     pagination: {

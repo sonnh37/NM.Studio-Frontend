@@ -22,8 +22,9 @@ import {
 import { toLocalISOString } from "@/lib/utils";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
-import { ServiceBookingCreateCommand } from "@/types/commands/service-booking-command";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { ServiceBookingCreateCommand } from "@/types/cqrs/commands/service-booking-command";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
+import { Status } from "@/types/models/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -47,7 +48,9 @@ export function BookingDialog() {
   const router = useRouter();
 
   const query: ServiceGetAllQuery = {
-    isPagination: false,
+    pagination: {
+      isPagingEnabled: false,
+    },
     isDeleted: false,
   };
 
@@ -80,12 +83,15 @@ export function BookingDialog() {
       const date = toLocalISOString(values.bookingDate);
       const updatedValues: ServiceBookingCreateCommand = {
         ...values,
-        bookingDate: date,
+        appointmentDate: date,
       };
       const response = await serviceBookingService.create(updatedValues);
-      if (response.status != 1) throw new Error(response.message);
+      if (response.status != Status.OK) {
+        toast.error(response.error?.detail);
+        return;
+      }
 
-      toast.success(response.message);
+      toast.success("Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);

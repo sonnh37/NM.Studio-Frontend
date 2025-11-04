@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
 import { blogService } from "@/services/blog-service";
@@ -37,11 +37,11 @@ interface BlogFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required").nullable(),
+  title: z.string().min(1, "Title is required").nullable().optional(),
   slug: z.string().nullable().optional(),
   content: z.string().nullable().optional(),
   summary: z.string().nullable().optional(),
-  status: z.nativeEnum(BlogStatus),
+  status: z.enum(BlogStatus),
   isFeatured: z.boolean().default(false),
   viewCount: z.number().default(0),
   tags: z.string().nullable().optional(),
@@ -64,12 +64,12 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-        }
-      : {},
+    resolver: zodResolver(formSchema) as unknown as Resolver<
+      z.infer<typeof formSchema>
+    >,
+    defaultValues: formSchema.parse(
+      initialData ?? { status: BlogStatus.Draft }
+    ),
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -77,7 +77,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
       setLoading(true);
       if (initialData) {
         const command: BlogUpdateCommand = {
-          ...initialData, ...values
+          ...initialData,
+          ...values,
         };
 
         if (file) {
@@ -173,90 +174,94 @@ export const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   };
 
   return (
-    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
-      <ConfirmationDialog
-        isLoading={isLoading}
-        open={showConfirmationDialog}
-        setOpen={setShowConfirmationDialog}
-        onConfirm={handleCreateConfirmation}
-        onClose={async () => {
-          const res = await handleCreateConfirmation();
-          if (res.status != Status.OK) {
-            return;
-          }
-          router.push(previousPath);
-        }}
-        title="Do you want to continue adding this blog?"
-        description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
-        confirmText="Yes"
-        cancelText="No"
-      />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid gap-2">
-            <HeaderForm
-              previousPath={previousPath}
-              title={title}
-              initialData={initialData}
-              loading={loading}
-              action={action}
-            />
-            <TypographyH1>{title}</TypographyH1>
-          </div>
-          <div className="grid gap-4">
-            {/* main */}
-            <div className="grid gap-6">
-              <div className="grid gap-3">
-                <FormSwitch
-                  form={form}
-                  name="isFeatured"
-                  label="Is Main"
-                  description="If enabled, this blog will be about page."
+    <>
+      <div className="w-full max-w-xl md:max-w-2xl mx-auto">
+        <ConfirmationDialog
+          isLoading={isLoading}
+          open={showConfirmationDialog}
+          setOpen={setShowConfirmationDialog}
+          onConfirm={handleCreateConfirmation}
+          onClose={async () => {
+            const res = await handleCreateConfirmation();
+            if (res.status != Status.OK) {
+              return;
+            }
+            router.push(previousPath);
+          }}
+          title="Do you want to continue adding this blog?"
+          description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
+          confirmText="Yes"
+          cancelText="No"
+        />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div>
+              <div className="grid gap-2">
+                <HeaderForm
+                  previousPath={previousPath}
+                  title={title}
+                  initialData={initialData}
+                  loading={loading}
+                  action={action}
                 />
+                <TypographyH1>{title}</TypographyH1>
+              </div>
+              <div className="grid gap-4">
+                {/* main */}
+                <div className="grid gap-6">
+                  <div className="grid gap-3">
+                    <FormSwitch
+                      form={form}
+                      name="isFeatured"
+                      label="Is Main"
+                      description="If enabled, this blog will be about page."
+                    />
 
-                <FormInput
-                  form={form}
-                  name="title"
-                  label="Title"
-                  placeholder="Enter title"
-                />
+                    <FormInput
+                      form={form}
+                      name="title"
+                      label="Title"
+                      placeholder="Enter title"
+                    />
 
-                <FormInput
-                  form={form}
-                  name="slug"
-                  label="Slug"
-                  placeholder="Enter slug"
-                />
+                    <FormInput
+                      form={form}
+                      name="slug"
+                      label="Slug"
+                      placeholder="Enter slug"
+                    />
 
-                <ImageUpload
-                  label="Thumbnail"
-                  defaultValue={initialData?.thumbnail?.mediaUrl}
-                  onFileChange={setFile}
-                />
+                    <ImageUpload
+                      label="Thumbnail"
+                      defaultValue={initialData?.thumbnail?.mediaUrl}
+                      onFileChange={setFile}
+                    />
 
-                <ImageUpload
-                  label="Background Cover"
-                  defaultValue={initialData?.backgroundCover?.mediaUrl}
-                  onFileChange={setFile2}
-                />
+                    <ImageUpload
+                      label="Background Cover"
+                      defaultValue={initialData?.backgroundCover?.mediaUrl}
+                      onFileChange={setFile2}
+                    />
 
-                <FormSelectEnum
-                  form={form}
-                  name="status"
-                  label="Status"
-                  enumOptions={getEnumOptions(BlogStatus)}
-                />
+                    <FormSelectEnum
+                      form={form}
+                      name="status"
+                      label="Status"
+                      enumOptions={getEnumOptions(BlogStatus)}
+                    />
 
-                <FormInput form={form} name="tags" label="Tags" />
+                    <FormInput form={form} name="tags" label="Tags" />
 
-                <AuthorSelect form={form} name="authorId" />
+                    <AuthorSelect form={form} name="authorId" />
 
-                <FormInputReactTipTapEditor form={form} name="content" />
+                    <FormInputReactTipTapEditor form={form} name="content" />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
-      </Form>
-    </div>
+          </form>
+        </Form>
+      </div>
+    </>
   );
 };

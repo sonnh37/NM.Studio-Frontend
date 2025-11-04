@@ -2,7 +2,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import { serviceService } from "@/services/service-service";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import "swiper/css";
@@ -17,9 +17,11 @@ export function ServiceSwiper() {
   const router = useRouter();
   const query: ServiceGetAllQuery = {
     isDeleted: false,
-    isPagination: true,
-    pageSize: 6,
-    pageNumber: 1,
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: 1,
+      pageSize: 6,
+    }
   };
   const {
     data: services = [],
