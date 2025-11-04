@@ -22,23 +22,22 @@ export function DataTableToolbar<TData>({
   columnSearch = null,
   children,
 }: DataTableToolbarProps<TData>) {
-  const column = columnSearch ? table.getColumn(columnSearch) : undefined;
+  const columnTableSearch = columnSearch
+    ? table.getColumn(columnSearch)
+    : undefined;
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <>
-          {columnSearch && column ? (
+          {columnSearch && columnTableSearch ? (
             <Input
               placeholder={`Enter ${columnSearch}...`}
-              value={(column.getFilterValue() ?? "") as string}
-              onChange={(event) => column.setFilterValue(event.target.value)}
-              className="h-8 w-[150px] lg:w-[250px]"
+              value={(columnTableSearch.getFilterValue?.() ?? "") as string}
+              onChange={(e) =>
+                columnTableSearch.setFilterValue?.(e.target.value)
+              }
             />
-          ) : columnSearch ? (
-            <div className="text-sm text-rose-500">
-              Column &quot;{columnSearch}&quot; not found
-            </div>
           ) : null}
           {filterEnums &&
             filterEnums.map((filter: any) => {

@@ -463,7 +463,7 @@ export function AlbumDialog({
       if (!file) return;
 
       const tempImg: MediaBaseState = {
-        id: Date.now(),
+        id: Date.now().toString(),
         title: file.name,
         displayName: file.name,
         mimeType: file.type,
@@ -471,6 +471,8 @@ export function AlbumDialog({
         mediaUrl: URL.createObjectURL(file),
         createdDate: new Date().toUTCString(),
         file,
+        mediaBaseType: MediaBaseType.Image,
+        isDeleted: false,
       };
 
       if (section === "available") {
@@ -665,7 +667,7 @@ export function AlbumDialog({
           {section === "picked" && (
             <Button
               size="sm"
-              variant={coverImage?.id === img.id ? "default" : "outline-solid"}
+              variant={coverImage?.id === img.id ? "default" : "outline"}
               className="w-full mt-1 text-xs h-6"
               onClick={() => handleSetCoverImage(img)}
             >

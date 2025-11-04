@@ -1,4 +1,5 @@
-export const title = "Tiptap with React and Next.js: Building a Powerful Rich Text Editor";
+export const title =
+  "Tiptap with React and Next.js: Building a Powerful Rich Text Editor";
 
 const content = `
 <h1>INTRODUCTION</h1>
@@ -130,10 +131,12 @@ const content = `
 `;
 
 export const mock = {
-    title,
-    content,
-    wordCount: 483,
-    cover: "https://res.cloudinary.com/dmhzdv5kf/image/upload/v1733364957/shk91N6yUj_zkms92.jpg",
-    author: "ChatGPT",
-    createdAt: "Jan, 02 2025",
+  title,
+  content,
+  wordCount: 483,
+  cover:
+    "https://res.cloudinary.com/dmhzdv5kf/image/upload/v1733364957/shk91N6yUj_zkms92.jpg",
+  author: "ChatGPT",
+  createdAt: "Jan, 02 2025",
+  readingTime: 8,
 };

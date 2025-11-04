@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -71,12 +71,10 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-        }
-      : {},
+    resolver: zodResolver(formSchema) as unknown as Resolver<
+      z.infer<typeof formSchema>
+    >,
+    defaultValues: formSchema.parse(initialData ?? {}),
   });
 
   const handleFileUpload = (file: File | null) => {
@@ -122,7 +120,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ initialData }) => {
       ...pendingValues,
     };
     const response = await albumService.create(command);
-    
+
     if (response.status == Status.ERROR) {
       toast.error(response.error?.detail);
       setShowConfirmationDialog(false);

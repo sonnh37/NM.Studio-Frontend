@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
 import { serviceBookingService } from "@/services/service-booking-service";
@@ -29,7 +29,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { HeaderForm } from "../../common/create-update-forms/header-form";
 import { AuthorSelect } from "./author-select";
-import { ServiceBookingCreateCommand, ServiceBookingUpdateCommand } from "@/types/cqrs/commands/service-booking-command";
+import {
+  ServiceBookingCreateCommand,
+  ServiceBookingUpdateCommand,
+} from "@/types/cqrs/commands/service-booking-command";
 import { ServiceSelect } from "./service-select";
 
 interface ServiceBookingFormProps {
@@ -44,7 +47,7 @@ const formSchema = z.object({
   summary: z.string().nullable().optional(),
   thumbnail: z.string().nullable().optional(),
   bannerImage: z.string().nullable().optional(),
-  status: z.nativeEnum(ServiceBookingStatus),
+  status: z.enum(ServiceBookingStatus),
   isFeatured: z.boolean().default(false),
   viewCount: z.number().default(0),
   tags: z.string().nullable().optional(),
@@ -70,12 +73,10 @@ export const ServiceBookingForm: React.FC<ServiceBookingFormProps> = ({
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-        }
-      : {},
+    resolver: zodResolver(formSchema) as unknown as Resolver<
+      z.infer<typeof formSchema>
+    >,
+    defaultValues: formSchema.parse(initialData ?? {}),
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

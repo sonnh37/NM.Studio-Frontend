@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -56,12 +56,10 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-        }
-      : {},
+    resolver: zodResolver(formSchema) as unknown as Resolver<
+      z.infer<typeof formSchema>
+    >,
+    defaultValues: formSchema.parse(initialData ?? {}),
   });
 
   const handleFileUpload = (file: File | null) => {
@@ -182,7 +180,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                   placeholder="Enter slug"
                 />
 
-                
                 <FormInput
                   form={form}
                   name="description"

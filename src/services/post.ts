@@ -1,15 +1,29 @@
 import { mock } from "@/sample";
 
-export const getPost = (): Promise<any> => {
-  return new Promise<any>((resolve) => {
+export type Post = {
+  title: string;
+  content: string;
+  cover: string;
+  author: string;
+  readingTime: number;
+  createdAt: string;
+};
+
+const getPost = (): Promise<Post> => {
+  return new Promise<Post>((resolve, reject) => {
     setTimeout(() => {
       if (typeof window !== "undefined") {
         try {
           const data = localStorage.getItem("post");
-          resolve(data ? JSON.parse(data) : mock);
-          if (!data) savePost(mock);
+          const parsed: Post = data ? JSON.parse(data) : mock;
+
+          if (!data) {
+            savePost(mock);
+          }
+
+          return resolve(parsed);
         } catch {
-          resolve(mock);
+          return reject();
         }
       }
 
@@ -18,13 +32,20 @@ export const getPost = (): Promise<any> => {
   });
 };
 
-export const savePost = (data: any) => {
+const savePost = (data: Partial<Post>): void => {
   if (typeof window === "undefined") return;
 
   try {
-    const value = data?.content?.trim() ? { ...mock, ...data } : mock;
+    const value: Post = data?.content?.trim() ? { ...mock, ...data } : mock;
     localStorage.setItem("post", JSON.stringify(value));
   } catch (error) {
     console.error("Error saving to localStorage:", error);
   }
 };
+
+const postService = {
+  get: getPost,
+  save: savePost,
+};
+
+export default postService;

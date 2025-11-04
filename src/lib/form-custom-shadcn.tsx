@@ -45,7 +45,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
-import { savePost } from "@/services/post";
+import postService from "@/services/post";
 import { addDays, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -67,7 +67,7 @@ import Image from "next/image";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import TiptapEditor, {
   TiptapEditorRef,
-} from "@/components/_common/tiptaps/TiptapEditor";
+} from "@/components/_common/tiptaps_v2/tiptap-editor";
 
 // const Editor = dynamic(
 //   () => import("@/components/_common/react-tiptap-editor/editor")
@@ -168,14 +168,14 @@ export function FormInputReactTipTapEditor<TFieldValues extends FieldValues>({
       return;
     }
     console.log("check_content", getValues(name));
-    savePost({ ...getValues(name) });
+    postService.save({ ...getValues(name) });
     setIsLoading(false);
   }, [getValues, name]);
 
   useEffect(() => {
     const subscription = watch((values, { type }) => {
       if (type === "change") {
-        savePost({ ...values[name] });
+        postService.save({ ...values[name] });
       }
     });
 
@@ -197,10 +197,11 @@ export function FormInputReactTipTapEditor<TFieldValues extends FieldValues>({
             paragraph: "Type your content here...",
             imageCaption: "Type caption for image (optional)",
           }}
-          contentMinHeight={256}
-          contentMaxHeight={640}
-          onContentChange={field.onChange}
-          initialContent={field.value}
+          minHeight={320}
+          maxHeight={640}
+          maxWidth={700}
+          onChange={field.onChange}
+          content={field.value}
         />
       )}
     />
@@ -270,7 +271,14 @@ export const FormInput = <TFieldValues extends FieldValues>({
         <FormItem>
           <FormLabel className={"font-bold"}>{label}</FormLabel>
           <FormControl>
-            <Input {...props} {...field} />
+            <Input
+              {...props}
+              {...field}
+              value={field.value ?? ""}
+              onChange={(e) =>
+                field.onChange(e.target.value === "" ? null : e.target.value)
+              }
+            />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

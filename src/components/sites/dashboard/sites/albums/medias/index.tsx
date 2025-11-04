@@ -31,7 +31,10 @@ import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-g
 import React from "react";
 import { Status } from "@/types/models/business-result";
 import { AlbumImage } from "@/types/entities/album-image";
-import { AlbumImageCreateCommand, AlbumImageDeleteCommand } from "@/types/cqrs/commands/album-media-command";
+import {
+  AlbumImageCreateCommand,
+  AlbumImageDeleteCommand,
+} from "@/types/cqrs/commands/album-media-command";
 import { MediaBaseGetAllQuery } from "@/types/cqrs/queries/media-base-query";
 import { MediaBase } from "@/types/entities/media-base";
 import { mediaBaseService } from "@/services/media-base-service";

@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
 import { mediaBaseService } from "@/services/media-base-service";
@@ -53,12 +53,10 @@ export const MediaBaseForm: React.FC<MediaBaseFormProps> = ({
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-        }
-      : {},
+    resolver: zodResolver(formSchema) as unknown as Resolver<
+      z.infer<typeof formSchema>
+    >,
+    defaultValues: formSchema.parse(initialData ?? {}),
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

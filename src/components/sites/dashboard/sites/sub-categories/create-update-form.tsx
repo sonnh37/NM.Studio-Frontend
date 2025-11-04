@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,12 +60,10 @@ export const SubCategoryForm: React.FC<SubCategoryFormProps> = ({
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData
-      ? {
-          ...initialData,
-        }
-      : {},
+    resolver: zodResolver(formSchema) as unknown as Resolver<
+      z.infer<typeof formSchema>
+    >,
+    defaultValues: formSchema.parse(initialData ?? {}),
   });
 
   const queryCategory: CategoryGetAllQuery = {
