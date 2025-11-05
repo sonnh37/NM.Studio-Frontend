@@ -12,13 +12,15 @@ export class Const {
     //#endregion
     static readonly SERVICE_BOOKINGS = "servicebookings";
     static readonly ALBUMS = "albums";
-    static readonly ALBUM_MEDIAS = "albummedias";
+    static readonly ALBUM_IMAGES = "albumimages";
+    static readonly MEDIA_BASES = "mediabases";
+    static readonly HOME_SLIDES = "homeslides";
     static readonly PRODUCTS = "products";
     static readonly PRODUCT_MEDIAS = "productmedias";
     static readonly PRODUCT_SIZES = "productsizes";
-    static readonly PRODUCT_COLORS = "productcolors";
+    static readonly PRODUCT_VARIANTS = "productvariants";
     static readonly SERVICES = "services";
-    static readonly MEDIA_FILES = "mediafiles";
+    static readonly IMAGES = "images";
     static readonly CATEGORIES = "categories";
     static readonly SUBCATEGORIES = "subcategories";
     static readonly COLORS = "colors";
@@ -44,8 +46,8 @@ export class Const {
     static readonly DASHBOARD_ALBUM_URL = `/${Const.DASHBOARD}/${Const.ALBUMS}`;
     static readonly DASHBOARD_ALBUM_NEW_URL = `${Const.DASHBOARD_ALBUM_URL}/${Const.NEW}`;
 
-    static readonly DASHBOARD_PHOTO_URL = `/${Const.DASHBOARD}/${Const.MEDIA_FILES}`;
-    static readonly DASHBOARD_PHOTO_NEW_URL = `${Const.DASHBOARD_PHOTO_URL}/${Const.NEW}`;
+    // static readonly DASHBOARD_PHOTO_URL = `/${Const.DASHBOARD}/${Const.MEDIA_FILES}`;
+    // static readonly DASHBOARD_PHOTO_NEW_URL = `${Const.DASHBOARD_PHOTO_URL}/${Const.NEW}`;
 
     static readonly DASHBOARD_SERVICE_URL = `/${Const.DASHBOARD}/${Const.SERVICES}`;
     static readonly DASHBOARD_SERVICE_NEW_URL = `${Const.DASHBOARD_SERVICE_URL}/${Const.NEW}`;

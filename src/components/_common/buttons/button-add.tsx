@@ -8,7 +8,7 @@ function ButtonAdd({ children }: ButtonAddProps) {
   return (
     <button
       type="submit"
-      className="flex text-sm justify-center gap-2 items-center bg-gray-50 dark:bg-background backdrop-blur-md lg:font-semibold isolation-auto before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-md before:bg-emerald-500  before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border rounded-md group"
+      className="flex text-sm justify-center gap-2 items-center bg-gray-50 dark:bg-background backdrop-blur-md lg:font-semibold isolation-auto before:absolute before:w-full before:transition-all before:duration-700 hover:before:w-full before:-left-full hover:before:left-0 before:rounded-md before:bg-emerald-500  before:-z-10 before:aspect-square hover:before:scale-150 hover:before:duration-700 relative z-10 px-4 py-2 overflow-hidden border rounded-md group"
     >
       <svg
         className="w-8 h-8 justify-end -rotate-90 group-hover:-rotate-45 bg-background dark:bg-foreground  group-hover:bg-gray-50 ease-linear duration-300 rounded-full group-hover:border-none p-2"

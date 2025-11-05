@@ -5,8 +5,8 @@ import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import {
   GetQueryableQuery,
   SortDirection,
-} from "@/types/queries/base/base-query";
-import { BusinessResult } from "@/types/response/business-result";
+} from "@/types/cqrs/queries/base/base-query";
+import { BusinessResult } from "@/types/models/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   keepPreviousData,
@@ -29,10 +29,10 @@ import { useForm, useWatch } from "react-hook-form";
 import { z, ZodObject, ZodType } from "zod";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTableComponent } from "./data-table-component";
-import { DeleteCommand, UpdateCommand } from "@/types/commands/base/base-command";
+import { DeleteCommand, UpdateCommand } from "@/types/cqrs/commands/base/base-command";
 import { Card } from "@/components/ui/card";
 import { DataTablePagination } from "./data-table-pagination";
-import { QueryResult } from "@/types/response/query-result";
+import { QueryResult } from "@/types/models/query-result";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -115,7 +115,6 @@ export function DataTable<TData>({
       })
       .refine((date) => !!date.to, { message: "End Date is required." })
       .optional(),
-    isDeleted: z.boolean().nullable().optional(),
   });
 
   const form = useForm<
@@ -191,7 +190,7 @@ export function DataTable<TData>({
   const table = useReactTable({
     data: data?.data?.results ?? [],
     columns,
-    rowCount: data?.data?.totalCount ?? 0,
+    rowCount: data?.data?.totalItemCount ?? 0,
     state: { pagination, sorting, columnFilters, columnVisibility },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,

@@ -1,22 +1,17 @@
-import {BaseEntity} from "./base/base";
-import {ServiceBooking} from "@/types/entities/service-booking";
+import { BaseEntity } from "./base/base";
+import { ServiceBooking } from "@/types/entities/service-booking";
+import { MediaBase } from "./media-base";
 
-export interface Service extends BaseEntity{
-    name?: string;
-    slug?: string;
-    description?: string;
-    src?: string;
-    price?: number;
-    category?: string;
-    isFeatured: boolean;
-    isActive: boolean;
-    sortOrder: number;
-    imageUrl?: string;
-    shortDescription?: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    metaKeywords?: string;
-    termsAndConditions?: string;
-    maxBookingsPerDay?: number;
-    bookings: ServiceBooking[];
+export interface Service extends BaseEntity {
+  name?: string;
+  slug?: string;
+  description?: string;
+  price?: number;
+  isFeatured: boolean;
+  backgroundCoverId?: string;
+  thumbnailId?: string;
+  termsAndConditions?: string;
+  thumbnail?: MediaBase;
+  backgroundCover?: MediaBase;
+  bookings: ServiceBooking[];
 }

@@ -27,8 +27,8 @@ import {
 } from "@/components/ui/drawer";
 import { Icons } from "@/components/ui/icons";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { DeleteCommand } from "@/types/commands/base/base-command";
-import { BusinessResult } from "@/types/response/business-result";
+import { DeleteCommand } from "@/types/cqrs/commands/base/base-command";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 
@@ -37,11 +37,13 @@ interface DeleteBaseEntitysDialogProps<TData>
   showTrigger?: boolean;
   list: Row<TData>["original"][];
   onSuccess?: () => void;
+  query_keys?: string[];
   deleteFunc?: (command: DeleteCommand) => Promise<BusinessResult<null>>;
 }
 
 export function DeleteBaseEntitysDialog<TData>({
   showTrigger = true,
+  query_keys = ["data"],
   list,
   onSuccess,
   deleteFunc,
@@ -70,10 +72,10 @@ export function DeleteBaseEntitysDialog<TData>({
               isPermanent: false,
             };
             const response = await deleteFunc(command);
-            if (response.status === 1) {
-              toast.success(response.message);
+            if (response.status == Status.OK) {
+              toast.success("Moved to trash.");
             } else {
-              toast.error(response.message);
+              toast.error(response.error?.detail || "Failed to delete.");
             }
           } else {
             toast.error("Fail!");
@@ -81,7 +83,7 @@ export function DeleteBaseEntitysDialog<TData>({
         }
         props.onOpenChange?.(false);
         if (onSuccess) {
-          queryClient.invalidateQueries({ queryKey: ["data"] });
+          queryClient.invalidateQueries({ queryKey: query_keys });
           onSuccess();
         }
         props.onOpenChange?.(false);
@@ -93,77 +95,83 @@ export function DeleteBaseEntitysDialog<TData>({
   }
 
   if (isDesktop) {
-    return showTrigger ? (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-            Delete ({list.length})
-          </Button>
-        </DialogTrigger>
+    return (
+      list.length > 0 && (
+        <>
+          {showTrigger && list.length > 0 ? (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+                  Delete ({list.length})
+                </Button>
+              </DialogTrigger>
 
-        <DialogContent className="shadow-lg">
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently deleteFunc
-              your <span className="font-medium">{list.length}</span>
-              {list.length === 1 ? " task" : " list"} from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:space-x-0">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button
-              aria-label="Delete selected rows"
-              variant="destructive"
-              onClick={onDelete}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && (
-                <Icons.spinner
-                  className="mr-2 size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    ) : (
-      <Dialog {...props}>
-        <DialogContent className="shadow-lg">
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently deleteFunc
-              your <span className="font-medium">{list.length}</span>
-              {list.length === 1 ? " task" : " list"} from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 sm:space-x-0">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button
-              aria-label="Delete selected rows"
-              variant="destructive"
-              onClick={onDelete}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && (
-                <Icons.spinner
-                  className="mr-2 size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              <DialogContent className="shadow-lg">
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your <span className="font-medium">{list.length}</span>
+                    {list.length === 1 ? " task" : " list"} from our servers.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="gap-2 sm:space-x-0">
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    aria-label="Delete selected rows"
+                    variant="destructive"
+                    onClick={onDelete}
+                    disabled={isDeletePending}
+                  >
+                    {isDeletePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Dialog {...props}>
+              <DialogContent className="shadow-lg">
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your <span className="font-medium">{list.length}</span>
+                    {list.length === 1 ? " task" : " list"} from our servers.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="gap-2 sm:space-x-0">
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    aria-label="Delete selected rows"
+                    variant="destructive"
+                    onClick={onDelete}
+                    disabled={isDeletePending}
+                  >
+                    {isDeletePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </>
+      )
     );
   }
 
@@ -181,7 +189,7 @@ export function DeleteBaseEntitysDialog<TData>({
         <DrawerHeader>
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
-            This action cannot be undone. This will permanently deleteFunc your{" "}
+            This action cannot be undone. This will permanently delete your{" "}
             <span className="font-medium">{list.length}</span>
             {list.length === 1 ? " task" : " list"} from our servers.
           </DrawerDescription>

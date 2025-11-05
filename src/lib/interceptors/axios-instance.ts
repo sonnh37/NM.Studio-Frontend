@@ -1,11 +1,24 @@
-import { BusinessResult } from "@/types/response/business-result";
-import { LoginResponse } from "@/types/response/login-response";
+import { BusinessResult, Status } from "@/types/models/business-result";
+import { RefreshTokenResult } from "@/types/models/token-result";
 import axios from "axios";
+import { tokenHelper } from "../helpers/token-helper";
+import { userContextHelper } from "../helpers/user-context-helper";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE + "/api",
   withCredentials: true,
   timeout: 60000,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const session = localStorage.getItem("current_session");
+  if (session) {
+    const tokenResult = JSON.parse(session);
+    if (tokenResult?.accessToken) {
+      config.headers.Authorization = `Bearer ${tokenResult.accessToken}`;
+    }
+  }
+  return config;
 });
 
 axiosInstance.interceptors.response.use(
@@ -18,33 +31,36 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         // Gọi API refresh token để lấy accessToken mới
-        const refreshResponse = (
+        const res: BusinessResult<RefreshTokenResult> = (
           await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE}/auth/refresh-token`,
-            {},
+            `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/refresh-token`,
+            tokenHelper.get(),
             { withCredentials: true }
           )
-        ).data as BusinessResult<LoginResponse>;
+        ).data as BusinessResult<RefreshTokenResult>;
 
-        if (refreshResponse.status !== 1) {
-          // Nếu refresh token đã hết hạn tự đăng xuất ra ở frontend tránh còn lưu cache
+        if (res.status != Status.OK) {
+          // if (window.location.pathname.startsWith("/dashboard")) {
+          //   window.location.href = "/login";
+          // }
+          tokenHelper.clear();
+          userContextHelper.clear();
+          window.location.href = "/login";
 
-          if (window.location.pathname.startsWith("/dashboard")) {
-            // admin, staff
-            window.location.href = "/login";
-          }
           return Promise.reject(error);
         }
 
-        return axiosInstance(originalRequest); // Gửi lại yêu cầu ban đầu với token mới
+        const newTokenResult = res.data;
+        if (!newTokenResult) {
+          return Promise.reject("No token result");
+        }
+
+        tokenHelper.save(newTokenResult);
+        userContextHelper.save(newTokenResult.user);
+
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // Nếu refresh thất bại, người dùng có thể cần đăng nhập lại
         console.error("Refresh token failed:", refreshError);
-        // if (window.location.pathname.startsWith("/dashboard")) {
-        //   window.location.href = "/login";
-        // } else {
-        //   window.location.href = "/";
-        // }
         return Promise.reject(refreshError);
       }
     }
@@ -55,8 +71,17 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error); // Ngăn không gửi lại yêu cầu
     }
 
-      console.error(`API Error:`, error);
-      return Promise.reject(error);
+    const br = error.response?.data as BusinessResult<any>;
+    if (br && br.status === Status.ERROR) {
+      return Promise.resolve(br);
+    }
+
+    return Promise.resolve({
+      data: {
+        status: Status.ERROR,
+        error: { detail: "Hệ thống có lỗi, vui lòng thử lại sau." },
+      },
+    });
   }
 );
 

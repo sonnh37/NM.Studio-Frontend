@@ -9,7 +9,7 @@ interface TypographyPProps {
     return (
       <p
         className={cn(
-          "leading-7 [&:not(:first-child)]:mt-6",
+          "leading-7 not-first:mt-6",
           className
         )}
       >
