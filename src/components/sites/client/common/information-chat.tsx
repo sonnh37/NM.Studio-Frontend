@@ -15,7 +15,7 @@ const InformationChat = () => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed w-[60px] bottom-5 md:bottom-10 right-[5px] md:right-6  z-999"
+          className="fixed w-[60px] bottom-5 md:bottom-10 right-[5px] md:left-6 z-10"
           initial={{ y: 100, opacity: 0 }} // Bắt đầu từ dưới
           animate={{ y: 0, opacity: 1 }} // Đi lên và xuất hiện
           exit={{ y: 100, opacity: 0 }} // Đi xuống và mờ dần

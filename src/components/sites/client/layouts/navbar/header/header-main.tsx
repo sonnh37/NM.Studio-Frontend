@@ -40,7 +40,7 @@ export const HeaderMain = ({
       animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
       transition={{ duration: isTop ? 0 : 0.5 }}
       className={cn(
-        "sticky top-0 z-1000 w-full  tracking-wider text-sm",
+        "sticky top-0 z-20 w-full  tracking-wider text-sm",
         "bg-transparent hover:bg-white dark:hover:bg-slate-950",
         "group backdrop-blur-3xl"
       )}
