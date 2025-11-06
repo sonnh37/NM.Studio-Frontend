@@ -106,7 +106,7 @@ export function BookingDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <span>
-          <IoCameraOutline className="text-[#FFF] cursor-pointer text-[40px]" />
+          <IoCameraOutline className="text-[#FFF] cursor-pointer text-[35px]" />
         </span>
       </DialogTrigger>
 

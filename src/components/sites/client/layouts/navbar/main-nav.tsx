@@ -27,6 +27,7 @@ import Image from "next/image";
 import { AuthDropdown } from "./auth-dropdown";
 import { UserContext } from "@/types/models/user-context";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Separator } from "@/components/ui/separator";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -108,10 +109,11 @@ export function MainNav({
                       <div key={index}>
                         <MenuAnimationLink
                           href={path}
-                          className="block font-bold select-none p-3 space-y-1 rounded-md  leading-none no-underline outline-hidden transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
+                          className="block font-bold select-none p-3 pl-2 pb-1.5 space-y-1 rounded-md  leading-none no-underline outline-hidden transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
                         >
                           {category.name}
                         </MenuAnimationLink>
+                        <Separator />
                         {category.subCategories?.map((subCategory) => (
                           <div key={subCategory.id}>
                             <ListItem

@@ -21,12 +21,12 @@ const InformationChat = () => {
           exit={{ y: 100, opacity: 0 }} // Đi xuống và mờ dần
           transition={{ duration: 0.5, ease: "easeOut" }} // Thời gian và hiệu ứng
         >
-          <div className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
+          <div className="bg-neutral-500 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
             <a className="btn-gallery" target="_blank">
               <BookingDialog />
             </a>
           </div>
-          <div className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
+          <div className="bg-neutral-500 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
             <a
               href={`tel:${Const.TELEPHONE}`}
               className="btn-gallery"
@@ -35,22 +35,22 @@ const InformationChat = () => {
               <BsTelephone className="text-[#FFF] text-[30px]" />
             </a>
           </div>
-          <div className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
+          <div className="bg-neutral-500 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
             <a
               href={`https://zalo.me/${Const.TELEPHONE}`}
               className="btn-gallery"
               target="_blank"
             >
-              <SiZalo className="text-[#FFF] text-[40px]" />
+              <SiZalo className="text-[#FFF] text-[35px]" />
             </a>
           </div>
-          <div className="bg-neutral-700 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
+          <div className="bg-neutral-500 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
             <a
               href="https://m.me/NhuMyMakeUp"
               className="btn-gallery"
               target="_blank"
             >
-              <LiaFacebookMessenger className="text-[#FFF] text-[40px]" />
+              <LiaFacebookMessenger className="text-[#FFF] text-[35px]" />
             </a>
           </div>
         </motion.div>
