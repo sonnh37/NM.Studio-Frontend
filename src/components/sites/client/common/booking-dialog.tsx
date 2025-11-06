@@ -17,6 +17,7 @@ import { Form } from "@/components/ui/form";
 import {
   FormInput,
   FormInputDateTimePickerV2,
+  FormInputDateTimePickerV3,
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { toLocalISOString } from "@/lib/utils";
@@ -74,7 +75,6 @@ export function BookingDialog() {
 
   if (isError) {
     console.log("Error fetching:", error);
-    return <ErrorSystem />;
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -91,7 +91,9 @@ export function BookingDialog() {
         return;
       }
 
-      toast.success("Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
+      toast.success(
+        "Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất."
+      );
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
@@ -124,7 +126,7 @@ export function BookingDialog() {
             <div className="mx-auto w-full">
               <div className="grid gap-1">
                 <div className="flex justify-start gap-3">
-                  <FormInputDateTimePickerV2
+                  <FormInputDateTimePickerV3
                     label={"Ngày hẹn"}
                     name={"bookingDate"}
                     form={form}

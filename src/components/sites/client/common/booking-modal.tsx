@@ -9,6 +9,7 @@ import {
   FormInput,
   FormInputDateTimePicker,
   FormInputDateTimePickerV2,
+  FormInputDateTimePickerV3,
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
 import { toLocalISOString } from "@/lib/utils";
@@ -98,7 +99,9 @@ export function BookingModal() {
         return;
       }
 
-      toast.success("Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
+      toast.success(
+        "Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất."
+      );
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
@@ -116,13 +119,12 @@ export function BookingModal() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-4">
-            <FormInputDateTimePicker
+            <FormInputDateTimePickerV3
               form={form}
               disabled={false}
               name="bookingDate"
               label="Ngày hẹn"
               placeholder="Chọn ngày"
-              isShowTimePicker
             />
 
             <FormInput
