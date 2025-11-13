@@ -1,35 +1,26 @@
-import { Album } from "@/types/entities/album";
-import { BaseService } from "./base/base-service";
 import { Const } from "@/lib/constants/const";
-import { BusinessResult, Status } from "@/types/models/business-result";
-import {
-  AlbumCreateCommand,
-  AlbumUpdateCommand,
-  AlbumDeleteCommand,
-  AlbumWithImagesCreateCommand,
-  AlbumSetCoverUpdateCommand,
-} from "@/types/cqrs/commands/album-command";
-import { CreateOrUpdateCommand } from "@/types/cqrs/commands/base/base-command";
-import { mediaUploadService } from "./media-upload-service";
 import axiosInstance from "@/lib/interceptors/axios-instance";
+import { cleanQueryParams } from "@/lib/utils";
+import {
+  AlbumSetCoverUpdateCommand,
+  AlbumWithImagesCreateCommand,
+} from "@/types/cqrs/commands/album-command";
+import { Album } from "@/types/entities/album";
+import { BusinessResult } from "@/types/models/business-result";
+import { BaseService } from "./base/base-service";
 
 class AlbumService extends BaseService<Album> {
   constructor() {
     super(`${Const.ALBUMS}`);
   }
-  // async deletePermanently(
-  //   command: AlbumDeleteCommand
-  // ): Promise<BusinessResult<null>> {
-  //   const data = await this.getById(command.id);
-  //   const filePath = data.data?.background;
+  async getBySlug(slug: string): Promise<BusinessResult<Album>> {
+    const cleanedQuery = cleanQueryParams({ slug });
 
-  //   const response = await super.delete(command);
-  //   if (response.status === 1 && filePath) {
-  //     await this.deleteImage(filePath);
-  //   }
-
-  //   return response;
-  // }
+    const res = await axiosInstance.get<BusinessResult<Album>>(
+      `${this.endpoint}/by-slug?${cleanedQuery}`
+    );
+    return res.data;
+  }
 
   async createWithImages(
     command: AlbumWithImagesCreateCommand

@@ -28,7 +28,7 @@ const ProductHome = () => {
       const res = await productService.getRepresentativeByCategory();
       return res.data;
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <LoadingPageComponent />;
@@ -71,7 +71,7 @@ const ProductHome = () => {
           <div className="col-span-2 sm:col-span-1 md:col-span-2 bg-gray-50 h-auto md:h-full flex flex-col">
             <a
               href={`/products?categoryName=${productRepresentatives[0]?.category?.name}`}
-              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 grow"
+              className="group relative flex flex-col overflow-hidden px-4 pb-4 pt-40 grow"
             >
               <Image
                 width={9999}
@@ -92,7 +92,7 @@ const ProductHome = () => {
           <div className="col-span-2 sm:col-span-1 md:col-span-2 bg-stone-50">
             <a
               href={`/products?categoryName=${productRepresentatives[1]?.category?.name}`}
-              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 mb-4"
+              className="group relative flex flex-col overflow-hidden  px-4 pb-4 pt-40 mb-4"
             >
               <Image
                 width={9999}
@@ -112,7 +112,7 @@ const ProductHome = () => {
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-2">
               <a
                 href={`/products?categoryName=${productRepresentatives[2]?.category?.name}`}
-                className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40"
+                className="group relative flex flex-col overflow-hidden  px-4 pb-4 pt-40"
               >
                 <Image
                   width={9999}
@@ -131,7 +131,7 @@ const ProductHome = () => {
               </a>
               <a
                 href={`/products?categoryName=${productRepresentatives[3]?.category?.name}`}
-                className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40"
+                className="group relative flex flex-col overflow-hidden  px-4 pb-4 pt-40"
               >
                 <Image
                   width={9999}
@@ -153,7 +153,7 @@ const ProductHome = () => {
           <div className="col-span-2 sm:col-span-1 md:col-span-1 bg-sky-50 h-auto md:h-full flex flex-col">
             <a
               href={`/products?categoryName=${productRepresentatives[4]?.category?.name}`}
-              className="group relative flex flex-col overflow-hidden rounded-lg px-4 pb-4 pt-40 grow"
+              className="group relative flex flex-col overflow-hidden  px-4 pb-4 pt-40 grow"
             >
               <Image
                 width={9999}

@@ -1,47 +1,13 @@
 // Album.tsx
 "use client";
 
-import type { Album } from "@/types/entities/album";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { albumService } from "@/services/album-service";
-import { ServiceGetAllQuery } from "@/types/queries/service-query";
-import { usePathname, useRouter } from "next/navigation";
-import { AlbumList } from "../albums/album-list";
 import { Const } from "@/lib/constants/const";
-import { AlbumGetAllQuery } from "@/types/queries/album-query";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { AlbumList } from "../albums/album-list";
 
 export function AlbumHome() {
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const pathName = usePathname();
   const router = useRouter();
-  const query: AlbumGetAllQuery = {
-    pagination: {
-      isPagingEnabled: true,
-      pageNumber: 1,
-      pageSize: 12,
-    },
-    sorting: {
-      sortDirection: 1,
-      sortField: "createdDate",
-    },
-    isDeleted: false,
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await albumService.getAll(query);
-        const albums = response.data?.results;
-
-        setAlbums(albums!);
-      } catch (error) {
-        console.error("Failed to fetch images:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="py-20 ">

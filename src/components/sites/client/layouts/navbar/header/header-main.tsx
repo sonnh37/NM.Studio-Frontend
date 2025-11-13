@@ -36,11 +36,11 @@ export const HeaderMain = ({
 
   return (
     <motion.div
-      initial={{ opacity: 1, y: 0 }}
-      animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
-      transition={{ duration: isTop ? 0 : 0.5 }}
+      // initial={{ opacity: 1, y: 0 }}
+      // animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
+      // transition={{ duration: isTop ? 0 : 0.5 }}
       className={cn(
-        "sticky top-0 z-20 w-full  tracking-wider text-sm",
+        "sticky top-0 z-50 w-full tracking-wider text-sm",
         "bg-transparent hover:bg-white dark:hover:bg-slate-950",
         "group backdrop-blur-3xl"
       )}

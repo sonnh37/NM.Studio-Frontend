@@ -28,6 +28,7 @@ import { AuthDropdown } from "./auth-dropdown";
 import { UserContext } from "@/types/models/user-context";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
+import { motion } from "framer-motion";
 
 interface MainNavProps {
   items?: MainNavItem[];
@@ -162,17 +163,39 @@ export function MainNav({
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-2 sm:w-[400px] md:w-[500px] sm:grid-cols-4 lg:w-[600px]">
-                  {albums.map((album) => (
-                    <Link key={album.id} href={`/albums/${album.slug}`}>
-                      <Image
-                        src={album.coverUrl ?? "/image-notfound.png"}
-                        width={100}
-                        height={100}
-                        alt={album.title ?? "N/A"}
-                      />
-                      <TypographySmall> {album.title}</TypographySmall>
-                    </Link>
-                  ))}
+                  {albums!.map((album) => {
+                    const path = "/albums/" + album.slug;
+                    return (
+                      <Link href={path} key={album.slug}>
+                        <div className="relative h-full isolate flex flex-col justify-end overflow-hidden rounded-none px-8 pb-8 pt-40">
+                          <motion.div
+                            className="absolute inset-0 w-full overflow-hidden"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{
+                              duration: 0.3,
+                              ease: "easeOut",
+                            }}
+                          >
+                            <Image
+                              alt="image"
+                              src={album.coverUrl ?? "/image-notfound.png"}
+                              width={9999}
+                              height={9999}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-linear-to-t from-gray-900 via-gray-900/5"></div>
+                          </motion.div>
+
+                          <h3 className="z-10 mt-3 text-3xl font-bold text-white">
+                            {album.title}
+                          </h3>
+                          <div className="z-10 bottom-8 truncate gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                            {album.description}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </ul>
                 <div className={"w-full grid justify-end"}>
                   <Button variant="link">
@@ -199,13 +222,13 @@ export function MainNav({
           </NavigationMenuList>
         </NavigationMenu>
 
-        <nav className="hidden lg:flex items-center justify-end space-x-4 max-w-[255px]">
+        <div className="hidden lg:flex items-center justify-end space-x-4 max-w-[255px]">
           {/* <ModeToggle /> */}
           <ProductsCombobox />
           {/* <CartSheet /> */}
           {/* <LocaleSwitcher /> */}
           <AuthDropdown user={user} />
-        </nav>
+        </div>
       </div>
     </>
   );

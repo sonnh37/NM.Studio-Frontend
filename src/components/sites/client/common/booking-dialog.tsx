@@ -20,7 +20,6 @@ import {
   FormInputDateTimePickerV3,
   FormSelectObject,
 } from "@/lib/form-custom-shadcn";
-import { toLocalISOString } from "@/lib/utils";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
 import { ServiceBookingCreateCommand } from "@/types/cqrs/commands/service-booking-command";
@@ -36,12 +35,12 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  email: z.string().email().nullable().optional(),
-  fullName: z.string().min(1, "Họ và tên không được để trống"),
-  phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
+  customerEmail: z.string().email().nullable().optional(),
+  customerName: z.string().min(1, "Họ và tên không được để trống"),
+  customerPhone: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
   userId: z.string().nullable().optional(),
   serviceId: z.string().min(1, "Service ID is required").nullable().optional(),
-  bookingDate: z.date(),
+  appointmentDate: z.date(),
 });
 
 export function BookingDialog() {
@@ -80,10 +79,10 @@ export function BookingDialog() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const date = toLocalISOString(values.bookingDate);
+      const utcString = values.appointmentDate.toISOString();
       const updatedValues: ServiceBookingCreateCommand = {
         ...values,
-        appointmentDate: date,
+        appointmentDate: utcString,
       };
       const response = await serviceBookingService.create(updatedValues);
       if (response.status != Status.OK) {
@@ -110,7 +109,7 @@ export function BookingDialog() {
         </span>
       </DialogTrigger>
 
-      <DialogContent className="shadow-lg sm:max-w-[425px] md:max-w-xl">
+      <DialogContent className="z-101 shadow-lg sm:max-w-[425px] md:max-w-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <DialogHeader>
@@ -128,7 +127,7 @@ export function BookingDialog() {
                 <div className="flex justify-start gap-3">
                   <FormInputDateTimePickerV3
                     label={"Ngày hẹn"}
-                    name={"bookingDate"}
+                    name={"appointmentDate"}
                     form={form}
                   />
                 </div>
@@ -141,19 +140,19 @@ export function BookingDialog() {
                 /> */}
                 <FormInput
                   form={form}
-                  name="fullName"
+                  name="customerName"
                   label="Họ và tên"
                   placeholder="Nhập họ và tên"
                 />
                 <FormInput
                   form={form}
-                  name="email"
+                  name="customerEmail"
                   label="Email (Nếu có)"
                   placeholder=""
                 />
                 <FormInput
                   form={form}
-                  name="phone"
+                  name="customerPhone"
                   label="Số điện thoại"
                   placeholder="Nhập số điện thoại"
                 />
