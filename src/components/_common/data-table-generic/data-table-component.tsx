@@ -170,7 +170,7 @@ export function DataTableComponent<TData>({
                           ...getCommonPinningStyles({ column: cell.column }),
                           opacity: isDeleted ? 0.5 : 1,
                         }}
-                       className="px-4 py-3 text-sm"
+                        className="px-4 py-3 text-sm"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

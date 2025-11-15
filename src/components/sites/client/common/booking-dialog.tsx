@@ -109,7 +109,7 @@ export function BookingDialog() {
         </span>
       </DialogTrigger>
 
-      <DialogContent className="z-101 shadow-lg sm:max-w-[425px] md:max-w-xl">
+      <DialogContent className="shadow-lg sm:max-w-[425px] md:max-w-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <DialogHeader>
