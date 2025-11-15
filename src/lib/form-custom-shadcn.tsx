@@ -47,7 +47,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import postService from "@/services/post";
 import { addDays, format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -1235,6 +1235,94 @@ export const FormInputDateTimePickerV2 = <TFieldValues extends FieldValues>({
   );
 };
 
+export const FormInputDateTimePickerV3 = <TFieldValues extends FieldValues>({
+  label,
+  name,
+  form,
+  placeholder = "Chọn ngày giờ",
+  disabled = false,
+}: FormInputProps<TFieldValues>) => {
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<Date | null>(null);
+  const [time, setTime] = useState("10:30");
+
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex flex-col gap-3 w-full">
+          <FormLabel>{label}</FormLabel>
+
+          {/* --- DATE PICKER --- */}
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "justify-between font-normal w-full",
+                    !field.value && "text-muted-foreground"
+                  )}
+                  disabled={disabled}
+                >
+                  {field.value
+                    ? format(field.value, "dd/MM/yyyy, HH:mm")
+                    : placeholder}
+                  <ChevronDownIcon className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+
+            <PopoverContent
+              align="start"
+              className="w-auto flex flex-col gap-4 p-4"
+            >
+              {/* --- TIME INPUT --- */}
+              <div className="flex flex-col gap-2">
+                <FormLabel className="text-sm">Giờ</FormLabel>
+                <Input
+                  type="time"
+                  step="60"
+                  value={time}
+                  disabled={!date}
+                  onChange={(e) => {
+                    const newTime = e.target.value;
+                    setTime(newTime);
+                    if (date) {
+                      const [h, m] = newTime.split(":");
+                      const updated = new Date(date);
+                      updated.setHours(+h, +m);
+                      setDate(updated);
+                      field.onChange(updated);
+                    }
+                  }}
+                  className="bg-background"
+                />
+              </div>
+              <Calendar
+                mode="single"
+                selected={date || field.value}
+                captionLayout="dropdown"
+                onSelect={(selectedDate) => {
+                  if (!selectedDate) return;
+                  const [h, m] = time.split(":");
+                  selectedDate.setHours(+h, +m);
+                  setDate(selectedDate);
+                  field.onChange(selectedDate);
+                }}
+                fromYear={2000}
+                toYear={new Date().getFullYear() + 1}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
 interface ConfirmationDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;

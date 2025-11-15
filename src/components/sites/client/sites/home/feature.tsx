@@ -29,7 +29,7 @@ export function Feature() {
 
   return (
     <div className="py-20 bg-neutral-100">
-      <div className="flex flex-row items-center justify-center  relative w-full h-full">
+      <div className="flex flex-row items-center justify-center relative w-full h-full">
         <div className="container mx-auto w-full relative overflow-hidden">
           <motion.div
             initial={{
@@ -61,20 +61,27 @@ export function Feature() {
           </motion.div>
           <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
             {studio.map((product, index) => (
-              <div key={index} className="relative hover:shadow-xl rounded-xl">
-                <div className="overflow-hidden rounded-xl">
+              <motion.div
+                key={index}
+                className="relative"
+                whileHover={{
+                  y: -5,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeOut",
+                }}
+              >
+                <div className="overflow-hidden">
                   <motion.div
-                    className=""
                     whileHover={{ scale: 1.1 }}
-                    transition={{
-                      duration: 0.3,
-                      ease: "easeOut",
-                    }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                   >
                     <Link href={product.href ?? ""}>
                       <Image
-                        className="aspect-square w-full bg-gray-200 rounded-xl object-cover lg:aspect-auto lg:h-96"
-                        alt={""}
+                        className="aspect-square w-full bg-gray-200 object-cover lg:aspect-auto lg:h-96"
+                        alt=""
                         src={product.src ? product.src : "/image-notfound.png"}
                         width={9999}
                         height={9999}
@@ -82,12 +89,13 @@ export function Feature() {
                     </Link>
                   </motion.div>
                 </div>
+
                 <div className="m-4 flex justify-between">
-                  <a className="text-2xl w-full text-center relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-                    {product.title}
-                  </a>
+                  <p className="text-xl w-full text-center bg-clip-text text-transparent bg-neutral-600">
+                    {product.title.toUpperCase()}
+                  </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

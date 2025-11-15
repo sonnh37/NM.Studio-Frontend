@@ -57,12 +57,12 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" className={cn("size-8 rounded-full")}>
-          <Avatar className="size-8">
-            <AvatarImage src={user.avatarUrl ?? ""} alt={user.username ?? ""} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-        </Button>
+        <Avatar className="size-8 hover:cursor-pointer">
+          <AvatarImage src={user.avatarUrl ?? ""} alt={user.username ?? ""} />
+          <AvatarFallback className="bg-transparent border">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
