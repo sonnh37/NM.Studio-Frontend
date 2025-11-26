@@ -106,7 +106,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
   },
 ];
 
-const columnSearch = "title";
+const columnSearch = "sku";
 const query_key = "data";
 const filterEnums: FilterEnum[] = [
   {
@@ -266,14 +266,63 @@ export default function ProductTable() {
           className="text-primary-foreground sm:whitespace-nowrap"
           href={`${pathname}/new`}
         >
-          <Button
-            size={"sm"}
-            
-          >
-            Add
-          </Button>
+          <Button size={"sm"}>Add</Button>
         </Link>
       </DataTableToolbar>
     </DataTableComponent>
   );
 }
+
+const Actions: React.FC<ActionsProps> = ({ row }) => {
+  const model = row.original;
+  const router = useRouter();
+  const pathName = usePathname();
+  const handleEditClick = () => {
+    router.push(`${pathName}/${model.id}`);
+  };
+
+  const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
+
+  const handleProductsClick = () => {
+    //row.toggleSelected();
+    router.push(`${pathName}?q=${model.id}`);
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(model.id!)}
+          >
+            Copy model ID
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleProductsClick}>
+            View features
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
+            Delete
+            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DeleteBaseEntitysDialog
+        deleteFunc={productService.delete}
+        open={showDeleteTaskDialog}
+        onOpenChange={setShowDeleteTaskDialog}
+        list={[model]}
+        showTrigger={false}
+        onSuccess={() => row.toggleSelected(false)}
+      />
+    </>
+  );
+};

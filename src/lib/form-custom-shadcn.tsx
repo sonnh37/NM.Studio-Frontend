@@ -44,7 +44,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { cn, formatCurrency, formatDate } from "@/lib/utils";
+import { cn, EnumOption, formatCurrency, formatDate } from "@/lib/utils";
 import postService from "@/services/post";
 import { addDays, format } from "date-fns";
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
@@ -390,7 +390,7 @@ interface FormSelectEnumProps<TFieldValues extends FieldValues> {
   name: FieldPath<TFieldValues>;
   description?: string;
   form: UseFormReturn<TFieldValues>;
-  enumOptions: { label: string; value: number | string }[]; // Các tùy chọn enum
+  enumOptions: EnumOption[];
   placeholder?: string;
   disabled?: boolean;
   default?: boolean;

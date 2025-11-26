@@ -4,6 +4,7 @@ import {
   UpdateCommand,
 } from "@/types/cqrs/commands/base/base-command";
 import { ProductStatus } from "@/types/entities/product";
+import { InventoryStatus } from "@/types/entities/product-variant";
 
 export interface ProductVariantCreateCommand extends CreateCommand {
   productId?: string | null;
@@ -14,7 +15,7 @@ export interface ProductVariantCreateCommand extends CreateCommand {
   rentalPrice?: number | null;
   deposit?: number | null;
   stockQuantity: number | null;
-  status: ProductStatus | null;
+  status: InventoryStatus | null;
 }
 
 export interface ProductVariantUpdateCommand extends UpdateCommand {
@@ -26,7 +27,7 @@ export interface ProductVariantUpdateCommand extends UpdateCommand {
   rentalPrice?: number | null;
   deposit?: number | null;
   stockQuantity: number | null;
-  status: ProductStatus | null;
+  status: InventoryStatus | null;
 }
 
 export interface ProductVariantDeleteCommand extends DeleteCommand {}

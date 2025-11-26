@@ -53,7 +53,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col overflow-hidden gap-4 mt-4">
+        <div className="flex flex-1 flex-col overflow-hidden gap-4 my-4">
           <div className="flex-1 overflow-hidden p-0">
             <div className="px-4 lg:gap-2 lg:px-6 h-full w-full overflow-auto">
               {/* {!isLock ? (

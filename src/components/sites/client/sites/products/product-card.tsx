@@ -88,11 +88,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </RadioGroup>
         </div>
       </div>
-      <ProductDialog
-        product={selectedProduct as Product}
-        open={open}
-        setOpen={setOpen}
-      />
+      {selectedProduct && (
+        <ProductDialog
+          productId={selectedProduct.id}
+          open={open}
+          setOpen={setOpen}
+        />
+      )}
     </>
   );
 };

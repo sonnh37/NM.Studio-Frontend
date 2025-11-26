@@ -1,5 +1,6 @@
 "use client";
 
+import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -10,46 +11,81 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
-import { Color } from "@/types/entities/color";
-import { Product } from "@/types/entities/product";
-import { Size } from "@/types/entities/size";
+import { productService } from "@/services/product-service";
+// import { Color } from "@/types/entities/color";
+import { Product, ProductStatus } from "@/types/entities/product";
+import { ProductVariant } from "@/types/entities/product-variant";
+// import { Size } from "@/types/entities/size";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 interface ExampleProps {
-  product: Product;
+  productId: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
-  const [selectedColor, setSelectedColor] = useState<Color | null>(null);
-  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
+export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
+  const [selectedColor, setSelectedColor] = useState<ProductVariant | null>(
+    null
+  );
+  const [selectedSize, setSelectedSize] = useState<ProductVariant | null>(null);
+  if (!productId) return;
+
+  const {
+    data: product = {} as Product,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["fetchProductDialog", productId],
+    queryFn: async () =>
+      productService.getById(productId, [
+        "thumbnail",
+        "variants.productMedias.mediaBase",
+      ]),
+    select: (response) => response.data,
+    refetchOnWindowFocus: false,
+    enabled: !!productId,
+  });
+
+  if (isLoading) return <LoadingPageComponent />;
+
+  const variants = product.variants;
+
+  let slides = variants
+    .flatMap((v) => v.productMedias)
+    .flatMap((f) => f.mediaBase)
+    .filter((m) => m != undefined);
+
+  if (product.thumbnail) {
+    slides = [product.thumbnail, ...slides];
+  }
+  const colors = variants.map((v) => v.color).filter((f) => f != undefined);
+  const sizes = variants.map((v) => v.size).filter((f) => f != undefined);
+
   const handleSizeChange = (sizeName: string) => {
-    const size = product.productSizes?.find(
-      (pxc) => pxc.size?.name === sizeName
-    );
-    if (size) {
-      setSelectedSize(size.size ?? null);
-    }
+    // const size = product.productSizes?.find(
+    //   (pxc) => pxc.size?.name === sizeName
+    // );
+    // if (size) {
+    //   setSelectedSize(size.size ?? null);
+    // }
   };
 
   const handleColorChange = (colorName: string) => {
-    const color = product.productVariants?.find(
-      (pxc) => pxc.color?.name === colorName
-    );
-    if (color) {
-      setSelectedColor(color.color ?? null);
-    }
+    // const color = product.productVariants?.find(
+    //   (pxc) => pxc.color?.name === colorName
+    // );
+    // if (color) {
+    //   setSelectedColor(color.color ?? null);
+    // }
   };
-
-  if (!product) {
-    return;
-  }
 
   return (
     <Dialog
@@ -82,16 +118,16 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                 <div className="aspect-2/3 p-0 w-full rounded-none border-none bg-gray-100 object-cover sm:col-span-6">
                   <Carousel className="w-full">
                     <CarouselContent>
-                      {product.productMedias?.map((pic, index) => (
+                      {slides?.map((pic, index) => (
                         <CarouselItem key={index}>
-                          <Card className="border-none">
+                          <Card className="border-none p-0!">
                             <CardContent className="flex aspect-square p-0 m-0 border-none items-center justify-center">
                               <Image
                                 className="aspect-2/3  w-full"
                                 width={9999}
                                 height={9999}
-                                alt={pic.mediaBase?.title ?? ""}
-                                src={pic.mediaBase?.src ?? ""}
+                                alt={pic.title ?? ""}
+                                src={pic.mediaUrl ?? ""}
                               />
                             </CardContent>
                           </Card>
@@ -119,7 +155,10 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                       ProductDetail information
                     </h3>
 
-                    <p className="text-2xl text-gray-900">{product.price}</p>
+                    {/* <p className="text-2xl text-gray-900">{product.price}</p> */}
+                    <p className="text-2xl text-gray-900">
+                      {"Dang cap nhat..."}
+                    </p>
 
                     {/* Reviews */}
                     <div className="mt-6">
@@ -160,7 +199,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                           Color
                         </legend>
                         <div className="flex flex-row space-x-2 mt-4">
-                          {product.productVariants?.map((pxc) => (
+                          {variants.map((pxc) => (
                             <div
                               key={pxc.id}
                               className="flex flex-col items-center"
@@ -170,18 +209,23 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                                 type="button"
                                 className={`h-10 w-10 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all duration-200 ease-in-out
           ${
-            pxc.isActive
-              ? selectedColor?.name === pxc.color?.name // Sử dụng đúng trạng thái để so sánh
+            pxc.color && pxc.status == ProductStatus.Available
+              ? selectedColor?.color === pxc.color // Sử dụng đúng trạng thái để so sánh
                 ? "border-indigo-600 ring-2 ring-indigo-500"
                 : ""
               : "opacity-50 cursor-not-allowed"
           }`}
                                 onClick={() =>
-                                  handleColorChange(pxc.color?.name ?? "")
+                                  handleColorChange(pxc.color ?? "")
                                 } // Đúng hàm xử lý
-                                disabled={!pxc.isActive}
+                                disabled={
+                                  !(
+                                    pxc.color &&
+                                    pxc.status == ProductStatus.Available
+                                  )
+                                }
                                 style={{
-                                  backgroundColor: pxc.color?.name ?? "#fff",
+                                  backgroundColor: pxc.color ?? "#fff",
                                 }} // Sử dụng style để đặt màu động
                               >
                                 {/* Bạn có thể thêm nội dung nếu cần */}
@@ -205,7 +249,7 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                         </div>
 
                         <div className="flex flex-row space-x-2 mt-4">
-                          {product.productSizes?.map((pxc) => (
+                          {variants.map((pxc) => (
                             <div
                               key={pxc.id}
                               className="flex flex-col items-center"
@@ -215,19 +259,22 @@ export const ProductDialog = ({ product, open, setOpen }: ExampleProps) => {
                                 type="button"
                                 className={`h-10 w-10 rounded-full border-2 
                 ${
-                  pxc.isActive
-                    ? selectedSize?.name === pxc.size?.name
+                  pxc.size && pxc.status == ProductStatus.Available
+                    ? selectedSize?.size === pxc.size
                       ? "bg-indigo-600 text-white border-indigo-600"
                       : "bg-white text-gray-900 border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-indigo-500"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 } 
                 flex items-center justify-center text-sm font-medium transition-all duration-200 ease-in-out`}
-                                onClick={() =>
-                                  handleSizeChange(pxc.size?.name ?? "")
+                                onClick={() => handleSizeChange(pxc.size ?? "")}
+                                disabled={
+                                  !(
+                                    pxc.size &&
+                                    pxc.status == ProductStatus.Available
+                                  )
                                 }
-                                disabled={!pxc.isActive}
                               >
-                                {pxc.size?.name}
+                                {pxc.size}
                               </Button>
                             </div>
                           ))}

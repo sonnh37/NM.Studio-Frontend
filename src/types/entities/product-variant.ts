@@ -11,8 +11,14 @@ export interface ProductVariant extends BaseEntity {
   rentalPrice?: number;
   deposit?: number;
   stockQuantity: number;
-  status: ProductStatus;
-
+  stockDefaultQuantity: number;
+  status: InventoryStatus;
   product?: Product;
   productMedias: ProductMedia[];
+}
+
+export enum InventoryStatus {
+  Available,
+  Rented,
+  InMaintenance,
 }

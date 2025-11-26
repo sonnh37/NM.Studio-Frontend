@@ -36,6 +36,7 @@ export function ProductList() {
       sortDirection: sortOrder === 0 ? 1 : sortOrder,
       sortField: sortBy,
     },
+    includeProperties: ["thumbnail", "variants"],
     isDeleted: false,
     categoryName: categoryName,
     subCategoryName: subCategoryName,
@@ -45,11 +46,9 @@ export function ProductList() {
   };
 
   const { data, isError, error } = useQuery({
-    queryKey: ["fetchProducts", queryProduct], // Dùng queryKey bao gồm queryProduct để đảm bảo query được tái sử dụng khi queryProduct thay đổi
-    queryFn: async () => {
-      const response = await productService.getAll(queryProduct);
-      return response.data; // Giả sử API trả về kiểu dữ liệu như bạn mong muốn
-    },
+    queryKey: ["fetchProducts", queryProduct],
+    queryFn: async () => productService.getAllPreview(queryProduct),
+    select: (response) => response.data,
   });
 
   // Cập nhật sản phẩm và tổng số trang
@@ -64,7 +63,7 @@ export function ProductList() {
     <div>
       <div className="mt-6 grid grid-cols-1 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-3">
         {products.map((product) => (
-          <ProductCard product={product} />
+          <ProductCard product={product} key={product.id} />
         ))}
       </div>
 

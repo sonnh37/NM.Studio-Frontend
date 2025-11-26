@@ -1,136 +1,166 @@
 "use client";
-import { Resolver, useForm } from "react-hook-form";
 
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { productService } from "@/services/product-service";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
+import { set, z } from "zod";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { TypographyH1 } from "@/components/_common/typography/typography-h1";
+import CardUpload, { FileUploadItem } from "@/components/card-upload";
+import { Button } from "@/components/ui/button";
 import { usePreviousPath } from "@/hooks/use-previous-path";
-import ConfirmationDialog, {
-  FormInput,
-  FormInputNumber,
-  FormInputNumberCurrency,
-  FormInputTextArea,
-  FormSelectEnum,
-  FormSelectObject,
-  ImageUpload,
-} from "@/lib/form-custom-shadcn";
-import { getEnumOptions } from "@/lib/utils";
+import { FieldInput } from "@/lib/field-tanstack/field-input";
+import { FieldInputNumber } from "@/lib/field-tanstack/field-input-number";
+import { FieldSelectEnums } from "@/lib/field-tanstack/field-select-enum";
+import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
+import { FieldTextarea } from "@/lib/field-tanstack/field-textarea";
+import ConfirmationDialog from "@/lib/form-custom-shadcn";
+import { cn, getEnumOptions, processResponse } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
-import { Category } from "@/types/entities/category";
+import { mediaUploadService } from "@/services/media-upload-service";
 import {
   ProductCreateCommand,
   ProductUpdateCommand,
 } from "@/types/cqrs/commands/product-command";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 import { Product, ProductStatus } from "@/types/entities/product";
 import { BusinessResult, Status } from "@/types/models/business-result";
-import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "@tanstack/react-form";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Archive,
+  ChevronLeft,
+  Layers2,
+  Loader2,
+  Pen,
+  Plus,
+  Save,
+  X,
+} from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { HeaderForm } from "../../common/create-update-forms/header-form";
-import { InformationBaseCard } from "../../common/create-update-forms/information-base-form";
-import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
-import { mediaUploadService } from "@/services/media-upload-service";
-import { TypographyH1 } from "@/components/_common/typography/typography-h1";
+import { Spinner } from "@/components/ui/spinner";
+import { TypographyH2 } from "@/components/_common/typography/typography-h2";
+import { TypographyH3 } from "@/components/_common/typography/typography-h3";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  FieldDescription,
+  FieldGroup,
+  FieldLegend,
+} from "@/components/ui/field";
+import { Separator } from "@/components/ui/separator";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { toastPrintJSON } from "@/lib/helpers/toast-print-json";
+import { Const } from "@/lib/constants/const";
 
 interface ProductFormProps {
   initialData?: Product | null;
 }
 
 const formSchema = z.object({
-  id: z.string().optional(),
-  subCategoryId: z.string().nullable(),
-  categoryId: z.string().nullable(),
+  id: z.string().nullable().optional(),
+  subCategoryId: z.string().nullable().optional(),
+  categoryId: z.string().nullable().optional(),
 
-  name: z.string().min(1, "Name is required").nullable(),
-  sku: z.string().nullable(),
+  thumbnailId: z.string().nullable().optional(),
+  name: z.string().min(1, "Name is required").nullable().optional(),
+  sku: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
-  price: z.number().nullable().default(0),
-  status: z.nativeEnum(ProductStatus).nullable(),
+  price: z.number().nullable().default(0).optional(),
+  status: z
+    .enum(ProductStatus)
+    .default(ProductStatus.Draft)
+    .nullable()
+    .optional(),
 });
 
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
-  const [loading, setLoading] = useState(false);
-  const title = initialData ? "Edit product" : "Create product";
-  const action = initialData ? "Save and continue" : "Create";
+  const isEdit = Boolean(initialData);
+  const title = isEdit ? "Edit product" : "Create product";
   const router = useRouter();
+  const previousPath = usePreviousPath();
+  const queryClient = useQueryClient();
+
+  const [loading, setLoading] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
-  const [file, setFile] = useState<File | null>(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const previousPath = usePreviousPath();
+  const query: CategoryGetAllQuery = {
+    pagination: {
+      isPagingEnabled: false,
+    },
+    includeProperties: ["subcategories"],
+  };
 
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  const queryClient = useQueryClient();
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema) as unknown as Resolver<
-      z.infer<typeof formSchema>
-    >,
-    defaultValues: formSchema.parse(initialData ?? {}),
+  const {
+    data: categories = [],
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: [query],
+    queryFn: () => categoryService.getAll(query),
+    refetchOnWindowFocus: false,
+    select: (res) => processResponse(res).results,
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      setLoading(true);
-      if (initialData) {
-        const updatedValues: ProductUpdateCommand = {
-          ...values,
-        };
+  const formId = "product-form";
+  const form = useForm({
+    defaultValues: isEdit ? formSchema.parse(initialData) : undefined,
+    validators: {
+      onSubmit: formSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        setLoading(true);
+        if (isEdit) {
+          const updatedValues: ProductUpdateCommand = {
+            ...initialData,
+            ...value,
+          };
 
-        if (file) {
-          const uploadResultThumb = await mediaUploadService.uploadFile(
-            file,
-            "Blog"
-          );
-          if (
-            uploadResultThumb?.status == Status.OK &&
-            uploadResultThumb?.data
-          ) {
-            updatedValues.thumbnailId = uploadResultThumb.data.id;
+          // toastPrintJSON(updatedValues);
+
+          if (file) {
+            const uploadResultThumb = await mediaUploadService.uploadFile(
+              file,
+              "Blog"
+            );
+            if (
+              uploadResultThumb?.status == Status.OK &&
+              uploadResultThumb?.data
+            ) {
+              updatedValues.thumbnailId = uploadResultThumb.data.id;
+            }
           }
-        }
 
-        const response = await productService.update(updatedValues);
-        if (response.status != Status.OK)
-          throw new Error(response.error?.detail);
-        queryClient.refetchQueries({
-          queryKey: ["fetchProductById", initialData.id],
-        });
-        toast.success("Updated!");
-        router.push(previousPath);
-      } else {
-        setPendingValues(values);
-        setShowConfirmationDialog(true);
+          const response = await productService.update(updatedValues);
+          if (response.status != Status.OK)
+            throw new Error(response.error?.detail);
+          queryClient.refetchQueries({
+            queryKey: ["fetchProductById", initialData?.id],
+          });
+          toast.success("Updated!");
+          setIsEditing(false);
+          // router.push(previousPath);
+        } else {
+          setPendingValues(value);
+          setShowConfirmationDialog(true);
+        }
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
   const handleCreateConfirmation = async (): Promise<
     BusinessResult<Product>
@@ -174,43 +204,32 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     }
   };
 
-  const fetchCategories = async () => {
-    const query: CategoryGetAllQuery = {
-      pagination: {
-        isPagingEnabled: false,
-      },
-      includeProperties: ["subcategories"],
-    };
-    const response = await categoryService.getAll(query);
-    return response.data?.results;
+  const handleFilesChange = (files: FileUploadItem[]) => {
+    const fileLocals = files.filter((f) => !f.file.id);
+    const fileUploadeds = files.filter((f) => f.file.id);
+    if (fileLocals.length > 0) {
+      setFile(files[0].file as File);
+    } else {
+      setFile(null);
+    }
+
+    if (fileUploadeds.length == 0) {
+      form.setFieldValue("thumbnailId", null);
+    }
+
+    console.log("check_handles", files);
+    console.log("check_handles_local", fileLocals);
+    console.log("check_handles_uploaded", fileUploadeds);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const categories = await fetchCategories();
-        setCategories(categories!);
-        // if (categories) {
-        //   setSelectedCategory(
-        //     categories.find(
-        //       (ca) => ca.id == initialData?.subCategory?.categoryId
-        //     ) ?? null
-        //   );
-        // }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const categoryIdWatch = form.watch("categoryId");
-  const selectedCategory =
-    categories.find((cat) => cat.id === categoryIdWatch) ?? null;
+  if (isLoading) return <LoadingPageComponent />;
+  if (isError) {
+    console.log("Error fetching:", error);
+    return <div>Error categories.</div>;
+  }
 
   return (
-    <div className="w-full max-w-xl md:max-w-2xl mx-auto">
+    <div className="w-full max-w-xl md:max-w-2xl mx-auto grid gap-4">
       <ConfirmationDialog
         isLoading={isLoading}
         open={showConfirmationDialog}
@@ -228,94 +247,226 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         confirmText="Yes"
         cancelText="No"
       />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid gap-2">
-            <HeaderForm
-              previousPath={previousPath}
-              title={title}
-              initialData={initialData}
-              loading={loading}
-              action={action}
-            />
-            <TypographyH1>{title}</TypographyH1>
+      <div className="grid gap-4">
+        <div className="flex flex-row items-center justify-between gap-4">
+          <div className="flex flex-row items-center">
+            <Link href={previousPath}>
+              <Button
+                type="button"
+                className="-ml-4 gap-1"
+                variant="ghost"
+                size="sm"
+              >
+                <ChevronLeft />
+                Back
+              </Button>
+            </Link>
           </div>
+          <div className="flex justify-end">
+            {isEdit ? (
+              <ButtonGroup>
+                <Button
+                  variant={"outline"}
+                  size={"icon-sm"}
+                  disabled={isEditing}
+                >
+                  <Archive />
+                </Button>
+                <Button
+                  variant={"outline"}
+                  size={"icon-sm"}
+                  disabled={isEditing}
+                >
+                  <Layers2 />
+                </Button>
+
+                {isEditing ? (
+                  <>
+                    <Button
+                      variant={"outline"}
+                      size="icon-sm"
+                      onClick={() => setIsEditing(false)}
+                      // disabled={isSubmitting}
+                    >
+                      <X />
+                    </Button>
+                    <Button
+                      variant={"outline"}
+                      size="icon-sm"
+                      type="submit"
+                      // disabled={isSubmitting}
+                      form={formId}
+                    >
+                      {loading ? <Spinner /> : <Save />}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant={"outline"}
+                    size="icon-sm"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <Pen />
+                  </Button>
+                )}
+              </ButtonGroup>
+            ) : (
+              <Button
+                type="submit"
+                form={formId}
+                className=""
+                disabled={loading}
+              >
+                {loading ? <Spinner /> : <Plus />}
+                Create
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+      <div className="grid gap-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+          id={formId}
+        >
           <div className="grid gap-4">
-            {/* main */}
-            <div className="grid gap-6">
-              <div className="grid gap-3">
-                <ImageUpload
-                  label="Thumbnail"
-                  defaultValue={initialData?.thumbnail?.mediaUrl}
-                  onFileChange={setFile}
-                />
+            <CardUpload
+              defaultValues={
+                initialData?.thumbnail ? [initialData?.thumbnail] : []
+              }
+              accept={Const.IMAGE_EXT_STRING}
+              maxFiles={1}
+              onFilesChange={handleFilesChange}
+              // multiple={false}
+              disabled={!isEditing}
+            />
 
-                <FormInput
-                  form={form}
-                  name="name"
-                  label="Name"
-                  description="This is your public display name."
-                  placeholder="Enter name"
-                />
-                <FormInput
-                  form={form}
-                  name="sku"
-                  label="Code"
-                  description="This is your public display code."
-                  placeholder="Enter code"
-                />
+            <Separator />
+            <div className="grid grid-cols-2 gap-4">
+              <form.Field
+                name="name"
+                children={(field) => (
+                  <FieldInput
+                    field={field}
+                    label="Name"
+                    placeholder="Enter Name"
+                    disabled={!isEditing}
+                  />
+                )}
+              />
+              <form.Field
+                name="sku"
+                children={(field) => (
+                  <FieldInput
+                    field={field}
+                    label="Sku"
+                    placeholder="Enter SKU"
+                    disabled={!isEditing}
+                  />
+                )}
+              />
+            </div>
 
-                <FormInputTextArea
-                  form={form}
-                  name="description"
+            <form.Field
+              name="description"
+              children={(field) => (
+                <FieldTextarea
+                  field={field}
                   label="Description"
-                  description="This is your public display description."
-                  placeholder="Enter description"
+                  placeholder="Enter desc"
+                  disabled={!isEditing}
                 />
-
-                <FormSelectEnum
-                  form={form}
-                  name="status"
+              )}
+            />
+            <form.Field
+              name="status"
+              children={(field) => (
+                <FieldSelectEnums
+                  field={field}
                   label="Status"
-                  description="Select the current status of the course."
+                  placeholder="Enter status"
                   enumOptions={getEnumOptions(ProductStatus)}
-                  placeholder="Select status"
+                  disabled={!isEditing}
                 />
+              )}
+            />
 
-                <FormInputNumberCurrency
-                  form={form}
-                  name="price"
-                  label="Price"
-                  placeholder="Enter price"
+            <form.Field
+              name="price"
+              children={(field) => (
+                <FieldInputNumber
+                  field={field}
+                  label="Price VND"
+                  placeholder="Enter price vnd"
+                  disabled={!isEditing}
                 />
-                <FormSelectObject
-                  form={form}
-                  name="categoryId"
-                  label="Thể loại"
-                  options={categories}
-                  selectLabel="name"
-                  selectValue="id"
-                  placeholder="Chọn thể loại"
-                />
-
-                {selectedCategory &&
-                selectedCategory.subCategories &&
-                selectedCategory.subCategories.length > 0 ? (
-                  <FormSelectObject
-                    form={form}
-                    name="subCategoryId"
-                    label="Thể loại con"
-                    options={selectedCategory.subCategories}
+              )}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <form.Field
+                name="categoryId"
+                children={(field) => (
+                  <FieldSelectOptions
+                    label="Category"
+                    field={field}
+                    placeholder="Enter category"
+                    options={categories}
                     selectLabel="name"
                     selectValue="id"
-                    placeholder="Chọn thể loại"
+                    disabled={!isEditing}
                   />
-                ) : null}
-              </div>
+                )}
+              />
+
+              <form.Subscribe selector={(state) => state.values.categoryId}>
+                {(categoryId) => {
+                  const selectedCategory =
+                    categories?.find((cat) => cat.id === categoryId) ?? null;
+
+                  // set subCategoryId nếu category thay đổi
+                  if (selectedCategory?.subCategories?.length) {
+                    const firstSub = selectedCategory.subCategories[0];
+                    // chỉ set nếu field chưa bằng giá trị đầu tiên
+                    if (initialData?.categoryId !== selectedCategory.id) {
+                      form.state.values.subCategoryId = firstSub.id;
+                    } else {
+                      // giữ nguyên giá trị subCategoryId hiện tại
+                      form.state.values.subCategoryId =
+                        initialData.subCategoryId;
+                    }
+                  }
+
+                  return (
+                    <>
+                      {selectedCategory?.subCategories?.length ? (
+                        <form.Field
+                          name="subCategoryId"
+                          children={(field) => (
+                            <FieldSelectOptions
+                              label="Sub Category"
+                              field={field}
+                              placeholder="Enter sub category"
+                              options={selectedCategory.subCategories}
+                              selectLabel="name"
+                              disabled={!isEditing}
+                              selectValue="id"
+                            />
+                          )}
+                        />
+                      ) : null}
+                    </>
+                  );
+                }}
+              </form.Subscribe>
             </div>
           </div>
         </form>
-      </Form>
+      </div>
     </div>
   );
 };

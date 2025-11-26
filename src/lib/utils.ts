@@ -1,4 +1,5 @@
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
@@ -85,9 +86,14 @@ export const formatCurrency = (value: number | undefined): string => {
   }).format(value);
 };
 
-export function getEnumOptions(enumObject: any) {
+export interface EnumOption {
+  label: string;
+  value: string;
+}
+
+export function getEnumOptions(enumObject: any): EnumOption[] {
   return Object.keys(enumObject)
-    .filter((key) => isNaN(Number(key))) // Lọc để chỉ lấy tên (không lấy số index)
+    .filter((key) => isNaN(Number(key)))
     .map((key) => ({
       label: key,
       value: enumObject[key].toString(),
@@ -258,4 +264,61 @@ const capitalize = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);
 
 export const getWordCount = (content: string) => {
   return content.trim().split(/\s+/).length;
+};
+
+export type StockLevel = "Low" | "Medium" | "High";
+
+export function calculateStock(
+  totalStockDefaultQuantity: number,
+  totalStockQuantity: number
+): {
+  stock: number;
+  stockLevel: StockLevel;
+  percent: number;
+} {
+  const stock = totalStockQuantity;
+  const percent =
+    totalStockDefaultQuantity > 0
+      ? (totalStockQuantity / totalStockDefaultQuantity) * 100
+      : 0;
+
+  let stockLevel: StockLevel;
+
+  if (percent >= 60) stockLevel = "High";
+  else if (percent >= 30) stockLevel = "Medium";
+  else stockLevel = "Low";
+
+  return {
+    stock,
+    stockLevel,
+    percent,
+  };
+}
+export function getValidateString(value: unknown): string | null {
+  if (typeof value === "string") return value.trim() || null;
+  return null;
+}
+
+export function getValidateStringArray(value: unknown): string[] | null {
+  if (Array.isArray(value)) {
+    const arr = value.filter((v) => typeof v === "string" && v.trim().length);
+    return arr.length ? arr : null;
+  }
+  return null;
+}
+
+export function getValidateParam(value: unknown): string | string[] | null {
+  if (typeof value === "string") return value.trim() || null;
+  if (Array.isArray(value)) {
+    const arr = value.filter((v) => typeof v === "string" && v.trim().length);
+    return arr.length ? arr : null;
+  }
+  return null;
+}
+
+export const processResponse = <T>(res: BusinessResult<T>) => {
+  if (res.status !== Status.OK || !res.data) {
+    throw new Error(res.error?.detail || "API error");
+  }
+  return res.data as T;
 };

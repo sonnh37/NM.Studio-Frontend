@@ -159,8 +159,11 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const status = row.original.status;
       const statusText = ProductStatus[status];
-      let badgeVariant: "secondary" | "destructive" | "default" | "outline-solid" =
-        "default";
+      let badgeVariant:
+        | "secondary"
+        | "destructive"
+        | "default"
+        | "outline-solid" = "default";
       switch (status) {
         case ProductStatus.InMaintenance:
           badgeVariant = "secondary";
