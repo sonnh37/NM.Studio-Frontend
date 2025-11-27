@@ -2,7 +2,7 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { ProductForm } from "@/components/sites/dashboard/sites/products/create-update-form";
-import { getValidateString } from "@/lib/utils";
+import { getValidateString, processResponse } from "@/lib/utils";
 import { productService } from "@/services/product-service";
 import { Product } from "@/types/entities/product";
 
@@ -20,14 +20,16 @@ export default function Page() {
     error,
   } = useQuery({
     queryKey: ["fetchProductById", productId],
-    queryFn: async () =>
+    queryFn: () =>
       productService.getById(productId as string, [
         "categories",
         "subCategory",
         "thumbnail",
       ]),
     enabled: !!productId,
-    select: (result) => result.data,
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    select: (result) => processResponse(result),
   });
 
   if (isLoading) return <LoadingPageComponent />;

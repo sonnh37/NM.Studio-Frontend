@@ -21,7 +21,7 @@ export const FieldInput = ({
       <FieldLabel htmlFor={field.name}> {label || field.name}</FieldLabel>
       <Input
         id={field.name}
-        value={field.state.value}
+        value={field.state.value ?? undefined}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         placeholder={placeholder}

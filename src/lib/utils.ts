@@ -3,6 +3,7 @@ import { BusinessResult, Status } from "@/types/models/business-result";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { ContentState, convertFromRaw, EditorState } from "draft-js";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -104,7 +105,7 @@ type EnumType = { [key: string]: string | number };
 
 export function getEnumLabel<T extends EnumType>(
   enumObj: T,
-  value?: T[keyof T]
+  value?: T[keyof T] | null
 ): string {
   const enumValues = Object.entries(enumObj).filter(([key]) =>
     isNaN(Number(key))
@@ -133,6 +134,12 @@ export const formatPrice = (price: number) => {
     currency: "VND",
     maximumFractionDigits: 0, // Loại bỏ phần thập phân
   }).format(price);
+};
+
+export const formatRangePrice = (minPrice: number, maxPrice: number) => {
+  if (minPrice === 0 && maxPrice === 0) return "Đang cập nhật";
+  if (minPrice === maxPrice) return formatPrice(minPrice);
+  return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
 };
 // export const convertJsonToPlainText = (description: string) => {
 //   try {
@@ -317,7 +324,7 @@ export function getValidateParam(value: unknown): string | string[] | null {
 }
 
 export const processResponse = <T>(res: BusinessResult<T>) => {
-  if (res.status !== Status.OK || !res.data) {
+  if (res.status !== Status.OK) {
     throw new Error(res.error?.detail || "API error");
   }
   return res.data as T;

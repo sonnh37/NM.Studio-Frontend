@@ -10,6 +10,7 @@ import axiosInstance from "@/lib/interceptors/axios-instance";
 import { QueryResult } from "@/types/models/query-result";
 import { cleanQueryParams } from "@/lib/utils";
 import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
+import { ProductUpdateStatusCommand } from "@/types/cqrs/commands/product-command";
 
 class ProductService extends BaseService<Product> {
   constructor() {
@@ -25,11 +26,11 @@ class ProductService extends BaseService<Product> {
     return res.data;
   }
 
-  async getBySlug(slug: string): Promise<BusinessResult<Product>> {
+  async getReviewBySlug(slug: string): Promise<BusinessResult<ProductPreview>> {
     const cleanedQuery = cleanQueryParams({ slug });
 
-    const res = await axiosInstance.get<BusinessResult<Product>>(
-      `${this.endpoint}/by-slug?${cleanedQuery}`
+    const res = await axiosInstance.get<BusinessResult<ProductPreview>>(
+      `${this.endpoint}/preview/by-slug?${cleanedQuery}`
     );
     return res.data;
   }
@@ -41,6 +42,16 @@ class ProductService extends BaseService<Product> {
     const res = await axiosInstance.get<
       BusinessResult<QueryResult<ProductPreview>>
     >(`${this.endpoint}/preview?${cleanedQuery}`);
+    return res.data;
+  }
+
+  async updateStatus(
+    command: ProductUpdateStatusCommand
+  ): Promise<BusinessResult<Product>> {
+    const res = await axiosInstance.put<BusinessResult<Product>>(
+      `${this.endpoint}/status`,
+      command
+    );
     return res.data;
   }
 }

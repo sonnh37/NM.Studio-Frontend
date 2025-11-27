@@ -24,3 +24,7 @@ export interface ProductUpdateCommand extends UpdateCommand {
   material?: string | null;
   status?: ProductStatus | null;
 }
+
+export interface ProductUpdateStatusCommand extends UpdateCommand {
+  status?: ProductStatus | null;
+}

@@ -1327,7 +1327,7 @@ interface ConfirmationDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onConfirm: () => void;
-  onClose: () => void;
+  onClose?: () => void;
   title: string;
   description: string;
   confirmText: string;

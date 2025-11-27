@@ -16,12 +16,13 @@ import { FieldSelectEnums } from "@/lib/field-tanstack/field-select-enum";
 import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
 import { FieldTextarea } from "@/lib/field-tanstack/field-textarea";
 import ConfirmationDialog from "@/lib/form-custom-shadcn";
-import { cn, getEnumOptions, processResponse } from "@/lib/utils";
+import { cn, getEnumLabel, getEnumOptions, processResponse } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
 import { mediaUploadService } from "@/services/media-upload-service";
 import {
   ProductCreateCommand,
   ProductUpdateCommand,
+  ProductUpdateStatusCommand,
 } from "@/types/cqrs/commands/product-command";
 import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 import { Product, ProductStatus } from "@/types/entities/product";
@@ -30,12 +31,16 @@ import { useForm } from "@tanstack/react-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
+  ArchiveRestore,
   ChevronLeft,
   Layers2,
   Loader2,
   Pen,
   Plus,
   Save,
+  SquareChevronUp,
+  StickyNote,
+  Upload,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -53,6 +58,9 @@ import { Separator } from "@/components/ui/separator";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { toastPrintJSON } from "@/lib/helpers/toast-print-json";
 import { Const } from "@/lib/constants/const";
+import { Badge } from "@/components/ui/badge";
+import postService from "@/services/post";
+import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
 
 interface ProductFormProps {
   initialData?: Product | null;
@@ -67,7 +75,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required").nullable().optional(),
   sku: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
-  price: z.number().nullable().default(0).optional(),
+  material: z.string().nullable().optional(),
   status: z
     .enum(ProductStatus)
     .default(ProductStatus.Draft)
@@ -84,8 +92,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
   const [loading, setLoading] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showConfirmDup, setShowConfirmDup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(isEdit ? false : true);
   const [file, setFile] = useState<File | null>(null);
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
@@ -141,11 +150,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
           }
 
           const response = await productService.update(updatedValues);
-          if (response.status != Status.OK)
-            throw new Error(response.error?.detail);
-          queryClient.refetchQueries({
-            queryKey: ["fetchProductById", initialData?.id],
-          });
+          processResponse(response);
+          // queryClient.refetchQueries({
+          //   queryKey: ["fetchProductById", initialData?.id],
+          // });
           toast.success("Updated!");
           setIsEditing(false);
           // router.push(previousPath);
@@ -186,7 +194,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       }
 
       const response = await productService.create(createdValues);
-      if (response.status != Status.OK) throw new Error(response.error?.detail);
+      processResponse(response);
 
       toast.success("Created!");
       setShowConfirmationDialog(false);
@@ -195,8 +203,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
       return response;
     } catch (error: any) {
-      console.error("Error creating product:", error);
-      toast.error(error.message || "Failed to create product.");
       setShowConfirmationDialog(false);
       setPendingValues(null);
       setIsLoading(false);
@@ -222,6 +228,52 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     console.log("check_handles_uploaded", fileUploadeds);
   };
 
+  const handleChangeStatus = async (status: ProductStatus, id: string) => {
+    try {
+      const updateStatusCommand: ProductUpdateStatusCommand = {
+        status: status,
+        id: id,
+      };
+
+      const response = await productService.updateStatus(updateStatusCommand);
+      processResponse(response);
+      queryClient.refetchQueries({
+        queryKey: ["fetchProductById", initialData?.id],
+      });
+      toast.success("Updated status!");
+      setIsEditing(false);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message);
+    }
+  };
+
+  const handleDuplicate = async () => {
+    setShowConfirmDup(true);
+  };
+
+  const confirmDuplicate = async () => {
+    if (!initialData) return;
+
+    try {
+      const createdValues: ProductCreateCommand = {
+        ...initialData,
+      };
+
+      const response = await productService.create(createdValues);
+      processResponse(response);
+
+      toast.success("Created!");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message);
+    } finally {
+      setShowConfirmDup(false);
+    }
+  };
+
+  const status = getEnumLabel(ProductStatus, initialData?.status);
+
   if (isLoading) return <LoadingPageComponent />;
   if (isError) {
     console.log("Error fetching:", error);
@@ -240,10 +292,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
           if (res.status != Status.OK) {
             return;
           }
-          router.push(previousPath);
+          router.push(`${res.data?.id}`);
         }}
-        title="Do you want to continue adding this blog?"
+        title="Do you want to continue adding this?"
         description="This action cannot be undone. Are you sure you want to permanently delete this file from our servers?"
+        confirmText="Yes"
+        cancelText="No"
+      />
+
+      <ConfirmationDialog
+        open={showConfirmDup}
+        setOpen={setShowConfirmDup}
+        onConfirm={confirmDuplicate}
+        title="Duplicate Product?"
+        description="Are you sure you want to create a duplicate of this product?"
         confirmText="Yes"
         cancelText="No"
       />
@@ -264,62 +326,123 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
           </div>
           <div className="flex justify-end">
             {isEdit ? (
-              <ButtonGroup>
-                <Button
-                  variant={"outline"}
-                  size={"icon-sm"}
-                  disabled={isEditing}
-                >
-                  <Archive />
-                </Button>
-                <Button
-                  variant={"outline"}
-                  size={"icon-sm"}
-                  disabled={isEditing}
-                >
-                  <Layers2 />
-                </Button>
-
-                {isEditing ? (
-                  <>
-                    <Button
-                      variant={"outline"}
-                      size="icon-sm"
-                      onClick={() => setIsEditing(false)}
-                      // disabled={isSubmitting}
-                    >
-                      <X />
-                    </Button>
-                    <Button
-                      variant={"outline"}
-                      size="icon-sm"
-                      type="submit"
-                      // disabled={isSubmitting}
-                      form={formId}
-                    >
-                      {loading ? <Spinner /> : <Save />}
-                    </Button>
-                  </>
-                ) : (
+              <div className="flex items-center gap-2">
+                <Badge variant="outline">{status}</Badge>
+                <ButtonGroup>
+                  {initialData?.status == ProductStatus.Active ? (
+                    <>
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        disabled={isEditing}
+                        onClick={() =>
+                          handleChangeStatus(
+                            ProductStatus.Archived,
+                            initialData?.id!
+                          )
+                        }
+                      >
+                        <Archive /> Archive
+                      </Button>
+                    </>
+                  ) : initialData?.status == ProductStatus.Draft ? (
+                    <>
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        disabled={isEditing}
+                        onClick={() =>
+                          handleChangeStatus(
+                            ProductStatus.Active,
+                            initialData?.id!
+                          )
+                        }
+                      >
+                        <Upload /> Publish
+                      </Button>
+                    </>
+                  ) : initialData?.status == ProductStatus.Archived ? (
+                    <>
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        disabled={isEditing}
+                        onClick={() =>
+                          handleChangeStatus(
+                            ProductStatus.Active,
+                            initialData?.id!
+                          )
+                        }
+                      >
+                        <ArchiveRestore /> Restore
+                      </Button>
+                    </>
+                  ) : null}
                   <Button
                     variant={"outline"}
-                    size="icon-sm"
-                    onClick={() => setIsEditing(true)}
+                    size={"sm"}
+                    onClick={handleDuplicate}
+                    disabled={isEditing}
                   >
-                    <Pen />
+                    <Layers2 /> Duplicate
                   </Button>
-                )}
-              </ButtonGroup>
+
+                  {isEditing ? (
+                    <>
+                      <Button
+                        variant={"outline"}
+                        size="icon-sm"
+                        onClick={() => setIsEditing(false)}
+                        // disabled={isSubmitting}
+                      >
+                        <X />
+                      </Button>
+                      <Button
+                        variant={"outline"}
+                        size="icon-sm"
+                        type="submit"
+                        // disabled={isSubmitting}
+                        form={formId}
+                      >
+                        {loading ? <Spinner /> : <Save />}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      variant={"outline"}
+                      size="sm"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <Pen /> Edit
+                    </Button>
+                  )}
+                </ButtonGroup>
+              </div>
             ) : (
-              <Button
-                type="submit"
-                form={formId}
-                className=""
-                disabled={loading}
-              >
-                {loading ? <Spinner /> : <Plus />}
-                Create
-              </Button>
+              <ButtonGroup>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={loading}
+                  onClick={async () => {
+                    form.setFieldValue("status", ProductStatus.Draft);
+                    form.handleSubmit();
+                  }}
+                >
+                  {loading ? <Spinner /> : <StickyNote />}
+                  Draft
+                </Button>
+                <Button
+                  type="submit"
+                  form={formId}
+                  className=""
+                  variant={"outline"}
+                  disabled={loading}
+                >
+                  {loading ? <Spinner /> : <Save />}
+                  Submit
+                </Button>
+              </ButtonGroup>
             )}
           </div>
         </div>
@@ -375,14 +498,25 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
             <form.Field
               name="description"
               children={(field) => (
-                <FieldTextarea
-                  field={field}
-                  label="Description"
-                  placeholder="Enter desc"
-                  disabled={!isEditing}
-                />
+                <>
+                  {/* <form.Subscribe
+                    selector={(state) => state.values.description}
+                  >
+                    {(value) => {
+                      postService.save(value);
+                      return null;
+                    }}
+                  </form.Subscribe> */}
+
+                  <FieldEditor
+                    field={field}
+                    label="Description"
+                    disabled={!isEditing}
+                  />
+                </>
               )}
             />
+
             <form.Field
               name="status"
               children={(field) => (
@@ -397,12 +531,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
             />
 
             <form.Field
-              name="price"
+              name="material"
               children={(field) => (
-                <FieldInputNumber
+                <FieldInput
                   field={field}
-                  label="Price VND"
-                  placeholder="Enter price vnd"
+                  label="Material"
+                  placeholder="Enter material"
                   disabled={!isEditing}
                 />
               )}

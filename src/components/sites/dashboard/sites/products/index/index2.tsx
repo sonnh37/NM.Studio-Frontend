@@ -561,11 +561,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyH3 } from "@/components/_common/typography/typography-h3";
 import { usePathname, useRouter } from "next/navigation";
 import { TypographyH4 } from "@/components/_common/typography/typography-h4";
+import { ProductCard } from "./product-card";
 
 export default function ProductTableNoReactTable() {
   const router = useRouter();
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10); // sửa đây
+
+  const [statusFilter, setStatusFilter] = useState<ProductStatus | null>(null);
+  const [selectedTab, setSelectedTab] = useState<number>(-1);
+
+  const tabs = [
+    { name: "All Products", value: -1 },
+    {
+      name: getEnumLabel(ProductStatus, ProductStatus.Active),
+      value: ProductStatus.Active,
+    },
+    {
+      name: getEnumLabel(ProductStatus, ProductStatus.Archived),
+      value: ProductStatus.Archived,
+    },
+    {
+      name: getEnumLabel(ProductStatus, ProductStatus.Draft),
+      value: ProductStatus.Draft,
+    },
+  ];
 
   const queryParams: ProductGetAllQuery = useMemo(
     () => ({
@@ -575,6 +595,7 @@ export default function ProductTableNoReactTable() {
         pageNumber: pageIndex,
       },
       includeProperties: ["category", "subCategory", "thumbnail"],
+      status: statusFilter ?? undefined,
     }),
     [pageIndex, pageSize]
   );
@@ -603,6 +624,13 @@ export default function ProductTableNoReactTable() {
     }
   };
 
+  const handleTabChange = (value: number) => {
+    setSelectedTab(value);
+    setPageIndex(1);
+    const tab = tabs.find((t) => t.value === value);
+    queryParams.status = tab?.value;
+  };
+
   const products = data?.data?.results || [];
   const totalItems = data?.data?.totalItemCount || 0;
 
@@ -618,14 +646,18 @@ export default function ProductTableNoReactTable() {
 
       {/* Status */}
       <div className="w-full">
-        <Tabs defaultValue="explore" className="gap-4">
+        <Tabs
+          value={selectedTab.toString()}
+          onValueChange={(tab) => handleTabChange(Number(tab))}
+          className="gap-4"
+        >
           <TabsList className="bg-background rounded-none p-0 w-full">
             <div className="flex justify-between w-full">
               <div className="bg-background rounded-none border-b p-0 w-full inline-block">
                 {tabs.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
-                    value={tab.value}
+                    value={tab.value.toString()}
                     className="bg-background data-[state=active]:border-primary dark:data-[state=active]:border-primary h-full rounded-none border-0 border-b-2 border-transparent data-[state=active]:shadow-none"
                   >
                     {tab.name}
@@ -639,8 +671,8 @@ export default function ProductTableNoReactTable() {
           </TabsList>
 
           {tabs.map((tab) => (
-            <TabsContent key={tab.value} value={tab.value}>
-              <p className="text-muted-foreground text-sm">{tab.content}</p>
+            <TabsContent key={tab.value} value={tab.value.toString()}>
+              <p className="text-muted-foreground text-sm">{tab.name}</p>
             </TabsContent>
           ))}
         </Tabs>
@@ -690,220 +722,3 @@ export function SkeletonCard({ count = 6 }: { count?: number }) {
     </div>
   );
 }
-
-type ProductCardProps = {
-  product: ProductPreview;
-};
-
-export function ProductCard({ product }: ProductCardProps) {
-  const { stock, stockLevel } = calculateStock(
-    product.totalStockDefaultQuantity,
-    product.totalStockQuantity
-  );
-
-  const status = getProductStatusDisplay(product.status);
-  return (
-    <Card className="shadow-xs hover:shadow-2xl transition">
-      <CardContent className="flex flex-col gap-4">
-        <div className="flex justify-between">
-          <div className="flex gap-2 h-fit">
-            <div>
-              <img
-                src={product.thumbnail?.mediaUrl ?? Const.IMAGE_DEFAULT_URL}
-                alt={product.name}
-                className="w-12 h-12 rounded-lg object-cover"
-              />
-            </div>
-            <div className="flex flex-col justify-between overflow-hidden whitespace-nowrap">
-              <Link href={`products/${product.id}`} className="hover:underline">
-                <TypographyH4 className=" truncate ">
-                  {product.name}
-                </TypographyH4>
-              </Link>
-              <div className="flex items-center gap-x-1">
-                <p className="text-xs text-neutral-500">{product.sku}</p>
-                <Badge
-                  variant={status.variant}
-                  className={cn("text-xs", status.className)}
-                >
-                  {status.label}
-                </Badge>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <Actions product={product} />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3 text-sm ">
-          <div>
-            <p className="text-neutral-400 text-xs">Retail</p>
-            <p className="font-semibold">
-              ${product.minPrice}–${product.maxPrice}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-starts text-sm gap-4">
-          <div className="flex items-center gap-2">
-            <Badge
-              className={cn(
-                "px-3 py-1 text-xs rounded-md",
-                stockLevel === "High" && "bg-green-100 text-green-700",
-                stockLevel === "Medium" && "bg-yellow-100 text-yellow-700",
-                stockLevel === "Low" && "bg-red-100 text-red-700"
-              )}
-            >
-              {stock} stock – {stockLevel}
-            </Badge>
-          </div>
-
-          <div className="text-neutral-600 text-xs flex items-center gap-1">
-            Variants ({product.variants.length}) <ChevronRight size={16} />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-export function getProductStatusDisplay(status: ProductStatus) {
-  switch (status) {
-    case ProductStatus.Active:
-      return {
-        label: "Active",
-        className: "bg-green-100 text-green-700 hover:bg-green-200",
-        variant: "default" as const,
-      };
-
-    case ProductStatus.Draft:
-      return {
-        label: "Draft",
-        className: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
-        variant: "secondary" as const,
-      };
-
-    case ProductStatus.Archived:
-      return {
-        label: "Archived",
-        className: "bg-gray-200 text-gray-700 hover:bg-gray-300",
-        variant: "outline" as const,
-      };
-
-    default:
-      return {
-        label: "Unknown",
-        className: "bg-neutral-200 text-neutral-700",
-        variant: "secondary" as const,
-      };
-  }
-}
-
-const tabs = [
-  {
-    name: "All Products",
-    value: "all",
-    content: (
-      <>
-        Discover{" "}
-        <span className="text-foreground font-semibold">fresh ideas</span>,
-        trending topics, and hidden gems curated just for you. Start exploring
-        and let your curiosity lead the way!
-      </>
-    ),
-  },
-  {
-    name: getEnumLabel(ProductStatus, ProductStatus.Active),
-    value: getEnumLabel(ProductStatus, ProductStatus.Active),
-    content: (
-      <>
-        All your{" "}
-        <span className="text-foreground font-semibold">favorites</span> are
-        saved here. Revisit articles, collections, and moments you love, any
-        time you want a little inspiration.
-      </>
-    ),
-  },
-  {
-    name: getEnumLabel(ProductStatus, ProductStatus.Archived),
-    value: getEnumLabel(ProductStatus, ProductStatus.Archived),
-    content: (
-      <>
-        <span className="text-foreground font-semibold">Surprise!</span>{" "}
-        Here&apos;s something unexpected—a fun fact, a quirky tip, or a daily
-        challenge. Come back for a new surprise every day!
-      </>
-    ),
-  },
-  {
-    name: getEnumLabel(ProductStatus, ProductStatus.Draft),
-    value: getEnumLabel(ProductStatus, ProductStatus.Draft),
-    content: (
-      <>
-        <span className="text-foreground font-semibold">Surprise!</span>{" "}
-        Here&apos;s something unexpected—a fun fact, a quirky tip, or a daily
-        challenge. Come back for a new surprise every day!
-      </>
-    ),
-  },
-];
-
-interface ActionsProps {
-  product: ProductPreview;
-}
-
-const Actions: React.FC<ActionsProps> = ({ product }) => {
-  const model = product;
-  const router = useRouter();
-  const pathName = usePathname();
-  const handleEditClick = () => {
-    router.push(`${pathName}/${model.id}/edit`);
-  };
-
-  const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
-
-  const handleProductsClick = () => {
-    //row.toggleSelected();
-    router.push(`${pathName}/${model.id}`);
-  };
-
-  return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(model.id!)}
-          >
-            Copy ID
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleProductsClick}>
-            <Eye /> View
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleEditClick}>
-            {" "}
-            <Pen />
-            Modify
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            disabled
-            onSelect={() => setShowDeleteTaskDialog(true)}
-          >
-            Delete
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
-  );
-};
