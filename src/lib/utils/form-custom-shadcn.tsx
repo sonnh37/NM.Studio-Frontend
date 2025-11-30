@@ -44,7 +44,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {EnumOption } from "@/lib/utils/enum-utils";
+import { EnumOption } from "@/lib/utils/enum-utils";
 import { formatDate } from "@/lib/utils/date-utils";
 import { cn } from "@/lib/utils";
 import postService from "@/services/post";
@@ -977,7 +977,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
                     )}
                   >
                     {field.value ? (
-                      `${formatDate(field.value, false)}${
+                      `${formatDate(field.value)}${
                         isShowTimePicker ? ", " + time : ""
                       }`
                     ) : (

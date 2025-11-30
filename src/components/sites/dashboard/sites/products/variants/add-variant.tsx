@@ -207,39 +207,7 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
                 onChange={(e) => updateVariant(index, "sku", e.target.value)}
               />
             </Field>
-            <Field>
-              <FieldLabel htmlFor={`price-${index}`}>Price (VND)</FieldLabel>
-              <Input
-                id={`price-${index}`}
-                type="number"
-                placeholder="0.00"
-                value={variant.price || 0}
-                onChange={(e) =>
-                  updateVariant(index, "price", Number(e.target.value))
-                }
-              />
-            </Field>
-          </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <Field>
-              <FieldLabel htmlFor={`color-${index}`}>Color</FieldLabel>
-              <Input
-                id={`color-${index}`}
-                placeholder="Color"
-                value={variant.color || ""}
-                onChange={(e) => updateVariant(index, "color", e.target.value)}
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor={`size-${index}`}>Size</FieldLabel>
-              <Input
-                id={`size-${index}`}
-                placeholder="Size"
-                value={variant.size || ""}
-                onChange={(e) => updateVariant(index, "size", e.target.value)}
-              />
-            </Field>
             <Field>
               <FieldLabel htmlFor={`status-${index}`}>Status</FieldLabel>
               <Select
@@ -269,16 +237,37 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
             </Field>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <Field>
+              <FieldLabel htmlFor={`color-${index}`}>Color</FieldLabel>
+              <Input
+                id={`color-${index}`}
+                placeholder="Color"
+                value={variant.color || ""}
+                onChange={(e) => updateVariant(index, "color", e.target.value)}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor={`size-${index}`}>Size</FieldLabel>
+              <Input
+                id={`size-${index}`}
+                placeholder="Size"
+                value={variant.size || ""}
+                onChange={(e) => updateVariant(index, "size", e.target.value)}
+              />
+            </Field>
+          </div>
+
           <div className="grid grid-cols-3 gap-4">
             <Field>
-              <FieldLabel htmlFor={`stock-${index}`}>Stock Quantity</FieldLabel>
+              <FieldLabel htmlFor={`price-${index}`}>Price (VND)</FieldLabel>
               <Input
-                id={`stock-${index}`}
+                id={`price-${index}`}
                 type="number"
-                placeholder="0"
-                value={variant.stockQuantity || 0}
+                placeholder="0.00"
+                value={variant.price || 0}
                 onChange={(e) =>
-                  updateVariant(index, "stockQuantity", Number(e.target.value))
+                  updateVariant(index, "price", Number(e.target.value))
                 }
               />
             </Field>
@@ -309,6 +298,40 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
               />
             </Field>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Field>
+              <FieldLabel htmlFor={`stock-${index}`}>Stock Quantity</FieldLabel>
+              <Input
+                id={`stock-${index}`}
+                type="number"
+                placeholder="0"
+                value={variant.stockQuantity || 0}
+                onChange={(e) =>
+                  updateVariant(index, "stockQuantity", Number(e.target.value))
+                }
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor={`price-${index}`}>
+                Default Quantity
+              </FieldLabel>
+              <Input
+                id={`default-quantity-${index}`}
+                type="number"
+                placeholder="0"
+                value={variant.stockDefaultQuantity || 0}
+                onChange={(e) =>
+                  updateVariant(
+                    index,
+                    "stockDefaultQuantity",
+                    Number(e.target.value)
+                  )
+                }
+              />
+            </Field>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -330,7 +353,7 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
                 <CirclePlus /> Add Variant
               </Button>
             </SheetTrigger>
-            <SheetContent className="sm:max-w-5xl overflow-y-auto">
+            <SheetContent className="sm:max-w-2xl overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Add Product Variants</SheetTitle>
                 <SheetDescription>
@@ -357,7 +380,6 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
                 </div>
 
                 {/* Variant Table Preview */}
-                {renderVariantTable()}
 
                 {/* Learn More Link */}
                 <div className="text-center">
@@ -491,7 +513,6 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
                 </FieldGroup>
 
                 {/* Variant Table Preview */}
-                {renderVariantTable()}
               </div>
 
               <SheetFooter className="flex flex-row justify-end gap-2">

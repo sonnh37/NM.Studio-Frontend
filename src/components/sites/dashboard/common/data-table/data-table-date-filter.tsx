@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { dateUtils } from "@/lib/utils/date-utils";
+import { formatDateDataTable } from "@/lib/utils/date-utils";
 
 type DateSelection = Date[] | DateRange;
 
@@ -96,7 +96,7 @@ export function DataTableDateFilter<TData>({
         column.setFilterValue(date.getTime());
       }
     },
-    [column, multiple],
+    [column, multiple]
   );
 
   const onReset = React.useCallback(
@@ -104,7 +104,7 @@ export function DataTableDateFilter<TData>({
       event.stopPropagation();
       column.setFilterValue(undefined);
     },
-    [column],
+    [column]
   );
 
   const hasValue = React.useMemo(() => {
@@ -119,9 +119,9 @@ export function DataTableDateFilter<TData>({
   const formatDateRange = React.useCallback((range: DateRange) => {
     if (!range.from && !range.to) return "";
     if (range.from && range.to) {
-      return `${dateUtils(range.from)} - ${dateUtils(range.to)}`;
+      return `${formatDateDataTable(range.from)} - ${formatDateDataTable(range.to)}`;
     }
-    return dateUtils(range.from ?? range.to);
+    return formatDateDataTable(range.from ?? range.to);
   }, []);
 
   const label = React.useMemo(() => {
@@ -153,7 +153,7 @@ export function DataTableDateFilter<TData>({
 
     const hasSelectedDate = selectedDates.length > 0;
     const dateText = hasSelectedDate
-      ? dateUtils(selectedDates[0])
+      ? formatDateDataTable(selectedDates[0])
       : "Select date";
 
     return (
