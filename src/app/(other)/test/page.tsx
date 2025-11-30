@@ -1,13 +1,26 @@
-"use client"
-import { ButtonLoading } from "@/components/_common/button-loading";
-import { LoadingPageComponent } from "@/components/_common/loading-page";
+"use client";
+import { useState } from "react";
+import ColorPickerInput from "@/components/ui/color-picker-input";
 
 export default function Home() {
   return (
     <>
-      <ButtonLoading
-        className={"shadow-inner w-full flex justify-center items-center"}
-      />
+      <Example />
     </>
   );
 }
+
+const Example = () => {
+  const [color, setColor] = useState<string>("#ff0000");
+
+  return (
+    <div className="p-4">
+      <ColorPickerInput value={color} onChange={setColor} />
+
+      <div className="mt-4">
+        <div>Selected color: {color}</div>
+        <div className="mt-2 h-8 w-20 rounded" style={{ background: color }} />
+      </div>
+    </div>
+  );
+};
