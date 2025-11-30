@@ -1,8 +1,9 @@
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import { cleanQueryParams } from "@/lib/utils";
 import { MediaBase } from "@/types/entities/media-base";
 import { BusinessResult } from "@/types/models/business-result";
 import { UploadResult } from "@/types/models/upload-result";
+
+import {cleanQueryParams} from "@/lib/utils/query-param-utils";
 
 class MediaUploadService {
   public endpoint: string;

@@ -8,7 +8,7 @@ import { TypographyLarge } from "@/components/_common/typography/typography-larg
 import { TypographyP } from "@/components/_common/typography/typography-p";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
 import { Button } from "@/components/ui/button";
-import { formatPrice, formatRangePrice, processResponse } from "@/lib/utils";
+import { processResponse } from "@/lib/utils";
 import { productService } from "@/services/product-service";
 // import { Color } from "@/types/entities/color";
 import {
@@ -46,6 +46,7 @@ import {
 import PostSharing from "@/components/_common/tiptaps_v2/shared/post-sharing";
 import ClampContent from "@/components/_common/clamp-content";
 import ClampFade from "@/components/_common/clamp-content";
+import {formatPrice, formatRangePrice} from "@/lib/utils/number-utils";
 export default function Page() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [selectedColor, setSelectedColor] = useState<ProductVariant | null>(

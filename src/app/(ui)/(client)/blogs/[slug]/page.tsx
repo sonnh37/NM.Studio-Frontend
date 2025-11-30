@@ -1,6 +1,5 @@
 "use client";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { getWordCount } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { Blog } from "@/types/entities/blog";
@@ -15,6 +14,7 @@ import PostReadingProgress from "@/components/_common/tiptaps_v2/shared/reading-
 import TiptapRenderer from "@/components/_common/tiptaps_v2/tiptap-renderer/client-renderer";
 import { usePost } from "@/hooks/tiptaps_v2/use-post";
 import { useMemo, use } from "react";
+import {getWordCount} from "@/lib/utils/rich-editor-utils";
 
 export default function Page(props: { params: Promise<{ slug: string }> }) {
   const params = use(props.params);

@@ -15,6 +15,7 @@ export interface ProductVariantCreateCommand extends CreateCommand {
   rentalPrice?: number | null;
   deposit?: number | null;
   stockQuantity: number | null;
+  stockDefaultQuantity: number | null;
   status: InventoryStatus | null;
 }
 
@@ -28,6 +29,10 @@ export interface ProductVariantUpdateCommand extends UpdateCommand {
   deposit?: number | null;
   stockQuantity: number | null;
   status: InventoryStatus | null;
+}
+
+export interface ProductVariantUpdateStatusCommand extends UpdateCommand {
+  status: InventoryStatus;
 }
 
 export interface ProductVariantDeleteCommand extends DeleteCommand {}

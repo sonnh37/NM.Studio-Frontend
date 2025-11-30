@@ -2,8 +2,8 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AnyFieldApi } from "@tanstack/react-form";
 import { useRef } from "react";
-import { formatCurrency } from "../utils";
 import { FieldCommonProps } from "./field-common-props";
+import { formatCurrency } from "../utils/format-currency";
 
 interface FieldInputNumberProps
   extends React.ComponentProps<"input">,

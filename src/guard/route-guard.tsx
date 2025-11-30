@@ -2,9 +2,9 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 import { Role } from "@/types/entities/user";
-import { tokenHelper } from "@/lib/helpers/token-helper";
+import { tokenHelper } from "@/lib/utils/token-helper";
 import { userService } from "@/services/user-serice";
 import { Status } from "@/types/models/business-result";
 

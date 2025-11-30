@@ -41,7 +41,7 @@ import {
   VideoIcon,
   XIcon,
 } from "lucide-react";
-import { toAbsoluteUrl } from "@/lib/helpers";
+import { toAbsoluteUrl } from "@/lib/utils/helpers";
 import { cn } from "@/lib/utils";
 import { MediaPicker } from "./media-picker";
 import { MediaBase } from "@/types/entities/media-base";

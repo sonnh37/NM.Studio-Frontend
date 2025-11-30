@@ -19,7 +19,7 @@ import {
   FormInputDateTimePickerV2,
   FormInputDateTimePickerV3,
   FormSelectObject,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
 import { ServiceBookingCreateCommand } from "@/types/cqrs/commands/service-booking-command";

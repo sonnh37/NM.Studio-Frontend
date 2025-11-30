@@ -22,7 +22,7 @@ import { ProductsCombobox } from "../../common/products-combobox";
 
 import MenuAnimationLink from "@/components/_common/hovers/menu-animation-link";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import Image from "next/image";
 import { AuthDropdown } from "./auth-dropdown";
 import { UserContext } from "@/types/models/user-context";
@@ -79,17 +79,17 @@ export function MainNav({
                     </NavigationMenuLink>
                   </li>
                   <ListItem
-                    href={`${Const.SOCIAL_INSTAGRAM}`}
+                    href={`${Constants.SOCIAL_INSTAGRAM}`}
                     title="Instagram"
                   >
                     Theo dõi chúng tôi trên Instagram để cập nhật các bức ảnh
                     mới nhất và các sự kiện thú vị.
                   </ListItem>
-                  <ListItem href={`${Const.SOCIAL_FACEBOOK}`} title="Facebook">
+                  <ListItem href={`${Constants.SOCIAL_FACEBOOK}`} title="Facebook">
                     Kết nối với chúng tôi trên Facebook để nhận thông tin và sự
                     kiện hấp dẫn.
                   </ListItem>
-                  <ListItem href={`${Const.SOCIAL_TIKTOK}`} title="Tiktok">
+                  <ListItem href={`${Constants.SOCIAL_TIKTOK}`} title="Tiktok">
                     Xem các video thú vị của chúng tôi trên Tiktok, từ các buổi
                     chụp ảnh đến các dự án sáng tạo.
                   </ListItem>

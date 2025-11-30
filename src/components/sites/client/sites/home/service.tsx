@@ -1,7 +1,6 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import {LoadingPageComponent} from "@/components/_common/loading-page";
 
-import { convertHtmlToPlainText } from "@/lib/utils";
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
 
 interface Studio {
   title: string;

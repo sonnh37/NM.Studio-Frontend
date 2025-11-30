@@ -1,7 +1,7 @@
 // Album.tsx
 "use client";
 
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { AlbumList } from "../albums/album-list";
@@ -40,7 +40,7 @@ export function AlbumHome() {
           <AlbumList />
           <div className="flex pt-5 justify-center">
             <button
-              onClick={() => router.push(Const.ALBUMS)}
+              onClick={() => router.push(Constants.ALBUMS)}
               className="border-2 border-neutral-300 text-neutral-500 px-12 py-4 rounded-none tracking-widest uppercase bg-transparent hover:bg-neutral-500 hover:text-white dark:text-neutral-200 transition duration-200"
             >
               Xem thêm

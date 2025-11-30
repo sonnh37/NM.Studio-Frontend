@@ -3,20 +3,23 @@
 import { productService } from "@/services/product-service";
 import { useState } from "react";
 import { toast } from "sonner";
-import { set, z } from "zod";
+import { z } from "zod";
 
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 import CardUpload, { FileUploadItem } from "@/components/card-upload";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import { usePreviousPath } from "@/hooks/use-previous-path";
+import { Constants } from "@/lib/constants/constants";
 import { FieldInput } from "@/lib/field-tanstack/field-input";
-import { FieldInputNumber } from "@/lib/field-tanstack/field-input-number";
-import { FieldSelectEnums } from "@/lib/field-tanstack/field-select-enum";
+import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
 import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
-import { FieldTextarea } from "@/lib/field-tanstack/field-textarea";
-import ConfirmationDialog from "@/lib/form-custom-shadcn";
-import { cn, getEnumLabel, getEnumOptions, processResponse } from "@/lib/utils";
+import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
+import { getEnumLabel } from "@/lib/utils/enum-utils";
+import { processResponse } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
 import { mediaUploadService } from "@/services/media-upload-service";
 import {
@@ -32,35 +35,20 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
   ArchiveRestore,
+  ArrowUpRightIcon,
   ChevronLeft,
+  CirclePlus,
   Layers2,
-  Loader2,
   Pen,
-  Plus,
   Save,
-  SquareChevronUp,
   StickyNote,
   Upload,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Spinner } from "@/components/ui/spinner";
-import { TypographyH2 } from "@/components/_common/typography/typography-h2";
-import { TypographyH3 } from "@/components/_common/typography/typography-h3";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  FieldDescription,
-  FieldGroup,
-  FieldLegend,
-} from "@/components/ui/field";
-import { Separator } from "@/components/ui/separator";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { toastPrintJSON } from "@/lib/helpers/toast-print-json";
-import { Const } from "@/lib/constants/const";
-import { Badge } from "@/components/ui/badge";
-import postService from "@/services/post";
-import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
+import { IconFolderCode } from "@tabler/icons-react";
+import { SheetAddVariant } from "./variants/add-variant";
 
 interface ProductFormProps {
   initialData?: Product | null;
@@ -84,7 +72,7 @@ const formSchema = z.object({
 });
 
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
-  const isEdit = Boolean(initialData);
+  const isEdit = initialData != null && initialData != undefined;
   const title = isEdit ? "Edit product" : "Create product";
   const router = useRouter();
   const previousPath = usePreviousPath();
@@ -95,6 +83,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const [showConfirmDup, setShowConfirmDup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(isEdit ? false : true);
+  const [openSheet, setOpenSheet] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
@@ -164,6 +153,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       } catch (error: any) {
         console.error(error);
         toast.error(error.message);
+        return Promise.reject(error);
       } finally {
         setLoading(false);
       }
@@ -462,7 +452,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
               defaultValues={
                 initialData?.thumbnail ? [initialData?.thumbnail] : []
               }
-              accept={Const.IMAGE_EXT_STRING}
+              accept={Constants.IMAGE_EXT_STRING}
               maxFiles={1}
               onFilesChange={handleFilesChange}
               // multiple={false}
@@ -494,41 +484,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                 )}
               />
             </div>
-
-            <form.Field
-              name="description"
-              children={(field) => (
-                <>
-                  {/* <form.Subscribe
-                    selector={(state) => state.values.description}
-                  >
-                    {(value) => {
-                      postService.save(value);
-                      return null;
-                    }}
-                  </form.Subscribe> */}
-
-                  <FieldEditor
-                    field={field}
-                    label="Description"
-                    disabled={!isEditing}
-                  />
-                </>
-              )}
-            />
-
-            <form.Field
-              name="status"
-              children={(field) => (
-                <FieldSelectEnums
-                  field={field}
-                  label="Status"
-                  placeholder="Enter status"
-                  enumOptions={getEnumOptions(ProductStatus)}
-                  disabled={!isEditing}
-                />
-              )}
-            />
 
             <form.Field
               name="material"
@@ -598,6 +553,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                 }}
               </form.Subscribe>
             </div>
+
+            {isEdit && <SheetAddVariant product={initialData} />}
+
+            <form.Field
+              name="description"
+              children={(field) => (
+                <>
+                  <FieldEditor
+                    field={field}
+                    label="Description"
+                    disabled={!isEditing}
+                  />
+                </>
+              )}
+            />
           </div>
         </form>
       </div>

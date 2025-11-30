@@ -544,7 +544,9 @@ import { toast } from "sonner";
 import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
 import { DataCustomPagination } from "@/components/_common/data-custom/data-custom-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { calculateStock, cn, getEnumLabel } from "@/lib/utils";
+import { getEnumLabel } from "@/lib/utils/enum-utils";
+
+import {calculateStock, cn} from "@/lib/utils";
 import {
   Card,
   CardAction,
@@ -553,7 +555,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Ellipsis, Eye, MoreHorizontal, Pen } from "lucide-react";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import Link from "next/link";
 import { TypographyH2 } from "@/components/_common/typography/typography-h2";
 import { Badge } from "@/components/ui/badge";

@@ -19,7 +19,7 @@ import {
   isNodeTypeSelected,
   isValidPosition,
   selectionWithinConvertibleTypes,
-} from "@/lib/tiptap-utils"
+} from "@/lib/utils/tiptap-utils"
 
 export type ListType = "bulletList" | "orderedList" | "taskList"
 

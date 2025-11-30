@@ -24,7 +24,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { formatDate } from "@/lib/utils";
+
+import {formatDate} from "@/lib/utils/date-utils";
 
 export const columns: ColumnDef<Service>[] = [
   {

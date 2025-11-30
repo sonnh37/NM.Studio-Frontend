@@ -11,7 +11,7 @@ import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInputNumber,
   ImageUpload,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 
 import { TypographyH1 } from "@/components/_common/typography/typography-h1";
 

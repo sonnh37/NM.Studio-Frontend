@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { AnyFieldApi } from "@tanstack/react-form";
-import { EnumOption } from "../utils";
+import { EnumOption } from "../utils/enum-utils";
 import { FieldCommonProps } from "./field-common-props";
 
 interface FieldSelectEnumsProps

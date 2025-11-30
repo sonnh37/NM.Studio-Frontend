@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 
 export function SiteHeader() {
   const user = userContextHelper.get();

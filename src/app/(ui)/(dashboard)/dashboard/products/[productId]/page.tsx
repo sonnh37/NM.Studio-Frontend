@@ -2,12 +2,13 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { ProductForm } from "@/components/sites/dashboard/sites/products/create-update-form";
-import { getValidateString, processResponse } from "@/lib/utils";
+import { processResponse } from "@/lib/utils";
 import { productService } from "@/services/product-service";
 import { Product } from "@/types/entities/product";
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import {getValidateString} from "@/lib/utils/string-utils";
 
 export default function Page() {
   const params = useParams();
@@ -22,9 +23,10 @@ export default function Page() {
     queryKey: ["fetchProductById", productId],
     queryFn: () =>
       productService.getById(productId as string, [
-        "categories",
+        "category",
         "subCategory",
         "thumbnail",
+        "variants.productMedias.mediaBase",
       ]),
     enabled: !!productId,
     refetchOnWindowFocus: false,

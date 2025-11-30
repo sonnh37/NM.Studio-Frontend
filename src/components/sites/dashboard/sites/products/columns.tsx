@@ -17,7 +17,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate, formatPrice } from "@/lib/utils";
 import { productService } from "@/services/product-service";
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
@@ -25,6 +24,8 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {formatDate} from "@/lib/utils/date-utils";
+import {formatPrice} from "@/lib/utils/number-utils";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -159,23 +160,13 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const status = row.original.status;
       const statusText = ProductStatus[status];
-      let badgeVariant:
-        | "secondary"
-        | "destructive"
-        | "default"
-        | "outline-solid" = "default";
+      let badgeVariant: "secondary" | "destructive" | "default";
       switch (status) {
-        case ProductStatus.InMaintenance:
-          badgeVariant = "secondary";
-          break;
-        case ProductStatus.Available:
+        case ProductStatus.Active:
           badgeVariant = "default";
           break;
-        case ProductStatus.Unavailable:
-          badgeVariant = "destructive";
-          break;
         default:
-          badgeVariant = "outline-solid";
+          badgeVariant = "secondary";
       }
       return <Badge variant={badgeVariant}>{statusText}</Badge>;
     },

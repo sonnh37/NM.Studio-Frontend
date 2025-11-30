@@ -18,13 +18,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { MediaBase } from "@/types/entities/media-base";
 import { mediaBaseService } from "@/services/media-base-service";
 import { ImageMedia } from "@/components/_common/image-media";
+import {formatDate} from "@/lib/utils/date-utils";
 export const columns: ColumnDef<MediaBase>[] = [
   {
     accessorKey: "select",

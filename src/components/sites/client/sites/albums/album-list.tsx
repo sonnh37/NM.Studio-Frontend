@@ -2,7 +2,7 @@
 
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import { albumService } from "@/services/album-service";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ export function AlbumList() {
   const queryAlbum: AlbumGetAllQuery = {
     pagination: {
       isPagingEnabled: true,
-      pageSize: pathName === `/${Const.ALBUMS}` ? 60 : 162,
+      pageSize: pathName === `/${Constants.ALBUMS}` ? 60 : 162,
     },
     isDeleted: false,
   };

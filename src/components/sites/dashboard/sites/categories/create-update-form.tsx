@@ -13,7 +13,7 @@ import { usePreviousPath } from "@/hooks/use-previous-path";
 import ConfirmationDialog, {
   FormInput,
   FormSwitch,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 import { Category } from "@/types/entities/category";
 
 import { BusinessResult, Status } from "@/types/models/business-result";

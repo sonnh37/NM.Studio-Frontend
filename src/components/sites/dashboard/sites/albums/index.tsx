@@ -32,7 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { cn, formatDate, getDefaultFormFilterValues } from "@/lib/utils";
+import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { mediaBaseService } from "@/services/media-base-service";
 import { mediaUploadService } from "@/services/media-upload-service";
@@ -67,6 +67,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import {formatDate} from "@/lib/utils/date-utils";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [

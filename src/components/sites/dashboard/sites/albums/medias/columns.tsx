@@ -1,11 +1,11 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/_common/data-table-generic/data-table-column-header";
-import { formatDate } from "@/lib/utils";
 import { MediaBase } from "@/types/entities/media-base";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
+import {formatDate} from "@/lib/utils/date-utils";
 
 export const columns: ColumnDef<MediaBase>[] = [
   {

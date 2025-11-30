@@ -2,9 +2,9 @@
 
 import { DataTableColumnHeader } from "@/components/_common/data-table-generic/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
 import { SubCategory } from "@/types/entities/subcategory";
 import { ColumnDef } from "@tanstack/react-table";
+import {formatDate} from "@/lib/utils/date-utils";
 
 export const columns: ColumnDef<SubCategory>[] = [
   {

@@ -18,12 +18,12 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { homeSlideService } from "@/services/home-slide-service";
 import { HomeSlide } from "@/types/entities/home-slide";
+import {formatDate} from "@/lib/utils/date-utils";
 export const columns: ColumnDef<HomeSlide>[] = [
   {
     accessorKey: "select",

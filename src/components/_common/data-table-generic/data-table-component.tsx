@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCommonPinningStyles } from "@/lib/data-table";
+import { getCommonPinningStyles } from "@/lib/utils/data-table";
 import {
   DeleteCommand,
   UpdateCommand,

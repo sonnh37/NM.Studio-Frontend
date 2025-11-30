@@ -195,7 +195,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCommonPinningStyles } from "@/lib/data-table";
+import { getCommonPinningStyles } from "@/lib/utils/data-table";
 import { cn } from "@/lib/utils";
 import { DataTablePagination } from "@/components/_common/data-table-generic/data-table-pagination";
 

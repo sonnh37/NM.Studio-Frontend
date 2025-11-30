@@ -1,11 +1,11 @@
 import Script from "next/script";
 
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import type { Metadata } from "next";
 import LayoutClient from "./layout-client";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(`${Const.BASE_URL}`),
+  metadataBase: new URL(`${Constants.BASE_URL}`),
   title: {
     template: "%s | NhuMy Studio",
     default: "NhuMy Studio",

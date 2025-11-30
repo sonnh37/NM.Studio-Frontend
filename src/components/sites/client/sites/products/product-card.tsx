@@ -15,8 +15,8 @@ import { ProductDialog } from "./product-dialog";
 import Link from "next/link";
 import { TypographyP } from "@/components/_common/typography/typography-p";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
-import { formatPrice } from "@/lib/utils";
 import { TypographyMuted } from "@/components/_common/typography/typography-muted";
+import {formatPrice} from "@/lib/utils/number-utils";
 
 interface ProductCardProps {
   product: Product;

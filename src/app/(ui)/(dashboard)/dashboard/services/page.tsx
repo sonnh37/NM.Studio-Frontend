@@ -1,7 +1,7 @@
 "use client";
 
 import ServiceTable from "@/components/sites/dashboard/sites/services";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 
 export default function Page() {
   return (

@@ -7,7 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { User } from "@/types/entities/user";
 import { Bell, BellDot, Check, Mail, MoreHorizontal, Pin, Trash2, Users } from "lucide-react";
 import {
@@ -36,6 +36,7 @@ import { NotificationGetAllByCurrentUserQuery } from "@/types/models/queries/not
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { UserContext } from "@/types/models/user-context";
+import {formatDate} from "@/lib/utils/date-utils";
 
 interface NotificationPopoverProps {
   user?: UserContext | null;

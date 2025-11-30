@@ -1,10 +1,10 @@
 import {Cart} from "@/types/entities/cart";
 import {BaseService} from "./base/base-service";
-import {Const} from "@/lib/constants/const";
+import {Constants} from "@/lib/constants/constants";
 
 class CartService extends BaseService<Cart> {
     constructor() {
-        super(`${Const.CARTS}`);
+        super(`${Constants.CARTS}`);
     }
 }
 

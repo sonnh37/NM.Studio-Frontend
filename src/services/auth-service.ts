@@ -1,4 +1,4 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import { logout, setUser } from "@/lib/redux/slices/userSlice";
 import store from "@/lib/redux/store";
@@ -6,14 +6,14 @@ import { BusinessResult } from "@/types/models/business-result";
 import { LoginResponse } from "@/types/models/login-response";
 import { User } from "@/types/entities/user";
 import axios from "axios";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
-import { tokenHelper } from "@/lib/helpers/token-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
+import { tokenHelper } from "@/lib/utils/token-helper";
 
 class AuthService {
   public endpoint: string;
 
   constructor() {
-    this.endpoint = Const.AUTH;
+    this.endpoint = Constants.AUTH;
   }
 
   public login = async (

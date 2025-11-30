@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
-import { isValidImage } from "@/lib/utils";
 import { MediaBase } from "@/types/entities/media-base";
+import {isValidImage} from "@/lib/utils/image-utils";
 
 interface Testimonial {
   quote: string;

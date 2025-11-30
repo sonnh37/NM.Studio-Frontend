@@ -1,4 +1,4 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import type { FooterItem, MainNavItem } from "@/types";
 
 export type NavbarConst = typeof navbarConst;
@@ -25,19 +25,19 @@ export const navbarConst = {
       items: [
         {
           title: "Instagram",
-          href: `${Const.SOCIAL_INSTAGRAM}`,
+          href: `${Constants.SOCIAL_INSTAGRAM}`,
           description: "",
           items: [],
         },
         {
           title: "Facebook",
-          href: `${Const.SOCIAL_FACEBOOK}`,
+          href: `${Constants.SOCIAL_FACEBOOK}`,
           description: "",
           items: [],
         },
         {
           title: "Tiktok",
-          href: `${Const.SOCIAL_TIKTOK}`,
+          href: `${Constants.SOCIAL_TIKTOK}`,
           description: "",
           items: [],
         },

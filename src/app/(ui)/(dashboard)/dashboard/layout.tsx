@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 import { RootState } from "@/lib/redux/store";
 import { Role } from "@/types/entities/user";
 import { useRouter } from "next/navigation";

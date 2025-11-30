@@ -1,10 +1,10 @@
 import {OrderStatusHistory} from "@/types/entities/order-status-history";
 import {BaseService} from "./base/base-service";
-import {Const} from "@/lib/constants/const";
+import {Constants} from "@/lib/constants/constants";
 
 class OrderStatusHistoryService extends BaseService<OrderStatusHistory> {
     constructor() {
-        super(`${Const.ORDER_STATUS_HISTORIES}`);
+        super(`${Constants.ORDER_STATUS_HISTORIES}`);
     }
 }
 

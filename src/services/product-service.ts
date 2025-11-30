@@ -4,17 +4,18 @@ import {
   ProductRepresentativeByCategory,
 } from "@/types/entities/product";
 import { BaseService } from "./base/base-service";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import { BusinessResult } from "@/types/models/business-result";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import { QueryResult } from "@/types/models/query-result";
-import { cleanQueryParams } from "@/lib/utils";
 import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
 import { ProductUpdateStatusCommand } from "@/types/cqrs/commands/product-command";
 
+import {cleanQueryParams} from "@/lib/utils/query-param-utils";
+
 class ProductService extends BaseService<Product> {
   constructor() {
-    super(`${Const.PRODUCTS}`);
+    super(`${Constants.PRODUCTS}`);
   }
 
   async getRepresentativeByCategory(): Promise<

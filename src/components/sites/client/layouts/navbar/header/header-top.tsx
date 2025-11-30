@@ -1,5 +1,5 @@
 import ChatButton from "@/components/sites/client/common/chat-button";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 
 export const HeaderTop = () => (
   <div className="bg-neutral-500 transition-colors duration-300 text-white font-thin text-sm tracking-wide dark:text-white">
@@ -7,10 +7,10 @@ export const HeaderTop = () => (
       <div className="container w-full flex justify-between items-center flex-row mx-auto">
         <div className="hidden space-x-4 lg:flex gap-4">
           <p>
-            <i className="fa-solid fa-phone"></i> {Const.TELEPHONE}
+            <i className="fa-solid fa-phone"></i> {Constants.TELEPHONE}
           </p>
           <p>
-            <i className="fa-regular fa-envelope"></i> {Const.GMAIL}
+            <i className="fa-regular fa-envelope"></i> {Constants.GMAIL}
           </p>
         </div>
         <div className="">
@@ -27,7 +27,7 @@ export const HeaderTop = () => (
           </p>
           <div>|</div>
           <p>
-            <a href={`tel:${Const.TELEPHONE}`}>Liên hệ</a>
+            <a href={`tel:${Constants.TELEPHONE}`}>Liên hệ</a>
           </p>
         </div>
       </div>

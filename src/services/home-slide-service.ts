@@ -1,10 +1,10 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import { HomeSlide } from "@/types/entities/home-slide";
 import { BaseService } from "./base/base-service";
 
 class HomeSlideService extends BaseService<HomeSlide> {
   constructor() {
-    super(`${Const.HOME_SLIDES}`);
+    super(`${Constants.HOME_SLIDES}`);
   }
   // async deletePermanently(
   //   command: HomeSlideDeleteCommand

@@ -1,10 +1,10 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import { ProductMedia } from "@/types/entities/product-media";
 import { BaseService } from "./base/base-service";
 
 class ProductMediaService extends BaseService<ProductMedia> {
   constructor() {
-    super(`${Const.PRODUCT_MEDIAS}`);
+    super(`${Constants.PRODUCT_MEDIAS}`);
   }
 }
 

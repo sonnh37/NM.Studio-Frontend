@@ -17,8 +17,8 @@ import ConfirmationDialog, {
   FormSelectEnum,
   FormSwitch,
   ImageUpload,
-} from "@/lib/form-custom-shadcn";
-import { getEnumOptions } from "@/lib/utils";
+} from "@/lib/utils/form-custom-shadcn";
+import { getEnumOptions } from "@/lib/utils/enum-utils";
 
 import {
   ServiceBooking,

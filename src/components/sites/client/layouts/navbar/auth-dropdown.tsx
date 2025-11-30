@@ -24,7 +24,7 @@ import { authService } from "@/services/auth-service";
 import { UserContext } from "@/types/models/user-context";
 import { Status } from "@/types/models/business-result";
 import { useRouter } from "next/navigation";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 import { MenuAnimationButton } from "@/components/_common/hovers/buttons/menu-animation-button/menu-animation-button";
 
 interface AuthDropdownProps

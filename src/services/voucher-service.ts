@@ -1,10 +1,10 @@
 import {Voucher} from "@/types/entities/voucher";
 import {BaseService} from "./base/base-service";
-import {Const} from "@/lib/constants/const";
+import {Constants} from "@/lib/constants/constants";
 
 class VoucherService extends BaseService<Voucher> {
     constructor() {
-        super(`${Const.VOUCHERS}`);
+        super(`${Constants.VOUCHERS}`);
     }
 }
 

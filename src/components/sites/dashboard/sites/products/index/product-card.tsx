@@ -1,8 +1,8 @@
 import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Const } from "@/lib/constants/const";
-import { calculateStock, cn } from "@/lib/utils";
+import { Constants } from "@/lib/constants/constants";
+import {calculateStock, cn} from "@/lib/utils";
 import { ProductPreview, ProductStatus } from "@/types/entities/product";
 import Link from "next/link";
 import { Actions } from "./actions";
@@ -26,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex gap-2 h-fit">
             <div>
               <img
-                src={product.thumbnail?.mediaUrl ?? Const.IMAGE_DEFAULT_URL}
+                src={product.thumbnail?.mediaUrl ?? Constants.IMAGE_DEFAULT_URL}
                 alt={product.name}
                 className="w-12 h-12 rounded-lg object-cover"
               />

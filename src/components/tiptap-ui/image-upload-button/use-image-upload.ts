@@ -9,7 +9,7 @@ import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
 import { useIsMobile } from "@/hooks/use-mobile"
 
 // --- Lib ---
-import { isExtensionAvailable } from "@/lib/tiptap-utils"
+import { isExtensionAvailable } from "@/lib/utils/tiptap-utils"
 
 // --- Icons ---
 import { ImagePlusIcon } from "@/components/tiptap-icons/image-plus-icon"

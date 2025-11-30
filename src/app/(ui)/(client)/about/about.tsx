@@ -1,6 +1,5 @@
 "use client";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { getWordCount } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { Blog } from "@/types/entities/blog";
@@ -16,6 +15,7 @@ import TiptapRenderer from "@/components/_common/tiptaps_v2/tiptap-renderer/clie
 import { usePost } from "@/hooks/tiptaps_v2/use-post";
 import { useMemo } from "react";
 import Image from "next/image";
+import {getWordCount} from "@/lib/utils/rich-editor-utils";
 
 export default function AboutPage() {
   const query: BlogGetAllQuery = {
