@@ -392,6 +392,7 @@ export const ColorPickerFormat = ({
   const color = Color.hsl(hue, saturation, lightness, alpha / 100);
 
   // Local editable states to allow typing without immediate parse errors
+  // These are initialized once and kept independent until user commits (onBlur)
   const [localHex, setLocalHex] = useState(() => color.hex());
   const [localRgb, setLocalRgb] = useState<number[]>(() =>
     color
@@ -406,35 +407,14 @@ export const ColorPickerFormat = ({
       .map((v) => Math.round(v as number))
   );
   const [localCss, setLocalCss] = useState(
-    () => `rgba(${localRgb.join(", ")}, ${alpha}%)`
-  );
-  const [localAlpha, setLocalAlpha] = useState<number>(() => Math.round(alpha));
-
-  // Sync local states when the underlying color changes (from sliders etc.)
-  useEffect(() => {
-    const c = Color.hsl(hue, saturation, lightness, alpha / 100);
-    setLocalHex(c.hex());
-    setLocalRgb(
-      c
-        .rgb()
-        .array()
-        .map((v) => Math.round(v as number))
-    );
-    setLocalHsl(
-      c
-        .hsl()
-        .array()
-        .map((v) => Math.round(v as number))
-    );
-    setLocalCss(
-      `rgba(${c
+    () =>
+      `rgba(${color
         .rgb()
         .array()
         .map((v) => Math.round(v as number))
         .join(", ")}, ${Math.round(alpha)}%)`
-    );
-    setLocalAlpha(Math.round(alpha));
-  }, [hue, saturation, lightness, alpha]);
+  );
+  const [localAlpha, setLocalAlpha] = useState<number>(() => Math.round(alpha));
 
   // helpers to apply typed values back to picker
   const applyHex = (val: string) => {

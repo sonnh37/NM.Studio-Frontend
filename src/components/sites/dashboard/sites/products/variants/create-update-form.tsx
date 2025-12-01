@@ -19,7 +19,7 @@ import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
 import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
 import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
 import { getEnumLabel, getEnumOptions } from "@/lib/utils/enum-utils";
-import {  processResponse } from "@/lib/utils";
+import { processResponse } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
 import { mediaUploadService } from "@/services/media-upload-service";
 import {
@@ -77,10 +77,10 @@ const formSchema = z.object({
     .optional(),
 });
 
-export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
+export function ProductVariantForm({
   initialData,
   onSuccess,
-}) => {
+}: ProductVariantFormProps) {
   const isEdit = initialData != null && initialData != undefined;
   const title = isEdit ? "Edit variant" : "Create variant";
   const router = useRouter();
@@ -113,37 +113,24 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
             ...value,
           };
 
-          // toastPrintJSON(updatedValues);
-
-          //   if (file) {
-          //     const uploadResultThumb = await mediaUploadService.uploadFile(
-          //       file,
-          //       "Blog"
-          //     );
-          //     if (
-          //       uploadResultThumb?.status == Status.OK &&
-          //       uploadResultThumb?.data
-          //     ) {
-          //       updatedValues. = uploadResultThumb.data.id;
-          //     }
-          //   }
-
-          const response = await productService.update(updatedValues);
+          const response = await productVariantService.update(updatedValues);
+          // processResponse throws if status != OK, so it acts as validation
           processResponse(response);
-          // queryClient.refetchQueries({
-          //   queryKey: ["fetchProductVariantById", initialData?.id],
-          // });
+
+          // Only reach here if response.status === OK
+          queryClient.refetchQueries({
+            queryKey: ["fetchProductById", initialData?.productId],
+          });
           toast.success("Updated!");
           onSuccess?.();
           setIsEditing(false);
-          // router.push(previousPath);
         } else {
           setPendingValues(value);
           setShowConfirmationDialog(true);
         }
       } catch (error: any) {
         console.error(error);
-        toast.error(error.message);
+        toast.error(error.message || "An error occurred");
         return Promise.reject(error);
       } finally {
         setLoading(false);
@@ -191,45 +178,6 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
       setPendingValues(null);
       setIsLoading(false);
       return Promise.reject(error);
-    }
-  };
-
-  // const handleFilesChange = (files: FileUploadItem[]) => {
-  //   const fileLocals = files.filter((f) => !f.file.id);
-  //   const fileUploadeds = files.filter((f) => f.file.id);
-  //   if (fileLocals.length > 0) {
-  //     setFile(files[0].file as File);
-  //   } else {
-  //     setFile(null);
-  //   }
-
-  //   if (fileUploadeds.length == 0) {
-  //     form.setFieldValue("thumbnailId", null);
-  //   }
-
-  //   console.log("check_handles", files);
-  //   console.log("check_handles_local", fileLocals);
-  //   console.log("check_handles_uploaded", fileUploadeds);
-  // };
-
-  const handleChangeStatus = async (status: InventoryStatus, id: string) => {
-    try {
-      const updateStatusCommand: ProductVariantUpdateStatusCommand = {
-        status: status,
-        id: id,
-      };
-
-      const response =
-        await productVariantService.updateStatus(updateStatusCommand);
-      processResponse(response);
-      queryClient.refetchQueries({
-        queryKey: ["fetchProductById", initialData?.id],
-      });
-      toast.success("Updated status!");
-      setIsEditing(false);
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message);
     }
   };
 
@@ -288,79 +236,18 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
       />
       <div className="grid gap-4">
         <div className="flex flex-row items-center justify-between gap-4">
-          <div className="flex flex-row items-center">
-            <Link href={previousPath}>
-              <Button
-                type="button"
-                className="-ml-4 gap-1"
-                variant="ghost"
-                size="sm"
-              >
-                <ChevronLeft />
-                Back
-              </Button>
-            </Link>
-          </div>
+          <div className="flex flex-row items-center"></div>
           <div className="flex justify-end">
             {isEdit ? (
               <div className="flex items-center gap-2">
                 <Badge variant="outline">{status}</Badge>
                 <ButtonGroup>
-                  {initialData?.status == InventoryStatus.Available ? (
-                    <>
-                      <Button
-                        variant={"outline"}
-                        size={"sm"}
-                        disabled={isEditing}
-                        onClick={() =>
-                          handleChangeStatus(
-                            InventoryStatus.Rented,
-                            initialData?.id!
-                          )
-                        }
-                      >
-                        <Archive /> Archive
-                      </Button>
-                    </>
-                  ) : initialData?.status == InventoryStatus.InMaintenance ? (
-                    <>
-                      <Button
-                        variant={"outline"}
-                        size={"sm"}
-                        disabled={isEditing}
-                        onClick={() =>
-                          handleChangeStatus(
-                            InventoryStatus.Available,
-                            initialData?.id!
-                          )
-                        }
-                      >
-                        <Upload /> Publish
-                      </Button>
-                    </>
-                  ) : initialData?.status == InventoryStatus.Rented ? (
-                    <>
-                      <Button
-                        variant={"outline"}
-                        size={"sm"}
-                        disabled={isEditing}
-                        onClick={() =>
-                          handleChangeStatus(
-                            InventoryStatus.InMaintenance,
-                            initialData?.id!
-                          )
-                        }
-                      >
-                        <ArchiveRestore /> Restore
-                      </Button>
-                    </>
-                  ) : null}
-
                   {isEditing ? (
                     <>
                       <Button
                         variant={"outline"}
                         size="icon-sm"
+                        type="button"
                         onClick={() => setIsEditing(false)}
                         // disabled={isSubmitting}
                       >
@@ -371,7 +258,10 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                         size="icon-sm"
                         type="submit"
                         // disabled={isSubmitting}
-                        form={formId}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          form.handleSubmit();
+                        }}
                       >
                         {loading ? <Spinner /> : <Save />}
                       </Button>
@@ -380,6 +270,7 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                     <Button
                       variant={"outline"}
                       size="sm"
+                      type="button"
                       onClick={() => setIsEditing(true)}
                     >
                       <Pen /> Edit
@@ -402,7 +293,7 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
                   Draft
                 </Button>
                 <Button
-                  type="submit"
+                  type="button"
                   form={formId}
                   className=""
                   variant={"outline"}
@@ -419,13 +310,7 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
 
       <Separator />
       <div className="grid gap-4">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit();
-          }}
-          id={formId}
-        >
+        <form>
           <div className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <form.Field
@@ -532,24 +417,12 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
               />
 
               <form.Field
-                name="rentalPrice"
+                name="stockDefaultQuantity"
                 children={(field) => (
                   <FieldInputNumber
                     field={field}
-                    label="Rental Price"
-                    placeholder="Enter Rental Price"
-                    disabled={!isEditing}
-                  />
-                )}
-              />
-
-              <form.Field
-                name="deposit"
-                children={(field) => (
-                  <FieldInputNumber
-                    field={field}
-                    label="Deposit"
-                    placeholder="Enter Deposit"
+                    label="Stock Default Quantity"
+                    placeholder="Enter default quantity"
                     disabled={!isEditing}
                   />
                 )}
@@ -560,4 +433,4 @@ export const ProductVariantForm: React.FC<ProductVariantFormProps> = ({
       </div>
     </div>
   );
-};
+}
