@@ -32,15 +32,22 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
     setTemp(value ?? "#000000");
   }, [value]);
 
+  // ensure temp reflects current value whenever the picker is opened
+  React.useEffect(() => {
+    if (open) setTemp(value ?? "#000000");
+  }, [open, value]);
+
+  const displayed = open ? temp : value;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <div className={cn("inline-flex items-center gap-2", className)}>
         <PopoverTrigger asChild>
           <div className="relative inline-flex items-center w-56">
-            <Input readOnly value={value} className="pr-12" />
+            <Input readOnly value={displayed} className="pr-12" />
             <div
               className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-8 rounded border"
-              style={{ background: value || "transparent" }}
+              style={{ background: displayed || "transparent" }}
             />
           </div>
         </PopoverTrigger>
