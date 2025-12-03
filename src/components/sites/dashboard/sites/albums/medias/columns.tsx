@@ -5,7 +5,7 @@ import { MediaBase } from "@/types/entities/media-base";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
-import {formatDate} from "@/lib/utils/date-utils";
+import { formatDate } from "@/lib/utils/date-utils";
 
 export const columns: ColumnDef<MediaBase>[] = [
   {
@@ -40,9 +40,9 @@ export const columns: ColumnDef<MediaBase>[] = [
     ),
   },
   {
-    accessorKey: "mimeType",
+    accessorKey: "format",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="mimeType" />
+      <DataTableColumnHeader column={column} title="format" />
     ),
   },
   {
@@ -80,7 +80,7 @@ export const columns: ColumnDef<MediaBase>[] = [
     },
   },
   {
-    accessorKey: "mediaBaseType",
+    accessorKey: "resourceType",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Location" />
     ),

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import CardUpload, { FileUploadItem } from "@/components/card-upload";
+import { CardUpload, FileUploadItem } from "@/components/card-upload";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -19,7 +19,7 @@ import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
 import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
 import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
 import { getEnumLabel } from "@/lib/utils/enum-utils";
-import { processResponse } from "@/lib/utils";
+import { createVirtualFileMetaFromMedia, processResponse } from "@/lib/utils";
 import { categoryService } from "@/services/category-service";
 import { mediaUploadService } from "@/services/media-upload-service";
 import {
@@ -49,6 +49,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconFolderCode } from "@tabler/icons-react";
 import { SheetAddVariant } from "./variants/add-variant";
+import { FileMetadata } from "@/hooks/use-file-upload";
 
 interface ProductFormProps {
   initialData?: Product | null;
@@ -140,9 +141,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 
           const response = await productService.update(updatedValues);
           processResponse(response);
-          // queryClient.refetchQueries({
-          //   queryKey: ["fetchProductById", initialData?.id],
-          // });
+          queryClient.refetchQueries({
+            queryKey: ["fetchProductById", initialData?.id],
+          });
           toast.success("Updated!");
           setIsEditing(false);
           // router.push(previousPath);
@@ -204,7 +205,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     const fileLocals = files.filter((f) => !f.file.id);
     const fileUploadeds = files.filter((f) => f.file.id);
     if (fileLocals.length > 0) {
-      setFile(files[0].file as File);
+      setFile(fileLocals[0].file as File);
     } else {
       setFile(null);
     }
@@ -212,10 +213,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     if (fileUploadeds.length == 0) {
       form.setFieldValue("thumbnailId", null);
     }
-
-    console.log("check_handles", files);
-    console.log("check_handles_local", fileLocals);
-    console.log("check_handles_uploaded", fileUploadeds);
   };
 
   const handleChangeStatus = async (status: ProductStatus, id: string) => {
@@ -263,6 +260,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   };
 
   const status = getEnumLabel(ProductStatus, initialData?.status);
+  const fileMetaDatas: FileMetadata[] = initialData?.thumbnail
+    ? [createVirtualFileMetaFromMedia(initialData?.thumbnail)]
+    : [];
 
   if (isLoading) return <LoadingPageComponent />;
   if (isError) {
@@ -449,9 +449,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
         >
           <div className="grid gap-4">
             <CardUpload
-              defaultValues={
-                initialData?.thumbnail ? [initialData?.thumbnail] : []
-              }
+              defaultValues={fileMetaDatas}
               accept={Constants.IMAGE_EXT_STRING}
               maxFiles={1}
               onFilesChange={handleFilesChange}

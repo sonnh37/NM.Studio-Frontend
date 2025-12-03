@@ -23,7 +23,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { homeSlideService } from "@/services/home-slide-service";
 import { HomeSlide } from "@/types/entities/home-slide";
-import {formatDate} from "@/lib/utils/date-utils";
+import { formatDate } from "@/lib/utils/date-utils";
+import { ResourceType } from "@/types/entities/media-base";
 export const columns: ColumnDef<HomeSlide>[] = [
   {
     accessorKey: "select",
@@ -81,9 +82,9 @@ export const columns: ColumnDef<HomeSlide>[] = [
     ),
   },
   {
-    accessorKey: "slide.mimeType",
+    accessorKey: "slide.format",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="MimeType" />
+      <DataTableColumnHeader column={column} title="Format" />
     ),
   },
   {
@@ -122,11 +123,11 @@ export const columns: ColumnDef<HomeSlide>[] = [
       <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
-      const type = row.original.slide?.mediaBaseType;
+      const type = row.original.slide?.resourceType;
       switch (type) {
-        case 0:
+        case ResourceType.Image:
           return <Badge>Image</Badge>;
-        case 1:
+        case ResourceType.Video:
           return <Badge>Video</Badge>;
         default:
           return <Badge>Unknown</Badge>;

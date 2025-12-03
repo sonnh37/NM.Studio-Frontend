@@ -6,7 +6,7 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { MediaBase, MediaBaseType } from "@/types/entities/media-base";
+import { MediaBase, ResourceType } from "@/types/entities/media-base";
 
 interface MediaPickerProps {
   isOpen: boolean;
@@ -19,52 +19,52 @@ const mockMedia: MediaBase[] = [
     id: "1",
     displayName: "Nature Landscape",
     title: "Mountain View",
-    mimeType: "image/jpeg",
+    format: "jpeg",
     size: 2048576,
     width: 1920,
     height: 1080,
     mediaUrl: "/api/placeholder/1920/1080",
     createdMediaBy: "Bagan Find",
-    mediaBaseType: MediaBaseType.Image,
+    resourceType: ResourceType.Image,
     isDeleted: false,
   },
   {
     id: "2",
     displayName: "Cityscape",
     title: "Urban Life",
-    mimeType: "image/jpeg",
+    format: "jpeg",
     size: 1572864,
     width: 1600,
     height: 900,
     mediaUrl: "/api/placeholder/1600/900",
     createdMediaBy: "Indi zero",
-    mediaBaseType: MediaBaseType.Image,
+    resourceType: ResourceType.Image,
     isDeleted: false,
   },
   {
     id: "3",
     displayName: "Beach Sunset",
     title: "Ocean View",
-    mimeType: "image/jpeg",
+    format: "jpeg",
     size: 3145728,
     width: 2400,
     height: 1350,
     mediaUrl: "/api/placeholder/2400/1350",
     createdMediaBy: "Bilal Jamika",
-    mediaBaseType: MediaBaseType.Image,
+    resourceType: ResourceType.Image,
     isDeleted: false,
   },
   {
     id: "4",
     displayName: "Forest Path",
     title: "Woods Adventure",
-    mimeType: "image/jpeg",
+    format: "jpeg",
     size: 2621440,
     width: 2000,
     height: 1125,
     mediaUrl: "/api/placeholder/2000/1125",
     createdMediaBy: "Balban Fiat",
-    mediaBaseType: MediaBaseType.Image,
+    resourceType: ResourceType.Image,
     isDeleted: false,
   },
 ];

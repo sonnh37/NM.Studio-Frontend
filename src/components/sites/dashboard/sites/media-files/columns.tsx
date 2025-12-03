@@ -21,10 +21,10 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { MediaBase } from "@/types/entities/media-base";
+import { MediaBase, ResourceType } from "@/types/entities/media-base";
 import { mediaBaseService } from "@/services/media-base-service";
 import { ImageMedia } from "@/components/_common/image-media";
-import {formatDate} from "@/lib/utils/date-utils";
+import { formatDate } from "@/lib/utils/date-utils";
 export const columns: ColumnDef<MediaBase>[] = [
   {
     accessorKey: "select",
@@ -54,9 +54,7 @@ export const columns: ColumnDef<MediaBase>[] = [
       const backgroundUrl = row.original?.mediaUrl;
       return (
         <Link href={backgroundUrl ?? ""}>
-          <ImageMedia
-            media={row.original}
-          />
+          <ImageMedia media={row.original} />
         </Link>
       );
     },
@@ -74,9 +72,9 @@ export const columns: ColumnDef<MediaBase>[] = [
     ),
   },
   {
-    accessorKey: "mimeType",
+    accessorKey: "format",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="MimeType" />
+      <DataTableColumnHeader column={column} title="Format" />
     ),
   },
   {
@@ -110,16 +108,16 @@ export const columns: ColumnDef<MediaBase>[] = [
     ),
   },
   {
-    accessorKey: "mediaBaseType",
+    accessorKey: "resourceType",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
-      const type = row.original.mediaBaseType;
+      const type = row.original.resourceType;
       switch (type) {
-        case 0:
+        case ResourceType.Image:
           return <Badge>Image</Badge>;
-        case 1:
+        case ResourceType.Video:
           return <Badge>Video</Badge>;
         default:
           return <Badge>Unknown</Badge>;

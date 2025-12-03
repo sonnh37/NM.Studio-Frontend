@@ -1,59 +1,64 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+// import {
+//   FileUpload,
+//   FileUploadDropzone,
+//   ,
+//   FileUploadItemDelete,
+//   FileUploadItemMetadata,
+//   FileUploadItemPreview,
+//   FileUploadItemProgress,
+//   FileUploadList,
+//   FileUploadTrigger,
+// } from "@/components/ui/file-upload";
 import { productService } from "@/services/product-service";
+import { Upload, X } from "lucide-react";
+import * as React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import CardUpload, { FileUploadItem } from "@/components/card-upload";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { FileMetadata } from "@/hooks/use-file-upload";
 import { usePreviousPath } from "@/hooks/use-previous-path";
-import { Constants } from "@/lib/constants/constants";
 import { FieldInput } from "@/lib/field-tanstack/field-input";
-import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
-import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
-import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
+import { FieldInputNumber } from "@/lib/field-tanstack/field-input-number";
+import { FieldSelectEnums } from "@/lib/field-tanstack/field-select-enum";
+import {
+  createFilesFromMediaList,
+  createVirtualFileMetaFromMedia,
+  processResponse,
+} from "@/lib/utils";
 import { getEnumLabel, getEnumOptions } from "@/lib/utils/enum-utils";
-import { processResponse } from "@/lib/utils";
-import { categoryService } from "@/services/category-service";
+import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
 import { mediaUploadService } from "@/services/media-upload-service";
+import { productMediaService } from "@/services/product-media-service";
+import { productVariantService } from "@/services/product-variant-service";
+import {
+  ProductMediaCreateCommand,
+  ProductMediaDeleteCommand,
+} from "@/types/cqrs/commands/product-media-command";
 import {
   ProductVariantCreateCommand,
   ProductVariantUpdateCommand,
-  ProductVariantUpdateStatusCommand,
 } from "@/types/cqrs/commands/product-variant-command";
-import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
 import {
   InventoryStatus,
   ProductVariant,
 } from "@/types/entities/product-variant";
 import { BusinessResult, Status } from "@/types/models/business-result";
 import { useForm } from "@tanstack/react-form";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Archive,
-  ArchiveRestore,
-  ArrowUpRightIcon,
-  ChevronLeft,
-  CirclePlus,
-  Layers2,
-  Pen,
-  Save,
-  StickyNote,
-  Upload,
-  X,
-} from "lucide-react";
-import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
+import { Pen, Save, StickyNote } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { IconFolderCode } from "@tabler/icons-react";
-import { productVariantService } from "@/services/product-variant-service";
-import { FieldSelectEnums } from "@/lib/field-tanstack/field-select-enum";
-import { FieldInputNumber } from "@/lib/field-tanstack/field-input-number";
+import { MediaBase } from "@/types/entities/media-base";
+import { CardUpload, FileUploadItem } from "@/components/card-upload";
+import { Constants } from "@/lib/constants/constants";
 
 interface ProductVariantFormProps {
   initialData?: ProductVariant | null;
@@ -93,7 +98,13 @@ export function ProductVariantForm({
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(isEdit ? false : true);
   const [openSheet, setOpenSheet] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = React.useState<File[]>(
+    createFilesFromMediaList(
+      initialData?.productMedias
+        ?.flatMap((n) => n.mediaBase)
+        .filter((m) => m != undefined) as MediaBase[]
+    )
+  );
   const [pendingValues, setPendingValues] = useState<z.infer<
     typeof formSchema
   > | null>(null);
@@ -201,10 +212,190 @@ export function ProductVariantForm({
     }
   };
 
+  const buildProductMediaCreateCommand = (
+    mediaBaseId: string,
+    productVariantId: string
+  ): ProductMediaCreateCommand => {
+    return {
+      mediaBaseId,
+      productVariantId,
+    } as ProductMediaCreateCommand;
+  };
+
+  const buildProductMediaDeleteCommand = (
+    mediaBaseId: string,
+    productVariantId: string,
+    isPermanent: boolean
+  ): ProductMediaDeleteCommand => {
+    return {
+      mediaBaseId,
+      productVariantId,
+      isPermanent,
+      id: crypto.randomUUID(),
+    } as ProductMediaDeleteCommand;
+  };
+
+  const handleFilesAdded = async (fileUploadItems: FileUploadItem[]) => {
+    if (initialData && fileUploadItems) {
+      const unCompleted = fileUploadItems.some((n) => n.status != "completed");
+      if (!unCompleted) {
+        // setFiles(fileUploadItems.map((f) => f.file as File));
+        const fileUnUpload = fileUploadItems
+          .filter((f) => (f.file.status = "local"))
+          .flatMap((m) => m.file as File);
+
+        // upload file local
+        if (fileUnUpload.length > 0) {
+          // setFiles(fileLocals);
+          const uploadResult = await mediaUploadService.uploadFiles(
+            fileUnUpload,
+            "ProductVariant"
+          );
+
+          processResponse(uploadResult);
+
+          const mediaBaseIds = uploadResult.data?.map((m) => m.id) ?? [];
+
+          const productMediaCreateCommands = mediaBaseIds.map((n) =>
+            buildProductMediaCreateCommand(n, initialData.id)
+          );
+
+          // create product media
+          const productMediaResult = await productMediaService.createList(
+            productMediaCreateCommands
+          );
+          processResponse(productMediaResult);
+          queryClient.refetchQueries({
+            queryKey: ["fetchProductById", initialData?.productId],
+          });
+          toast.success("Uploaded!");
+        }
+      }
+    }
+  };
+
+  // const handleFilesAdded = async (files: File[]) => {
+  //   if (initialData && files) {
+  //     const uploadResult = await mediaUploadService.uploadFiles(
+  //       files,
+  //       "ProductVariant"
+  //     );
+
+  //     processResponse(uploadResult);
+
+  //     const mediaBaseIds = uploadResult.data?.map((m) => m.id) ?? [];
+
+  //     const productMediaCreateCommands = mediaBaseIds.map((n) =>
+  //       buildProductMediaCreateCommand(n, initialData.id)
+  //     );
+
+  //     // create product media
+  //     const productMediaResult = await productMediaService.createList(
+  //       productMediaCreateCommands
+  //     );
+  //     processResponse(productMediaResult);
+  //     queryClient.refetchQueries({
+  //       queryKey: ["fetchProductById", initialData?.productId],
+  //     });
+  //     toast.success("Uploaded!");
+  //   }
+  // };
+
+  const handleRemoveFiles = async (fileUploadItems: FileUploadItem[]) => {
+    if (initialData && fileUploadItems) {
+      const fileUploadeds = fileUploadItems
+        .filter((f) => f.file.status == "uploaded")
+        .flatMap((m) => m.file as FileMetadata);
+      if (fileUploadeds.length > 0) {
+        const productMediaDeleteCommands = fileUploadeds.map((n) =>
+          buildProductMediaDeleteCommand(n.id, initialData.id, true)
+        );
+        const deleteResult = await productMediaService.deleteList(
+          productMediaDeleteCommands
+        );
+        processResponse(deleteResult);
+        queryClient.refetchQueries({
+          queryKey: ["fetchProductById", initialData?.productId],
+        });
+        toast.success(`Deleted ${fileUploadeds.length} files!`);
+      }
+    }
+  };
+
+  // const onUpload = React.useCallback(
+  //   async (
+  //     files: File[],
+  //     {
+  //       onProgress,
+  //       onSuccess,
+  //       onError,
+  //     }: {
+  //       onProgress: (file: File, progress: number) => void;
+  //       onSuccess: (file: File) => void;
+  //       onError: (file: File, error: Error) => void;
+  //     }
+  //   ) => {
+  //     try {
+  //       // 1. HIỂN THỊ PROGRESS TRƯỚC
+  //       const simulateProgressPromises = files.map(async (file) => {
+  //         const totalChunks = 10;
+  //         let uploadedChunks = 0;
+
+  //         for (let i = 0; i < totalChunks; i++) {
+  //           await new Promise((resolve) =>
+  //             setTimeout(resolve, Math.random() * 200 + 100)
+  //           );
+
+  //           uploadedChunks++;
+  //           const progress = (uploadedChunks / totalChunks) * 80; // Chỉ đến 80%
+  //           onProgress(file, progress);
+  //         }
+  //       });
+
+  //       // Chờ progress simulation xong
+  //       await Promise.all(simulateProgressPromises);
+
+  //       // 2. THỰC HIỆN UPLOAD THẬT
+  //       const serverUploadPromise = handleFilesAdded(files);
+
+  //       // Update progress lên 90% khi đang upload thật
+  //       files.forEach((file) => onProgress(file, 90));
+
+  //       // Chờ upload thật hoàn thành
+  //       await serverUploadPromise;
+
+  //       // 3. HOÀN TẤT
+  //       files.forEach((file) => {
+  //         onProgress(file, 100);
+  //         onSuccess(file);
+  //       });
+  //     } catch (error) {
+  //       // This handles any error that might occur outside the individual upload processes
+  //       console.error("Unexpected error during upload:", error);
+  //     }
+  //   },
+  //   []
+  // );
+
+  // const onFileReject = React.useCallback((file: File, message: string) => {
+  //   toast(message, {
+  //     description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
+  //   });
+  // }, []);
+
   const status = getEnumLabel(InventoryStatus, initialData?.status);
 
-  if (isLoading) return <LoadingPageComponent />;
+  const fileMetaDatas: FileMetadata[] =
+    initialData?.productMedias
+      .flatMap((n) =>
+        n.mediaBase ? [createVirtualFileMetaFromMedia(n.mediaBase)] : []
+      )
+      .filter((m) => m !== undefined) ?? [];
 
+  console.log("check_fileMetadata", fileMetaDatas);
+
+  if (isLoading) return <LoadingPageComponent />;
+  console.log("check_files", files);
   return (
     <div className="w-full max-w-xl md:max-w-2xl mx-auto grid gap-4">
       <ConfirmationDialog
@@ -427,6 +618,85 @@ export function ProductVariantForm({
                   />
                 )}
               />
+            </div>
+
+            <div>
+              {/* {initialData?.productMedias && (
+                <>
+                  {console.log(
+                    "check_initialData?.productMedias",
+                    initialData?.productMedias.length
+                  )}
+                  <CardUpload
+                    defaultValues={
+                      initialData?.productMedias
+                        .flatMap((n) => n.mediaBase)
+                        .filter((m) => m != undefined) ?? []
+                    }
+                    accept={Constants.IMAGE_EXT_STRING}
+                    maxFiles={5}
+                    onFilesAdded={handleFilesAdded}
+                    onFilesRemoved={handleRemoveFiles}
+                  />
+                </>
+              )} */}
+
+              <CardUpload
+                defaultValues={fileMetaDatas}
+                accept={Constants.IMAGE_EXT_STRING}
+                maxFiles={5}
+                onFilesAdded={handleFilesAdded}
+                onFilesRemoved={handleRemoveFiles}
+              />
+
+              {/* <FileUpload
+                value={files}
+                onValueChange={setFiles}
+                maxFiles={10}
+                maxSize={5 * 1024 * 1024}
+                className="w-full max-w-md"
+                onUpload={onUpload}
+                onFileReject={onFileReject}
+                multiple
+              >
+                <FileUploadDropzone>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <div className="flex items-center justify-center rounded-full border p-2.5">
+                      <Upload className="size-6 text-muted-foreground" />
+                    </div>
+                    <p className="font-medium text-sm">
+                      Drag & drop files here
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Or click to browse (max 10 files, up to 5MB each)
+                    </p>
+                  </div>
+                  <FileUploadTrigger asChild>
+                    <Button variant="outline" size="sm" className="mt-2 w-fit">
+                      Browse files
+                    </Button>
+                  </FileUploadTrigger>
+                </FileUploadDropzone>
+                <FileUploadList orientation="horizontal">
+                  {files.map((file, index) => (
+                    <FileUploadItem key={index} value={file} className="p-0">
+                      <FileUploadItemPreview className="size-20 [&>svg]:size-12">
+                        <FileUploadItemProgress variant="circular" size={40} />
+                      </FileUploadItemPreview>
+                      <FileUploadItemMetadata className="sr-only" />
+                      <FileUploadItemDelete asChild>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="-top-1 -right-1 absolute size-5 rounded-full"
+                        >
+                          <X className="size-3" />
+                        </Button>
+                      </FileUploadItemDelete>
+                    </FileUploadItem>
+                  ))}
+                </FileUploadList>
+              </FileUpload> */}
             </div>
           </div>
         </form>

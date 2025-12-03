@@ -52,7 +52,6 @@ export function NavManagement({
             const isActive =
               pathName === item.url || pathName.startsWith(item.url + "/");
             const isDisabled = item.disable ?? false;
-            console.log("check_isDisabled", isDisabled);
 
             return (
               <Collapsible
@@ -93,7 +92,9 @@ export function NavManagement({
                                 className={cn(
                                   styleCommon,
                                   isActiveSub ? "bg-muted! " : "",
-                                  isDisabledSub ? "opacity-50 cursor-not-allowed" : "",
+                                  isDisabledSub
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "",
                                   "py-2.5"
                                 )}
                                 isActive={isActiveSub}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   formatBytes,
   useFileUpload,
@@ -45,6 +45,7 @@ import { toAbsoluteUrl } from "@/lib/utils/helpers";
 import { cn } from "@/lib/utils";
 import { MediaPicker } from "./media-picker";
 import { MediaBase } from "@/types/entities/media-base";
+import { getTypeFile } from "@/lib/utils/image-utils";
 
 // Extend FileWithPreview to include upload status and progress
 export interface FileUploadItem extends FileWithPreview {
@@ -59,13 +60,16 @@ interface CardUploadProps {
   accept?: string;
   multiple?: boolean;
   className?: string;
-  defaultValues?: MediaBase[];
+  defaultValues?: FileMetadata[];
   onFilesChange?: (files: FileUploadItem[]) => void;
+  onFilesRemoved?: (file: FileUploadItem[]) => void;
+  onFilesAdded?: (files: FileUploadItem[]) => void;
+  onAllFilesCompleted?: (files: FileUploadItem[]) => void;
   simulateUpload?: boolean;
   disabled?: boolean;
 }
 
-export default function CardUpload({
+export function CardUpload({
   maxFiles = 10,
   maxSize = 50 * 1024 * 1024, // 50MB
   accept = "*",
@@ -73,37 +77,93 @@ export default function CardUpload({
   className,
   defaultValues,
   onFilesChange,
+  onAllFilesCompleted,
+  onFilesRemoved,
+  onFilesAdded,
   simulateUpload = true,
   disabled = false,
 }: CardUploadProps) {
   // Create default files using FileMetadata type
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
-
-  const defaultFiles: FileMetadata[] =
-    defaultValues?.map((m) => ({
-      id: m.id,
-      name: m.displayName || m.title || "unknown",
-      size: m.size,
-      type: m.mimeType || "application/octet-stream",
-      url: m.mediaUrl || "",
-    })) || [];
-
   // Convert default files to FileUploadItem format
-  const defaultUploadFiles: FileUploadItem[] = defaultFiles.map((file) => ({
-    id: file.id,
-    file: {
-      id: file.id,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    } as unknown as File,
-    preview: file.url,
-    progress: 100,
-    status: "completed" as const,
-  }));
+  const defaultUploadFiles: FileUploadItem[] = defaultValues
+    ? defaultValues?.map((file) => ({
+        id: file.id,
+        file: file,
+        preview: file.url,
+        progress: 100,
+        status: "completed" as const,
+      }))
+    : [];
 
   const [uploadFiles, setUploadFiles] =
     useState<FileUploadItem[]>(defaultUploadFiles);
+
+  useEffect(() => {
+    setUploadFiles((prev) => {
+      // Check for undefined values to avoid runtime errors
+      if (!defaultValues || !Array.isArray(defaultValues)) {
+        // If defaultValues is not provided or is invalid, just return previous value
+        return prev;
+      }
+      if (!prev || !Array.isArray(prev)) {
+        // If prev is not an array, initialize with new defaults
+        return defaultValues.map((file) => ({
+          id: file.id,
+          file: file,
+          preview: file.url,
+          progress: 100,
+          status: "completed" as const,
+        }));
+      }
+
+      // Tạo map các file từ defaultValues để dễ lookup
+      const defaultValuesMap = new Map(
+        defaultValues.map((file) => [file.id, file])
+      );
+
+      // Giữ lại các file đang error/uploading mà không có trong defaultValues
+      // (để user có thể retry)
+      const filesToKeep = prev.filter((item) => {
+        const isInDefaultValues = defaultValuesMap.has(item.id);
+        const isErrorOrUploading =
+          item.status === "error" || item.status === "uploading";
+        // Giữ lại nếu đang error/uploading và không có trong defaultValues
+        return isErrorOrUploading && !isInDefaultValues;
+      });
+
+      // Tạo danh sách file từ defaultValues
+      const filesFromDefaults = defaultValues.map((file) => ({
+        id: file.id,
+        file: file,
+        preview: file.url,
+        progress: 100,
+        status: "completed" as const,
+      }));
+
+      // Merge: files từ defaultValues + files đang error/uploading cần giữ lại
+      const merged = [...filesFromDefaults, ...filesToKeep];
+
+      // Kiểm tra xem có thay đổi không
+      const shouldUpdate =
+        merged.length !== prev.length ||
+        !merged.every((newFile, index) => {
+          const cur = prev[index];
+          return (
+            cur &&
+            cur.id === newFile.id &&
+            cur.status === newFile.status &&
+            cur.file.id === newFile.file.id
+          );
+        });
+
+      if (!shouldUpdate) {
+        return prev;
+      }
+
+      return merged;
+    });
+  }, [defaultValues]);
 
   const [
     { isDragging, errors },
@@ -122,7 +182,10 @@ export default function CardUpload({
     maxSize,
     accept,
     multiple,
-    initialFiles: defaultFiles,
+    initialFiles: defaultValues,
+    onFilesAdded: () => {},
+    // Chỉ cập nhật trạng thái nội bộ, callback onFilesAdded sẽ được
+    // gọi sau khi file hoàn tất upload (progress 100, status "completed")
     onFilesChange: (newFiles) => {
       // Convert to upload items when files change, preserving existing status
       const newUploadFiles = newFiles.map((file) => {
@@ -130,7 +193,6 @@ export default function CardUpload({
         const existingFile = uploadFiles.find(
           (existing) => existing.id === file.id
         );
-
         if (existingFile) {
           // Preserve existing file status and progress
           return {
@@ -190,11 +252,107 @@ export default function CardUpload({
     return () => clearInterval(interval);
   }, [uploadFiles, simulateUpload]);
 
+  // Call onAllFilesCompleted when all files are completed or error.
+  // Use a ref to ensure the callback is called only once per batch to avoid
+  // infinite loops when parent updates cause uploadFiles to remain the same.
+  useEffect(() => {
+    if (!onAllFilesCompleted) return;
+    if (uploadFiles.length === 0) {
+      // reset guard when no files
+      onAllFilesCompletedCalledRef.current = false;
+      return;
+    }
+
+    const allDone = uploadFiles.every(
+      (file) => file.status === "completed" || file.status === "error"
+    );
+
+    if (allDone && !onAllFilesCompletedCalledRef.current) {
+      onAllFilesCompletedCalledRef.current = true;
+      onAllFilesCompleted(uploadFiles);
+    }
+
+    // if any file is still uploading, allow future callback invocations
+    if (!allDone) {
+      onAllFilesCompletedCalledRef.current = false;
+    }
+  }, [uploadFiles, onAllFilesCompleted]);
+
+  // track whether we already invoked onAllFilesCompleted for the current batch
+  const onAllFilesCompletedCalledRef = useRef(false);
+
+  // Track previous uploadFiles to phát hiện file nào vừa completed
+  const prevUploadFilesRef = useRef<FileUploadItem[]>(uploadFiles);
+
+  // Track các file đã gọi onFilesAdded để tránh double call
+  const onFilesAddedCalledRef = useRef<Set<string>>(new Set());
+
+  // Track defaultValues IDs để phân biệt file từ server vs file mới upload
+  const defaultValuesIdsRef = useRef<Set<string>>(
+    new Set(defaultValues?.map((f) => f.id) || [])
+  );
+
+  // Update defaultValuesIdsRef khi defaultValues thay đổi
+  // Reset onFilesAddedCalledRef cho các file mới từ server (để chúng không trigger onFilesAdded)
+  useEffect(() => {
+    const newDefaultIds = new Set(defaultValues?.map((f) => f.id) || []);
+    defaultValuesIdsRef.current = newDefaultIds;
+
+    // Đánh dấu các file từ server đã được xử lý (không cần gọi onFilesAdded)
+    newDefaultIds.forEach((id) => {
+      onFilesAddedCalledRef.current.add(id);
+    });
+  }, [defaultValues]);
+
+  // Gọi onFilesAdded chỉ với những file mới vừa hoàn tất upload
+  // (KHÔNG phải file từ defaultValues/server và chưa được gọi onFilesAdded)
+  useEffect(() => {
+    if (!onFilesAdded) {
+      prevUploadFilesRef.current = uploadFiles;
+      return;
+    }
+
+    const prev = prevUploadFilesRef.current;
+    const defaultIds = defaultValuesIdsRef.current;
+
+    const newlyCompleted = uploadFiles.filter((file) => {
+      if (file.status !== "completed") return false;
+
+      // Bỏ qua file đã có trong defaultValues (từ server)
+      if (defaultIds.has(file.id)) return false;
+
+      // Bỏ qua file đã được gọi onFilesAdded rồi
+      if (onFilesAddedCalledRef.current.has(file.id)) return false;
+
+      // Chỉ gọi onFilesAdded cho file mới completed từ upload thực sự
+      const prevFile = prev.find((f) => f.id === file.id);
+      return !prevFile || prevFile.status !== "completed";
+    });
+
+    if (newlyCompleted.length > 0) {
+      // Đánh dấu các file đã được gọi onFilesAdded
+      newlyCompleted.forEach((file) => {
+        onFilesAddedCalledRef.current.add(file.id);
+      });
+
+      onFilesAdded(newlyCompleted);
+    }
+
+    prevUploadFilesRef.current = uploadFiles;
+  }, [uploadFiles, onFilesAdded]);
+
   const removeUploadFile = (fileId: string) => {
     const fileToRemove = uploadFiles.find((f) => f.id === fileId);
     if (fileToRemove) {
       removeFile(fileToRemove.id);
+      onFilesRemoved?.([fileToRemove]);
+      return fileToRemove;
     }
+  };
+
+  const onFilesUploadRemoved = () => {
+    clearFiles();
+    onFilesRemoved?.(uploadFiles);
   };
 
   const retryUpload = (fileId: string) => {
@@ -213,30 +371,28 @@ export default function CardUpload({
   };
 
   const handleMediaSelect = (media: MediaBase) => {
-    const fileItem: FileUploadItem = {
-      id: media.id,
-      file: {
-        id: media.id,
-        name: media.title,
-        size: media.size,
-        type: media.mimeType,
-      } as unknown as File,
-      preview: media.mediaUrl,
-      progress: 100,
-      status: "completed",
-    };
-
-    setUploadFiles((prev) => {
-      const merged = [...prev, fileItem];
-      onFilesChange?.(merged);
-      return merged;
-    });
-
-    setIsMediaPickerOpen(false);
+    // const fileItem: FileUploadItem = {
+    //   id: media.id,
+    //   file: {
+    //     id: media.id,
+    //     name: media.title,
+    //     size: media.size,
+    //     type: getTypeFile(media),
+    //   } as unknown as File,
+    //   preview: media.mediaUrl,
+    //   progress: 100,
+    //   status: "completed",
+    // };
+    // setUploadFiles((prev) => {
+    //   const merged = [...prev, fileItem];
+    //   onFilesChange?.(merged);
+    //   return merged;
+    // });
+    // setIsMediaPickerOpen(false);
   };
 
-  const getFileIcon = (file: File | FileMetadata) => {
-    const type = file instanceof File ? file.type : file.type;
+  const getFileIcon = (file: FileMetadata) => {
+    const type = file.type;
     if (type.startsWith("image/")) return <ImageIcon className="size-6" />;
     if (type.startsWith("video/")) return <VideoIcon className="size-6" />;
     if (type.startsWith("audio/")) return <HeadphonesIcon className="size-6" />;
@@ -249,8 +405,6 @@ export default function CardUpload({
       return <FileArchiveIcon className="size-6" />;
     return <FileTextIcon className="size-6" />;
   };
-
-  console.log("check_default", uploadFiles);
 
   return (
     <div className={cn("w-full space-y-4", className)}>
@@ -293,7 +447,7 @@ export default function CardUpload({
               </Button>
               <Button
                 type="button"
-                onClick={clearFiles}
+                onClick={onFilesUploadRemoved}
                 variant="outline"
                 size="sm"
                 disabled={disabled}
@@ -500,7 +654,7 @@ export default function CardUpload({
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
-                    variant="dim"
+                    variant="outline"
                     // className="cursor-pointer text-primary underline-offset-4 hover:underline"
                     onClick={() => setIsMediaPickerOpen(true)}
                   >
