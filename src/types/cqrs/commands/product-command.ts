@@ -1,5 +1,9 @@
 import { ProductStatus } from "@/types/entities/product";
-import { CreateCommand, UpdateCommand } from "./base/base-command";
+import {
+  CreateCommand,
+  DeleteCommand,
+  UpdateCommand,
+} from "./base/base-command";
 
 export interface ProductCreateCommand extends CreateCommand {
   sku?: string | null;
@@ -28,3 +32,5 @@ export interface ProductUpdateCommand extends UpdateCommand {
 export interface ProductUpdateStatusCommand extends UpdateCommand {
   status?: ProductStatus | null;
 }
+
+export interface ProductDeleteCommand extends DeleteCommand {}

@@ -107,7 +107,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 ];
 
 const columnSearch = "sku";
-const query_key = "data";
+const query_key = "products_preview";
 const filterEnums: FilterEnum[] = [
   {
     columnId: "isDeleted",

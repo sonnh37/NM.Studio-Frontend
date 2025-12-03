@@ -24,8 +24,8 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {formatDate} from "@/lib/utils/date-utils";
-import {formatPrice} from "@/lib/utils/number-utils";
+import { formatDate } from "@/lib/utils/date-utils";
+import { formatPrice } from "@/lib/utils/number-utils";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -254,6 +254,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         list={[model]}
         showTrigger={false}
         onSuccess={() => row.toggleSelected(false)}
+        query_keys={["fetchProductById"]}
       />
     </>
   );

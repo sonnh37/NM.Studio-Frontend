@@ -38,8 +38,9 @@ import {
 } from "@/types/entities/product-variant";
 import { ProductVariantForm } from "./create-update-form";
 import { formatCurrency } from "@/lib/utils/format-currency";
-import {formatDate} from "@/lib/utils/date-utils";
-import {formatPrice} from "@/lib/utils/number-utils";
+import { formatDate } from "@/lib/utils/date-utils";
+import { formatPrice } from "@/lib/utils/number-utils";
+import { productVariantService } from "@/services/product-variant-service";
 
 export const columns: ColumnDef<ProductVariant>[] = [
   {
@@ -183,9 +184,9 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
           >
             Copy model ID
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleProductVariantsClick}>
+          {/* <DropdownMenuItem onClick={handleProductVariantsClick}>
             View features
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
@@ -195,11 +196,12 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteBaseEntitysDialog
-        deleteFunc={productService.delete}
+        deleteFunc={(command) => productVariantService.delete(command)}
         open={showDeleteTaskDialog}
         onOpenChange={setShowDeleteTaskDialog}
         list={[model]}
         showTrigger={false}
+        query_keys={["fetchProductById"]}
         onSuccess={() => row.toggleSelected(false)}
       />
 

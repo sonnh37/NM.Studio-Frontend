@@ -18,7 +18,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { IconFolderCode } from "@tabler/icons-react";
-import { CirclePlus, ArrowUpRight, Plus, Trash2 } from "lucide-react";
+import { CirclePlus, ArrowUpRight, Plus, Trash2, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product, ProductStatus } from "@/types/entities/product";
 import { Input } from "@/components/ui/input";
@@ -66,6 +66,26 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { DataOnlyTable } from "@/components/_common/data-table-origin/data-only-table";
 import { columns } from "./columns";
+import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
+import {
+  ColumnFiltersState,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
+import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
+import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
+import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
+import { DataTableToolbar } from "@/components/_common/data-table-generic/data-table-toolbar";
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
+import { productService } from "@/services/product-service";
 
 interface SheetAddVariantProps {
   product: Product;
@@ -144,6 +164,35 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
     { value: InventoryStatus.Rented, label: "Rented" },
     { value: InventoryStatus.InMaintenance, label: "In Maintenance" },
   ];
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  const table = useReactTable({
+    data: product.variants ?? [],
+    columns,
+    state: {
+      sorting,
+      columnVisibility,
+      rowSelection,
+      columnFilters,
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getRowId: (originalRow) => originalRow.id,
+  });
 
   const renderVariantTable = () => {
     if (!hasVariants) {
@@ -167,7 +216,29 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
           <CardTitle>Variant Table</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataOnlyTable columns={columns} data={product.variants} />
+          <DataTableComponent
+            // isLoading={isFetching}
+            deletePermanentFunc={(command) =>
+              productVariantService.delete(command)
+            }
+            updateUndoFunc={(command) => productVariantService.update(command)}
+            table={table}
+            queryKey={"fetchProductById"}
+          >
+            <DataTableToolbar table={table}>
+              <DeleteBaseEntitysDialog
+                list={table
+                  .getFilteredSelectedRowModel()
+                  .rows.map((row) => row.original)}
+                query_keys={["fetchProductById"]}
+                deleteFunc={(command) => productVariantService.delete(command)}
+                onSuccess={() => table.toggleAllRowsSelected(false)}
+              />
+
+              <DataTableSortColumnsPopover table={table} />
+              <DataTableToggleColumnsPopover table={table} />
+            </DataTableToolbar>
+          </DataTableComponent>
         </CardContent>
       </Card>
     );

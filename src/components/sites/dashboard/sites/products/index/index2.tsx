@@ -546,7 +546,7 @@ import { DataCustomPagination } from "@/components/_common/data-custom/data-cust
 import { Skeleton } from "@/components/ui/skeleton";
 import { getEnumLabel } from "@/lib/utils/enum-utils";
 
-import {calculateStock, cn} from "@/lib/utils";
+import { calculateStock, cn } from "@/lib/utils";
 import {
   Card,
   CardAction,
@@ -564,28 +564,31 @@ import { TypographyH3 } from "@/components/_common/typography/typography-h3";
 import { usePathname, useRouter } from "next/navigation";
 import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 import { ProductCard } from "./product-card";
+import { Status } from "@/types/models/business-result";
 
 export default function ProductTableNoReactTable() {
   const router = useRouter();
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(10); // sửa đây
+  const [pageSize, setPageSize] = useState(10);
 
+  // statusFilter: null => backend hiểu là "tất cả"
   const [statusFilter, setStatusFilter] = useState<ProductStatus | null>(null);
-  const [selectedTab, setSelectedTab] = useState<number>(-1);
+  // selectedTabIndex: 0 = All, 1..n = các status khác
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
-  const tabs = [
-    { name: "All Products", value: -1 },
+  const tabs: { name: string; status: ProductStatus | null }[] = [
+    { name: "All Products", status: null },
     {
       name: getEnumLabel(ProductStatus, ProductStatus.Active),
-      value: ProductStatus.Active,
+      status: ProductStatus.Active,
     },
     {
       name: getEnumLabel(ProductStatus, ProductStatus.Archived),
-      value: ProductStatus.Archived,
+      status: ProductStatus.Archived,
     },
     {
       name: getEnumLabel(ProductStatus, ProductStatus.Draft),
-      value: ProductStatus.Draft,
+      status: ProductStatus.Draft,
     },
   ];
 
@@ -593,13 +596,14 @@ export default function ProductTableNoReactTable() {
     () => ({
       pagination: {
         isPagingEnabled: true,
-        pageSize: pageSize,
+        pageSize,
         pageNumber: pageIndex,
       },
       includeProperties: ["category", "subCategory", "thumbnail"],
+      // null => không gửi field, backend tự hiểu là "tất cả"
       status: statusFilter ?? undefined,
     }),
-    [pageIndex, pageSize]
+    [pageIndex, pageSize, statusFilter]
   );
 
   const { data, isFetching, error, refetch } = useQuery({
@@ -613,24 +617,12 @@ export default function ProductTableNoReactTable() {
     console.error(error);
   }
 
-  const handleDelete = async (id: string) => {
-    try {
-      const res = await productService.delete({ id, isPermanent: true });
-      if (res.status === 200) {
-        toast.success("Deleted");
-        refetch();
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Delete failed");
-    }
-  };
-
-  const handleTabChange = (value: number) => {
-    setSelectedTab(value);
+  const handleTabChange = (tabValue: string) => {
+    const index = Number(tabValue);
+    setSelectedTabIndex(index);
     setPageIndex(1);
-    const tab = tabs.find((t) => t.value === value);
-    queryParams.status = tab?.value;
+    const tab = tabs[index];
+    setStatusFilter(tab?.status ?? null);
   };
 
   const products = data?.data?.results || [];
@@ -649,17 +641,17 @@ export default function ProductTableNoReactTable() {
       {/* Status */}
       <div className="w-full">
         <Tabs
-          value={selectedTab.toString()}
-          onValueChange={(tab) => handleTabChange(Number(tab))}
+          value={selectedTabIndex.toString()}
+          onValueChange={handleTabChange}
           className="gap-4"
         >
           <TabsList className="bg-background rounded-none p-0 w-full">
             <div className="flex justify-between w-full">
               <div className="bg-background rounded-none border-b p-0 w-full inline-block">
-                {tabs.map((tab) => (
+                {tabs.map((tab, index) => (
                   <TabsTrigger
-                    key={tab.value}
-                    value={tab.value.toString()}
+                    key={index}
+                    value={index.toString()}
                     className="bg-background data-[state=active]:border-primary dark:data-[state=active]:border-primary h-full rounded-none border-0 border-b-2 border-transparent data-[state=active]:shadow-none"
                   >
                     {tab.name}
@@ -672,8 +664,8 @@ export default function ProductTableNoReactTable() {
             </div>
           </TabsList>
 
-          {tabs.map((tab) => (
-            <TabsContent key={tab.value} value={tab.value.toString()}>
+          {tabs.map((tab, index) => (
+            <TabsContent key={index} value={index.toString()}>
               <p className="text-muted-foreground text-sm">{tab.name}</p>
             </TabsContent>
           ))}

@@ -1,26 +1,94 @@
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
+import { DeleteOverlay } from "@/components/_common/delete-overlay";
 import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Constants } from "@/lib/constants/constants";
-import {calculateStock, cn} from "@/lib/utils";
+import { calculateStock, cn, processResponse } from "@/lib/utils";
+import { productService } from "@/services/product-service";
+import {
+  ProductDeleteCommand,
+  ProductUpdateCommand,
+} from "@/types/cqrs/commands/product-command";
 import { ProductPreview, ProductStatus } from "@/types/entities/product";
+import { Status } from "@/types/models/business-result";
+import { useQueryClient } from "@tanstack/react-query";
+import { ChevronRight, Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { Actions } from "./actions";
-import { ChevronRight } from "lucide-react";
-
+import { usePathname, useRouter } from "next/navigation";
+import React from "react";
+import { toast } from "sonner";
 type ProductCardProps = {
   product: ProductPreview;
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  const queryClient = useQueryClient();
   const { stock, stockLevel } = calculateStock(
     product.totalStockDefaultQuantity,
     product.totalStockQuantity
   );
 
   const status = getProductStatusDisplay(product.status);
+  const isDeleted = product.isDeleted;
+
+  const handleRestore = async () => {
+    try {
+      const command: ProductUpdateCommand = {
+        ...product,
+        isDeleted: false,
+      };
+      const result = await productService.update(command);
+      processResponse(result);
+
+      queryClient.refetchQueries({ queryKey: ["products"] });
+      toast.success("Restored");
+    } catch (error: any) {
+      toast.error(error);
+      console.log("Error:");
+    }
+  };
+
+  const handleDeletePermanentFuncly = async () => {
+    try {
+      const model: ProductDeleteCommand = {
+        id: product.id,
+        isPermanent: true,
+      };
+      const result = await productService.delete(model);
+      processResponse(result);
+
+      queryClient.refetchQueries({ queryKey: ["products"] });
+      toast.success("Deleted");
+    } catch (error: any) {
+      toast.error(error);
+      console.log("Error:");
+    }
+  };
+
   return (
-    <Card className="shadow-xs hover:shadow-2xl transition">
+    <Card
+      className={cn(
+        "relative shadow-xs hover:shadow-2xl transition"
+        // isDeleted && "opacity-60"
+      )}
+    >
+      {isDeleted && (
+        <DeleteOverlay
+          onRestore={handleRestore}
+          onDelete={handleDeletePermanentFuncly}
+        />
+      )}
+
       <CardContent className="flex flex-col gap-4">
         <div className="flex justify-between">
           <div className="flex gap-2 h-fit">
@@ -117,3 +185,61 @@ export function getProductStatusDisplay(status: ProductStatus) {
       };
   }
 }
+
+interface ActionsProps {
+  product: ProductPreview;
+}
+
+export const Actions: React.FC<ActionsProps> = ({ product }) => {
+  const model = product;
+  const router = useRouter();
+  const pathName = usePathname();
+
+  const [showDeleteTaskDialog, setShowDeleteTaskDialog] = React.useState(false);
+
+  const handleProductsClick = () => {
+    router.push(`${pathName}/${model.id}`);
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(model.id!)}
+          >
+            Copy ID
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem onClick={handleProductsClick}>
+            <Eye /> View
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            // disabled
+            onSelect={() => setShowDeleteTaskDialog(true)}
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DeleteBaseEntitysDialog
+        deleteFunc={(command) => productService.delete(command)}
+        open={showDeleteTaskDialog}
+        onOpenChange={setShowDeleteTaskDialog}
+        list={[model]}
+        showTrigger={false}
+        query_keys={["products"]}
+      />
+    </>
+  );
+};
