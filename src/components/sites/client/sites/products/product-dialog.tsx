@@ -11,10 +11,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
+import { formatPrice, formatRangePrice } from "@/lib/utils/number-utils";
 import { productService } from "@/services/product-service";
 // import { Color } from "@/types/entities/color";
 import { Product, ProductStatus } from "@/types/entities/product";
-import { ProductVariant } from "@/types/entities/product-variant";
+import {
+  InventoryStatus,
+  ProductVariant,
+} from "@/types/entities/product-variant";
 // import { Size } from "@/types/entities/size";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { StarIcon } from "@heroicons/react/20/solid";
@@ -69,22 +73,23 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
   const colors = variants.map((v) => v.color).filter((f) => f != undefined);
   const sizes = variants.map((v) => v.size).filter((f) => f != undefined);
 
+  // Calculate min and max price from variants
+  const prices = variants.map((v) => v.price || 0).filter((p) => p > 0);
+  const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+  const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
+
   const handleSizeChange = (sizeName: string) => {
-    // const size = product.productSizes?.find(
-    //   (pxc) => pxc.size?.name === sizeName
-    // );
-    // if (size) {
-    //   setSelectedSize(size.size ?? null);
-    // }
+    const variant = variants.find(
+      (v) => v.size === sizeName && v.status === InventoryStatus.Available
+    );
+    setSelectedSize(variant || null);
   };
 
   const handleColorChange = (colorName: string) => {
-    // const color = product.productVariants?.find(
-    //   (pxc) => pxc.color?.name === colorName
-    // );
-    // if (color) {
-    //   setSelectedColor(color.color ?? null);
-    // }
+    const variant = variants.find(
+      (v) => v.color === colorName && v.status === InventoryStatus.Available
+    );
+    setSelectedColor(variant || null);
   };
 
   return (
@@ -155,9 +160,12 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                       ProductDetail information
                     </h3>
 
-                    {/* <p className="text-2xl text-gray-900">{product.price}</p> */}
                     <p className="text-2xl text-gray-900">
-                      {"Dang cap nhat..."}
+                      {selectedColor || selectedSize
+                        ? formatPrice(
+                            (selectedColor || selectedSize)?.price || 0
+                          )
+                        : formatRangePrice(minPrice, maxPrice)}
                     </p>
 
                     {/* Reviews */}
@@ -198,7 +206,7 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                         <legend className="text-sm font-medium text-gray-900">
                           Color
                         </legend>
-                        <div className="flex flex-row space-x-2 mt-4">
+                        <div className="flex flex-row gap-2 mt-4">
                           {variants.map((pxc) => (
                             <div
                               key={pxc.id}
@@ -209,7 +217,7 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                                 type="button"
                                 className={`h-10 w-10 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all duration-200 ease-in-out
           ${
-            pxc.color && pxc.status == ProductStatus.Available
+            pxc.color && pxc.status == InventoryStatus.Available
               ? selectedColor?.color === pxc.color // Sử dụng đúng trạng thái để so sánh
                 ? "border-indigo-600 ring-2 ring-indigo-500"
                 : ""
@@ -221,7 +229,7 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                                 disabled={
                                   !(
                                     pxc.color &&
-                                    pxc.status == ProductStatus.Available
+                                    pxc.status == InventoryStatus.Available
                                   )
                                 }
                                 style={{
@@ -248,7 +256,7 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                           </a>
                         </div>
 
-                        <div className="flex flex-row space-x-2 mt-4">
+                        <div className="flex flex-row gap-2 mt-4">
                           {variants.map((pxc) => (
                             <div
                               key={pxc.id}
@@ -259,7 +267,7 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                                 type="button"
                                 className={`h-10 w-10 rounded-full border-2 
                 ${
-                  pxc.size && pxc.status == ProductStatus.Available
+                  pxc.size && pxc.status == InventoryStatus.Available
                     ? selectedSize?.size === pxc.size
                       ? "bg-indigo-600 text-white border-indigo-600"
                       : "bg-white text-gray-900 border-gray-300 hover:bg-gray-100 focus:ring-2 focus:ring-indigo-500"
@@ -270,7 +278,7 @@ export const ProductDialog = ({ productId, open, setOpen }: ExampleProps) => {
                                 disabled={
                                   !(
                                     pxc.size &&
-                                    pxc.status == ProductStatus.Available
+                                    pxc.status == InventoryStatus.Available
                                   )
                                 }
                               >

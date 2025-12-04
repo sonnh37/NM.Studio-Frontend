@@ -1,7 +1,7 @@
 "use client";
 
 import { productService } from "@/services/product-service";
-import { Product } from "@/types/entities/product";
+import { Product, ProductPreview } from "@/types/entities/product";
 import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,10 +16,10 @@ import Link from "next/link";
 import { TypographyP } from "@/components/_common/typography/typography-p";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
 import { TypographyMuted } from "@/components/_common/typography/typography-muted";
-import {formatPrice} from "@/lib/utils/number-utils";
+import { formatPrice, formatRangePrice } from "@/lib/utils/number-utils";
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductPreview;
 }
 export const ProductCard = ({ product }: ProductCardProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -69,7 +69,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <TypographyP>{product.name}</TypographyP>
 
           <TypographyMuted>
-            {/* {product. ? formatPrice(product.price) : "Đang cập nhật"} */}
+            {product.minPrice && product.maxPrice
+              ? formatRangePrice(product.minPrice, product.maxPrice)
+              : "Liên hệ"}
           </TypographyMuted>
         </div>
         <div className="flex">

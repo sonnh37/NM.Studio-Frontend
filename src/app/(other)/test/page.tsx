@@ -1,131 +1,76 @@
+// "use client";
+
+// import { AdvancedColorPicker } from "@/components/_common/color-pickers/advanced-color-picker";
+// import { useState } from "react";
+
+// export default function Page() {
+//   const [color, setColor] = useState("#6366f1");
+
+//   return (
+//     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-24">
+//       <AdvancedColorPicker color={color} onChange={setColor} />
+//       <div
+//         className="w-32 h-32 rounded-lg border"
+//         style={{ backgroundColor: color }}
+//       />
+//     </div>
+//   );
+// }
+
 "use client";
 
-import { Upload, X } from "lucide-react";
-import * as React from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  FileUpload,
-  FileUploadDropzone,
-  FileUploadItem,
-  FileUploadItemDelete,
-  FileUploadItemMetadata,
-  FileUploadItemPreview,
-  FileUploadItemProgress,
-  FileUploadList,
-  FileUploadTrigger,
-} from "@/components/ui/file-upload";
+import InputColor from "@/components/_common/color-pickers/input-color";
+import { useState } from "react";
 
-export default function FileUploadCircularProgressDemo() {
-  const [files, setFiles] = React.useState<File[]>([]);
-
-  const onUpload = React.useCallback(
-    async (
-      files: File[],
-      {
-        onProgress,
-        onSuccess,
-        onError,
-      }: {
-        onProgress: (file: File, progress: number) => void;
-        onSuccess: (file: File) => void;
-        onError: (file: File, error: Error) => void;
-      }
-    ) => {
-      try {
-        // Process each file individually
-        const uploadPromises = files.map(async (file) => {
-          try {
-            // Simulate file upload with progress
-            const totalChunks = 10;
-            let uploadedChunks = 0;
-
-            // Simulate chunk upload with delays
-            for (let i = 0; i < totalChunks; i++) {
-              // Simulate network delay (100-300ms per chunk)
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.random() * 200 + 100)
-              );
-
-              // Update progress for this specific file
-              uploadedChunks++;
-              const progress = (uploadedChunks / totalChunks) * 100;
-              onProgress(file, progress);
-            }
-
-            // Simulate server processing delay
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            onSuccess(file);
-            console.log("check_file", file);
-          } catch (error) {
-            onError(
-              file,
-              error instanceof Error ? error : new Error("Upload failed")
-            );
-          }
-        });
-
-        // Wait for all uploads to complete
-
-        await Promise.all(uploadPromises);
-      } catch (error) {
-        // This handles any error that might occur outside the individual upload processes
-        console.error("Unexpected error during upload:", error);
-      }
-    },
-    []
-  );
-
-  const onFileReject = React.useCallback((file: File, message: string) => {
-    toast(message, {
-      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
-    });
-  }, []);
+export default function Home() {
+  const [color, setColor] = useState("#FF0000");
+  const [colorWithAlpha, setColorWithAlpha] = useState("#FF000080");
 
   return (
-    <FileUpload
-      value={files}
-      onValueChange={setFiles}
-      maxFiles={10}
-      maxSize={5 * 1024 * 1024}
-      className="w-full max-w-md"
-      onUpload={onUpload}
-      onFileReject={onFileReject}
-      multiple
-    >
-      <FileUploadDropzone>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <div className="flex items-center justify-center rounded-full border p-2.5">
-            <Upload className="size-6 text-muted-foreground" />
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-4">
+        <div className="space-y-8">
+          <div className="mx-auto max-w-3xl">
+            <div className="space-y-4">
+              <div className="rounded-lg border bg-card p-6">
+                <h2 className="text-lg font-semibold mb-4">Pick a Color</h2>
+                <div className="flex justify-center gap-20">
+                  <InputColor
+                    label="Background Color without alpha"
+                    value={color}
+                    onChange={setColor}
+                    onBlur={() => console.log("color picker")}
+                    className="mt-0"
+                  />
+
+                  <InputColor
+                    label="Background Color with Alpha"
+                    value={colorWithAlpha}
+                    onChange={setColorWithAlpha}
+                    onBlur={() => console.log("Alpha color picker blurred")}
+                    alpha={true}
+                    className="mt-0"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="font-medium text-sm">Drag & drop files here</p>
-          <p className="text-muted-foreground text-xs">
-            Or click to browse (max 10 files, up to 5MB each)
-          </p>
-        </div>
-        <FileUploadTrigger asChild>
-          <Button variant="outline" size="sm" className="mt-2 w-fit">
-            Browse files
-          </Button>
-        </FileUploadTrigger>
-      </FileUploadDropzone>
-      <FileUploadList orientation="horizontal">
-        {files.map((file, index) => (
-          <FileUploadItem key={index} value={file} className="p-0">
-            <FileUploadItemPreview className="size-20 [&>svg]:size-12" />
-            <FileUploadItemMetadata className="sr-only" />
-            <FileUploadItemDelete asChild>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="-top-1 -right-1 absolute size-5 rounded-full"
+
+          <div className="text-center text-sm text-muted-foreground">
+            <p>Built with Next.js, shadcn/ui, and React Colorful</p>
+            <p className="mt-1">
+              <a
+                href="https://github.com/vatsalpipalava/shadcn-input-color/blob/main/src/components/input-color.tsx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary"
               >
-                <X className="size-3" />
-              </Button>
-            </FileUploadItemDelete>
-          </FileUploadItem>
-        ))}
-      </FileUploadList>
-    </FileUpload>
+                View on GitHub
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

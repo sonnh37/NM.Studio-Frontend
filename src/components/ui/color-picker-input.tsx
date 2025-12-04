@@ -27,15 +27,15 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
   const [open, setOpen] = React.useState(false);
   const [temp, setTemp] = React.useState<string>(value ?? "#000000");
 
-  React.useEffect(() => {
-    // keep temp in sync when external value changes
-    setTemp(value ?? "#000000");
-  }, [value]);
+  // React.useEffect(() => {
+  //   // keep temp in sync when external value changes
+  //   setTemp(value ?? "#000000");
+  // }, [value]);
 
-  // ensure temp reflects current value whenever the picker is opened
-  React.useEffect(() => {
-    if (open) setTemp(value ?? "#000000");
-  }, [open, value]);
+  // // ensure temp reflects current value whenever the picker is opened
+  // React.useEffect(() => {
+  //   if (open) setTemp(value ?? "#000000");
+  // }, [open, value]);
 
   const displayed = open ? temp : value;
 

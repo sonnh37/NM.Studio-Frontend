@@ -42,26 +42,26 @@ export const CustomColorPicker: React.FC<CustomColorPickerProps> = ({
         return;
       }
 
-      if (output === "rgba") {
-        const rgb = c
-          .rgb()
-          .array()
-          .map((n) => Math.round(n));
-        onChange(`rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${c.alpha()})`);
-        return;
-      }
+      // if (output === "rgba") {
+      //   const rgb = c
+      //     .rgb()
+      //     .array()
+      //     .map((n) => Math.round(n));
+      //   onChange(`rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${c.alpha()})`);
+      //   return;
+      // }
 
-      if (output === "hsl") {
-        const hsl = c
-          .hsl()
-          .array()
-          .map((n) => Math.round(n));
-        onChange(`hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`);
-        return;
-      }
+      // if (output === "hsl") {
+      //   const hsl = c
+      //     .hsl()
+      //     .array()
+      //     .map((n) => Math.round(n));
+      //   onChange(`hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`);
+      //   return;
+      // }
 
-      // css/rgb string
-      onChange(c.rgb().string());
+      // // css/rgb string
+      // onChange(c.rgb().string());
     } catch (error) {
       console.error("Color conversion failed:", error);
     }

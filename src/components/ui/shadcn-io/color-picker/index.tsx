@@ -86,26 +86,12 @@ export const ColorPicker = ({
   // Update color when controlled value changes
   useEffect(() => {
     if (value) {
-      try {
-        const color = Color(value);
+      const color = Color.rgb(value).rgb().object();
 
-        // get HSL components (h: 0-360, s: 0-100, l: 0-100)
-        const [h, s, l] = color.hsl().array();
-
-        // alpha() returns 0-1, default to 1 if undefined
-        const a =
-          typeof color.alpha() === "number"
-            ? color.alpha()
-            : defaultColor.alpha();
-
-        setHue(Number.isFinite(h) ? h : defaultColor.hue());
-        setSaturation(Number.isFinite(s) ? s : defaultColor.saturationl());
-        setLightness(Number.isFinite(l) ? l : defaultColor.lightness());
-        setAlpha((a ?? 1) * 100);
-      } catch (err) {
-        // ignore parse errors and keep current state
-        console.error("Failed to parse controlled color value:", err);
-      }
+      setHue(color.r);
+      setSaturation(color.g);
+      setLightness(color.b);
+      setAlpha(color.a);
     }
   }, [value]);
 
@@ -354,9 +340,8 @@ const PercentageInput = ({ className, ...props }: PercentageInputProps) => {
   return (
     <div className="relative">
       <Input
-        type="number"
-        min={0}
-        max={100}
+        readOnly
+        type="text"
         {...(props as any)}
         className={cn(
           "h-8 w-[3.25rem] rounded-l-none bg-secondary px-2 text-xs shadow-none",
@@ -376,97 +361,8 @@ export const ColorPickerFormat = ({
   className,
   ...props
 }: ColorPickerFormatProps) => {
-  const {
-    hue,
-    saturation,
-    lightness,
-    alpha,
-    mode,
-    setHue,
-    setSaturation,
-    setLightness,
-    setAlpha,
-    setMode,
-  } = useColorPicker();
-
+  const { hue, saturation, lightness, alpha, mode } = useColorPicker();
   const color = Color.hsl(hue, saturation, lightness, alpha / 100);
-
-  // Local editable states to allow typing without immediate parse errors
-  // These are initialized once and kept independent until user commits (onBlur)
-  const [localHex, setLocalHex] = useState(() => color.hex());
-  const [localRgb, setLocalRgb] = useState<number[]>(() =>
-    color
-      .rgb()
-      .array()
-      .map((v) => Math.round(v as number))
-  );
-  const [localHsl, setLocalHsl] = useState<number[]>(() =>
-    color
-      .hsl()
-      .array()
-      .map((v) => Math.round(v as number))
-  );
-  const [localCss, setLocalCss] = useState(
-    () =>
-      `rgba(${color
-        .rgb()
-        .array()
-        .map((v) => Math.round(v as number))
-        .join(", ")}, ${Math.round(alpha)}%)`
-  );
-  const [localAlpha, setLocalAlpha] = useState<number>(() => Math.round(alpha));
-
-  // helpers to apply typed values back to picker
-  const applyHex = (val: string) => {
-    try {
-      const c = Color(val);
-      const [h, s, l] = c.hsl().array();
-      const a = typeof c.alpha() === "number" ? c.alpha() : 1;
-      setHue(Number.isFinite(h) ? h : hue);
-      setSaturation(Number.isFinite(s) ? s : saturation);
-      setLightness(Number.isFinite(l) ? l : lightness);
-      setAlpha((a ?? 1) * 100);
-      setMode("hex");
-    } catch (e) {
-      // ignore parse errors
-    }
-  };
-
-  const applyRgb = (vals: number[]) => {
-    try {
-      const c = Color.rgb(vals).alpha((localAlpha ?? alpha) / 100);
-      const [h, s, l] = c.hsl().array();
-      setHue(Number.isFinite(h) ? h : hue);
-      setSaturation(Number.isFinite(s) ? s : saturation);
-      setLightness(Number.isFinite(l) ? l : lightness);
-      setAlpha((c.alpha() ?? alpha / 100) * 100);
-      setMode("rgb");
-    } catch (e) {
-      // ignore
-    }
-  };
-
-  const applyCss = (val: string) => {
-    try {
-      const c = Color(val);
-      const [h, s, l] = c.hsl().array();
-      setHue(Number.isFinite(h) ? h : hue);
-      setSaturation(Number.isFinite(s) ? s : saturation);
-      setLightness(Number.isFinite(l) ? l : lightness);
-      setAlpha((c.alpha() ?? alpha / 100) * 100);
-      setMode("css");
-    } catch (e) {}
-  };
-
-  const applyHsl = (vals: number[]) => {
-    const [h, s, l] = vals;
-    if ([h, s, l].every((v) => !isNaN(Number(v)))) {
-      setHue(h);
-      setSaturation(s);
-      setLightness(l);
-      setMode("hsl");
-    }
-  };
 
   if (mode === "hex") {
     const hex = color.hex();
@@ -481,16 +377,11 @@ export const ColorPickerFormat = ({
       >
         <Input
           className="h-8 rounded-r-none bg-secondary px-2 text-xs shadow-none"
+          readOnly
           type="text"
-          value={localHex}
-          onChange={(e) => setLocalHex(e.target.value)}
-          onBlur={(e) => applyHex(e.target.value)}
+          value={hex}
         />
-        <PercentageInput
-          value={String(localAlpha)}
-          onChange={(e: any) => setLocalAlpha(Number(e.target.value))}
-          onBlur={() => setAlpha(localAlpha)}
-        />
+        <PercentageInput value={alpha} />
       </div>
     );
   }
@@ -509,7 +400,7 @@ export const ColorPickerFormat = ({
         )}
         {...(props as any)}
       >
-        {localRgb.map((value, index) => (
+        {rgb.map((value, index) => (
           <Input
             className={cn(
               "h-8 rounded-r-none bg-secondary px-2 text-xs shadow-none",
@@ -517,23 +408,12 @@ export const ColorPickerFormat = ({
               className
             )}
             key={index}
-            type="number"
-            min={0}
-            max={255}
+            readOnly
+            type="text"
             value={value}
-            onChange={(e) => {
-              const next = [...localRgb];
-              next[index] = Number(e.target.value);
-              setLocalRgb(next);
-            }}
-            onBlur={() => applyRgb(localRgb)}
           />
         ))}
-        <PercentageInput
-          value={String(localAlpha)}
-          onChange={(e: any) => setLocalAlpha(Number(e.target.value))}
-          onBlur={() => applyRgb(localRgb)}
-        />
+        <PercentageInput value={alpha} />
       </div>
     );
   }
@@ -551,10 +431,10 @@ export const ColorPickerFormat = ({
       >
         <Input
           className="h-8 w-full bg-secondary px-2 text-xs shadow-none"
+          readOnly
           type="text"
-          value={localCss}
-          onChange={(e) => setLocalCss(e.target.value)}
-          onBlur={(e) => applyCss(e.target.value)}
+          value={`rgba(${rgb.join(", ")}, ${alpha}%)`}
+          {...(props as any)}
         />
       </div>
     );
@@ -574,7 +454,7 @@ export const ColorPickerFormat = ({
         )}
         {...(props as any)}
       >
-        {localHsl.map((value, index) => (
+        {hsl.map((value, index) => (
           <Input
             className={cn(
               "h-8 rounded-r-none bg-secondary px-2 text-xs shadow-none",
@@ -582,21 +462,12 @@ export const ColorPickerFormat = ({
               className
             )}
             key={index}
-            type="number"
+            readOnly
+            type="text"
             value={value}
-            onChange={(e) => {
-              const next = [...localHsl];
-              next[index] = Number(e.target.value);
-              setLocalHsl(next);
-            }}
-            onBlur={() => applyHsl(localHsl)}
           />
         ))}
-        <PercentageInput
-          value={String(localAlpha)}
-          onChange={(e: any) => setLocalAlpha(Number(e.target.value))}
-          onBlur={() => applyHsl(localHsl)}
-        />
+        <PercentageInput value={alpha} />
       </div>
     );
   }
