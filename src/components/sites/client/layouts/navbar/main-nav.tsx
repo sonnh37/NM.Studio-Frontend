@@ -11,7 +11,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { MainNavItem } from "@/types";
 import { Album } from "@/types/entities/album";
 import { Category } from "@/types/entities/category";
 import { Service } from "@/types/entities/service";
@@ -21,7 +20,6 @@ import * as React from "react";
 import { ProductsCombobox } from "../../common/products-combobox";
 
 import MenuAnimationLink from "@/components/_common/hovers/menu-animation-link";
-import { TypographySmall } from "@/components/_common/typography/typography-small";
 import { Constants } from "@/lib/constants/constants";
 import Image from "next/image";
 import { AuthDropdown } from "./auth-dropdown";
@@ -29,9 +27,10 @@ import { UserContext } from "@/types/models/user-context";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
+import { TypographyMuted } from "@/components/_common/typography/typography-muted";
+import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 
 interface MainNavProps {
-  items?: MainNavItem[];
   user?: UserContext | null;
   categories: Category[];
   services: Service[];
@@ -39,7 +38,6 @@ interface MainNavProps {
 }
 
 export function MainNav({
-  items,
   user = null,
   categories = [],
   services = [],
@@ -47,12 +45,21 @@ export function MainNav({
 }: MainNavProps) {
   const isMobile = useIsMobile();
   const triggerClassName = "text-neutral-600 bg-transparent uppercase";
+  const categoryLinkClassName =
+    "block font-bold select-none p-3 pl-2 pb-1.5 space-y-1 rounded-md leading-none no-underline outline-hidden transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500";
+  const studioLinkClassName =
+    "from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-4 no-underline outline-hidden transition-all duration-200 select-none focus:shadow-md md:p-6";
+  const albumCardClassName =
+    "relative h-full isolate flex flex-col justify-end overflow-hidden rounded-none px-8 pb-8 pt-40";
+  const newsLinkClassName = cn(
+    navigationMenuTriggerStyle(),
+    "text-neutral-500 bg-transparent uppercase"
+  );
   return (
     <>
       <div className="hidden gap-6 lg:flex justify-between mx-auto w-full">
         <Link href="/" className="hidden items-center space-x-2 lg:flex">
           <Icons.logo aria-hidden="true" />
-          {/* <span className="hidden font-bold lg:inline-block">NHU MY</span> */}
         </Link>
         <NavigationMenu viewport={isMobile}>
           <NavigationMenuList className="flex-wrap">
@@ -64,10 +71,7 @@ export function MainNav({
                 <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
-                      <a
-                        className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-4 no-underline outline-hidden transition-all duration-200 select-none focus:shadow-md md:p-6"
-                        href="/"
-                      >
+                      <a className={studioLinkClassName} href="/">
                         <div className="mb-2 text-lg font-medium sm:mt-4">
                           Studio and Academic
                         </div>
@@ -85,7 +89,10 @@ export function MainNav({
                     Theo dõi chúng tôi trên Instagram để cập nhật các bức ảnh
                     mới nhất và các sự kiện thú vị.
                   </ListItem>
-                  <ListItem href={`${Constants.SOCIAL_FACEBOOK}`} title="Facebook">
+                  <ListItem
+                    href={`${Constants.SOCIAL_FACEBOOK}`}
+                    title="Facebook"
+                  >
                     Kết nối với chúng tôi trên Facebook để nhận thông tin và sự
                     kiện hấp dẫn.
                   </ListItem>
@@ -98,23 +105,23 @@ export function MainNav({
             </NavigationMenuItem>
 
             {/* Categories Section */}
+
             <NavigationMenuItem>
               <NavigationMenuTrigger className={cn(triggerClassName)}>
                 Váy cưới
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-2 sm:w-[400px] md:w-[500px] md:grid-cols-4 lg:w-[600px]">
+                <ul className="grid gap-8 sm:w-[400px] md:w-[600px] md:grid-cols-4 lg:w-[800px]">
                   {categories.map((category, index) => {
                     const path = `/products?categoryName=${category.name}`;
                     return (
                       <div key={index}>
-                        <MenuAnimationLink
-                          href={path}
-                          className="block font-bold select-none p-3 pl-2 pb-1.5 space-y-1 rounded-md  leading-none no-underline outline-hidden transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500"
-                        >
-                          {category.name}
-                        </MenuAnimationLink>
-                        <Separator />
+                        <Link href={path}>
+                          <TypographyH4 className="uppercase block text-base font-bold select-none p-3 pl-2 pb-1.5 space-y-1 rounded-md  leading-none no-underline outline-hidden transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500">
+                            {category.name}
+                          </TypographyH4>
+                        </Link>
+                        {/* <Separator /> */}
                         {category.subCategories?.map((subCategory) => (
                           <div key={subCategory.id}>
                             <ListItem
@@ -163,11 +170,11 @@ export function MainNav({
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-2 sm:w-[400px] md:w-[500px] sm:grid-cols-4 lg:w-[600px]">
-                  {albums!.map((album) => {
+                  {albums.map((album) => {
                     const path = "/albums/" + album.slug;
                     return (
                       <Link href={path} key={album.slug}>
-                        <div className="relative h-full isolate flex flex-col justify-end overflow-hidden rounded-none px-8 pb-8 pt-40">
+                        <div className={albumCardClassName}>
                           <motion.div
                             className="absolute inset-0 w-full overflow-hidden"
                             whileHover={{ scale: 1.1 }}
@@ -197,24 +204,13 @@ export function MainNav({
                     );
                   })}
                 </ul>
-                <div className={"w-full grid justify-end"}>
-                  <Button variant="link">
-                    {" "}
-                    <Link href="/albums">...Xem thêm</Link>
-                  </Button>
-                </div>
+                <ViewMoreButton href="/albums" />
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link
-                  href="/blogs"
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    "text-neutral-500 bg-transparent uppercase"
-                  )}
-                >
+                <Link href="/blogs" className={newsLinkClassName}>
                   Tin tức
                 </Link>
               </NavigationMenuLink>
@@ -223,10 +219,7 @@ export function MainNav({
         </NavigationMenu>
 
         <div className="hidden lg:flex items-center justify-end space-x-4 max-w-[255px]">
-          {/* <ModeToggle /> */}
           <ProductsCombobox />
-          {/* <CartSheet /> */}
-          {/* <LocaleSwitcher /> */}
           <AuthDropdown user={user} />
         </div>
       </div>
@@ -242,9 +235,37 @@ function ListItem({
 }: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
   return (
     <li {...props}>
+      <NavigationMenuLink className="hover:bg-transparent" asChild>
+        <Link href={href}>
+          <TypographyMuted className="leading-none uppercase transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500">
+            {title}
+          </TypographyMuted>
+          {children && (
+            <TypographyMuted className="text-muted-foreground uppercase line-clamp-2 text-sm leading-snug">
+              {children}
+            </TypographyMuted>
+          )}
+        </Link>
+      </NavigationMenuLink>
+    </li>
+  );
+}
+
+ListItem.displayName = "ListItem";
+
+function ListItemV2({
+  title,
+  children,
+  href,
+  ...props
+}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+  return (
+    <li {...props}>
       <NavigationMenuLink asChild>
         <Link href={href}>
-          <div className="text-sm leading-none font-medium">{title}</div>
+          <TypographyMuted className="leading-none uppercase">
+            {title}
+          </TypographyMuted>
           {children && (
             <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
               {children}
@@ -256,4 +277,14 @@ function ListItem({
   );
 }
 
-ListItem.displayName = "ListItem";
+ListItemV2.displayName = "ListItemV2";
+
+function ViewMoreButton({ href }: { href: string }) {
+  return (
+    <div className="w-full grid justify-end">
+      <Button variant="link">
+        <Link href={href}>...Xem thêm</Link>
+      </Button>
+    </div>
+  );
+}
