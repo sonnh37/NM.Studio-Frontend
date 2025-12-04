@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "**",
       },
+      {
+        protocol: "http",
+        hostname: "**",
+      },
     ],
   },
   sassOptions: {
@@ -15,15 +19,6 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
-
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "http://45.119.213.179:32772/:path*", // HTTP backend
-      },
-    ];
   },
 };
 
