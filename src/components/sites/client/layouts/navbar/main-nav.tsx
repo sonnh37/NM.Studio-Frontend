@@ -241,9 +241,9 @@ function ListItem({
             {title}
           </TypographyMuted>
           {children && (
-            <p className="text-muted-foreground uppercase line-clamp-2 text-sm leading-snug">
+            <TypographyMuted className="text-muted-foreground uppercase line-clamp-2 text-sm leading-snug">
               {children}
-            </p>
+            </TypographyMuted>
           )}
         </Link>
       </NavigationMenuLink>
