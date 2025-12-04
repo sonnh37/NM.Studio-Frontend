@@ -17,6 +17,7 @@ import { TypographyP } from "@/components/_common/typography/typography-p";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
 import { TypographyMuted } from "@/components/_common/typography/typography-muted";
 import { formatPrice, formatRangePrice } from "@/lib/utils/number-utils";
+import { LiquidGlassCard } from "@/components/liquid-glass";
 
 interface ProductCardProps {
   product: ProductPreview;
@@ -55,7 +56,26 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               />
             </Link>
           </motion.div>
-          <div className="absolute bottom-0 z-10 left-0 w-full bg-neutral-700 bg-opacity-70 py-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out">
+
+          <LiquidGlassCard
+            glowIntensity="sm"
+            shadowIntensity="sm"
+            borderRadius="0px"
+            blurIntensity="xl"
+            className="absolute bottom-0 left-0 w-full bg-neutral-700 bg-opacity-70 py-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"
+          >
+            <div className="relative z-30 w-full">
+              <Button
+                variant="link"
+                className="mx-auto block py-2 px-4 z-999 text-white font-bold"
+                onClick={() => handleOpenDialog(product)}
+              >
+                XEM NHANH
+              </Button>
+            </div>
+          </LiquidGlassCard>
+
+          {/* <div className="absolute bottom-0 z-10 left-0 w-full bg-neutral-700 bg-opacity-70 py-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out">
             <Button
               variant="link"
               className="mx-auto block py-2 px-4 text-white font-bold"
@@ -63,7 +83,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             >
               XEM NHANH
             </Button>
-          </div>
+          </div> */}
         </div>
         <div className="mt-4 flex justify-between items-center">
           <TypographyP>{product.name}</TypographyP>

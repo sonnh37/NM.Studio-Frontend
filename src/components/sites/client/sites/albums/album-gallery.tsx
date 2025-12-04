@@ -24,7 +24,7 @@ export function AlbumGallery() {
     error,
   } = useQuery({
     queryKey: ["fetchAlbum", slugString],
-    queryFn: async () => albumService.getBySlug(slugString),
+    queryFn: () => albumService.getBySlug(slugString),
     enabled: !!slugString,
     refetchOnWindowFocus: false,
   });

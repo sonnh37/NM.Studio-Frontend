@@ -46,7 +46,7 @@ import {
 import PostSharing from "@/components/_common/tiptaps_v2/shared/post-sharing";
 import ClampContent from "@/components/_common/clamp-content";
 import ClampFade from "@/components/_common/clamp-content";
-import {formatPrice, formatRangePrice} from "@/lib/utils/number-utils";
+import { formatPrice, formatRangePrice } from "@/lib/utils/number-utils";
 export default function Page() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [selectedColor, setSelectedColor] = useState<ProductVariant | null>(
@@ -82,7 +82,7 @@ export default function Page() {
   };
 
   const {
-    data: relateProducts = [] as Product[],
+    data: relateProducts = [] as ProductPreview[],
     isLoading: isRelateProductsLoading,
     isError: isRelateProductsError,
     error: error_,
@@ -138,79 +138,81 @@ export default function Page() {
   const sizes = variants.map((v) => v.size).filter((f) => f != undefined);
 
   return (
-    <div className="container md:px-52 py-8 mx-auto space-y-8">
-      <div className="grid grid-cols-1 gap-8">
+    <div className="container md:px-52 py-8 mx-auto space-y-8 ">
+      <div className="grid grid-cols-1 gap-8 w-fit ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Swiper */}
-          <div className="md:col-span-1 space-y-1">
-            <div className="bg-neutral-700">
-              <Swiper
-                style={
-                  {
-                    "--swiper-navigation-color": "#000", // Màu nút điều hướng
-                    "--swiper-pagination-color": "#000", // Màu chấm phân trang
-                    "--swiper-navigation-size": "20px",
-                  } as React.CSSProperties
-                }
-                className="w-[70%]! h-[70%]!"
-                loop={true}
-                spaceBetween={10}
-                navigation={true}
-                thumbs={{ swiper: thumbsSwiper }}
-                modules={[FreeMode, Navigation, Thumbs]}
-              >
-                {slides.map((pxp, index) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      alt={pxp.title ?? "N/A"}
-                      src={pxp.mediaUrl ?? "/image-notfound.png"}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-            <div className="hidden md:block">
-              <Swiper
-                onSwiper={setThumbsSwiper}
-                loop={true}
-                spaceBetween={5}
-                slidesPerView={1}
-                freeMode={true}
-                watchSlidesProgress={true}
-                modules={[FreeMode, Navigation, Thumbs]}
-                effect="fade"
-                breakpoints={{
-                  640: {
-                    slidesPerView: 1,
-                    slidesPerGroup: 1,
-                  },
-                  768: {
-                    slidesPerView: 2,
-                    slidesPerGroup: 2,
-                  },
-                  1024: {
-                    slidesPerView: 3,
-                    slidesPerGroup: 3,
-                  },
-                  1280: {
-                    slidesPerView: 4,
-                    slidesPerGroup: 4,
-                  },
-                }}
-              >
-                {slides.map((pxp, index) => (
-                  <SwiperSlide
-                    key={index}
-                    className="w-[25%] h-full opacity-40"
-                  >
-                    <img
-                      alt={pxp.title ?? "N/A"}
-                      src={pxp.mediaUrl ?? "/image-notfound.png"}
-                      className="w-full h-full object-cover"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+          <div className="md:col-span-1 ">
+            <div className="flex flex-col gap-2">
+              <div className="">
+                <Swiper
+                  style={
+                    {
+                      "--swiper-navigation-color": "#000", // Màu nút điều hướng
+                      "--swiper-pagination-color": "#000", // Màu chấm phân trang
+                      "--swiper-navigation-size": "20px",
+                    } as React.CSSProperties
+                  }
+                  className="w-[70%]! h-[70%]!"
+                  loop={true}
+                  spaceBetween={10}
+                  navigation={true}
+                  thumbs={{ swiper: thumbsSwiper }}
+                  modules={[FreeMode, Navigation, Thumbs]}
+                >
+                  {slides.map((pxp, index) => (
+                    <SwiperSlide key={index}>
+                      <img
+                        alt={pxp.title ?? "N/A"}
+                        src={pxp.mediaUrl ?? "/image-notfound.png"}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+              <div className="hidden md:block">
+                <Swiper
+                  onSwiper={setThumbsSwiper}
+                  loop={true}
+                  spaceBetween={5}
+                  slidesPerView={1}
+                  freeMode={true}
+                  watchSlidesProgress={true}
+                  modules={[FreeMode, Navigation, Thumbs]}
+                  effect="fade"
+                  breakpoints={{
+                    640: {
+                      slidesPerView: 1,
+                      slidesPerGroup: 1,
+                    },
+                    768: {
+                      slidesPerView: 2,
+                      slidesPerGroup: 2,
+                    },
+                    1024: {
+                      slidesPerView: 3,
+                      slidesPerGroup: 3,
+                    },
+                    1280: {
+                      slidesPerView: 4,
+                      slidesPerGroup: 4,
+                    },
+                  }}
+                >
+                  {slides.map((pxp, index) => (
+                    <SwiperSlide
+                      key={index}
+                      className="w-[25%] h-full opacity-40"
+                    >
+                      <img
+                        alt={pxp.title ?? "N/A"}
+                        src={pxp.mediaUrl ?? "/image-notfound.png"}
+                        className="w-full h-full object-cover"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
             </div>
           </div>
           {/* Info */}

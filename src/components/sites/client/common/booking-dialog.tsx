@@ -2,6 +2,7 @@
 import { ButtonLoading } from "@/components/_common/button-loading";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
+import { LiquidGlassCard } from "@/components/liquid-glass";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -105,42 +106,56 @@ export function BookingDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <span>
-          <IoCameraOutline className="text-[#FFF] cursor-pointer text-[35px]" />
+          <div className="relative z-30 w-full">
+            <IoCameraOutline className="text-[#FFF] cursor-pointer text-[35px]" />
+          </div>
         </span>
       </DialogTrigger>
 
+      {/* <DialogContent className="bg-transparent border-none shadow-none w-full sm:max-w-[500px] md:max-w-2xl mx-auto "> */}
       <DialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl sm:max-w-[500px] md:max-w-2xl max-h-[90vh] overflow-y-auto">
+        {/* <LiquidGlassCard
+          draggable={false}
+          glowIntensity="sm"
+          shadowIntensity="sm"
+          borderRadius="12px"
+          blurIntensity="sm"
+          className="p-8 text-background"
+        >
+          <div className="relative z-30 w-full">
+          
+          </div>
+        </LiquidGlassCard> */}
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid grid-cols-1 gap-6"
           >
-            <DialogHeader className="text-center pb-4 border-b border-gray-100 dark:border-gray-800">
-              <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                  <IoCameraOutline className="w-8 h-8 text-gray-600 dark:text-gray-300" />
+            <DialogHeader className="text-center pb-4">
+              <div className="flex justify-center mb-2">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center">
+                  <IoCameraOutline className="w-8 h-8 " />
                 </div>
               </div>
 
-              <DialogTitle className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+              <DialogTitle className="text-2xl font-semibold">
                 Đặt lịch chụp ảnh
               </DialogTitle>
 
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed">
                 Vui lòng điền thông tin để{" "}
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  Như My Studio
-                </span>{" "}
-                có thể liên hệ và tư vấn cho bạn.
+                <span className="font-semibold">Như My Studio</span> có thể liên
+                hệ và tư vấn cho bạn.
               </p>
             </DialogHeader>
 
             <div className="grid grid-cols-1 gap-4">
               {/* Date Selection */}
               <div className="grid grid-cols-1 gap-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-lg font-medium  flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className="w-5 h-5 "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -163,9 +178,9 @@ export function BookingDialog() {
 
               {/* Personal Information */}
               <div className="grid grid-cols-1 gap-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-lg font-medium flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className="w-5 h-5 "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -200,13 +215,14 @@ export function BookingDialog() {
                   name="customerEmail"
                   label="Email (tùy chọn)"
                   placeholder="email@example.com"
+                  className="placeholder-white"
                 />
               </div>
 
               {/* Service Selection */}
               <div className="grid grid-cols-1 gap-2">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
-                  <IoCameraOutline className="w-5 h-5 text-gray-500" />
+                <h3 className="text-lg font-medium  flex items-center gap-2">
+                  <IoCameraOutline className="w-5 h-5 " />
                   Dịch vụ chụp ảnh
                 </h3>
                 <FormSelectObject
