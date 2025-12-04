@@ -5,7 +5,7 @@ import EditForm from "../_components/EditForm";
 
 import "./style.scss";
 import { useRouter } from "next/navigation";
-import PostPage from "../../post-csr/page";
+// import PostPage from "../../post-csr/page";
 
 export default function EditPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function EditPage() {
       <Button onClick={() => router.push("/")}>Back</Button>
       <EditForm />
 
-      <PostPage />
+      {/* <PostPage /> */}
     </div>
   );
 }
