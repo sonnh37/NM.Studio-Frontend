@@ -1,6 +1,5 @@
 "use client";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { getWordCount } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { Blog } from "@/types/entities/blog";
@@ -10,11 +9,12 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import PostContent from "@/components/_common/tiptaps_v2/shared/post-content";
 import PostHeader from "@/components/_common/tiptaps_v2/shared/post-header";
 import PostSharing from "@/components/_common/tiptaps_v2/shared/post-sharing";
-import PostToc from "@/components/_common/tiptaps_v2/shared/post-toc";
+import { PostToc } from "@/components/_common/tiptaps_v2/shared/post-toc";
 import PostReadingProgress from "@/components/_common/tiptaps_v2/shared/reading-progress";
 import TiptapRenderer from "@/components/_common/tiptaps_v2/tiptap-renderer/client-renderer";
 import { usePost } from "@/hooks/tiptaps_v2/use-post";
 import { useMemo, use } from "react";
+import {getWordCount} from "@/lib/utils/rich-editor-utils";
 
 export default function Page(props: { params: Promise<{ slug: string }> }) {
   const params = use(props.params);

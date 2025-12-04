@@ -24,7 +24,7 @@ import ConfirmationDialog, {
   FormInputDateTimePicker,
   FormInputTextArea,
   FormSwitch,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 import { Album } from "@/types/entities/album";
 import {
   AlbumCreateCommand,

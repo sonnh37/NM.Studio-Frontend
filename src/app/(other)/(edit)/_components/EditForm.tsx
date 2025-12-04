@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
-import { getPost, savePost } from "@/services/post";
+// import { getPost, savePost } from "@/services/post";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import TiptapEditor, {
   TiptapEditorRef,

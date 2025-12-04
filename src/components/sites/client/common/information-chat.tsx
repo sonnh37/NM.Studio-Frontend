@@ -6,7 +6,7 @@ import { SiZalo } from "react-icons/si";
 import { LiaFacebookMessenger } from "react-icons/lia";
 import { BookingDialog } from "@/components/sites/client/common/booking-dialog";
 import { AnimatePresence, motion } from "framer-motion";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 
 const InformationChat = () => {
   const isOpen = useSelector((state: RootState) => state.chat.isOpen);
@@ -28,7 +28,7 @@ const InformationChat = () => {
           </div>
           <div className="bg-neutral-500 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
             <a
-              href={`tel:${Const.TELEPHONE}`}
+              href={`tel:${Constants.TELEPHONE}`}
               className="btn-gallery"
               target="_blank"
             >
@@ -37,7 +37,7 @@ const InformationChat = () => {
           </div>
           <div className="bg-neutral-500 rounded-[50px] text-[30px] my-[5px] size-[50px] md:size-[50px] flex items-center justify-center">
             <a
-              href={`https://zalo.me/${Const.TELEPHONE}`}
+              href={`https://zalo.me/${Constants.TELEPHONE}`}
               className="btn-gallery"
               target="_blank"
             >

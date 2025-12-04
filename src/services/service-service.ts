@@ -1,4 +1,4 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import {
   ServiceCreateCommand,
@@ -13,7 +13,7 @@ import { mediaUploadService } from "./media-upload-service";
 
 class ServiceService extends BaseService<Service> {
   constructor() {
-    super(`${Const.SERVICES}`);
+    super(`${Constants.SERVICES}`);
   }
 }
 

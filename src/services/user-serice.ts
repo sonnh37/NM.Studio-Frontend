@@ -1,4 +1,4 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import {
   UserCreateCommand,
@@ -12,7 +12,7 @@ import { UserContext } from "@/types/models/user-context";
 
 class UserService extends BaseService<User> {
   constructor() {
-    super(Const.USERS);
+    super(Constants.USERS);
   }
 
   async getUserByContext(): Promise<BusinessResult<UserContext>> {

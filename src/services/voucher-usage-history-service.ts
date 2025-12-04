@@ -1,10 +1,10 @@
 import {VoucherUsageHistory} from "@/types/entities/voucher-usage-history";
 import {BaseService} from "./base/base-service";
-import {Const} from "@/lib/constants/const";
+import {Constants} from "@/lib/constants/constants";
 
 class VoucherUsageHistoryService extends BaseService<VoucherUsageHistory> {
     constructor() {
-        super(`${Const.VOUCHER_USAGE_HISTORIES}`);
+        super(`${Constants.VOUCHER_USAGE_HISTORIES}`);
     }
 }
 

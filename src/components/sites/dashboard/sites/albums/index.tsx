@@ -32,7 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { cn, formatDate, getDefaultFormFilterValues } from "@/lib/utils";
+import { cn, getDefaultFormFilterValues } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { mediaBaseService } from "@/services/media-base-service";
 import { mediaUploadService } from "@/services/media-upload-service";
@@ -43,7 +43,7 @@ import {
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { Album } from "@/types/entities/album";
 import { BaseEntity } from "@/types/entities/base/base";
-import { MediaBase, MediaBaseType } from "@/types/entities/media-base";
+import { MediaBase, ResourceType } from "@/types/entities/media-base";
 import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { Status } from "@/types/models/business-result";
@@ -67,6 +67,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { formatDate } from "@/lib/utils/date-utils";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
@@ -363,14 +364,14 @@ interface AlbumDialogProps {
 interface MediaBaseState extends BaseEntity {
   displayName?: string;
   title?: string;
-  mimeType?: string;
+  format?: string;
   size: number;
   width?: number;
   height?: number;
   mediaUrl?: string;
   createdMediaBy?: string;
   takenMediaDate?: string;
-  mediaBaseType: MediaBaseType;
+  resourceType: ResourceType;
   file?: File;
 }
 
@@ -386,7 +387,6 @@ export function AlbumDialog({
   const [defaultImages, setDefaultImages] = useState<MediaBaseState[]>([]);
   const [hasChange, setHasChange] = useState(false);
   const [coverImage, setCoverImage] = useState<MediaBaseState | null>(null);
-  console.log("check_cover", album);
   useEffect(() => {
     const fetchImages = async () => {
       if (album?.albumImages) {
@@ -466,12 +466,12 @@ export function AlbumDialog({
         id: Date.now().toString(),
         title: file.name,
         displayName: file.name,
-        mimeType: file.type,
+        format: file.type,
         size: file.size,
         mediaUrl: URL.createObjectURL(file),
         createdDate: new Date().toUTCString(),
         file,
-        mediaBaseType: MediaBaseType.Image,
+        resourceType: ResourceType.Image,
         isDeleted: false,
       };
 

@@ -3,7 +3,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import { AnimatedTestimonialsPhotos } from "@/components/sites/client/common/animated-testimonials-photos";
 
-import { convertToISODate } from "@/lib/utils";
+import { convertToISODate } from "@/lib/utils/date-utils";
 import { albumService } from "@/services/album-service";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
 import { MediaBase } from "@/types/entities/media-base";

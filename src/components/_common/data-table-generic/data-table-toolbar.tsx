@@ -3,12 +3,17 @@ import { Input } from "@/components/ui/input";
 
 import { FilterEnum } from "@/types/filter-enum";
 import { Table } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import { SearchIcon, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CSVLink } from "react-csv";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
@@ -31,13 +36,18 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center gap-2">
         <>
           {columnSearch && columnTableSearch ? (
-            <Input
-              placeholder={`Enter ${columnSearch}...`}
-              value={(columnTableSearch.getFilterValue?.() ?? "") as string}
-              onChange={(e) =>
-                columnTableSearch.setFilterValue?.(e.target.value)
-              }
-            />
+            <InputGroup className="w-fit">
+              <InputGroupInput
+                placeholder="Search..."
+                value={(columnTableSearch.getFilterValue?.() ?? "") as string}
+                onChange={(e) =>
+                  columnTableSearch.setFilterValue?.(e.target.value)
+                }
+              />
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+            </InputGroup>
           ) : null}
           {filterEnums &&
             filterEnums.map((filter: any) => {

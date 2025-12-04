@@ -2,8 +2,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import { Button } from "@/components/ui/button";
-import { Const } from "@/lib/constants/const";
-import { convertHtmlToPlainText } from "@/lib/utils";
+import { Constants } from "@/lib/constants/constants";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +10,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
 
 export function Blog() {
   const router = useRouter();
@@ -120,7 +120,7 @@ export function Blog() {
           </div>
           <div className="flex pt-5 justify-center">
             <button
-              onClick={() => router.push(Const.BLOGS)}
+              onClick={() => router.push(Constants.BLOGS)}
               className="border-2 border-neutral-300 text-neutral-500 px-12 py-4 rounded-none tracking-widest uppercase bg-transparent hover:bg-neutral-500 hover:text-white dark:text-neutral-200 transition duration-200"
             >
               Xem thêm

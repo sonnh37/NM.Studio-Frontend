@@ -3,7 +3,7 @@ import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 import { TypographyLarge } from "@/components/_common/typography/typography-large";
 import { TypographyList } from "@/components/_common/typography/typography-list";
 import { TypographyP } from "@/components/_common/typography/typography-p";
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import Link from "next/link";
 
 function Footer() {
@@ -16,21 +16,21 @@ function Footer() {
           </TypographyH2>
           <TypographyList className="text-white mb-4">
             <li>
-              <Link href={`${Const.SOCIAL_FACEBOOK}`}>
+              <Link href={`${Constants.SOCIAL_FACEBOOK}`}>
                 <span className="text-neutral-300 hover:text-white">
                   Facebook
                 </span>
               </Link>
             </li>
             <li>
-              <Link href={`${Const.SOCIAL_INSTAGRAM}`}>
+              <Link href={`${Constants.SOCIAL_INSTAGRAM}`}>
                 <span className="text-neutral-300 hover:text-white">
                   Instagram
                 </span>
               </Link>
             </li>
             <li>
-              <Link href={`${Const.SOCIAL_TIKTOK}`}>
+              <Link href={`${Constants.SOCIAL_TIKTOK}`}>
                 <span className="text-neutral-300 hover:text-white">
                   Tiktok
                 </span>

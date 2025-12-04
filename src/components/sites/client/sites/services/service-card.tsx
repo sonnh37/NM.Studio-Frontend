@@ -1,9 +1,9 @@
-import { convertHtmlToPlainText } from "@/lib/utils";
 import { Service } from "@/types/entities/service";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
 interface ServiceCardProps {
   service: Service;
 }

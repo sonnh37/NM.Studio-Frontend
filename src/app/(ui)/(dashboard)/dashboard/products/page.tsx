@@ -1,13 +1,11 @@
 "use client";
 
-import DataTableProducts from "@/components/sites/dashboard/sites/products";
+import ProductTableNoReactTable from "@/components/sites/dashboard/sites/products/index/index2";
 
 export default function Page() {
-    return (
-        <div className="space-y-6">
-            <DataTableProducts/>
-        </div>
-    );
+  return (
+    <div className="space-y-6">
+      <ProductTableNoReactTable />
+    </div>
+  );
 }
-
-

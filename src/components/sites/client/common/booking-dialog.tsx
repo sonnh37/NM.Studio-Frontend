@@ -19,7 +19,7 @@ import {
   FormInputDateTimePickerV2,
   FormInputDateTimePickerV3,
   FormSelectObject,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
 import { ServiceBookingCreateCommand } from "@/types/cqrs/commands/service-booking-command";
@@ -109,7 +109,7 @@ export function BookingDialog() {
         </span>
       </DialogTrigger>
 
-      <DialogContent className="z-101 shadow-lg sm:max-w-[425px] md:max-w-xl">
+      <DialogContent className="shadow-lg sm:max-w-[425px] md:max-w-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <DialogHeader>

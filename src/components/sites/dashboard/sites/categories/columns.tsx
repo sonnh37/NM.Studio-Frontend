@@ -21,7 +21,8 @@ import { Category } from "@/types/entities/category";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
+
+import {formatDate} from "@/lib/utils/date-utils";
 export const columns: ColumnDef<Category>[] = [
   {
     accessorKey: "select",

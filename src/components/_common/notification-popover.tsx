@@ -7,9 +7,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { User } from "@/types/entities/user";
-import { Bell, BellDot, Check, Mail, MoreHorizontal, Pin, Trash2, Users } from "lucide-react";
+import {
+  Bell,
+  BellDot,
+  Check,
+  Mail,
+  MoreHorizontal,
+  Pin,
+  Trash2,
+  Users,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +37,7 @@ import { Badge } from "../ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { formatDateWithTime } from "@/lib/utils/date-utils";
 import { notificationService } from "@/services/notification-service";
 import { Notification } from "@/types/notification";
 import { NotificationType } from "@/types/enums/notification";
@@ -36,6 +46,7 @@ import { NotificationGetAllByCurrentUserQuery } from "@/types/models/queries/not
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { UserContext } from "@/types/models/user-context";
+import { formatDate } from "@/lib/utils/date-utils";
 
 interface NotificationPopoverProps {
   user?: UserContext | null;
@@ -50,7 +61,7 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
     pageSize: 10,
     isPagination: true,
   };
-  
+
   const res = useNotification(query);
   const notifications = res.notifications || [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -84,11 +95,7 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button 
-          variant="outline"
-          size="icon" 
-          className="relative"
-        >
+        <Button variant="outline" size="icon" className="relative">
           {unreadCount > 0 ? (
             <BellDot className="h-5 w-5" strokeWidth={1.75} />
           ) : (
@@ -105,26 +112,24 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
           <span className="sr-only">Thông báo</span>
         </Button>
       </PopoverTrigger>
-      
-      <PopoverContent 
-        className="w-[400px] p-0 rounded-xl shadow-lg border" 
-        align="end" 
+
+      <PopoverContent
+        className="w-[400px] p-0 rounded-xl shadow-lg border"
+        align="end"
         forceMount
       >
         <div className="grid gap-0">
           {/* Header */}
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <TypographyH3 className="font-semibold">
-                Thông báo
-              </TypographyH3>
+              <TypographyH3 className="font-semibold">Thông báo</TypographyH3>
               {unreadCount > 0 && (
                 <Badge variant="secondary" className="px-2 py-0.5">
                   {unreadCount} mới
                 </Badge>
               )}
             </div>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -141,10 +146,18 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
           {/* Tabs */}
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="grid w-full grid-cols-4 h-10 rounded-none bg-background px-4">
-              <TabsTrigger value="all" className="py-1 h-8">Tất cả</TabsTrigger>
-              <TabsTrigger value="system" className="py-1 h-8">Hệ thống</TabsTrigger>
-              <TabsTrigger value="team" className="py-1 h-8">Nhóm</TabsTrigger>
-              <TabsTrigger value="unread" className="py-1 h-8">Chưa đọc</TabsTrigger>
+              <TabsTrigger value="all" className="py-1 h-8">
+                Tất cả
+              </TabsTrigger>
+              <TabsTrigger value="system" className="py-1 h-8">
+                Hệ thống
+              </TabsTrigger>
+              <TabsTrigger value="team" className="py-1 h-8">
+                Nhóm
+              </TabsTrigger>
+              <TabsTrigger value="unread" className="py-1 h-8">
+                Chưa đọc
+              </TabsTrigger>
             </TabsList>
 
             <ScrollArea className="h-[400px] w-full">
@@ -162,8 +175,12 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
                       <NotificationItem
                         key={noti.id}
                         noti={noti}
-                        onMarkAsRead={() => noti.id && markAsReadMutation.mutate(noti.id)}
-                        onDelete={() => noti.id && deleteMutation.mutate(noti.id)}
+                        onMarkAsRead={() =>
+                          noti.id && markAsReadMutation.mutate(noti.id)
+                        }
+                        onDelete={() =>
+                          noti.id && deleteMutation.mutate(noti.id)
+                        }
                       />
                     ))}
                   </TabsContent>
@@ -174,8 +191,12 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
                         <NotificationItem
                           key={noti.id}
                           noti={noti}
-                          onMarkAsRead={() => noti.id && markAsReadMutation.mutate(noti.id)}
-                          onDelete={() => noti.id && deleteMutation.mutate(noti.id)}
+                          onMarkAsRead={() =>
+                            noti.id && markAsReadMutation.mutate(noti.id)
+                          }
+                          onDelete={() =>
+                            noti.id && deleteMutation.mutate(noti.id)
+                          }
                         />
                       ))}
                   </TabsContent>
@@ -186,8 +207,12 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
                         <NotificationItem
                           key={noti.id}
                           noti={noti}
-                          onMarkAsRead={() => noti.id && markAsReadMutation.mutate(noti.id)}
-                          onDelete={() => noti.id && deleteMutation.mutate(noti.id)}
+                          onMarkAsRead={() =>
+                            noti.id && markAsReadMutation.mutate(noti.id)
+                          }
+                          onDelete={() =>
+                            noti.id && deleteMutation.mutate(noti.id)
+                          }
                         />
                       ))}
                   </TabsContent>
@@ -198,8 +223,12 @@ export function NotificationPopover({ user = null }: NotificationPopoverProps) {
                         <NotificationItem
                           key={noti.id}
                           noti={noti}
-                          onMarkAsRead={() => noti.id && markAsReadMutation.mutate(noti.id)}
-                          onDelete={() => noti.id && deleteMutation.mutate(noti.id)}
+                          onMarkAsRead={() =>
+                            noti.id && markAsReadMutation.mutate(noti.id)
+                          }
+                          onDelete={() =>
+                            noti.id && deleteMutation.mutate(noti.id)
+                          }
                         />
                       ))}
                   </TabsContent>
@@ -252,19 +281,20 @@ function NotificationItem({
     <div
       className={cn(
         "flex items-start gap-3 p-4 hover:bg-accent transition-colors",
-        !noti.notificationXUsers.filter(x => x.notificationId)[0].isRead && "bg-blue-50/50 dark:bg-blue-900/10"
+        !noti.notificationXUsers.filter((x) => x.notificationId)[0].isRead &&
+          "bg-blue-50/50 dark:bg-blue-900/10"
       )}
     >
-      <div className="mt-0.5 shrink-0">
-        {getNotificationIcon()}
-      </div>
+      <div className="mt-0.5 shrink-0">{getNotificationIcon()}</div>
 
       <div className="flex-1 min-w-0 space-y-1">
-        <TypographySmall className={cn("line-clamp-2", !noti.isRead && "font-medium")}>
+        <TypographySmall
+          className={cn("line-clamp-2", !noti.isRead && "font-medium")}
+        >
           {noti.description}
         </TypographySmall>
         <TypographyMuted className="text-xs">
-          {formatDate(noti.createdDate, true)}
+          {formatDateWithTime(noti.createdDate)}
         </TypographyMuted>
       </div>
 
@@ -277,8 +307,8 @@ function NotificationItem({
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
-            onClick={onMarkAsRead} 
+          <DropdownMenuItem
+            onClick={onMarkAsRead}
             disabled={noti.isRead}
             className="gap-2"
           >
@@ -291,8 +321,8 @@ function NotificationItem({
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           {noti.type !== NotificationType.Team && (
-            <DropdownMenuItem 
-              onClick={onDelete} 
+            <DropdownMenuItem
+              onClick={onDelete}
               className="gap-2 text-destructive"
             >
               <Trash2 className="h-4 w-4" />

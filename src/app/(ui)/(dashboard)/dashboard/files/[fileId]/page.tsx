@@ -1,13 +1,13 @@
 "use client";
-import { MediaBase } from "@/types/entities/media-file";
 import { useEffect, useState } from "react";
-import { mediaBaseService } from "@/services/image-service";
 import { toast } from "sonner";
-import { PhotoForm } from "@/components/sites/dashboard/sites/media-files/create-update-form";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 import ErrorSystem from "@/components/_common/errors/error-system";
+import { MediaBaseForm } from "@/components/sites/dashboard/sites/media-files/create-update-form";
+import { mediaBaseService } from "@/services/media-base-service";
+import { MediaBase } from "@/types/entities/media-base";
 
 export default function Page() {
   const params = useParams();
@@ -34,7 +34,7 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
-      <PhotoForm initialData={data} />
+      <MediaBaseForm initialData={data} />
     </div>
   );
 }

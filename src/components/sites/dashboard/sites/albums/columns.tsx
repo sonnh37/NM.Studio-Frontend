@@ -18,11 +18,11 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { CircleDashed, MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { formatDate, formatDateWithTime } from "@/lib/utils/date-utils";
 
 export const columns: ColumnDef<Album>[] = [
   {
@@ -93,7 +93,7 @@ export const columns: ColumnDef<Album>[] = [
     ),
     cell: ({ row }) => {
       if (!row.original.eventDate) return "-";
-      return formatDate(row.original.eventDate, true);
+      return formatDateWithTime(row.original.eventDate);
     },
   },
   {
@@ -125,7 +125,7 @@ export const columns: ColumnDef<Album>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Public" />
     ),
-    
+
     enableColumnFilter: true,
   },
   {

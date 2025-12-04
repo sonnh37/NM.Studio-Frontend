@@ -1,6 +1,5 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import { cleanQueryParams } from "@/lib/utils";
 import {
   AlbumSetCoverUpdateCommand,
   AlbumWithImagesCreateCommand,
@@ -9,9 +8,11 @@ import { Album } from "@/types/entities/album";
 import { BusinessResult } from "@/types/models/business-result";
 import { BaseService } from "./base/base-service";
 
+import {cleanQueryParams} from "@/lib/utils/query-param-utils";
+
 class AlbumService extends BaseService<Album> {
   constructor() {
-    super(`${Const.ALBUMS}`);
+    super(`${Constants.ALBUMS}`);
   }
   async getBySlug(slug: string): Promise<BusinessResult<Album>> {
     const cleanedQuery = cleanQueryParams({ slug });

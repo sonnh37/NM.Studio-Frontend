@@ -44,7 +44,9 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { cn, formatCurrency, formatDate } from "@/lib/utils";
+import { EnumOption } from "@/lib/utils/enum-utils";
+import { formatDate } from "@/lib/utils/date-utils";
+import { cn } from "@/lib/utils";
 import postService from "@/services/post";
 import { addDays, format } from "date-fns";
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
@@ -68,6 +70,7 @@ import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor
 import TiptapEditor, {
   TiptapEditorRef,
 } from "@/components/_common/tiptaps_v2/tiptap-editor";
+import { formatCurrency } from "./format-currency";
 
 // const Editor = dynamic(
 //   () => import("@/components/_common/react-tiptap-editor/editor")
@@ -390,7 +393,7 @@ interface FormSelectEnumProps<TFieldValues extends FieldValues> {
   name: FieldPath<TFieldValues>;
   description?: string;
   form: UseFormReturn<TFieldValues>;
-  enumOptions: { label: string; value: number | string }[]; // Các tùy chọn enum
+  enumOptions: EnumOption[];
   placeholder?: string;
   disabled?: boolean;
   default?: boolean;
@@ -974,7 +977,7 @@ export const FormInputDateTimePicker = <TFieldValues extends FieldValues>({
                     )}
                   >
                     {field.value ? (
-                      `${formatDate(field.value, false)}${
+                      `${formatDate(field.value)}${
                         isShowTimePicker ? ", " + time : ""
                       }`
                     ) : (
@@ -1327,7 +1330,7 @@ interface ConfirmationDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onConfirm: () => void;
-  onClose: () => void;
+  onClose?: () => void;
   title: string;
   description: string;
   confirmText: string;

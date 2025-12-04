@@ -1,8 +1,8 @@
 import { BusinessResult, Status } from "@/types/models/business-result";
 import { RefreshTokenResult } from "@/types/models/token-result";
 import axios from "axios";
-import { tokenHelper } from "../helpers/token-helper";
-import { userContextHelper } from "../helpers/user-context-helper";
+import { tokenHelper } from "../utils/token-helper";
+import { userContextHelper } from "../utils/user-context-helper";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE + "/api",

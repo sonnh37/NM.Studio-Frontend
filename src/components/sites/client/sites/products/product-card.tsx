@@ -1,8 +1,8 @@
 "use client";
 
 import { productService } from "@/services/product-service";
-import { Product } from "@/types/entities/product";
-import { ProductGetAllQuery } from "@/types/queries/product-query";
+import { Product, ProductPreview } from "@/types/entities/product";
+import { ProductGetAllQuery } from "@/types/cqrs/queries/product-query";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -15,11 +15,11 @@ import { ProductDialog } from "./product-dialog";
 import Link from "next/link";
 import { TypographyP } from "@/components/_common/typography/typography-p";
 import { TypographySmall } from "@/components/_common/typography/typography-small";
-import { formatPrice } from "@/lib/utils";
 import { TypographyMuted } from "@/components/_common/typography/typography-muted";
+import { formatPrice, formatRangePrice } from "@/lib/utils/number-utils";
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductPreview;
 }
 export const ProductCard = ({ product }: ProductCardProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -48,14 +48,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             <Link href={productLink}>
               <Image
                 className="aspect-2/3 bg-gray-200 rounded-md object-cover"
-                alt={product.name!}
-                src={
-                  product.productMedias!.length > 0 &&
-                  product.productMedias![0].mediaBase
-                    ? product.productMedias![0].mediaBase.src ??
-                      "/image-notfound.png"
-                    : "/image-notfound.png"
-                }
+                alt={product.name}
+                src={product.thumbnail?.mediaUrl ?? "/image-notfound.png"}
                 width={9999}
                 height={9999}
               />
@@ -75,30 +69,34 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <TypographyP>{product.name}</TypographyP>
 
           <TypographyMuted>
-            {product.price ? formatPrice(product.price) : "Đang cập nhật"}
+            {product.minPrice && product.maxPrice
+              ? formatRangePrice(product.minPrice, product.maxPrice)
+              : "Liên hệ"}
           </TypographyMuted>
         </div>
         <div className="flex">
           <RadioGroup className="flex flex-row space-x-1" disabled>
-            {product.productVariants?.map((pxc) => (
+            {product.variants?.map((pxc) => (
               <div key={pxc.id}>
-                <RadioGroupItem
+                {/* <RadioGroupItem
                   value={pxc.color?.name as string}
                   id={pxc.color?.id}
                   className="h-4 w-4 border-none rounded-full pointer-events-none"
                   style={{ backgroundColor: pxc.color?.name as string }}
                   disabled
-                />
+                /> */}
               </div>
             ))}
           </RadioGroup>
         </div>
       </div>
-      <ProductDialog
-        product={selectedProduct as Product}
-        open={open}
-        setOpen={setOpen}
-      />
+      {selectedProduct && (
+        <ProductDialog
+          productId={selectedProduct.id}
+          open={open}
+          setOpen={setOpen}
+        />
+      )}
     </>
   );
 };

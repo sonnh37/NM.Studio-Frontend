@@ -20,8 +20,8 @@ import { TypographyH3 } from "@/components/_common/typography/typography-h3";
 import { TypographyH4 } from "@/components/_common/typography/typography-h4";
 import { TypographyMuted } from "@/components/_common/typography/typography-muted";
 import { Status } from "@/types/models/business-result";
-import { tokenHelper } from "@/lib/helpers/token-helper";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { tokenHelper } from "@/lib/utils/token-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 import { Role } from "@/types/entities/user";
 
 const emailSchema = z.string().email("Email không hợp lệ");

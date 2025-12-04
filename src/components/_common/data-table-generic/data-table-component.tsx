@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCommonPinningStyles } from "@/lib/data-table";
+import { getCommonPinningStyles } from "@/lib/utils/data-table";
 import {
   DeleteCommand,
   UpdateCommand,
@@ -95,10 +95,7 @@ export function DataTableComponent<TData>({
   };
 
   return (
-    <div
-      className={cn("flex w-full flex-col gap-2.5 overflow-auto", className)}
-      {...props}
-    >
+    <div className={cn("flex w-full flex-col gap-2.5", className)} {...props}>
       {children}
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -170,7 +167,7 @@ export function DataTableComponent<TData>({
                           ...getCommonPinningStyles({ column: cell.column }),
                           opacity: isDeleted ? 0.5 : 1,
                         }}
-                       className="px-4 py-3 text-sm"
+                        className="px-4 py-3 text-sm"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -179,21 +176,34 @@ export function DataTableComponent<TData>({
                       </TableCell>
                     ))}
                     {isDeleted && (
-                      <div className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center gap-1 bg-white/50 opacity-0 hover:opacity-100 dark:bg-black/50">
-                        <Button
-                          type="button"
-                          onClick={() => handleRestore(model)}
-                        >
-                          Restore
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={"destructive"}
-                          onClick={() => handleDeletePermanentFuncly(model.id)}
-                        >
-                          Delete Permanently
-                        </Button>
-                      </div>
+                      <TableCell
+                        colSpan={row.getVisibleCells().length}
+                        className="p-0! m-0! border-0! bg-transparent relative z-10"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          height: "100%",
+                          background: "transparent",
+                        }}
+                      >
+                        <div className="pointer-events-auto flex h-full w-full items-center justify-center gap-1 bg-white/50 opacity-0 hover:opacity-100 dark:bg-black/50 absolute inset-0">
+                          <Button
+                            type="button"
+                            onClick={() => handleRestore(model)}
+                          >
+                            Restore
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={"destructive"}
+                            onClick={() =>
+                              handleDeletePermanentFuncly(model.id)
+                            }
+                          >
+                            Delete Permanently
+                          </Button>
+                        </div>
+                      </TableCell>
                     )}
 
                     {id.toLocaleLowerCase() == q?.toLocaleLowerCase() && (
