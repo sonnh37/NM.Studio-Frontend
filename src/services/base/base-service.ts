@@ -1,5 +1,4 @@
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import { cleanQueryParams } from "@/lib/utils";
 import {
   CreateCommand,
   DeleteCommand,
@@ -8,6 +7,8 @@ import {
 import { GetQueryableQuery } from "@/types/cqrs/queries/base/base-query";
 import { BusinessResult } from "@/types/models/business-result";
 import { QueryResult } from "@/types/models/query-result";
+
+import {cleanQueryParams} from "@/lib/utils/query-param-utils";
 
 export class BaseService<TEntity> {
   public endpoint: string;

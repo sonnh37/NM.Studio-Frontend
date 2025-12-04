@@ -1,35 +1,50 @@
 "use client";
-import {AnimatedTestimonials} from "@/components/ui/animated-testimonials";
-import {isValidImage} from "@/lib/utils";
-import {MediaBase} from "@/types/entities/media-base";
+import { useEffect, useState } from "react";
+import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
+import { MediaBase } from "@/types/entities/media-base";
+import {isValidImage} from "@/lib/utils/image-utils";
 
 interface Testimonial {
-    quote: string;
-    name: string;
-    designation: string;
-    src: string;
+  quote: string;
+  name: string;
+  designation: string;
+  src: string;
 }
 
-export const AnimatedTestimonialsPhotos = async ({
-                                                     photos = [],
-                                                     autoplay = false,
-                                                 }: {
-    photos: MediaBase[];
-    autoplay?: boolean;
+export const AnimatedTestimonialsPhotos = ({
+  photos = [],
+  autoplay = false,
+}: {
+  photos: MediaBase[];
+  autoplay?: boolean;
 }) => {
-    if (photos.length === 0) {
-        return <div>No photos available</div>;
-    }
-    const testimonials: Testimonial[] = await Promise.all(
-        photos.map(async (mediaBase) => ({
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const data: Testimonial[] = await Promise.all(
+        photos.map(async (mediaBase) => {
+          const candidate = mediaBase.mediaUrl ?? "/image-notfound.png";
+          return {
             quote: mediaBase.title || "Untitled",
             name: mediaBase.title || "Anonymous",
             designation: mediaBase.displayName || "Untitled",
-            src: await isValidImage(mediaBase.mediaUrl ?? "/image-notfound.png") ? mediaBase.mediaUrl : "/image-notfound.png",
-        } as Testimonial))
-    );
+            src: (await isValidImage(candidate))
+              ? candidate
+              : "/image-notfound.png",
+          };
+        })
+      );
+      setTestimonials(data);
+    };
 
-    return (
-        <AnimatedTestimonials testimonials={testimonials} autoplay={autoplay}/>
-    );
+    if (photos.length > 0) load();
+  }, [photos]);
+
+  if (photos.length === 0) return <div>No photos available</div>;
+  if (testimonials.length === 0) return <div>Loading...</div>;
+
+  return (
+    <AnimatedTestimonials testimonials={testimonials} autoplay={autoplay} />
+  );
 };

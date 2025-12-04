@@ -2,8 +2,7 @@ import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import { Button } from "@/components/ui/button";
-import { Const } from "@/lib/constants/const";
-import { convertHtmlToPlainText } from "@/lib/utils";
+import { Constants } from "@/lib/constants/constants";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +10,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
 
 export function Blog() {
   const router = useRouter();
@@ -72,25 +72,23 @@ export function Blog() {
             </h2>
             <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200"></p>
           </motion.div>
-          <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+          <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 items-stretch">
             {blogs.map((ser) => (
-              <div
+              <motion.div
                 key={ser.id}
-                className="relative bg-white rounded-none hover:shadow-lg"
+                className="relative bg-white rounded-none hover:shadow-lg flex flex-col h-full"
+                // whileHover={{ y: -5 }}
+                // transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <div className="overflow-hidden rounded-none">
+                <div className="overflow-hidden">
                   <motion.div
-                    className=""
-                    whileHover={{ scale: 1.1 }}
-                    transition={{
-                      duration: 0.3,
-                      ease: "easeOut",
-                    }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <Link href={"/blogs/" + ser.slug}>
                       <Image
-                        className="aspect-square w-full bg-gray-200 rounded-none object-cover lg:aspect-auto size-1/2"
-                        alt={""}
+                        className="w-full bg-gray-200 object-cover max-h-64 min-h-64"
+                        alt=""
                         src={ser.thumbnail?.mediaUrl ?? "/image-notfound.png"}
                         width={9999}
                         height={9999}
@@ -98,27 +96,31 @@ export function Blog() {
                     </Link>
                   </motion.div>
                 </div>
-                <div className="m-4 flex flex-col gap-1 justify-between">
-                  <p className="text-lg font-medium w-full text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-                    <Link href={"/blogs/" + ser.slug}>{ser.title}</Link>
-                  </p>
-                  <hr className="border-t border-neutral-300 my-1" />{" "}
-                  <p className="text-sm line-clamp-2 w-full text-start relative z-20 bg-clip-text text-transparent bg-neutral-600 py-0">
-                    {ser.content ? convertHtmlToPlainText(ser.content) : "N/A"}
-                  </p>
-                  <p className="text-end">
+
+                <div className="m-4 flex flex-col flex-1 justify-between">
+                  <div>
+                    <p className="text-lg font-medium text-neutral-700 line-clamp-2">
+                      <Link href={"/blogs/" + ser.slug}>{ser.title}</Link>
+                    </p>
+                    <hr className="border-t border-neutral-300 my-1" />
+                    <p className="text-sm text-neutral-600 line-clamp-3">
+                      {ser.content
+                        ? convertHtmlToPlainText(ser.content)
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="text-end mt-2">
                     <Link href={"/blogs/" + ser.slug}>
-                      {" "}
                       <Button variant="link">Đọc tiếp</Button>
                     </Link>
-                  </p>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
           <div className="flex pt-5 justify-center">
             <button
-              onClick={() => router.push(Const.BLOGS)}
+              onClick={() => router.push(Constants.BLOGS)}
               className="border-2 border-neutral-300 text-neutral-500 px-12 py-4 rounded-none tracking-widest uppercase bg-transparent hover:bg-neutral-500 hover:text-white dark:text-neutral-200 transition duration-200"
             >
               Xem thêm

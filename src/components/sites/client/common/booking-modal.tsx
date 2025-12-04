@@ -9,9 +9,9 @@ import {
   FormInput,
   FormInputDateTimePicker,
   FormInputDateTimePickerV2,
+  FormInputDateTimePickerV3,
   FormSelectObject,
-} from "@/lib/form-custom-shadcn";
-import { toLocalISOString } from "@/lib/utils";
+} from "@/lib/utils/form-custom-shadcn";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { serviceService } from "@/services/service-service";
 import { ServiceBookingCreateCommand } from "@/types/cqrs/commands/service-booking-command";
@@ -25,6 +25,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Status } from "@/types/models/business-result";
+import { motion } from "framer-motion";
+import {toLocalISOString} from "@/lib/utils/string-utils";
 
 const formSchema = z.object({
   email: z.string().email().nullable().optional(),
@@ -98,7 +100,9 @@ export function BookingModal() {
         return;
       }
 
-      toast.success("Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
+      toast.success(
+        "Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất."
+      );
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
@@ -108,7 +112,14 @@ export function BookingModal() {
   };
 
   return (
-    <div className="max-w-xl mx-auto shadow-lg p-6 my-16 bg-white dark:bg-neutral-800 rounded-lg">
+    <motion.div
+      className="max-w-xl mx-auto p-6 my-16 bg-white dark:bg-neutral-800 rounded-lg"
+      // whileHover={{
+      //   y: -6,
+      //   boxShadow: "0 15px 30px rgba(0,0,0,0.15)",
+      // }}
+      // transition={{ duration: 0.3, ease: "easeOut" }}
+    >
       <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
         NHẬN TƯ VẤN CHI TIẾT
       </h4>
@@ -116,13 +127,12 @@ export function BookingModal() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-4">
-            <FormInputDateTimePicker
+            <FormInputDateTimePickerV3
               form={form}
               disabled={false}
               name="bookingDate"
               label="Ngày hẹn"
               placeholder="Chọn ngày"
-              isShowTimePicker
             />
 
             <FormInput
@@ -168,6 +178,6 @@ export function BookingModal() {
           </div>
         </form>
       </Form>
-    </div>
+    </motion.div>
   );
 }

@@ -1,10 +1,10 @@
 import {OrderItem} from "@/types/entities/order-item";
 import {BaseService} from "./base/base-service";
-import {Const} from "@/lib/constants/const";
+import {Constants} from "@/lib/constants/constants";
 
 class OrderItemService extends BaseService<OrderItem> {
     constructor() {
-        super(`${Const.ORDER_ITEMS}`);
+        super(`${Constants.ORDER_ITEMS}`);
     }
 }
 

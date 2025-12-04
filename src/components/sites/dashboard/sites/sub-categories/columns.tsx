@@ -14,13 +14,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 import { subCategoryService } from "@/services/sub-category-service";
 import { SubCategory } from "@/types/entities/subcategory";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import {formatDate} from "@/lib/utils/date-utils";
 export const columns: ColumnDef<SubCategory>[] = [
   {
     accessorKey: "select",

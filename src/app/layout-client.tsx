@@ -11,7 +11,7 @@ import { UserAccessControl } from "@/components/_common/user-access-control";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterGuard } from "@/guard/route-guard";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 export default function LayoutClient({
   children,
 }: {

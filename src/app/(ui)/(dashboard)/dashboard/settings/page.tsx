@@ -1,7 +1,7 @@
 "use client";
 import {Separator} from "@/components/ui/separator";
 import {Badge} from "@/components/ui/badge";
-import {getEnumLabel} from "@/lib/utils";
+import {getEnumLabel} from "@/lib/utils/enum-utils";
 import {Role} from "@/types/entities/user";
 import {format} from "date-fns";
 import {RootState} from "@/lib/redux/store";

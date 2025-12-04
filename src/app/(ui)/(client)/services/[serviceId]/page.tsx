@@ -15,7 +15,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import PostContent from "@/components/_common/tiptaps_v2/shared/post-content";
 import PostHeader from "@/components/_common/tiptaps_v2/shared/post-header";
 import PostSharing from "@/components/_common/tiptaps_v2/shared/post-sharing";
-import PostToc from "@/components/_common/tiptaps_v2/shared/post-toc";
+import { PostToc } from "@/components/_common/tiptaps_v2/shared/post-toc";
 import PostReadingProgress from "@/components/_common/tiptaps_v2/shared/reading-progress";
 import TiptapRenderer from "@/components/_common/tiptaps_v2/tiptap-renderer/client-renderer";
 import Image from "next/image";

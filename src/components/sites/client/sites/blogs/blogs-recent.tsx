@@ -1,4 +1,3 @@
-import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/entities/blog";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
@@ -6,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {formatDate} from "@/lib/utils/date-utils";
 
 export function BlogsRecent() {
   const [blogs, setBlogs] = useState<Blog[]>([]);

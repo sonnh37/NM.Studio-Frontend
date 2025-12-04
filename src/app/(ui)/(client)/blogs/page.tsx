@@ -7,13 +7,14 @@ import {LoadingPageComponent} from "@/components/_common/loading-page";
 import { TitleProvider } from "@/components/_common/title-component";
 
 import { Button } from "@/components/ui/button";
-import { convertHtmlToPlainText, formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { BlogGetAllQuery } from "@/types/cqrs/queries/blog-query";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {formatDate} from "@/lib/utils/date-utils";
+import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
 
 export default function AlbumPage() {
   const searchParams = useSearchParams();

@@ -1,10 +1,10 @@
-import { Const } from "@/lib/constants/const";
+import { Constants } from "@/lib/constants/constants";
 import { MediaBase } from "@/types/entities/media-base";
 import { BaseService } from "./base/base-service";
 
 class MediaBaseService extends BaseService<MediaBase> {
   constructor() {
-    super(`${Const.MEDIA_BASES}`);
+    super(`${Constants.MEDIA_BASES}`);
   }
   // async deletePermanently(
   //   command: MediaBaseDeleteCommand

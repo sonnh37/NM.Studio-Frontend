@@ -18,8 +18,8 @@ import {
   FormInput,
   FormInputDateTimePicker,
   FormRadioGroup,
-} from "@/lib/form-custom-shadcn";
-import { getEnumOptions } from "@/lib/utils";
+} from "@/lib/utils/form-custom-shadcn";
+import { getEnumOptions } from "@/lib/utils/enum-utils";
 import { Gender, Role, User } from "@/types/entities/user";
 import Image from "next/image";
 import { useEffect, useState } from "react";

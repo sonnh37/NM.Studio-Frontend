@@ -74,6 +74,10 @@ export function DeleteBaseEntitysDialog<TData>({
             const response = await deleteFunc(command);
             if (response.status == Status.OK) {
               toast.success("Moved to trash.");
+              queryClient.refetchQueries({ queryKey: query_keys });
+              if (onSuccess) {
+                onSuccess();
+              }
             } else {
               toast.error(response.error?.detail || "Failed to delete.");
             }
@@ -82,10 +86,7 @@ export function DeleteBaseEntitysDialog<TData>({
           }
         }
         props.onOpenChange?.(false);
-        if (onSuccess) {
-          queryClient.invalidateQueries({ queryKey: query_keys });
-          onSuccess();
-        }
+
         props.onOpenChange?.(false);
       } catch (error) {
         toast.error(error as string);

@@ -18,12 +18,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatCurrency, formatDate } from "@/lib/utils";
 import { serviceBookingService } from "@/services/service-booking-service";
 import { ServiceBooking } from "@/types/entities/service-booking";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { formatCurrency } from "@/lib/utils/format-currency";
+import {formatDate} from "@/lib/utils/date-utils";
 export const columns: ColumnDef<ServiceBooking>[] = [
   {
     accessorKey: "select",

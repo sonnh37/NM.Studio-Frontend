@@ -1,4 +1,5 @@
 "use client";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -36,52 +37,63 @@ const steps = [
 
 export default function Introduce() {
   return (
-    <div className="h-full w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center backdrop-blur-xs">
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center dark:bg-black bg-white opacity-50"></div>
-      <div className="container mx-auto py-10 z-10 ">
-        <h2 className="text-center text-4xl relative z-20 tracking-wide uppercase text-neutral-700 py-8">
-          <span className="border-b">
-            {" "}
-            CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?{" "}
-          </span>
-        </h2>
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-4 text-center">
-          {steps.map((step, index) => (
-            <div
-              className="flex flex-col items-center justify-between space-y-10 h-full"
-              key={index}
-            >
-              <div>
-                <p className="text-xl text-neutral-700 mb-4">{step.title}</p>
-                <p className="text-neutral-500 dark:text-neutral-200">
-                  {step.description}
-                </p>
+    <AuroraBackground className="h-full w-full relative flex items-center justify-center backdrop-blur-xs">
+      <motion.div
+        initial={{ opacity: 0.0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.3,
+          duration: 0.8,
+          ease: "easeInOut",
+        }}
+        className="relative flex flex-col gap-4 items-center justify-center px-4"
+      >
+        {" "}
+        <div className="container mx-auto py-16 ">
+          <h2 className="text-center text-4xl relative tracking-wide uppercase text-neutral-700 py-8 pb-20">
+            <span className="border-b">
+              {" "}
+              CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?{" "}
+            </span>
+          </h2>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-4 text-center">
+            {steps.map((step, index) => (
+              <div
+                className="flex flex-col items-center justify-between space-y-10 h-full"
+                key={index}
+              >
+                <div>
+                  <p className="text-xl text-neutral-700 mb-4">{step.title}</p>
+                  <p className="text-neutral-500 dark:text-neutral-200">
+                    {step.description}
+                  </p>
+                </div>
+                <div className="overflow-hidden rounded-full">
+                  {" "}
+                  {/* Thay đổi kích thước nếu cần */}
+                  <motion.div
+                    className="flex items-center justify-center w-full h-full"
+                    whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
+                    transition={{
+                      duration: 0.3,
+                      ease: "easeOut",
+                    }}
+                  >
+                    <Image
+                      src={step.imageSrc}
+                      alt={step.altText}
+                      width={250}
+                      height={250}
+                      className="rounded-full"
+                    />
+                  </motion.div>
+                </div>
               </div>
-              <div className="overflow-hidden rounded-full">
-                {" "}
-                {/* Thay đổi kích thước nếu cần */}
-                <motion.div
-                  className="flex items-center justify-center w-full h-full"
-                  whileHover={{ scale: 1.1 }} // Tạo hiệu ứng zoom
-                  transition={{
-                    duration: 0.3,
-                    ease: "easeOut",
-                  }}
-                >
-                  <Image
-                    src={step.imageSrc}
-                    alt={step.altText}
-                    width={250}
-                    height={250}
-                    className="rounded-full"
-                  />
-                </motion.div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </AuroraBackground>
   );
 }
 

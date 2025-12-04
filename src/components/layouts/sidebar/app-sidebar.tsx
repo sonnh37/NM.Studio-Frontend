@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavMain } from "./nav-main";
 import { NavManagement } from "./nav-management";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 import { Role } from "@/types/entities/user";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();

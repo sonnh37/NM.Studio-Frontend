@@ -18,12 +18,12 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 import { blogService } from "@/services/blog-service";
 import { Blog } from "@/types/entities/blog";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import {formatDate} from "@/lib/utils/date-utils";
 export const columns: ColumnDef<Blog>[] = [
   {
     accessorKey: "select",

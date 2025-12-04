@@ -1,6 +1,6 @@
 import {LayoutGrid, Settings, Users} from "lucide-react";
 import React from "react";
-import {Const} from "./const";
+import {Constants} from "./constants";
 import {BiCategory} from "react-icons/bi";
 import {MdOutlineCategory, MdOutlineColorLens} from "react-icons/md";
 import {IoIosResize} from "react-icons/io";

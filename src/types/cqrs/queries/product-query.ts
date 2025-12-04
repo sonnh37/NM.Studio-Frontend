@@ -1,27 +1,27 @@
-import { SubCategory } from "../entities/category";
-import { ProductStatus } from "../entities/product";
+import { SubCategory } from "@/types/entities/subcategory";
 import { GetQueryableQuery } from "./base/base-query";
+import { ProductStatus } from "@/types/entities/product";
 
 export interface ProductGetAllQuery extends GetQueryableQuery {
-  sku?: string | null | undefined;
-  slug?: string | null | undefined;
-  name?: string | null | undefined;
-  subCategoryId?: string | null | undefined;
-  subCategory?: SubCategory | null | undefined;
-  price?: number | null | undefined;
-  rentalPrice?: number | null | undefined;
-  deposit?: number | null | undefined;
-  isRentable?: boolean | null | undefined;
-  isSaleable?: boolean | null | undefined;
-  description?: string | null | undefined;
-  material?: string | null | undefined;
-  brand?: string | null | undefined;
-  style?: string | null | undefined;
-  care?: string | null | undefined;
-  status?: ProductStatus | null | undefined;
+  sku?: string | null;
+  slug?: string | null;
+  name?: string | null;
+  subCategoryId?: string | null;
+  subCategory?: SubCategory | null;
+  price?: number | null;
+  rentalPrice?: number | null;
+  deposit?: number | null;
+  isRentable?: boolean | null;
+  isSaleable?: boolean | null;
+  description?: string | null;
+  material?: string | null;
+  brand?: string | null;
+  style?: string | null;
+  care?: string | null;
+  status?: ProductStatus | null;
 
-  categoryName?: string | null | undefined;
-  subCategoryName?: string | null | undefined;
-  sizes?: string[] | null | undefined;
-  colors?: string[] | null | undefined;
+  categoryName?: string | null;
+  subCategoryName?: string | null;
+  sizes?: string[] | null;
+  colors?: string[] | null;
 }

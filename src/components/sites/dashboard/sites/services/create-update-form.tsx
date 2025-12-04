@@ -25,7 +25,7 @@ import ConfirmationDialog, {
   FormInputReactTipTapEditor,
   FormSwitch,
   ImageUpload,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 
 import { BusinessResult, Status } from "@/types/models/business-result";
 import { Service } from "@/types/entities/service";

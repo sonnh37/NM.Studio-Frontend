@@ -16,11 +16,9 @@ export interface ProductRepresentative {
 }
 
 export enum ProductStatus {
-  Unspecified,
-  Available,
-  Rented,
-  InMaintenance,
-  Unavailable,
+  Active,
+  Draft,
+  Archived,
 }
 
 export interface Product extends BaseEntity {
@@ -33,6 +31,28 @@ export interface Product extends BaseEntity {
   description?: string;
   material?: string;
   status: ProductStatus;
+
+  category?: Category;
+  subCategory?: SubCategory;
+  thumbnail?: MediaBase;
+  variants: ProductVariant[];
+}
+
+export interface ProductPreview extends BaseEntity {
+  sku?: string;
+  name: string;
+  slug?: string;
+  categoryId?: string;
+  subCategoryId?: string;
+  thumbnailId?: string;
+  description?: string;
+  material?: string;
+  status: ProductStatus;
+
+  minPrice: number;
+  maxPrice: number;
+  totalStockDefaultQuantity: number;
+  totalStockQuantity: number;
 
   category?: Category;
   subCategory?: SubCategory;

@@ -12,7 +12,7 @@ import ConfirmationDialog, {
   FormInput,
   FormSelectObject,
   FormSwitch,
-} from "@/lib/form-custom-shadcn";
+} from "@/lib/utils/form-custom-shadcn";
 import { SubCategory } from "@/types/entities/subcategory";
 
 import { BusinessResult, Status } from "@/types/models/business-result";

@@ -24,7 +24,7 @@ import { authService } from "@/services/auth-service";
 import { UserContext } from "@/types/models/user-context";
 import { Status } from "@/types/models/business-result";
 import { useRouter } from "next/navigation";
-import { userContextHelper } from "@/lib/helpers/user-context-helper";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
 import { MenuAnimationButton } from "@/components/_common/hovers/buttons/menu-animation-button/menu-animation-button";
 
 interface AuthDropdownProps
@@ -57,12 +57,12 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" className={cn("size-8 rounded-full")}>
-          <Avatar className="size-8">
-            <AvatarImage src={user.avatarUrl ?? ""} alt={user.username ?? ""} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-        </Button>
+        <Avatar className="size-8 hover:cursor-pointer">
+          <AvatarImage src={user.avatarUrl ?? ""} alt={user.username ?? ""} />
+          <AvatarFallback className="bg-transparent border">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">

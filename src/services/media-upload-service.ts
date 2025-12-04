@@ -1,8 +1,9 @@
 import axiosInstance from "@/lib/interceptors/axios-instance";
-import { cleanQueryParams } from "@/lib/utils";
 import { MediaBase } from "@/types/entities/media-base";
 import { BusinessResult } from "@/types/models/business-result";
 import { UploadResult } from "@/types/models/upload-result";
+
+import { cleanQueryParams } from "@/lib/utils/query-param-utils";
 
 class MediaUploadService {
   public endpoint: string;
@@ -23,6 +24,31 @@ class MediaUploadService {
 
     const res = await axiosInstance.post<BusinessResult<MediaBase>>(
       this.endpoint,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return res.data;
+  }
+
+  async uploadFiles(
+    files: File[],
+    folder: string = "Other"
+  ): Promise<BusinessResult<MediaBase[]>> {
+    const formData = new FormData();
+
+    // Append all files to FormData
+    files.forEach((file) => {
+      formData.append("Files", file);
+    });
+    formData.append("FolderName", folder);
+
+    const res = await axiosInstance.post<BusinessResult<MediaBase[]>>(
+      `${this.endpoint}/list`,
       formData,
       {
         headers: {
