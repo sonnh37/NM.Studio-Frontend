@@ -1,5 +1,3 @@
-// const withNextIntl = createNextIntlPlugin();
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["shiki"],
@@ -15,11 +13,17 @@ const nextConfig = {
   sassOptions: {
     silenceDeprecations: ["legacy-js-api"],
   },
-  // eslint: {
-  //   ignoreDuringBuilds: true,
-  // },
   typescript: {
     ignoreBuildErrors: true,
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "http://45.119.213.179:32772/:path*", // HTTP backend
+      },
+    ];
   },
 };
 
