@@ -86,6 +86,7 @@ export const NAV_CONFIG = {
     {
       title: "Orders",
       url: "/dashboard/orders",
+      disable: true,
       icon: ListChecks,
       roles: ["*"],
     },
@@ -138,6 +139,7 @@ export const NAV_CONFIG = {
       title: "Users",
       url: "/dashboard/users",
       icon: User2,
+      disable: true,
       roles: ["Admin"],
     },
   ],

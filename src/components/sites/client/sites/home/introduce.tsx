@@ -1,5 +1,6 @@
 "use client";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -37,7 +38,8 @@ const steps = [
 
 export default function Introduce() {
   return (
-    <AuroraBackground className="h-full w-full relative flex items-center justify-center backdrop-blur-xs">
+    <div className="sm:h-screen h-full w-full relative flex items-center justify-center backdrop-blur-xs">
+      <BackgroundRippleEffect />
       <motion.div
         initial={{ opacity: 0.0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -46,11 +48,11 @@ export default function Introduce() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="relative flex flex-col gap-4 items-center justify-center px-4"
+        className="relative z-10 flex flex-col gap-4 items-center justify-center px-4"
       >
         {" "}
-        <div className="container mx-auto py-16 ">
-          <h2 className="text-center text-4xl relative tracking-wide uppercase text-neutral-700 py-8 pb-20">
+        <div className="container mx-auto ">
+          <h2 className="text-center text-4xl relative tracking-wide uppercase text-neutral-700  pb-20">
             <span className="border-b">
               {" "}
               CHỤP ẢNH CƯỚI TẠI NHUMY STUDIO NHƯ THẾ NÀO?{" "}
@@ -93,7 +95,7 @@ export default function Introduce() {
           </div>
         </div>
       </motion.div>
-    </AuroraBackground>
+    </div>
   );
 }
 

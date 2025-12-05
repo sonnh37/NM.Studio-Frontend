@@ -10,7 +10,7 @@ export function AlbumHome() {
   const router = useRouter();
 
   return (
-    <div className="py-20 ">
+    <div className="py-20 sm:h-screen">
       <div className="flex flex-row items-center justify-center  relative w-full">
         <div className="mx-auto w-full relative overflow-hidden">
           <motion.div

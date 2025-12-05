@@ -28,7 +28,7 @@ export function Feature() {
   ];
 
   return (
-    <div className="py-20 bg-neutral-100">
+    <div className="py-20 sm:h-screen bg-neutral-50">
       <div className="flex flex-row items-center justify-center relative w-full h-full">
         <div className="container mx-auto w-full relative overflow-hidden">
           <motion.div

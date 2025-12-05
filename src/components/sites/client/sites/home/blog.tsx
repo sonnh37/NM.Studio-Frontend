@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
+import { convertHtmlToPlainText } from "@/lib/utils/rich-editor-utils";
 
 export function Blog() {
   const router = useRouter();
@@ -49,7 +49,7 @@ export function Blog() {
   }
 
   return (
-    <div className="py-20">
+    <div className="py-20 bg-neutral-50 sm:h-screen">
       <div className="flex flex-row items-center justify-center  relative w-full">
         <div className="container mx-auto w-full relative overflow-hidden">
           <motion.div

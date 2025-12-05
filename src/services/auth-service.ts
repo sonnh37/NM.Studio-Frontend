@@ -34,10 +34,10 @@ class AuthService {
       { refreshToken }
     );
 
-    if (response.data.status === Status.OK) {
-      userContextHelper.clear();
-      tokenHelper.clear();
-    }
+    // if (response.data.status === Status.OK) {
+    userContextHelper.clear();
+    tokenHelper.clear();
+    // }
 
     return response.data;
   };
