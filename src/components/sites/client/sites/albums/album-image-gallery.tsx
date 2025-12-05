@@ -4,7 +4,6 @@ import {
   RenderImageContext,
   RenderImageProps,
 } from "react-photo-album";
-import { Slide } from "@/types/slide";
 import React, { useEffect, useState } from "react";
 import {
   Counter,
@@ -19,6 +18,8 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 import { MediaBase } from "@/types/entities/media-base";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { Constants } from "@/lib/constants/constants";
 
 interface AlbumImageGalleryProps {
   photos: MediaBase[];
@@ -26,144 +27,151 @@ interface AlbumImageGalleryProps {
 
 const AlbumImageGallery = ({ photos }: AlbumImageGalleryProps) => {
   const [index, setIndex] = useState(-1);
-  const [open, setOpen] = React.useState(false);
-  const [position, setPosition] = React.useState<
-    "top" | "bottom" | "start" | "end"
-  >("bottom");
-  const [width, setWidth] = React.useState(120);
-  const [height, setHeight] = React.useState(80);
-  const [border, setBorder] = React.useState(1);
-  const [borderRadius, setBorderRadius] = React.useState(4);
-  const [padding, setPadding] = React.useState(4);
-  const [gap, setGap] = React.useState(16);
-  const [preload, setPreload] = React.useState(2);
-  const [showToggle, setShowToggle] = React.useState(false);
-  const [animationDuration, setAnimationDuration] = React.useState(500);
-  const [maxZoomPixelRatio, setMaxZoomPixelRatio] = React.useState(1);
-  const [zoomInMultiplier, setZoomInMultiplier] = React.useState(2);
-  const [doubleTapDelay, setDoubleTapDelay] = React.useState(300);
-  const [doubleClickDelay, setDoubleClickDelay] = React.useState(300);
-  const [doubleClickMaxStops, setDoubleClickMaxStops] = React.useState(2);
-  const [keyboardMoveDistance, setKeyboardMoveDistance] = React.useState(50);
-  const [wheelZoomDistanceFactor, setWheelZoomDistanceFactor] =
-    React.useState(100);
-  const [pinchZoomDistanceFactor, setPinchZoomDistanceFactor] =
-    React.useState(100);
-  const [scrollToZoom, setScrollToZoom] = React.useState(false);
-
-  const [slides_, setSlides_] = useState<Slide[]>([]);
+  const [slides, setSlides] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const validateImagesAndCreateSlides = async () => {
-      const slidesData: Slide[] = [];
+    const createSlides = async () => {
+      if (!photos.length) {
+        setSlides([]);
+        setIsLoading(false);
+        return;
+      }
 
-      // Loop through the photos and process each image asynchronously.
-      for (const mediaBase of photos) {
-        const imageSrc = mediaBase.mediaUrl ?? "/image-notfound.png";
+      try {
+        const slidesData = await Promise.all(
+          photos.map(async (mediaBase, idx) => {
+            return new Promise<any>((resolve) => {
+              const imageSrc =
+                mediaBase.mediaUrl ?? Constants.IMAGE_DEFAULT_URL;
+              const img = new window.Image();
+              img.src = imageSrc;
 
-        const img = new window.Image();
-        img.src = imageSrc;
+              img.onload = () => {
+                resolve({
+                  src: imageSrc,
+                  width: img.naturalWidth,
+                  height: img.naturalHeight,
+                  key: `${idx}-${Date.now()}`,
+                });
+              };
 
-        img.onload = () => {
-          const width = img.naturalWidth;
-          const height = img.naturalHeight;
+              img.onerror = () => {
+                resolve({
+                  src: Constants.IMAGE_DEFAULT_URL,
+                  width: 800,
+                  height: 600,
+                  key: `${idx}-${Date.now()}`,
+                });
+              };
+            });
+          })
+        );
 
-          const slide: Slide = {
-            src: imageSrc,
-            width,
-            height,
-            srcSet: [
-              {
-                src: imageSrc,
-                width,
-                height,
-              },
-            ],
-          };
-
-          slidesData.push(slide);
-          setSlides_(slidesData);
-        };
+        setSlides(slidesData);
+      } catch (error) {
+        console.error("Error creating slides:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    validateImagesAndCreateSlides();
+    createSlides();
   }, [photos]);
 
-  function renderNextImage(
+  const renderNextImage = (
     { alt = "", title, sizes }: RenderImageProps,
     { photo, width, height }: RenderImageContext
-  ) {
+  ) => {
     return (
-      <div
-        style={{
-          width: "100%",
-          position: "relative",
-          aspectRatio: `${width} / ${height}`,
-        }}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden group cursor-pointer"
       >
-        <Image
-          // fill
-          src={photo}
-          className="rounded-xl"
-          alt={alt}
-          title={title}
-          width={9999}
-          height={9999}
-          // sizes={sizes}
-          // placeholder={"blurDataURL" in photo ? "blur-sm" : undefined}
-        />
+        <div className="relative aspect-auto w-full" style={{ height: "auto" }}>
+          <Image
+            src={photo}
+            alt={alt}
+            title={title}
+            width={9999}
+            height={9999}
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        </div>
+      </motion.div>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 bg-gray-200 rounded w-24"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!slides.length) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">Không có hình ảnh để hiển thị</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <MasonryPhotoAlbum
-        photos={slides_}
-        render={{ image: renderNextImage }}
-        //targetRowHeight={350}
-        columns={3}
-        padding={0}
-        spacing={12}
-        defaultContainerWidth={1200}
-        sizes={{
-          size: "1168px",
-          sizes: [
-            { viewport: "(max-width: 1200px)", size: "calc(100vw - 32px)" },
-          ],
-        }}
-        onClick={({ index: current }) => setIndex(current)}
-      />
+    <div className="py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <MasonryPhotoAlbum
+          photos={slides}
+          render={{ image: renderNextImage }}
+          columns={(containerWidth) => {
+            if (containerWidth < 768) return 1;
+            if (containerWidth < 1024) return 2;
+            return 3;
+          }}
+          padding={0}
+          spacing={8}
+          onClick={({ index: current }) => setIndex(current)}
+        />
+      </motion.div>
 
       <Lightbox
-        styles={{ root: { "--yarl__color_backdrop": "rgba(0, 0, 0, .8)" } }}
+        styles={{ root: { "--yarl__color_backdrop": "rgba(0, 0, 0, 0.9)" } }}
         index={index}
-        slides={slides_}
+        slides={slides}
         open={index >= 0}
-        carousel={{ preload }}
         plugins={[Counter, Download, Fullscreen, Thumbnails, Zoom]}
-        animation={{ zoom: animationDuration }}
+        animation={{ zoom: 500 }}
         thumbnails={{
-          position,
-          width,
-          height,
-          border,
-          borderRadius,
-          padding,
-          gap,
-          showToggle,
+          position: "bottom",
+          width: 100,
+          height: 80,
+          border: 1,
+          borderRadius: 4,
+          padding: 4,
+          gap: 16,
+          showToggle: false,
         }}
         zoom={{
-          maxZoomPixelRatio,
-          zoomInMultiplier,
-          doubleTapDelay,
-          doubleClickDelay,
-          doubleClickMaxStops,
-          keyboardMoveDistance,
-          wheelZoomDistanceFactor,
-          pinchZoomDistanceFactor,
-          scrollToZoom,
+          maxZoomPixelRatio: 2,
+          zoomInMultiplier: 2,
+          doubleTapDelay: 300,
+          doubleClickDelay: 300,
+          doubleClickMaxStops: 2,
+          keyboardMoveDistance: 50,
+          wheelZoomDistanceFactor: 100,
+          pinchZoomDistanceFactor: 100,
+          scrollToZoom: false,
         }}
         close={() => setIndex(-1)}
       />

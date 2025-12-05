@@ -20,6 +20,8 @@ import PostReadingProgress from "@/components/_common/tiptaps_v2/shared/reading-
 import TiptapRenderer from "@/components/_common/tiptaps_v2/tiptap-renderer/client-renderer";
 import Image from "next/image";
 import { useMemo, use } from "react";
+import { processResponse } from "@/lib/utils";
+import { Constants } from "@/lib/constants/constants";
 export default function Page(props: {
   params: Promise<{ serviceId: string }>;
 }) {
@@ -44,7 +46,7 @@ export default function Page(props: {
   } = useQuery({
     queryKey: ["fetchService", serviceId],
     queryFn: () => serviceService.getAll(query),
-    select: (data) => data.data?.results?.[0],
+    select: (data) => processResponse(data).results[0],
     refetchOnWindowFocus: false,
   });
 
@@ -104,7 +106,18 @@ export default function Page(props: {
     <>
       <article className="py-10 px-6 flex flex-col items-center ">
         <PostReadingProgress />
-
+        <div className="lg:max-w-180 mx-auto">
+          <Image
+            src={
+              service.backgroundCover?.mediaUrl ?? Constants.IMAGE_DEFAULT_URL
+            }
+            alt={service.name ?? "Image not found"}
+            width={1932}
+            height={1087}
+            className="my-10 rounded-lg"
+            priority
+          />
+        </div>
         <div className="grid grid-cols-1 w-full lg:w-auto lg:grid-cols-[minmax(auto,256px)_minmax(720px,1fr)_minmax(auto,256px)] gap-6 lg:gap-8">
           <PostSharing />
           <PostContent>

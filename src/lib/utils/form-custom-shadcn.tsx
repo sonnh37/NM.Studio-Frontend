@@ -272,7 +272,7 @@ export const FormInput = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={"font-bold"}>{label}</FormLabel>
+          {label ? <FormLabel>{label}</FormLabel> : <></>}
           <FormControl>
             <Input
               {...props}
@@ -702,7 +702,7 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
 };
 
 interface FormSelectObjectProps<TFieldValues extends FieldValues> {
-  label: string;
+  label?: string;
   name: FieldPath<TFieldValues>;
   description?: string;
   options: any[];
@@ -728,7 +728,7 @@ export const FormSelectObject = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {label ? <FormLabel>{label}</FormLabel> : <></>}
           <FormControl>
             <Select
               onValueChange={(value) => field.onChange(value)}
@@ -1255,7 +1255,7 @@ export const FormInputDateTimePickerV3 = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col gap-3 w-full">
-          <FormLabel>{label}</FormLabel>
+          {label ? <FormLabel>{label}</FormLabel> : <></>}
 
           {/* --- DATE PICKER --- */}
           <Popover open={open} onOpenChange={setOpen}>

@@ -266,12 +266,7 @@ export default function ServiceBookingTable() {
           className="text-primary-foreground sm:whitespace-nowrap"
           href={`${pathname}/new`}
         >
-          <Button
-            size={"sm"}
-            
-          >
-            Add
-          </Button>
+          <Button size={"sm"}>Add</Button>
         </Link>
       </DataTableToolbar>
     </DataTableComponent>

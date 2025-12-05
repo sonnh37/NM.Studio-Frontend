@@ -49,7 +49,7 @@ export function Blog() {
   }
 
   return (
-    <div className="py-20 bg-neutral-50 sm:h-screen">
+    <div className="py-20 bg-neutral-50 h-full sm:min-h-screen">
       <div className="flex flex-row items-center justify-center  relative w-full">
         <div className="container mx-auto w-full relative overflow-hidden">
           <motion.div

@@ -2,13 +2,10 @@
 import { ButtonLoading } from "@/components/_common/button-loading";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
   FormInput,
-  FormInputDateTimePicker,
-  FormInputDateTimePickerV2,
   FormInputDateTimePickerV3,
   FormSelectObject,
 } from "@/lib/utils/form-custom-shadcn";
@@ -26,7 +23,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Status } from "@/types/models/business-result";
 import { motion } from "framer-motion";
-import {toLocalISOString} from "@/lib/utils/string-utils";
+import { toLocalISOString } from "@/lib/utils/string-utils";
+import { Calendar, Mail, Phone, User } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email().nullable().optional(),
@@ -56,6 +54,13 @@ export function BookingModal() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      serviceId: "",
+      bookingDate: new Date(),
+    },
   });
 
   const {
@@ -85,14 +90,6 @@ export function BookingModal() {
       const command: ServiceBookingCreateCommand = {
         ...values,
         appointmentDate: date,
-        status: ServiceBookingStatus.Pending,
-        startTime: "",
-        endTime: "",
-        durationMinutes: 0,
-        servicePrice: 0,
-        depositAmount: 0,
-        totalAmount: 0,
-        isDepositPaid: false,
       };
       const response = await serviceBookingService.create(command);
       if (response.status != Status.OK) {
@@ -101,8 +98,9 @@ export function BookingModal() {
       }
 
       toast.success(
-        "Booking thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất."
+        "Đặt lịch thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất."
       );
+      form.reset();
     } catch (error: any) {
       console.error(error);
       toast.error(error.message);
@@ -112,72 +110,135 @@ export function BookingModal() {
   };
 
   return (
-    <motion.div
-      className="max-w-xl mx-auto p-6 my-16 bg-white dark:bg-neutral-800 rounded-lg"
-      // whileHover={{
-      //   y: -6,
-      //   boxShadow: "0 15px 30px rgba(0,0,0,0.15)",
-      // }}
-      // transition={{ duration: 0.3, ease: "easeOut" }}
-    >
-      <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
-        NHẬN TƯ VẤN CHI TIẾT
-      </h4>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid gap-4">
-            <FormInputDateTimePickerV3
-              form={form}
-              disabled={false}
-              name="bookingDate"
-              label="Ngày hẹn"
-              placeholder="Chọn ngày"
-            />
-
-            <FormInput
-              form={form}
-              name="fullName"
-              label="Họ và tên"
-              placeholder="Nhập họ và tên"
-            />
-
-            <FormInput
-              form={form}
-              name="email"
-              label="Email (Nếu có)"
-              placeholder=""
-            />
-
-            <FormInput
-              form={form}
-              name="phone"
-              label="Số điện thoại"
-              placeholder="Nhập số điện thoại"
-            />
-
-            <FormSelectObject
-              form={form}
-              name="serviceId"
-              label="Dịch vụ"
-              options={services}
-              selectLabel="name"
-              selectValue="id"
-              placeholder="Chọn dịch vụ"
-            />
+    <div className="py-12 md:py-22 bg-white">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <div className="flex items-center justify-center space-x-2 mb-6">
+            <div className="h-px w-8 bg-gray-300"></div>
+            <Calendar className="h-4 w-4 text-gray-400" />
+            <div className="h-px w-8 bg-gray-300"></div>
           </div>
 
-          <div className="flex justify-end space-x-4">
-            {loading ? (
-              <ButtonLoading />
-            ) : (
-              <Button type="submit" disabled={loading}>
-                Booking
-              </Button>
-            )}
+          <h2 className="text-2xl md:text-3xl font-light text-gray-900 mb-4">
+            Đặt Lịch Tư Vấn
+          </h2>
+          <p className="text-gray-600 text-sm tracking-wide max-w-lg mx-auto">
+            Để lại thông tin và chúng tôi sẽ liên hệ với bạn trong thời gian sớm
+            nhất
+          </p>
+        </motion.div>
+
+        {/* Form Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="max-w-lg mx-auto"
+        >
+          <div className="bg-white border border-gray-200 p-6 md:p-8">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="grid gap-4"
+              >
+                {/* Date Picker */}
+                <div>
+                  <label className="text-sm font-light text-gray-700 mb-2 block">
+                    <Calendar className="inline h-3 w-3 mr-1" />
+                    Ngày hẹn
+                  </label>
+                  <FormInputDateTimePickerV3
+                    form={form}
+                    disabled={false}
+                    name="bookingDate"
+                    placeholder="Chọn ngày và giờ"
+                  />
+                </div>
+
+                {/* Name Field */}
+                <div>
+                  <label className="text-sm font-light text-gray-700 mb-2 block">
+                    <User className="inline h-3 w-3 mr-1" />
+                    Họ và tên
+                  </label>
+                  <FormInput
+                    form={form}
+                    name="fullName"
+                    placeholder="Nhập họ và tên"
+                  />
+                </div>
+
+                {/* Email Field */}
+                <div>
+                  <label className="text-sm font-light text-gray-700 mb-2 block">
+                    <Mail className="inline h-3 w-3 mr-1" />
+                    Email (Nếu có)
+                  </label>
+                  <FormInput
+                    form={form}
+                    name="email"
+                    placeholder="example@gmail.com"
+                  />
+                </div>
+
+                {/* Phone Field */}
+                <div>
+                  <label className="text-sm font-light text-gray-700 mb-2 block">
+                    <Phone className="inline h-3 w-3 mr-1" />
+                    Số điện thoại
+                  </label>
+                  <FormInput
+                    form={form}
+                    name="phone"
+                    placeholder="Nhập số điện thoại"
+                  />
+                </div>
+
+                {/* Service Field */}
+                <div>
+                  <label className="text-sm font-light text-gray-700 mb-2 block">
+                    Dịch vụ quan tâm
+                  </label>
+                  <FormSelectObject
+                    form={form}
+                    name="serviceId"
+                    options={services}
+                    selectLabel="name"
+                    selectValue="id"
+                    placeholder="Chọn dịch vụ"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-4">
+                  {loading ? (
+                    <ButtonLoading className="w-full py-6" />
+                  ) : (
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-6 text-sm tracking-wider font-light rounded-none "
+                    >
+                      GỬI YÊU CẦU
+                    </Button>
+                  )}
+                </div>
+
+                {/* Note */}
+                <p className="text-xs text-gray-500 text-center pt-4">
+                  Chúng tôi cam kết bảo mật thông tin của bạn
+                </p>
+              </form>
+            </Form>
           </div>
-        </form>
-      </Form>
-    </motion.div>
+        </motion.div>
+      </div>
+    </div>
   );
 }

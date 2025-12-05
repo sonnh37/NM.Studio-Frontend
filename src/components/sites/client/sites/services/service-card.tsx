@@ -3,7 +3,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
+import { convertHtmlToPlainText } from "@/lib/utils/rich-editor-utils";
+import { Constants } from "@/lib/constants/constants";
 interface ServiceCardProps {
   service: Service;
 }
@@ -16,7 +17,11 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           <img
             className="aspect-square h-[300px] w-full bg-gray-200 rounded-none object-cover lg:aspect-auto"
             alt={service.name ?? ""}
-            src={service.thumbnail?.mediaUrl ? service.thumbnail.mediaUrl : "/image-notfound.png"}
+            src={
+              service.thumbnail?.mediaUrl
+                ? service.thumbnail.mediaUrl
+                : Constants.IMAGE_DEFAULT_URL
+            }
           />
         </a>
       </div>
