@@ -3,6 +3,8 @@ const nextConfig = {
   transpilePackages: ["shiki"],
   reactStrictMode: false,
   images: {
+    unoptimized: true,
+    path: "/",
     remotePatterns: [
       {
         protocol: "https",

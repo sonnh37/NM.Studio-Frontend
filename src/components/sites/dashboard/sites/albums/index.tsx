@@ -1,3 +1,4 @@
+"use client";
 import { columns } from "./columns";
 
 import { DataTableComponent } from "@/components/_common/data-table-generic/data-table-component";
@@ -32,7 +33,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { cn, getDefaultFormFilterValues } from "@/lib/utils";
+import { cn, getDefaultFormFilterValues, processResponse } from "@/lib/utils";
 import { albumService } from "@/services/album-service";
 import { mediaBaseService } from "@/services/media-base-service";
 import { mediaUploadService } from "@/services/media-upload-service";
@@ -520,19 +521,14 @@ export function AlbumDialog({
 
   // Hàm xử lý upload ảnh mới
   const handleUploadNewImages = async (newFiles: MediaBaseState[]) => {
-    const uploadedImages: MediaBaseState[] = [];
-    for (const img of newFiles) {
-      try {
-        const result = await mediaUploadService.uploadFile(img.file!, "Blog");
-        if (result?.status === Status.OK && result.data) {
-          uploadedImages.push(result.data);
-        }
-      } catch (error) {
-        console.error(`Error uploading file ${img.displayName}:`, error);
-        throw new Error(`Failed to upload ${img.displayName}`);
-      }
+    const files = newFiles.map((m) => m.file).filter((f) => f != undefined);
+    try {
+      const result = await mediaUploadService.uploadFiles(files, "Blog");
+      processResponse(result);
+      return result.data as MediaBaseState[];
+    } catch (error: any) {
+      toast.error(error);
     }
-    return uploadedImages;
   };
 
   // Hàm xử lý cập nhật danh sách ảnh album
@@ -606,7 +602,9 @@ export function AlbumDialog({
 
         // 1. Upload ảnh mới trước
         const uploadedImages =
-          newFiles.length > 0 ? await handleUploadNewImages(newFiles) : [];
+          newFiles.length > 0
+            ? ((await handleUploadNewImages(newFiles)) ?? [])
+            : [];
 
         // 2. Cập nhật danh sách ảnh album
         const finalPicked = await handleUpdateAlbumImages(
