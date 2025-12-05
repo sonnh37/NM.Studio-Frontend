@@ -1,34 +1,24 @@
 "use client";
 import ErrorSystem from "@/components/_common/errors/error-system";
 import { LoadingPageComponent } from "@/components/_common/loading-page";
-import { CarouselApi } from "@/components/ui/carousel";
 import { homeSlideService } from "@/services/home-slide-service";
-import { mediaBaseService } from "@/services/media-base-service";
 import { SortDirection } from "@/types/cqrs/queries/base/base-query";
 import { HomeSlideGetAllQuery } from "@/types/cqrs/queries/home-slide-query";
-import { MediaBaseGetAllQuery } from "@/types/cqrs/queries/media-base-query";
-import { HomeSlide } from "@/types/entities/home-slide";
 import { MediaBase } from "@/types/entities/media-base";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Autoplay, Navigation, Pagination, Scrollbar } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import {
-  Autoplay,
-  Navigation,
-  Pagination,
-  Scrollbar,
-  Zoom,
-} from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { motion } from "framer-motion";
 
 export function Hero() {
-  // const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
-  const [count, setCount] = React.useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
   const query: HomeSlideGetAllQuery = {
     pagination: {
       isPagingEnabled: true,
@@ -43,24 +33,22 @@ export function Hero() {
     includeProperties: ["slide"],
   };
 
-  // React.useEffect(() => {
-  //   if (!api) {
-  //     return;
-  //   }
-
-  //   setCount(api.scrollSnapList().length);
-  //   setCurrent(api.selectedScrollSnap() + 1);
-
-  //   api.on("select", () => {
-  //     setCurrent(api.selectedScrollSnap() + 1);
-  //   });
-  // }, [api]);
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["fetchPhotosHero", query],
     queryFn: () => homeSlideService.getAll(query),
     refetchOnWindowFocus: false,
   });
+
+  // Check mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   if (isLoading) return <LoadingPageComponent />;
 
@@ -74,49 +62,75 @@ export function Hero() {
       .map((n) => n.slide)
       .filter((n): n is MediaBase => n !== undefined) ?? [];
 
+  if (photos.length === 0) {
+    return (
+      <div className="h-[60vh] md:h-[calc(100vh-80px)] bg-gray-100 flex items-center justify-center">
+        <p className="text-gray-500 text-sm tracking-wide">
+          Không có hình ảnh để hiển thị
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="">
+    <div className="relative overflow-hidden">
       <Swiper
-        spaceBetween={2}
+        spaceBetween={0}
         slidesPerView={1}
         autoplay={{
           delay: 5000,
+          disableOnInteraction: false,
         }}
         loop={true}
+        speed={300}
         pagination={{
           clickable: true,
         }}
-        navigation={true}
+        navigation={!isMobile} // Chỉ hiện navigation trên desktop
         modules={[Autoplay, Scrollbar, Pagination, Navigation]}
-        className="mySwiper"
+        className="w-full"
         style={
           {
-            "--swiper-navigation-color": "#000", // Màu nút điều hướng
-            "--swiper-pagination-color": "#000", // Màu chấm phân trang
-            // "--swiper-pagination-bullet-size": "14px", // Kích thước chấm
-            // "--swiper-pagination-bullet-horizontal-gap": "8px", // Khoảng cách giữa các chấm
-            "--swiper-navigation-size": "20px",
-            "--swiper-pagination-bottom": "20px",
-            // "--swiper-pagination-bullet-active-background": "#717271", // Màu nền khi active
-            // "--swiper-pagination-bullet-active-width": "36px", // Độ rộng chấm khi active
-            // "--swiper-pagination-bullet-radius": "14px", // Border radius cho bullet (chấm tròn)
+            "--swiper-navigation-color": "rgba(255, 255, 255, 0.8)",
+            "--swiper-pagination-color": "rgba(255, 255, 255, 0.8)",
+            "--swiper-navigation-size": "32px",
+            "--swiper-pagination-bottom": isMobile ? "16px" : "32px",
+            "--swiper-pagination-bullet-size": isMobile ? "8px" : "12px",
+            "--swiper-pagination-bullet-inactive-color":
+              "rgba(255, 255, 255, 0.3)",
+            "--swiper-pagination-bullet-inactive-opacity": "1",
+            "--swiper-pagination-bullet-active-color": "#ffffff",
           } as React.CSSProperties
         }
       >
         {photos.map((pic, index) => (
           <SwiperSlide key={index}>
-            <div className="swiper-zoom-container">
+            {/* Image Container - Full height trên desktop, trừ navbar */}
+            <div className="relative h-[60vh] md:h-[calc(100vh-80px)] w-full overflow-hidden">
               <Image
-                className="md:h-[calc(100vh-96px)] w-full"
-                width={9999}
-                height={9999}
-                alt={pic.title ?? ""}
                 src={pic.mediaUrl ?? "/image-notfound.png"}
+                alt={pic.title ?? `Slide ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                sizes="100vw"
+                quality={95}
               />
+
+              {/* Dark Overlay */}
+              <div className="absolute inset-0 bg-black/10 md:bg-black/5" />
+
+              {/* Subtle Gradient */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent" />
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* Decorative line chỉ trên desktop */}
+      {!isMobile && (
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-gray-300/50 to-transparent z-20" />
+      )}
     </div>
   );
 }
