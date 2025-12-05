@@ -2,7 +2,7 @@ import { Constants } from "@/lib/constants/constants";
 import axiosInstance from "@/lib/interceptors/axios-instance";
 import { logout, setUser } from "@/lib/redux/slices/userSlice";
 import store from "@/lib/redux/store";
-import { BusinessResult } from "@/types/models/business-result";
+import { BusinessResult, Status } from "@/types/models/business-result";
 import { LoginResponse } from "@/types/models/login-response";
 import { User } from "@/types/entities/user";
 import axios from "axios";
@@ -27,15 +27,18 @@ class AuthService {
     return response.data;
   };
 
-  public logout = async (): Promise<BusinessResult<null>> => {
+  public logout = async (): Promise<BusinessResult<void>> => {
     const refreshToken = tokenHelper.getRefreshToken();
-    const response = await axiosInstance.post(
+    const response = await axiosInstance.post<BusinessResult<void>>(
       `${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`,
       { refreshToken }
     );
-    if (response.data.status === 1) {
+
+    if (response.data.status === Status.OK) {
       userContextHelper.clear();
+      tokenHelper.clear();
     }
+
     return response.data;
   };
 
