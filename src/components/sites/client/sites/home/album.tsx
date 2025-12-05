@@ -10,30 +10,33 @@ export function AlbumHome() {
   const router = useRouter();
 
   return (
-    <div className="py-20 sm:h-screen">
+    <div className="py-20 h-full sm:min-h-screen">
       <div className="flex flex-row items-center justify-center  relative w-full">
         <div className="mx-auto w-full relative overflow-hidden">
           <motion.div
-            initial={{
-              opacity: 0,
-              y: 0,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 1,
-              ease: "easeOut",
-            }}
-            className="container mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="container mx-auto text-center max-w-4xl pb-8"
           >
-            <h2 className="text-center  tracking-wide uppercase text-2xl text-neutral-700 my-2">
-              <span className="border-b">Album các concept</span>
+            {/* Decorative elements */}
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <div className="h-px w-8 bg-gray-300"></div>
+              <div className="h-px w-12 bg-gray-400"></div>
+              <div className="h-px w-8 bg-gray-300"></div>
+            </div>
+
+            {/* Main title */}
+            <h2 className="text-3xl md:text-4xl font-light text-gray-900 tracking-tight mb-12 mt-6">
+              Album Concept
+              <br />
+              <span className="italic text-gray-700">Đa Dạng</span>
             </h2>
-            <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200">
-              ĐA SỐ KHÁCH HÀNG Như My LÀ CẶP ĐÔI CÁC TRẺ CÓ PHONG CÁCH THẨM MỸ
-              HIỆN ĐẠI.
+
+            {/* Description */}
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed tracking-wide max-w-2xl mx-auto">
+              Khám phá bộ sưu tập concept độc đáo, được thiết kế riêng cho các
+              cặp đôi hiện đại với phong cách thẩm mỹ tinh tế
             </p>
           </motion.div>
 

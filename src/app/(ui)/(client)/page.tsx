@@ -26,7 +26,9 @@ export default function HomePage() {
         <Blog />
         <InfiniteScrollingLogosAnimation />
         <Contact />
-        <BookingModal />
+        <div id="contact-section">
+          <BookingModal />
+        </div>
       </div>
     </main>
   );

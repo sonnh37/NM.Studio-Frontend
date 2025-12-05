@@ -206,9 +206,9 @@ export function DataTableComponent<TData>({
                       </TableCell>
                     )}
 
-                    {id.toLocaleLowerCase() == q?.toLocaleLowerCase() && (
+                    {/* {id.toLocaleLowerCase() == q?.toLocaleLowerCase() && (
                       <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-1 bg-neutral-500 opacity-50 dark:bg-black/50"></div>
-                    )}
+                    )} */}
                   </TableRow>
                 );
               })

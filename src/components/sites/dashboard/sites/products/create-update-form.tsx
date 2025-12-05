@@ -129,7 +129,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
           if (file) {
             const uploadResultThumb = await mediaUploadService.uploadFile(
               file,
-              "Blog"
+              "Product"
             );
             if (
               uploadResultThumb?.status == Status.OK &&
@@ -202,8 +202,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   };
 
   const handleFilesChange = (files: FileUploadItem[]) => {
-    const fileLocals = files.filter((f) => !f.file.id);
-    const fileUploadeds = files.filter((f) => f.file.id);
+    const fileLocals = files.filter((f) => f.file.status == "local");
+    const fileUploadeds = files.filter((f) => f.file.status == "uploaded");
     if (fileLocals.length > 0) {
       setFile(fileLocals[0].file as File);
     } else {
@@ -214,6 +214,65 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       form.setFieldValue("thumbnailId", null);
     }
   };
+
+  // const handleFilesAdded = async (fileUploadItems: FileUploadItem[]) => {
+  //     if (initialData && fileUploadItems) {
+  //       const unCompleted = fileUploadItems.some((n) => n.status != "completed");
+  //       if (!unCompleted) {
+  //         // setFiles(fileUploadItems.map((f) => f.file as File));
+  //         const fileUnUpload = fileUploadItems
+  //           .filter((f) => (f.file.status = "local"))
+  //           .flatMap((m) => m.file as File);
+
+  //         // upload file local
+  //         if (fileUnUpload.length > 0) {
+  //           // setFiles(fileLocals);
+  //           const uploadResult = await mediaUploadService.uploadFiles(
+  //             fileUnUpload,
+  //             "Product"
+  //           );
+
+  //           processResponse(uploadResult);
+
+  //           const mediaBaseIds = uploadResult.data?.map((m) => m.id) ?? [];
+
+  //           const productMediaCreateCommands = mediaBaseIds.map((n) =>
+  //             buildProductMediaCreateCommand(n, initialData.id)
+  //           );
+
+  //           // create product media
+  //           const productMediaResult = await productMediaService.createList(
+  //             productMediaCreateCommands
+  //           );
+  //           processResponse(productMediaResult);
+  //           queryClient.refetchQueries({
+  //             queryKey: ["fetchProductById", initialData?.productId],
+  //           });
+  //           toast.success("Uploaded!");
+  //         }
+  //       }
+  //     }
+  //   };
+  //   const handleRemoveFiles = async (fileUploadItems: FileUploadItem[]) => {
+  //     if (initialData && fileUploadItems) {
+  //       const fileUploadeds = fileUploadItems
+  //         .filter((f) => f.file.status == "uploaded")
+  //         .flatMap((m) => m.file as FileMetadata);
+  //       if (fileUploadeds.length > 0) {
+  //         const productMediaDeleteCommands = fileUploadeds.map((n) =>
+  //           buildProductMediaDeleteCommand(n.id, initialData.id, true)
+  //         );
+  //         const deleteResult = await productMediaService.deleteList(
+  //           productMediaDeleteCommands
+  //         );
+  //         processResponse(deleteResult);
+  //         queryClient.refetchQueries({
+  //           queryKey: ["fetchProductById", initialData?.productId],
+  //         });
+  //         toast.success(`Deleted ${fileUploadeds.length} files!`);
+  //       }
+  //     }
+  //   };
 
   const handleChangeStatus = async (status: ProductStatus, id: string) => {
     try {
@@ -452,6 +511,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
               defaultValues={fileMetaDatas}
               accept={Constants.IMAGE_EXT_STRING}
               maxFiles={1}
+              // onFilesAdded={hand}
               onFilesChange={handleFilesChange}
               // multiple={false}
               disabled={!isEditing}

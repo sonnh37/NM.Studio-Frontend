@@ -49,7 +49,7 @@ import { FilterEnum } from "@/types/filter-enum";
 import { FormFilterAdvanced } from "@/types/form-filter-advanced";
 import { Status } from "@/types/models/business-result";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ColumnFiltersState,
   getCoreRowModel,
@@ -69,6 +69,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { formatDate } from "@/lib/utils/date-utils";
+import { Spinner } from "@/components/ui/spinner";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
@@ -145,7 +146,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 ];
 
 const columnSearch = "title";
-const query_key = "data";
+const query_key = "data_albums";
 const filterEnums: FilterEnum[] = [
   {
     columnId: "isDeleted",
@@ -346,6 +347,7 @@ export default function AlbumTable() {
 
       {/* Dialog hiển thị ảnh album */}
       <AlbumDialog
+        key={album?.id}
         isOpen={isOpen}
         handleDialogChange={handleDialogChange}
         album={album}
@@ -376,7 +378,7 @@ interface MediaBaseState extends BaseEntity {
   file?: File;
 }
 
-export function AlbumDialog({
+function AlbumDialog({
   isOpen,
   handleDialogChange,
   album,
@@ -387,7 +389,9 @@ export function AlbumDialog({
   const [pickedImages, setPickedImages] = useState<MediaBaseState[]>([]);
   const [defaultImages, setDefaultImages] = useState<MediaBaseState[]>([]);
   const [hasChange, setHasChange] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [coverImage, setCoverImage] = useState<MediaBaseState | null>(null);
+  const queryClient = useQueryClient();
   useEffect(() => {
     const fetchImages = async () => {
       if (album?.albumImages) {
@@ -458,13 +462,14 @@ export function AlbumDialog({
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
+    input.multiple = true; // <<--- quan trọng
 
     input.onchange = (e: any) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+      const files: File[] = Array.from(e.target.files ?? []);
+      if (files.length === 0) return;
 
-      const tempImg: MediaBaseState = {
-        id: Date.now().toString(),
+      const newImages: MediaBaseState[] = files.map((file) => ({
+        id: crypto.randomUUID(),
         title: file.name,
         displayName: file.name,
         format: file.type,
@@ -474,12 +479,12 @@ export function AlbumDialog({
         file,
         resourceType: ResourceType.Image,
         isDeleted: false,
-      };
+      }));
 
       if (section === "available") {
-        setAvailableImages((prev) => [...prev, tempImg]);
+        setAvailableImages((prev) => [...prev, ...newImages]);
       } else {
-        setPickedImages((prev) => [...prev, tempImg]);
+        setPickedImages((prev) => [...prev, ...newImages]);
         setHasChange(true);
       }
     };
@@ -525,6 +530,8 @@ export function AlbumDialog({
     try {
       const result = await mediaUploadService.uploadFiles(files, "Blog");
       processResponse(result);
+
+      toast.success("Uploaded");
       return result.data as MediaBaseState[];
     } catch (error: any) {
       toast.error(error);
@@ -566,7 +573,7 @@ export function AlbumDialog({
   // Hàm xử lý cập nhật ảnh bìa
   const handleUpdateCoverImage = async () => {
     if (!coverImage?.id) {
-      throw new Error("No cover image selected");
+      return;
     }
 
     const updateAlbumCommand: AlbumSetCoverUpdateCommand = {
@@ -585,6 +592,7 @@ export function AlbumDialog({
   // Hàm xử lý lưu tất cả thay đổi
   const handleSave = async () => {
     try {
+      setIsLoading(true);
       const hasCoverChanged = coverImage?.mediaUrl !== album?.coverUrl;
       const hasImagesChanged = checkIfChangedDefaultImg(pickedImages);
 
@@ -612,21 +620,23 @@ export function AlbumDialog({
           uploadedImages
         );
         setPickedImages(finalPicked);
-        successMessages.push("Album images updated");
       }
 
       // Xử lý thay đổi ảnh bìa
       if (hasCoverChanged) {
         await handleUpdateCoverImage();
-        successMessages.push("Cover image updated");
       }
 
+      queryClient.refetchQueries({
+        queryKey: [query_key],
+      });
+      setIsLoading(false);
       setHasChange(false);
-      toast.success(successMessages.join(" and ") + " successfully!");
     } catch (error) {
       console.error("Error saving album changes:", error);
       setHasChange(true);
       toast.error((error as Error).message || "Failed to save changes");
+      setIsLoading(false);
     }
   };
   // render grid với tính năng chọn ảnh bìa
@@ -760,8 +770,14 @@ export function AlbumDialog({
 
             {/* Save */}
             <div className="flex justify-end mt-6">
-              <Button onClick={handleSave} disabled={!hasChange}>
-                Save
+              <Button onClick={handleSave} disabled={!hasChange || isLoading}>
+                {isLoading ? (
+                  <>
+                    <Spinner /> Save...
+                  </>
+                ) : (
+                  <>Save</>
+                )}
               </Button>
             </div>
           </>

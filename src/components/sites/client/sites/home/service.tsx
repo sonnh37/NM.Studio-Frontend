@@ -15,6 +15,7 @@ import "swiper/css/scrollbar";
 import { Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { convertHtmlToPlainText } from "@/lib/utils/rich-editor-utils";
+import { processResponse } from "@/lib/utils";
 
 interface Studio {
   title: string;
@@ -46,10 +47,9 @@ export function Service() {
     error,
   } = useQuery({
     queryKey: ["fetchServices", query],
-    queryFn: async () => {
-      const response = await serviceService.getAll(query);
-      return response.data?.results;
-    },
+    queryFn: async () => serviceService.getAll(query),
+    select: (res) => processResponse(res).results,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <LoadingPageComponent />;
@@ -60,33 +60,25 @@ export function Service() {
   }
 
   return (
-    <div className="py-20 bg-neutral-50 sm:h-screen">
+    <div className="py-20 bg-neutral-50 h-full sm:min-h-screen">
       <div className="flex flex-row items-center justify-center  relative w-full">
         <div className="container mx-auto w-full relative overflow-visible">
           <motion.div
-            initial={{
-              opacity: 0,
-              y: 0,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 1,
-              ease: "easeOut",
-            }}
-            className="div"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12 md:mb-24 max-w-3xl mx-auto"
           >
-            <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
-              <span className="border-b">Dịch vụ</span>
-            </h2>
-            <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200">
-              THÀNH LẬP VÀO NĂM 2017, Như My ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI VÀ
-              TRỞ THÀNH THƯƠNG HIỆU HÀNG ĐẦU VỀ CHỤP ẢNH CƯỚI TPHCM VÀ CÁC TỈNH
-              LÂN CẬN VỚI 10 CHI NHÁNH. TONY WEDDING LUÔN TỰ HÀO MANG ĐẾN CHO
-              BẠN SỰ TIN TƯỞNG BẰNG TRẢI NGHIỆM DỊCH VỤ CƯỚI TỐT NHẤT VỚI CHI
-              PHÍ ĐÁM CƯỚI VỪA PHẢI.
+            <h1 className="text-3xl md:text-4xl font-light tracking-tight text-gray-900 mb-6 md:mb-8">
+              Dịch Vụ
+              <br />
+              <span className="italic">Chuyên Nghiệp</span>
+            </h1>
+
+            <p className="text-xs md:text-base text-gray-600 tracking-wider md:tracking-widest leading-relaxed font-light px-2 md:px-0">
+              Chúng tôi mang đến trọn vẹn từng khoảnh khắc đáng nhớ với dịch vụ
+              chụp ảnh cưới toàn diện, từ concept sáng tạo đến hoàn thiện sản
+              phẩm
             </p>
           </motion.div>
           <Swiper

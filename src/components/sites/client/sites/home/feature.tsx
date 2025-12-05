@@ -28,37 +28,37 @@ export function Feature() {
   ];
 
   return (
-    <div className="py-20 sm:h-screen bg-neutral-50">
+    <div className="py-20 h-full sm:min-h-screen bg-neutral-50">
       <div className="flex flex-row items-center justify-center relative w-full h-full">
         <div className="container mx-auto w-full relative overflow-hidden">
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 0,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 1,
-              ease: "easeOut",
-            }}
-            className="div"
-          >
-            <h2 className="text-center text-4xl tracking-wide uppercase text-neutral-700 my-2">
-              <span className="border-b">
-                Tại Như My Wedding, bạn hoàn toàn yên tâm với các dịch vụ cưới
-              </span>
-            </h2>
-            <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200">
-              THÀNH LẬP VÀO NĂM 2017, TONY WEDDING ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI
-              VÀ TRỞ THÀNH THƯƠNG HIỆU HÀNG ĐẦU VỀ CHỤP ẢNH CƯỚI TPHCM VÀ CÁC
-              TỈNH LÂN CẬN VỚI 10 CHI NHÁNH. TONY WEDDING LUÔN TỰ HÀO MANG ĐẾN
-              CHO BẠN SỰ TIN TƯỞNG BẰNG TRẢI NGHIỆM DỊCH VỤ CƯỚI TỐT NHẤT VỚI
-              CHI PHÍ ĐÁM CƯỚI VỪA PHẢI.{" "}
-            </p>
-          </motion.div>
+          {/* Minimal header */}
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="mb-12"
+            >
+              <h2 className="text-4xl md:text-4xl font-light text-gray-900 mb-6">
+                Dịch Vụ Cưới
+                <br />
+                <span className="italic">Toàn Diện</span>
+              </h2>
+              <div className="h-px w-24 bg-gray-300 mx-auto mb-8"></div>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-gray-600 text-sm tracking-wider max-w-2xl mx-auto leading-relaxed mb-8"
+            >
+              Tự hào là đối tác đáng tin cậy cho hơn 30.000 cặp đôi, chúng tôi
+              cam kết mang đến dịch vụ cưới hoàn hảo với chi phí hợp lý nhất.
+            </motion.p>
+          </div>
+
+          {/* Grid section - không thay đổi */}
           <div className="my-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
             {studio.map((product, index) => (
               <motion.div
@@ -98,6 +98,18 @@ export function Feature() {
               </motion.div>
             ))}
           </div>
+
+          {/* Minimal footer text */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-center mt-16 pt-8 border-t border-gray-100"
+          >
+            <p className="text-xs text-gray-400 tracking-widest">
+              THÀNH LẬP 2017 • 30.000+ CẶP ĐÔI • 10 CHI NHÁNH
+            </p>
+          </motion.div>
         </div>
       </div>
     </div>
