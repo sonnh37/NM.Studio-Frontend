@@ -45,7 +45,7 @@ interface AlbumFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, "Title is required").nullable(),
+  title: z.string().min(1, "Title is required").nullable().optional(),
   slug: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   eventDate: z.string().nullable().optional(),

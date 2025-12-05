@@ -40,9 +40,10 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
 
   if (user == null) {
     return (
-      <Link href="/login" className="uppercase text-xs">
-        <Button className="bg-transparent text-orange-100">Đăng nhập</Button>
-      </Link>
+      // <Link href="/login" className="uppercase text-xs">
+      //   <Button className="bg-transparent text-orange-100">Đăng nhập</Button>
+      // </Link>
+      <></>
     );
   }
 

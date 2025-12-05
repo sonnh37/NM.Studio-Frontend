@@ -1,5 +1,5 @@
 import ErrorSystem from "@/components/_common/errors/error-system";
-import {LoadingPageComponent} from "@/components/_common/loading-page";
+import { LoadingPageComponent } from "@/components/_common/loading-page";
 
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
@@ -14,7 +14,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {convertHtmlToPlainText} from "@/lib/utils/rich-editor-utils";
+import { convertHtmlToPlainText } from "@/lib/utils/rich-editor-utils";
 
 interface Studio {
   title: string;
@@ -25,21 +25,26 @@ interface Studio {
 export function Service() {
   const router = useRouter();
 
-   const query: ServiceGetAllQuery = {
-      pagination: {
-        isPagingEnabled: true,
-        pageNumber: 1,
-        pageSize: 6,
-      },
-      sorting: {
-        sortDirection: 1,
-        sortField: "createdDate",
-      },
-      includeProperties: ["thumbnail"],
-      isDeleted: false,
-    };
+  const query: ServiceGetAllQuery = {
+    pagination: {
+      isPagingEnabled: true,
+      pageNumber: 1,
+      pageSize: 6,
+    },
+    sorting: {
+      sortDirection: 1,
+      sortField: "createdDate",
+    },
+    includeProperties: ["thumbnail"],
+    isDeleted: false,
+  };
 
-  const { data: services = [], isLoading, isError, error } = useQuery({
+  const {
+    data: services = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["fetchServices", query],
     queryFn: async () => {
       const response = await serviceService.getAll(query);
@@ -53,10 +58,9 @@ export function Service() {
     console.log("Error fetching:", error);
     return <ErrorSystem />;
   }
-  
 
   return (
-    <div className="py-20 bg-neutral-100">
+    <div className="py-20 bg-neutral-50 sm:h-screen">
       <div className="flex flex-row items-center justify-center  relative w-full">
         <div className="container mx-auto w-full relative overflow-visible">
           <motion.div
@@ -75,7 +79,7 @@ export function Service() {
             className="div"
           >
             <h2 className="text-center tracking-wide uppercase text-2xl text-neutral-700 my-2">
-            <span className="border-b">Dịch vụ</span>
+              <span className="border-b">Dịch vụ</span>
             </h2>
             <p className="text-center pb-6 tracking-widest text-xs uppercase font-thin text-neutral-600 dark:text-neutral-200">
               THÀNH LẬP VÀO NĂM 2017, Như My ĐÃ PHỤC VỤ HƠN 30.000 CẶP ĐÔI VÀ
@@ -119,11 +123,11 @@ export function Service() {
                 slidesPerGroup: 2,
               },
               1024: {
-                slidesPerView: 3, 
+                slidesPerView: 3,
                 slidesPerGroup: 3,
               },
               1280: {
-                slidesPerView: 4, 
+                slidesPerView: 4,
                 slidesPerGroup: 4,
               },
             }}

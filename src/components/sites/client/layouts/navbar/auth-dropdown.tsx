@@ -36,9 +36,10 @@ export function AuthDropdown({ user = null }: AuthDropdownProps) {
   const router = useRouter();
   if (user == null) {
     return (
-      <Link href="/login" className="uppercase text-xs">
-        <MenuAnimationButton>Đăng nhập</MenuAnimationButton>
-      </Link>
+      // <Link href="/login" className="uppercase text-xs">
+      //   <MenuAnimationButton>Đăng nhập</MenuAnimationButton>
+      // </Link>
+      <></>
     );
   }
 

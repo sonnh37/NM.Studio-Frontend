@@ -23,8 +23,8 @@ export default function HomePage() {
         <AlbumHome />
         <Service />
         <ProductHome />
-        <InfiniteScrollingLogosAnimation />
         <Blog />
+        <InfiniteScrollingLogosAnimation />
         <Contact />
         <BookingModal />
       </div>
