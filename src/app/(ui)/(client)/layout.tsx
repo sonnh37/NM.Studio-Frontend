@@ -8,14 +8,8 @@ import dynamic from "next/dynamic";
 import React, { Suspense } from "react";
 
 import "./styles.scss";
+import { SiteHeader } from "@/components/sites/client/layouts/navbar/site-header";
 
-const SiteHeader = dynamic(
-  () =>
-    import("@/components/sites/client/layouts/navbar/site-header").then(
-      (mod) => mod.SiteHeader
-    ),
-  { ssr: false }
-);
 export default function HomeLayout({
   children,
 }: {

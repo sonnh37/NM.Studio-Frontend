@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import {
@@ -44,7 +45,8 @@ export function MainNav({
   albums = [],
 }: MainNavProps) {
   const isMobile = useIsMobile();
-  const triggerClassName = "text-neutral-600 bg-transparent uppercase";
+  const triggerClassName =
+    "text-neutral-600 text-xs bg-transparent uppercase px-2";
   const categoryLinkClassName =
     "block font-bold select-none p-3 pl-2 pb-1.5 space-y-1 rounded-md leading-none no-underline outline-hidden transition-colors hover:bg-transparent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-neutral-500";
   const studioLinkClassName =
@@ -53,7 +55,7 @@ export function MainNav({
     "relative h-full isolate flex flex-col justify-end overflow-hidden rounded-none px-8 pb-8 pt-40";
   const newsLinkClassName = cn(
     navigationMenuTriggerStyle(),
-    "text-neutral-500 bg-transparent uppercase"
+    "text-neutral-600 text-xs bg-transparent uppercase"
   );
   return (
     <>

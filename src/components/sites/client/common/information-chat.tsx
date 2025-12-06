@@ -25,7 +25,7 @@ const InformationChat = () => {
               href="https://m.me/NhuMyMakeUp"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-900 hover:bg-black transition-colors shadow-lg"
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-900 hover:bg-black transition-colors shadow-lg"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -37,7 +37,7 @@ const InformationChat = () => {
               href={`https://zalo.me/${Constants.TELEPHONE}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-900 hover:bg-black transition-colors shadow-lg"
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-900 hover:bg-black transition-colors shadow-lg"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -47,7 +47,7 @@ const InformationChat = () => {
             {/* Phone Button */}
             <motion.a
               href={`tel:${Constants.TELEPHONE}`}
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-900 hover:bg-black transition-colors shadow-lg"
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-900 hover:bg-black transition-colors shadow-lg"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -58,7 +58,7 @@ const InformationChat = () => {
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-900 hover:bg-black transition-colors shadow-lg"
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-900 hover:bg-black transition-colors shadow-lg"
             >
               <BookingDialog />
             </motion.div>
@@ -66,7 +66,7 @@ const InformationChat = () => {
 
           {/* Decorative indicator */}
           {/* <motion.div
-            className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-gray-900"
+            className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-neutral-900"
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
           /> */}

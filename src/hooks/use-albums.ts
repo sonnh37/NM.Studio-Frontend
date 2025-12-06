@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { albumService } from "@/services/album-service";
 import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
+import { processResponse } from "@/lib/utils";
 
 export const useAlbums = (query: AlbumGetAllQuery) => {
   return useQuery({
@@ -8,7 +9,7 @@ export const useAlbums = (query: AlbumGetAllQuery) => {
     queryFn: () => {
       return albumService.getAll(query);
     },
-    select: (data) => data.data?.results,
+    select: (data) => processResponse(data).results,
     refetchOnWindowFocus: false,
   });
 };
