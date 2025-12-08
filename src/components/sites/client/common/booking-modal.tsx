@@ -27,12 +27,12 @@ import { toLocalISOString } from "@/lib/utils/string-utils";
 import { Calendar, Mail, Phone, User } from "lucide-react";
 
 const formSchema = z.object({
-  email: z.string().email().nullable().optional(),
-  fullName: z.string().min(1, "Họ và tên không được để trống"),
-  phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
+  customerEmail: z.string().email().nullable().optional(),
+  customerName: z.string().min(1, "Họ và tên không được để trống"),
+  customerPhone: z.string().regex(/^\+?[0-9]{10,15}$/, "Invalid phone number"),
   userId: z.string().nullable().optional(),
   serviceId: z.string().min(1, "Service ID is required").nullable().optional(),
-  bookingDate: z.date(),
+  appointmentDate: z.date(),
 });
 
 export function BookingModal() {
@@ -55,11 +55,11 @@ export function BookingModal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
-      phone: "",
+      customerName: "",
+      customerEmail: "",
+      customerPhone: "",
       serviceId: "",
-      bookingDate: new Date(),
+      appointmentDate: new Date(),
     },
   });
 
@@ -86,7 +86,7 @@ export function BookingModal() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const date = toLocalISOString(values.bookingDate);
+      const date = values.appointmentDate.toISOString();
       const command: ServiceBookingCreateCommand = {
         ...values,
         appointmentDate: date,
@@ -156,7 +156,7 @@ export function BookingModal() {
                   <FormInputDateTimePickerV3
                     form={form}
                     disabled={false}
-                    name="bookingDate"
+                    name="appointmentDate"
                     placeholder="Chọn ngày và giờ"
                   />
                 </div>
@@ -169,7 +169,7 @@ export function BookingModal() {
                   </label>
                   <FormInput
                     form={form}
-                    name="fullName"
+                    name="customerName"
                     placeholder="Nhập họ và tên"
                   />
                 </div>
@@ -182,7 +182,7 @@ export function BookingModal() {
                   </label>
                   <FormInput
                     form={form}
-                    name="email"
+                    name="customerEmail"
                     placeholder="example@gmail.com"
                   />
                 </div>
@@ -195,7 +195,7 @@ export function BookingModal() {
                   </label>
                   <FormInput
                     form={form}
-                    name="phone"
+                    name="customerPhone"
                     placeholder="Nhập số điện thoại"
                   />
                 </div>
