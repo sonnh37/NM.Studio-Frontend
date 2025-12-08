@@ -1,17 +1,14 @@
-import ErrorSystem from "@/components/_common/errors/error-system";
-import { LoadingPageComponent } from "@/components/_common/loading-page";
+"use client";
+import { Separator } from "@/components/ui/separator";
 import { useAlbums } from "@/hooks/use-albums";
 import { useCategories } from "@/hooks/use-categories";
 import { useServices } from "@/hooks/use-services";
-import { RootState } from "@/lib/redux/store";
-import { useSelector } from "react-redux";
+import { userContextHelper } from "@/lib/utils/user-context-helper";
+import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
+import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
+import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
 import { HeaderMain } from "./header/header-main";
 import { HeaderTop } from "./header/header-top";
-import { Separator } from "@/components/ui/separator";
-import { AlbumGetAllQuery } from "@/types/cqrs/queries/album-query";
-import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
-import { CategoryGetAllQuery } from "@/types/cqrs/queries/category-query";
-import { userContextHelper } from "@/lib/utils/user-context-helper";
 
 export function SiteHeader() {
   const user = userContextHelper.get();

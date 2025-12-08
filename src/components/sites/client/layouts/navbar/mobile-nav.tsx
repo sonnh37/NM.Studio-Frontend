@@ -29,21 +29,8 @@ import { AuthDropdown } from "./auth-dropdown";
 import { Category } from "@/types/entities/category";
 import { Album } from "@/types/entities/album";
 import { Service } from "@/types/entities/service";
-const ModeToggle = dynamic(
-  () => import("./mode-toggle").then((mod) => mod.ModeToggle),
-  { ssr: true }
-);
-const ProductsCombobox = dynamic(
-  () =>
-    import("../../common/products-combobox").then(
-      (mod) => mod.ProductsCombobox
-    ),
-  { ssr: true }
-);
-const CartSheet = dynamic(
-  () => import("../../common/cart-sheet").then((mod) => mod.CartSheet),
-  { ssr: true }
-);
+import { UserContext } from "@/types/models/user-context";
+import { ProductsCombobox } from "../../common/products-combobox";
 
 interface MobileNavProps {
   items?: MainNavItem[];
@@ -143,7 +130,7 @@ export function MobileNav({
               <Accordion type="multiple" className="w-full">
                 {updatedItems?.map((item, index) => (
                   <AccordionItem value={item.title} key={index}>
-                    <AccordionTrigger  className="text-sm capitalize">
+                    <AccordionTrigger className="text-sm capitalize">
                       <Link href={String(item.href)}>{item.title}</Link>
                     </AccordionTrigger>
                     <AccordionContent>

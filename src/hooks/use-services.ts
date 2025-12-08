@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { serviceService } from "@/services/service-service";
 import { ServiceGetAllQuery } from "@/types/cqrs/queries/service-query";
+import { processResponse } from "@/lib/utils";
 
 export const useServices = (query: ServiceGetAllQuery) => {
   return useQuery({
@@ -8,7 +9,7 @@ export const useServices = (query: ServiceGetAllQuery) => {
     queryFn: () => {
       return serviceService.getAll(query);
     },
-    select: (data) => data.data?.results,
+    select: (data) => processResponse(data).results,
     refetchOnWindowFocus: false,
   });
 };

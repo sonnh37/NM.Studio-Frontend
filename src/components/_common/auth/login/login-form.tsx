@@ -1,28 +1,21 @@
 "use client";
-import { TypographyH2 } from "@/components/_common/typography/typography-h2";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { userService } from "@/services/user-serice";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Meteors } from "../../../ui/meteors";
-import "./login.css";
-import { authService } from "@/services/auth-service";
-import { TypographyH3 } from "@/components/_common/typography/typography-h3";
-import { TypographyH4 } from "@/components/_common/typography/typography-h4";
-import { TypographyMuted } from "@/components/_common/typography/typography-muted";
+import { Form } from "@/components/ui/form";
 import { Status } from "@/types/models/business-result";
+import { Role } from "@/types/entities/user";
+import { authService } from "@/services/auth-service";
+import { userService } from "@/services/user-serice";
 import { tokenHelper } from "@/lib/utils/token-helper";
 import { userContextHelper } from "@/lib/utils/user-context-helper";
-import { Role } from "@/types/entities/user";
+import { Mail, Lock } from "lucide-react";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 const emailSchema = z.string().email("Email không hợp lệ");
 const usernameSchema = z
@@ -36,10 +29,10 @@ const loginSchema = z.object({
 });
 
 export const LoginForm = () => {
-  const searchParams = useSearchParams();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       account: "",
@@ -47,116 +40,157 @@ export const LoginForm = () => {
     },
   });
 
-  type FormSchema = z.infer<typeof loginSchema>;
-
-  const onSubmit = (data: FormSchema) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
-      authService.login(data.account, data.password).then(async (res) => {
-        if (res.status == Status.OK && res.data) {
-          tokenHelper.save(res.data);
+      setIsLoading(true);
+      const res = await authService.login(data.account, data.password);
 
-          const resUser = await userService.getUserByContext();
-          if (resUser.status == Status.OK && resUser.data) {
-            userContextHelper.save(resUser.data);
-            toast.success("Chào mừng bạn đã đến với Như My Studio!");
-            // await router.prefetch("/");
-            if (resUser.data.role != Role.Customer) {
-              router.push("/dashboard");
-              return;
-            }
-            router.push("/");
+      if (res.status === Status.OK && res.data) {
+        tokenHelper.save(res.data);
+
+        const resUser = await userService.getUserByContext();
+        if (resUser.status === Status.OK && resUser.data) {
+          userContextHelper.save(resUser.data);
+          toast.success("Chào mừng bạn đến với Như My Studio!");
+
+          if (resUser.data.role !== Role.Customer) {
+            router.push("/dashboard");
             return;
           }
+          router.push("/");
+          return;
         }
+      }
 
-        toast.warning(res.error?.detail);
-        return;
-      });
+      toast.error(res.error?.detail || "Đăng nhập thất bại");
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message);
+      toast.error(error.message || "Có lỗi xảy ra");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Form {...form}>
-      <div className="form font-normal w-full max-w-xs rounded-md shadow-xl overflow-hidden z-100 relative snap-start shrink-0 p-8 bg-opacity-80 bg-gray-900 r flex flex-col items-center justify-center gap-3 transition-all duration-300">
-        <p className="text-white translate-x-[46%] -rotate-90 tracking-[20px] transition-all hover:translate-x-[50%] -translate-y-1/2  text-2xl absolute right-0">
-          Nhu My
-        </p>
-
-        <div className="capitalize text-white w-full">
-          <div className="pb-4">
-            <TypographyH4 className="text-start text-base border-none">
-              Đăng nhập vào tài khoản của bạn
-            </TypographyH4>
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-2xl min-w-xs"
+      >
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center mb-4">
+            <div className="h-px w-8 bg-neutral-300"></div>
+            <div className="h-px w-12 bg-neutral-400 mx-2"></div>
+            <div className="h-px w-8 bg-neutral-300"></div>
           </div>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-3 w-full"
-          >
-            <FormField
-              control={form.control}
-              name={"account"}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="flex flex-col items-start w-full">
-                      {/*<label className="">Email</label>*/}
-                      <input
-                        type="text"
-                        {...field}
-                        placeholder="Enter Your Email"
-                        className="w-full py-px pl-0 text-sm bg-transparent outline-hidden focus:ring-0 border-0 border-b-2 focus:outline-hidden "
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <FormField
-              control={form.control}
-              name={"password"}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="flex flex-col items-start w-full">
-                      {/*<label className="font-semibold">Password</label>*/}
-                      <input
-                        type="password"
-                        {...field}
-                        placeholder="Enter Your Password"
-                        className="w-full py-px pl-0 text-sm bg-transparent outline-hidden focus:ring-0 border-0 border-b-2  focus:outline-hidden"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="inline-flex pt-6 gap-3">
-              <button
-                type="submit"
-                className="px-6 focus:outline-hidden focus:scale-110  text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-[#D9D9D9] bg-custom-pink shadow-custom-pink shadow-lg"
-              >
-                Đăng nhập
-              </button>
-              <button
-                type="button"
-                onClick={() => router.push("/register")}
-                className="px-6 focus:outline-hidden focus:scale-110  text-base py-2 rounded-[5px] hover:scale-110 transition-all hover:transiton text-custom-pink bg-[#D9D9D9] shadow-custom-pink shadow-lg"
-              >
-                Đăng ký
-              </button>
-            </div>
-          </form>
+          <h1 className="text-2xl font-light text-neutral-900 mb-2 tracking-tight">
+            Đăng Nhập
+          </h1>
+          <p className="text-xs text-neutral-500 tracking-wide">
+            Nhập thông tin đăng nhập của bạn
+          </p>
         </div>
 
-        {/*<Meteors number={20} />*/}
-      </div>
-    </Form>
+        <Form {...form}>
+          <div className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              {/* Email/Username Field */}
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  {...form.register("account")}
+                  placeholder="Email hoặc tên đăng nhập"
+                  className="w-full px-0 py-2 text-sm border-0 border-b border-neutral-300 focus:outline-none focus:border-neutral-900 transition-colors placeholder:text-neutral-400 bg-transparent"
+                  disabled={isLoading}
+                />
+                {form.formState.errors.account && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {form.formState.errors.account.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-1">
+                <input
+                  type="password"
+                  {...form.register("password")}
+                  placeholder="Mật khẩu"
+                  className="w-full px-0 py-2 text-sm border-0 border-b border-neutral-300 focus:outline-none focus:border-neutral-900 transition-colors placeholder:text-neutral-400 bg-transparent"
+                  disabled={isLoading}
+                />
+                {form.formState.errors.password && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {form.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Forgot Password Link */}
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => router.push("/forgot-password")}
+                  className="text-xs text-neutral-500 hover:text-neutral-900 transition-colors tracking-wide"
+                  disabled
+                >
+                  Quên mật khẩu?
+                </button>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                variant={"default"}
+                className="w-full py-3 text-xs tracking-wider mb-1  transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-light mt-4 rounded-none border-0"
+              >
+                {isLoading ? (
+                  <>
+                    <Spinner />
+                    ĐANG XỬ LÝ...
+                  </>
+                ) : (
+                  "ĐĂNG NHẬP"
+                )}
+              </Button>
+            </form>
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-neutral-200"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-2 bg-white text-neutral-500">hoặc</span>
+              </div>
+            </div>
+
+            {/* Register Button */}
+            <Button
+              type="button"
+              // onClick={() => router.push("/register")}
+              // whileHover={{ scale: 1.01 }}
+              // whileTap={{ scale: 0.99 }}
+              variant={"outline"}
+              // disabled
+              className="w-full py-3 text-xs tracking-wider mt-1 border border-neutral-300 text-neutral-900 hover:border-neutral-900 rounded-none transition-colors font-light"
+            >
+              TẠO TÀI KHOẢN MỚI
+            </Button>
+          </div>
+        </Form>
+
+        {/* Footer */}
+        <div className="text-center mt-12 pt-6 border-t border-neutral-100">
+          <p className="text-xs text-neutral-400 tracking-wide">
+            © 2024 NHUMY STUDIO
+          </p>
+        </div>
+      </motion.div>
+    </div>
   );
 };
