@@ -176,7 +176,13 @@ export function MainNav({
                     const path = "/albums/" + album.slug;
                     return (
                       <Link href={path} key={album.slug}>
-                        <div className={albumCardClassName}>
+                        {/* THÊM h-full hoặc fixed height */}
+                        <div
+                          className={cn(
+                            albumCardClassName,
+                            "h-24 sm:h-28 md:h-32"
+                          )}
+                        >
                           <motion.div
                             className="absolute inset-0 w-full overflow-hidden"
                             whileHover={{ scale: 1.1 }}
@@ -187,18 +193,23 @@ export function MainNav({
                           >
                             <Image
                               alt="image"
-                              src={album.coverUrl ?? "/image-notfound.png"}
+                              src={
+                                album.thumbnail?.mediaUrl ??
+                                Constants.IMAGE_DEFAULT_URL
+                              }
                               width={9999}
                               height={9999}
                               className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-linear-to-t from-gray-900 via-gray-900/5"></div>
+                            {/* LÀM gradient nhẹ hơn hoặc opacity thấp hơn */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/10 to-transparent"></div>
                           </motion.div>
 
-                          <h3 className="z-10 mt-3 text-3xl font-bold text-white">
+                          {/* ĐIỀU CHỈNH kích thước chữ và padding */}
+                          <h3 className="z-10 px-2 text-lg font-bold text-white line-clamp-1">
                             {album.title}
                           </h3>
-                          <div className="z-10 bottom-8 truncate gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                          <div className="z-10 px-2 text-xs text-gray-300 line-clamp-2">
                             {album.description}
                           </div>
                         </div>
@@ -209,7 +220,6 @@ export function MainNav({
                 <ViewMoreButton href="/albums" />
               </NavigationMenuContent>
             </NavigationMenuItem>
-
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link href="/blogs" className={newsLinkClassName}>
