@@ -70,6 +70,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { formatDate } from "@/lib/utils/date-utils";
 import { Spinner } from "@/components/ui/spinner";
+import { ALBUM_FETCH_KEY } from "./keys/album-key";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
@@ -146,7 +147,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
 ];
 
 const columnSearch = "title";
-const query_key = "data_albums";
+const query_key = ALBUM_FETCH_KEY;
 const filterEnums: FilterEnum[] = [
   {
     columnId: "isDeleted",

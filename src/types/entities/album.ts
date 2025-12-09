@@ -1,5 +1,6 @@
 import { AlbumImage } from "./album-image";
 import { BaseEntity } from "./base/base";
+import { MediaBase } from "./media-base";
 
 export interface Album extends BaseEntity {
   title?: string;
@@ -11,6 +12,9 @@ export interface Album extends BaseEntity {
   location?: string;
   photographer?: string;
   isFeatured: boolean;
-  coverUrl?: string;
+  coverId?: string;
+  thumbnailId?: string;
+  thumbnail?: MediaBase;
+  cover?: MediaBase;
   albumImages: AlbumImage[];
 }

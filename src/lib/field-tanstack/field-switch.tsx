@@ -1,4 +1,10 @@
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
 import { AnyFieldApi } from "@tanstack/react-form";
@@ -19,8 +25,11 @@ export const FieldSwitch = ({
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
-    <Field data-invalid={isInvalid}>
-      <FieldLabel htmlFor={field.name}>{label || field.name}</FieldLabel>
+    <Field data-invalid={isInvalid} orientation={"horizontal"}>
+      <FieldContent>
+        <FieldLabel htmlFor={field.name}>{label || field.name}</FieldLabel>
+        <FieldDescription>{placeholder}</FieldDescription>
+      </FieldContent>
       <Switch
         id={field.name}
         disabled={disabled}
