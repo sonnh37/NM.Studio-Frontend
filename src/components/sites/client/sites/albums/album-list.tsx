@@ -11,15 +11,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-
 export function AlbumList() {
   const pathName = usePathname();
 
   const queryAlbum: AlbumGetAllQuery = {
     pagination: {
       isPagingEnabled: true,
-      pageSize: pathName === `/${Constants.ALBUMS}` ? 60 : 162,
+      pageSize: pathName === `/${Constants.ALBUMS}` ? 100 : 8,
     },
+    includeProperties: ["thumbnail"],
     isDeleted: false,
   };
 
@@ -60,7 +60,7 @@ export function AlbumList() {
               >
                 <Image
                   alt="image"
-                  src={album.coverUrl ?? "/image-notfound.png"}
+                  src={album.thumbnail?.mediaUrl ?? Constants.IMAGE_DEFAULT_URL}
                   width={9999}
                   height={9999}
                   className="w-full h-full object-cover"

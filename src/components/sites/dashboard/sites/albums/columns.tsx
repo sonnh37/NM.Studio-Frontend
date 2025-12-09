@@ -23,6 +23,8 @@ import { CircleDashed, MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatDate, formatDateWithTime } from "@/lib/utils/date-utils";
+import { Constants } from "@/lib/constants/constants";
+import { ALBUM_FETCH_KEY } from "./keys/album-key";
 
 export const columns: ColumnDef<Album>[] = [
   {
@@ -46,10 +48,10 @@ export const columns: ColumnDef<Album>[] = [
     ),
   },
   {
-    accessorKey: "background",
-    header: "Background Image",
+    accessorKey: "thumbnail",
+    header: "Ảnh đại diện",
     cell: ({ row }) => {
-      const backgroundUrl = row.original.coverUrl;
+      const backgroundUrl = row.original.thumbnail?.mediaUrl;
       return (
         <Link href={backgroundUrl || "#"}>
           <Image
@@ -57,7 +59,25 @@ export const columns: ColumnDef<Album>[] = [
             className="aspect-auto rounded-md object-cover"
             height={64}
             width={64}
-            src={backgroundUrl ?? "/image-notfound.png"}
+            src={backgroundUrl ?? Constants.IMAGE_DEFAULT_URL}
+          />
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "cover",
+    header: "Ảnh nền",
+    cell: ({ row }) => {
+      const backgroundUrl = row.original.cover?.mediaUrl;
+      return (
+        <Link href={backgroundUrl || "#"}>
+          <Image
+            alt={`Album background`}
+            className="aspect-auto rounded-md object-cover"
+            height={64}
+            width={64}
+            src={backgroundUrl ?? Constants.IMAGE_DEFAULT_URL}
           />
         </Link>
       );
@@ -206,6 +226,7 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
         list={[model]}
         showTrigger={false}
         onSuccess={() => row.toggleSelected(false)}
+        query_keys={[ALBUM_FETCH_KEY]}
       />
     </>
   );

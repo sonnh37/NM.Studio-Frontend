@@ -12,14 +12,15 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { FileMetadata } from "@/hooks/use-file-upload";
 import { usePreviousPath } from "@/hooks/use-previous-path";
 import { Constants } from "@/lib/constants/constants";
 import { FieldInput } from "@/lib/field-tanstack/field-input";
 import { FieldEditor } from "@/lib/field-tanstack/field-input-rich-editor";
 import { FieldSelectOptions } from "@/lib/field-tanstack/field-select-options";
-import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
-import { getEnumLabel } from "@/lib/utils/enum-utils";
 import { createVirtualFileMetaFromMedia, processResponse } from "@/lib/utils";
+import { getEnumLabel } from "@/lib/utils/enum-utils";
+import ConfirmationDialog from "@/lib/utils/form-custom-shadcn";
 import { categoryService } from "@/services/category-service";
 import { mediaUploadService } from "@/services/media-upload-service";
 import {
@@ -35,9 +36,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
   ArchiveRestore,
-  ArrowUpRightIcon,
   ChevronLeft,
-  CirclePlus,
   Layers2,
   Pen,
   Save,
@@ -47,9 +46,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { IconFolderCode } from "@tabler/icons-react";
 import { SheetAddVariant } from "./variants/add-variant";
-import { FileMetadata } from "@/hooks/use-file-upload";
 
 interface ProductFormProps {
   initialData?: Product | null;

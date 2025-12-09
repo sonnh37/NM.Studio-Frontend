@@ -23,6 +23,7 @@ export function SiteHeader() {
       sortDirection: 1,
       sortField: "createdDate",
     },
+    includeProperties: ["thumbnail"],
     isDeleted: false,
   };
 
