@@ -31,7 +31,21 @@ export function getCommonPinningStyles<TData>({
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
     opacity: isPinned ? 0.97 : 1,
     position: isPinned ? "sticky" : "relative",
-    // background: isPinned ? "hsl(var(--background))" : "hsl(var(--background))",
+    background: isPinned
+      ? `
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.7) 0%,
+          rgba(255, 255, 255, 0.4) 25%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0.4) 75%,
+          rgba(255, 255, 255, 0.7) 100%
+        ),
+        hsl(var(--background))
+      `
+      : "hsl(var(--background))",
+    backdropFilter: isPinned ? "blur(10px) saturate(180%)" : "none",
+    WebkitBackdropFilter: isPinned ? "blur(10px) saturate(180%)" : "none",
     width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
   };
@@ -62,7 +76,7 @@ export function getDefaultFilterOperator(filterVariant: FilterVariant) {
 }
 
 export function getValidFilters<TData>(
-  filters: ExtendedColumnFilter<TData>[],
+  filters: ExtendedColumnFilter<TData>[]
 ): ExtendedColumnFilter<TData>[] {
   return filters.filter(
     (filter) =>
@@ -72,6 +86,6 @@ export function getValidFilters<TData>(
         ? filter.value.length > 0
         : filter.value !== "" &&
           filter.value !== null &&
-          filter.value !== undefined),
+          filter.value !== undefined)
   );
 }
