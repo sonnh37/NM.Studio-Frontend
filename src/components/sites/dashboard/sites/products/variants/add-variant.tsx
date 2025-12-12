@@ -236,7 +236,6 @@ export const SheetAddVariant = ({ product }: SheetAddVariantProps) => {
               />
 
               <DataTableSortColumnsPopover table={table} />
-              <DataTableToggleColumnsPopover table={table} />
             </DataTableToolbar>
           </DataTableComponent>
         </CardContent>

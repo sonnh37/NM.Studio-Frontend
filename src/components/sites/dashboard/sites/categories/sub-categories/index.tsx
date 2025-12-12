@@ -135,7 +135,7 @@ export default function DataTableSubCategorys({
         { columnId: "isActive", title: "Is Active", options: isActive_options },
         {
           columnId: "isDeleted",
-          title: "Deleted status",
+          title: "Trạng thái xóa",
           options: isDeleted_options,
         },
       ]}

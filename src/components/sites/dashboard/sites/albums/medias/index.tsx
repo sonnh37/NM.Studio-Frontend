@@ -239,7 +239,6 @@ export default function AlbumImagesTable({
               />
 
               <DataTableSortColumnsPopover table={table} />
-              <DataTableToggleColumnsPopover table={table} />
             </DataTableToolbar>
           </DataTableComponent>
         </>
