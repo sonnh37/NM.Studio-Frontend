@@ -133,7 +133,7 @@ export function NavManagement({
                       <div className="flex aspect-square size-4 items-center justify-start">
                         {item.icon && <item.icon />}
                       </div>
-                      <span className="ml-2">{item.title}</span>
+                      <span className="">{item.title}</span>
                       {isActive && <div className="ml-auto">|</div>}
                     </Link>
                   </SidebarMenuButton>
