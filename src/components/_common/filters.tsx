@@ -2,32 +2,32 @@
 // import {OrderStatus, PaymentMethod} from "@/types/enums/order";
 // import {PackageStatus} from "@/types/enums/package";
 
-import {categoryService} from "@/services/category-service";
-import {useQuery} from "@tanstack/react-query";
+import { categoryService } from "@/services/category-service";
+import { useQuery } from "@tanstack/react-query";
 
 export const isDeleted_options = [
-    {label: "Live", value: "false"},
-    {label: "Removed", value: "true"},
+  { label: "Hoạt động", value: "false" },
+  { label: "Đã xóa", value: "true" },
 ];
 
 export const isActive_options = [
-    {label: "Displaying", value: "false"},
-    {label: "Not show", value: "true"},
+  { label: "Hiển thị", value: "false" },
+  { label: "Ẩn", value: "true" },
 ];
 
 export const useCategoriesOptions = () => {
-    return useQuery({
-        queryKey: ["categories_options"],
-        queryFn: async () => {
-            const response = await categoryService.getAll(); // Endpoint API của bạn
-            return response.data?.results!.map((category) => ({
-                label: category.name, // Đặt key phù hợp với API
-                value: category.id,
-            }));
-        },
-        // staleTime: 300000, // Cache 5 phút
-        retry: 3, // Retry nếu lỗi
-    });
+  return useQuery({
+    queryKey: ["categories_options"],
+    queryFn: async () => {
+      const response = await categoryService.getAll(); // Endpoint API của bạn
+      return response.data?.results!.map((category) => ({
+        label: category.name, // Đặt key phù hợp với API
+        value: category.id,
+      }));
+    },
+    // staleTime: 300000, // Cache 5 phút
+    retry: 3, // Retry nếu lỗi
+  });
 };
 // export const status_order_options = [
 //     {label: "Pending", value: OrderStatus.Pending},

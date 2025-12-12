@@ -216,7 +216,7 @@ export function DataTableSortColumnsPopover<TData>({ table }: Props<TData>) {
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 gap-2">
           <Settings2 className="h-4 w-4" />
-          <span className="hidden sm:inline">Columns</span>
+          <span className="hidden sm:inline">Cột</span>
         </Button>
       </PopoverTrigger>
 

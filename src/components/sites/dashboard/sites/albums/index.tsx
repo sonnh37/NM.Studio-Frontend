@@ -71,6 +71,11 @@ import { z } from "zod";
 import { formatDate } from "@/lib/utils/date-utils";
 import { Spinner } from "@/components/ui/spinner";
 import { ALBUM_FETCH_KEY } from "./keys/album-key";
+import { DeleteBaseEntitysDialog } from "@/components/_common/data-table-generic/delete-dialog-generic";
+import { DataTableFilterSheet } from "@/components/_common/data-table-generic/data-table-filter-sheet";
+import { DataTableSortColumnsPopover } from "@/components/_common/data-table-generic/data-table-sort-column";
+import { DataTableToggleColumnsPopover } from "@/components/_common/data-table-generic/data-table-toggle-columns";
+import { DataTableDownload } from "@/components/_common/data-table-generic/data-table-download";
 
 //#region INPUT
 const formFilterAdvanceds: FormFilterAdvanced[] = [
@@ -146,12 +151,12 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
   },
 ];
 
-const columnSearch = "title";
+const columnSearch = "id";
 const query_key = ALBUM_FETCH_KEY;
 const filterEnums: FilterEnum[] = [
   {
     columnId: "isDeleted",
-    title: "Deleted status",
+    title: "Trạng thái xóa",
     options: isDeleted_options,
   },
 ];
@@ -317,34 +322,43 @@ export default function AlbumTable() {
 
   return (
     <>
-      <Accordion type="single" className="w-full" defaultValue="albums">
-        <AccordionItem value="albums">
-          <AccordionTrigger>Albums</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            <DataTableComponent
-              className="p-1"
-              isLoading={isFetching}
-              deletePermanentFunc={(command) => albumService.delete(command)}
-              updateUndoFunc={(command) => albumService.update(command)}
-              table={table}
-              queryKey={query_key}
-            >
-              <DataTableToolbar
-                table={table}
-                filterEnums={filterEnums}
-                columnSearch={columnSearch}
-              >
-                <Link
-                  className="text-primary-foreground sm:whitespace-nowrap"
-                  href={`${pathname}/new`}
-                >
-                  <Button size={"sm"}>+ Thêm</Button>
-                </Link>
-              </DataTableToolbar>
-            </DataTableComponent>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <DataTableComponent
+        className="p-1"
+        isLoading={isFetching}
+        deletePermanentFunc={(command) => albumService.delete(command)}
+        updateUndoFunc={(command) => albumService.update(command)}
+        table={table}
+        queryKey={query_key}
+      >
+        <DataTableToolbar
+          table={table}
+          filterEnums={filterEnums}
+          columnSearch={columnSearch}
+        >
+          <DeleteBaseEntitysDialog
+            list={table
+              .getFilteredSelectedRowModel()
+              .rows.map((row) => row.original)}
+            query_keys={[query_key]}
+            deleteFunc={(command) => albumService.delete(command)}
+            onSuccess={() => table.toggleAllRowsSelected(false)}
+          />
+          <DataTableFilterSheet
+            form={form}
+            isSheetOpen={isSheetOpen}
+            handleSheetChange={handleSheetChange}
+            formFilterAdvanceds={formFilterAdvanceds}
+          />
+          <DataTableSortColumnsPopover table={table} />
+          <DataTableDownload table={table} />
+          <Link
+            className="text-primary-foreground sm:whitespace-nowrap"
+            href={`${pathname}/new`}
+          >
+            <Button size={"sm"}>+ Thêm</Button>
+          </Link>
+        </DataTableToolbar>
+      </DataTableComponent>
     </>
   );
 }

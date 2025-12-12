@@ -24,7 +24,7 @@ interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
 export function DataTableToolbar<TData>({
   table,
   filterEnums = null,
-  columnSearch = null,
+  columnSearch = "id",
   children,
 }: DataTableToolbarProps<TData>) {
   const columnTableSearch = columnSearch

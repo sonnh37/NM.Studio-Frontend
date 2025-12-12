@@ -46,7 +46,7 @@ export function NavManagement({
   return (
     <ScrollArea className="h-full">
       <SidebarGroup>
-        <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
+        {/* <SidebarGroupLabel>Workspaces</SidebarGroupLabel> */}
         <SidebarMenu>
           {items.map((item) => {
             const isActive =
