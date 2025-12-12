@@ -41,6 +41,7 @@ export const cleanQueryParams = (query: any) => {
 
   return qs.stringify(cleaned, {
     encode: true,
+    allowDots: true,
     arrayFormat: "indices",
   });
 };
