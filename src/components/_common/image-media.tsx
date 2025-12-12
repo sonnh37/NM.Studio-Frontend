@@ -1,9 +1,10 @@
+import { Constants } from "@/lib/constants/constants";
 import { cn } from "@/lib/utils";
 import { MediaBase } from "@/types/entities/media-base";
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 import React from "react";
 
-interface ImageMediaProps extends React.ComponentProps<typeof Image> {
+interface ImageMediaProps extends Omit<ImageProps, "src" | "alt"> {
   media?: MediaBase | null;
 }
 
@@ -11,12 +12,11 @@ export const ImageMedia: React.FC<ImageMediaProps> = ({
   media,
   width = 32,
   height = 32,
-  alt = "Media Image",
   className,
   ...props
 }) => {
-  const backgroundUrl = media?.mediaUrl || "/image-notfound.png";
-  const imageAlt = media?.title || alt;
+  const backgroundUrl = media?.mediaUrl || Constants.IMAGE_DEFAULT_URL;
+  const imageAlt = media?.title || media?.id || "Alt image";
   const imageWidth = media?.width || width;
   const imageHeight = media?.height || height;
 

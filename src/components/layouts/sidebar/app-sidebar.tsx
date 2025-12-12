@@ -61,6 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <NavMain items={filteredNavMain} />
+        <Separator className="" />
         {filteredNavManage.length > 0 && (
           <>
             <NavManagement items={filteredNavManage} />

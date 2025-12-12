@@ -1,14 +1,15 @@
 import axiosInstance from "@/lib/interceptors/axios-instance";
+
 import {
   CreateCommand,
   DeleteCommand,
-  UpdateCommand
+  UpdateCommand,
 } from "@/types/cqrs/commands/base/base-command";
 import { GetQueryableQuery } from "@/types/cqrs/queries/base/base-query";
 import { BusinessResult } from "@/types/models/business-result";
 import { QueryResult } from "@/types/models/query-result";
 
-import {cleanQueryParams} from "@/lib/utils/query-param-utils";
+import { cleanQueryParams } from "@/lib/utils/query-param-utils";
 
 export class BaseService<TEntity> {
   public endpoint: string;
@@ -20,9 +21,9 @@ export class BaseService<TEntity> {
   async getAll(
     query?: GetQueryableQuery
   ): Promise<BusinessResult<QueryResult<TEntity>>> {
-    const cleanedQuery = cleanQueryParams(query);
+    const queryString = cleanQueryParams(query);
     const res = await axiosInstance.get<BusinessResult<QueryResult<TEntity>>>(
-      `${this.endpoint}?${cleanedQuery}`
+      `${this.endpoint}?${queryString}`
     );
     return res.data;
   }

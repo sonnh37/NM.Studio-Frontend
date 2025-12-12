@@ -24,7 +24,7 @@ interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
 export function DataTableToolbar<TData>({
   table,
   filterEnums = null,
-  columnSearch = null,
+  columnSearch = "id",
   children,
 }: DataTableToolbarProps<TData>) {
   const columnTableSearch = columnSearch
@@ -38,7 +38,7 @@ export function DataTableToolbar<TData>({
           {columnSearch && columnTableSearch ? (
             <InputGroup className="w-fit">
               <InputGroupInput
-                placeholder="Search..."
+                placeholder="Tìm kiếm..."
                 value={(columnTableSearch.getFilterValue?.() ?? "") as string}
                 onChange={(e) =>
                   columnTableSearch.setFilterValue?.(e.target.value)

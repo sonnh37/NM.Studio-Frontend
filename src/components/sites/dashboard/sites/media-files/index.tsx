@@ -106,12 +106,12 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
   },
 ];
 
-const columnSearch = "title";
+const columnSearch = "id";
 const query_key = "data";
 const filterEnums: FilterEnum[] = [
   {
     columnId: "isDeleted",
-    title: "Deleted status",
+    title: "Trạng thái xóa",
     options: isDeleted_options,
   },
 ];
@@ -257,19 +257,14 @@ export default function MediaBaseTable() {
           formFilterAdvanceds={formFilterAdvanceds}
         />
         <DataTableSortColumnsPopover table={table} />
-        <DataTableToggleColumnsPopover table={table} />
+
         <DataTableDownload table={table} />
 
         <Link
           className="text-primary-foreground sm:whitespace-nowrap"
           href={`${pathname}/new`}
         >
-          <Button
-            size={"sm"}
-            
-          >
-            Add
-          </Button>
+          <Button size={"sm"}>Add</Button>
         </Link>
       </DataTableToolbar>
     </DataTableComponent>

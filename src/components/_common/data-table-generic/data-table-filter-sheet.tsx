@@ -51,7 +51,7 @@ export function DataTableFilterSheet({
       <SheetTrigger asChild>
         <Button size="sm" variant="outline" className="h-8 gap-1">
           <FiFilter className="h-4 w-4" />
-          Filter
+          Lọc
         </Button>
       </SheetTrigger>
       <SheetContent

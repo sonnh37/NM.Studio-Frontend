@@ -1,4 +1,7 @@
-import { GetQueryableQuery, SortDirection } from "@/types/cqrs/queries/base/base-query";
+import {
+  GetQueryableQuery,
+  SortDirection,
+} from "@/types/cqrs/queries/base/base-query";
 import {
   ColumnFiltersState,
   PaginationState,
@@ -13,26 +16,15 @@ export function useQueryParams(
   sorting: SortingState
 ): GetQueryableQuery {
   const filterParams: Record<string, any> = {};
-
   columnFilters.forEach((filter) => {
     filterParams[filter.id] = filter.value;
   });
 
   Object.entries(formValues).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
-      if (
-        Array.isArray(value) &&
-        value.every((v) => typeof v === "boolean")
-      ) {
-        filterParams[key] = value;
-      } else if (typeof value === "object" && value !== null) {
-        filterParams[key] = JSON.stringify(value);
-      } else {
-        filterParams[key] = value;
-      }
+      filterParams[key] = value;
     }
   });
-
   return {
     pagination: {
       pageNumber: pagination.pageIndex + 1,

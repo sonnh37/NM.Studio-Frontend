@@ -38,7 +38,7 @@ import { MdOutlineRateReview } from "react-icons/md";
 export const NAV_CONFIG = {
   main: [
     {
-      title: "Search",
+      title: "Tìm kiếm",
       url: "/search",
       icon: SearchIcon,
       roles: ["*"],
@@ -50,93 +50,93 @@ export const NAV_CONFIG = {
       roles: ["*"],
     },
     {
-      title: "Settings",
+      title: "Cài đặt",
       url: "/dashboard/settings",
       icon: Settings,
       roles: ["*"],
     },
   ],
 
-  // Based on entities folder, you can add more items here
   management: [
     {
-      title: "Albums",
+      title: "Album",
       url: "/dashboard/albums",
       icon: BookImage,
       roles: ["*"],
     },
     {
-      title: "Blogs",
+      title: "Bài viết",
       url: "/dashboard/blogs",
       icon: LibraryBig,
       roles: ["*"],
     },
     {
-      title: "Services",
+      title: "Dịch vụ",
       url: "/dashboard/services",
       icon: CalendarCheck,
       roles: ["*"],
     },
     {
-      title: "Service Bookings",
+      title: "Tệp Media",
+      url: "/dashboard/media-files",
+      icon: ProjectorIcon,
+      roles: ["*"],
+    },
+    {
+      title: "Lịch đặt dịch vụ",
       url: "/dashboard/service-bookings",
       icon: CalendarCheck,
       roles: ["*"],
     },
     {
-      title: "Orders",
+      title: "Đơn hàng",
       url: "/dashboard/orders",
       disable: true,
       icon: ListChecks,
       roles: ["*"],
     },
     {
-      title: "Products",
+      title: "Sản phẩm",
       url: "/dashboard/products",
       icon: Briefcase,
       roles: ["*"],
     },
     {
-      title: "Categories",
+      title: "Danh mục",
       url: "/dashboard/categories",
       icon: Command,
       roles: ["*"],
     },
     {
-      title: "Sub-Categories",
+      title: "Danh mục con",
       url: "/dashboard/sub-categories",
       icon: Command,
       roles: ["*"],
     },
     {
-      title: "Reviews",
+      title: "Đánh giá",
       url: "/dashboard/reviews",
       disable: true,
       icon: MdOutlineRateReview,
       roles: ["*"],
     },
     {
-      title: "Payments",
+      title: "Thanh toán",
       url: "/dashboard/payments",
       icon: FileCheck,
       disable: true,
       roles: ["*"],
     },
     {
-      title: "Vouchers",
+      title: "Voucher",
       url: "/dashboard/vouchers",
       icon: StickyNote,
       disable: true,
       roles: ["*"],
     },
+
     {
-      title: "Media Files",
-      url: "/dashboard/media-files",
-      icon: ProjectorIcon,
-      roles: ["*"],
-    },
-    {
-      title: "Users",
+      title: "Người dùng",
       url: "/dashboard/users",
       icon: User2,
       disable: true,

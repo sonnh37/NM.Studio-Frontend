@@ -16,8 +16,7 @@ type BreadcrumbItemProps = {
 export function Breadcrumbs({ items }: { items: BreadcrumbItemProps[] }) {
   return (
     <Breadcrumb>
-      <BreadcrumbList>
-        
+      <BreadcrumbList className="text-xs">
         {items.map((item, index) => (
           <Fragment key={item.title}>
             {index !== items.length - 1 && (

@@ -188,13 +188,17 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "actions",
     accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
+    header: "Thao tác",
+    cell: ({ row }) => <Actions row={row} />,
   },
   {
     accessorKey: "isDeleted",
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
     header: () => null,
     cell: () => null,
     enableHiding: false,
@@ -225,25 +229,25 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(model.id!)}
           >
-            Copy model ID
+            Sao chép ID
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleProductsClick}>
-            View features
-          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditClick}>
+            Chỉnh sửa
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
-            Delete
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            Xóa
+            {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -35,21 +35,21 @@ export const columns: ColumnDef<MediaBase>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Chọn tất cả"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Chọn hàng"
       />
     ),
   },
 
   {
     accessorKey: "mediaUrl",
-    header: "Media Url",
+    header: "Đường dẫn Media",
     cell: ({ row }) => {
       const backgroundUrl = row.original?.mediaUrl;
       return (
@@ -62,65 +62,65 @@ export const columns: ColumnDef<MediaBase>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Tiêu đề" />
     ),
   },
   {
     accessorKey: "displayName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Display Name" />
+      <DataTableColumnHeader column={column} title="Tên hiển thị" />
     ),
   },
   {
     accessorKey: "format",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Format" />
+      <DataTableColumnHeader column={column} title="Định dạng" />
     ),
   },
   {
     accessorKey: "size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Size" />
+      <DataTableColumnHeader column={column} title="Kích thước" />
     ),
   },
   {
     accessorKey: "width",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Width" />
+      <DataTableColumnHeader column={column} title="Chiều rộng" />
     ),
   },
   {
     accessorKey: "height",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Height" />
+      <DataTableColumnHeader column={column} title="Chiều cao" />
     ),
   },
   {
     accessorKey: "createdMediaBy",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Author" />
+      <DataTableColumnHeader column={column} title="Người tạo" />
     ),
   },
   {
     accessorKey: "takenMediaDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pic Date" />
+      <DataTableColumnHeader column={column} title="Ngày chụp" />
     ),
   },
   {
     accessorKey: "resourceType",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
+      <DataTableColumnHeader column={column} title="Loại" />
     ),
     cell: ({ row }) => {
       const type = row.original.resourceType;
       switch (type) {
         case ResourceType.Image:
-          return <Badge>Image</Badge>;
+          return <Badge>Ảnh</Badge>;
         case ResourceType.Video:
           return <Badge>Video</Badge>;
         default:
-          return <Badge>Unknown</Badge>;
+          return <Badge>Không rõ</Badge>;
       }
     },
     filterFn: (row, id, value) => {
@@ -130,24 +130,29 @@ export const columns: ColumnDef<MediaBase>[] = [
   {
     id: "actions",
     accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
+    header: "Thao tác",
+    cell: ({ row }) => <Actions row={row} />,
   },
   {
     id: "createdDate",
     accessorKey: "createdDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data created" />
+      <DataTableColumnHeader column={column} title="Ngày tạo dữ liệu" />
     ),
     cell: ({ row }) => {
       if (!row.original.createdDate) return "-";
       return formatDate(row.original.createdDate);
     },
   },
+
   {
     accessorKey: "isDeleted",
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
     header: () => null,
     cell: () => null,
     enableHiding: false,
@@ -174,25 +179,25 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(model.id!)}
           >
-            Copy model ID
+            Sao chép ID
           </DropdownMenuItem>
-          {/*<DropdownMenuItem onClick={handleMediaBasesClick}>*/}
-          {/*    View photos*/}
-          {/*</DropdownMenuItem>*/}
+
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditClick}>
+            Chỉnh sửa
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
-            Delete
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            Xóa
+            {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

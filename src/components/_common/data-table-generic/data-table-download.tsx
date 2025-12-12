@@ -30,7 +30,7 @@ export function DataTableDownload<TData>({ table }: Props<TData>) {
     >
       <Button size="sm" variant="outline" className="h-8 gap-1">
         <MdOutlineFileDownload className="h-4 w-4" />
-        Download
+        Tải xuống
       </Button>
     </CSVLink>
   );
