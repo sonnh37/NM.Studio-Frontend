@@ -77,6 +77,12 @@ export const NAV_CONFIG = {
       roles: ["*"],
     },
     {
+      title: "Tệp Media",
+      url: "/dashboard/media-files",
+      icon: ProjectorIcon,
+      roles: ["*"],
+    },
+    {
       title: "Lịch đặt dịch vụ",
       url: "/dashboard/service-bookings",
       icon: CalendarCheck,
@@ -128,12 +134,7 @@ export const NAV_CONFIG = {
       disable: true,
       roles: ["*"],
     },
-    {
-      title: "Tệp Media",
-      url: "/dashboard/media-files",
-      icon: ProjectorIcon,
-      roles: ["*"],
-    },
+
     {
       title: "Người dùng",
       url: "/dashboard/users",

@@ -23,7 +23,7 @@ import { Blog } from "@/types/entities/blog";
 import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import {formatDate} from "@/lib/utils/date-utils";
+import { formatDate } from "@/lib/utils/date-utils";
 export const columns: ColumnDef<Blog>[] = [
   {
     accessorKey: "select",
@@ -34,27 +34,27 @@ export const columns: ColumnDef<Blog>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Chọn tất cả"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Chọn hàng"
       />
     ),
   },
 
   {
     accessorKey: "thumbnail",
-    header: "Thumbnail",
+    header: "Ảnh đại diện",
     cell: ({ row }) => {
       const backgroundUrl = row.original.thumbnail?.mediaUrl;
       return (
         <Link href={backgroundUrl ?? ""}>
           <Image
-            alt={`Blog background`}
+            alt="Thumbnail blog"
             className="aspect-auto size-[64px] rounded-md object-cover"
             height={9999}
             width={9999}
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Blog>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Tiêu đề" />
     ),
   },
   {
@@ -79,29 +79,29 @@ export const columns: ColumnDef<Blog>[] = [
   {
     accessorKey: "content",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Content" />
+      <DataTableColumnHeader column={column} title="Nội dung" />
     ),
-    cell: ({ row }) => {
-      return <div className="truncate max-w-xs">{row.getValue("content")}</div>;
-    },
+    cell: ({ row }) => (
+      <div className="truncate max-w-xs">{row.getValue("content")}</div>
+    ),
   },
   {
     accessorKey: "summary",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Summary" />
+      <DataTableColumnHeader column={column} title="Tóm tắt" />
     ),
   },
   {
     accessorKey: "backgroundCover",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Background" />
+      <DataTableColumnHeader column={column} title="Ảnh nền" />
     ),
     cell: ({ row }) => {
       const image = row.original.backgroundCover?.mediaUrl;
       return (
         <Link href={image ?? ""}>
           <Image
-            alt={`Blog background`}
+            alt="Background blog"
             className="aspect-auto size-[32px] rounded-md object-cover"
             height={9999}
             width={9999}
@@ -114,64 +114,53 @@ export const columns: ColumnDef<Blog>[] = [
   {
     accessorKey: "status",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Trạng thái" />
     ),
   },
   {
     accessorKey: "isFeatured",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Featured" />
+      <DataTableColumnHeader column={column} title="Nổi bật" />
     ),
     cell: ({ row }) => {
       const isFeatured = row.original.isFeatured;
-      if (!isFeatured) {
-        return <Badge variant="outline">Blog page</Badge>;
-      }
-      return <Badge>About page</Badge>;
+      if (!isFeatured) return <Badge variant="outline">Trang Blog</Badge>;
+      return <Badge>Trang Giới thiệu</Badge>;
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    filterFn: (row, id, value) => value.includes(row.getValue(id)),
   },
   {
     accessorKey: "viewCount",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="View Count" />
+      <DataTableColumnHeader column={column} title="Lượt xem" />
     ),
   },
   {
     accessorKey: "tags",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tags" />
+      <DataTableColumnHeader column={column} title="Thẻ" />
     ),
   },
   {
     accessorKey: "author",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Author" />
+      <DataTableColumnHeader column={column} title="Tác giả" />
     ),
     cell: ({ row }) => {
       const author = row.original.author;
       return (
         <Link href={`/dashboard/users/${author?.id}`}>
-          {author?.email ?? "Unknown Author"}
+          {author?.email ?? "Không rõ"}
         </Link>
       );
     },
   },
-  {
-    id: "actions",
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      return <Actions row={row} />;
-    },
-  },
+
   {
     id: "createdDate",
     accessorKey: "createdDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data created" />
+      <DataTableColumnHeader column={column} title="Ngày tạo" />
     ),
     cell: ({ row }) => {
       if (!row.original.createdDate) return "-";
@@ -179,7 +168,19 @@ export const columns: ColumnDef<Blog>[] = [
     },
   },
   {
+    id: "actions",
+    accessorKey: "actions",
+    header: "Thao tác",
+    cell: ({ row }) => <Actions row={row} />,
+  },
+  {
     accessorKey: "isDeleted",
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
     header: () => null,
     cell: () => null,
     enableHiding: false,
@@ -198,7 +199,6 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
     router.push(`${pathName}/${model.id}`);
   };
 
-  const handleDeleteClick = async () => {};
   const [showDeleteTaskDialog, setShowDeleteTaskDialog] = useState(false);
 
   return (
@@ -206,25 +206,25 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(model.id!)}
           >
-            Copy model ID
+            Sao chép ID
           </DropdownMenuItem>
-          {/*<DropdownMenuItem onClick={handleBlogsClick}>*/}
-          {/*    View photos*/}
-          {/*</DropdownMenuItem>*/}
+
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditClick}>
+            Chỉnh sửa
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
-            Delete
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            Xóa
+            {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

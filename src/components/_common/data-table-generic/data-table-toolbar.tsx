@@ -38,7 +38,7 @@ export function DataTableToolbar<TData>({
           {columnSearch && columnTableSearch ? (
             <InputGroup className="w-fit">
               <InputGroupInput
-                placeholder="Search..."
+                placeholder="Tìm kiếm..."
                 value={(columnTableSearch.getFilterValue?.() ?? "") as string}
                 onChange={(e) =>
                   columnTableSearch.setFilterValue?.(e.target.value)

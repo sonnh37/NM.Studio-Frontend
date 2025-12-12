@@ -106,7 +106,7 @@ const formFilterAdvanceds: FormFilterAdvanced[] = [
   },
 ];
 
-const columnSearch = "title";
+const columnSearch = "id";
 const query_key = "data";
 const filterEnums: FilterEnum[] = [
   {
@@ -268,7 +268,7 @@ export default function ServiceTable() {
         >
           <Button
             size={"sm"}
-            // 
+            //
           >
             Add
           </Button>

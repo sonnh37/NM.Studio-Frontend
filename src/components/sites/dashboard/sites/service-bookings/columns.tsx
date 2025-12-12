@@ -24,7 +24,7 @@ import { MoreHorizontal } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatCurrency } from "@/lib/utils/format-currency";
-import {formatDate} from "@/lib/utils/date-utils";
+import { formatDate } from "@/lib/utils/date-utils";
 export const columns: ColumnDef<ServiceBooking>[] = [
   {
     accessorKey: "select",
@@ -181,12 +181,20 @@ export const columns: ColumnDef<ServiceBooking>[] = [
   },
   {
     id: "actions",
+    accessorKey: "actions",
+    header: "Thao tác",
     cell: ({ row }) => {
       return <Actions row={row} />;
     },
   },
   {
     accessorKey: "isDeleted",
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
     header: () => null,
     cell: () => null,
     enableHiding: false,
@@ -213,25 +221,25 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(model.id!)}
           >
-            Copy model ID
+            Sao chép ID
           </DropdownMenuItem>
-          {/*<DropdownMenuItem onClick={handleServiceBookingsClick}>*/}
-          {/*    View photos*/}
-          {/*</DropdownMenuItem>*/}
+
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditClick}>
+            Chỉnh sửa
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
-            Delete
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            Xóa
+            {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
