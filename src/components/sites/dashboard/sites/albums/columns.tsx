@@ -36,14 +36,14 @@ export const columns: ColumnDef<Album>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Chọn tất cả"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Chọn dòng"
       />
     ),
   },
@@ -86,19 +86,19 @@ export const columns: ColumnDef<Album>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Tiêu đề" />
     ),
   },
   {
     accessorKey: "slug",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Slug" />
+      <DataTableColumnHeader column={column} title="Đường dẫn (Slug)" />
     ),
   },
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Mô tả" />
     ),
     cell: ({ row }) => {
       return (
@@ -109,7 +109,7 @@ export const columns: ColumnDef<Album>[] = [
   {
     accessorKey: "eventDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Event Date" />
+      <DataTableColumnHeader column={column} title="Ngày sự kiện" />
     ),
     cell: ({ row }) => {
       if (!row.original.eventDate) return "-";
@@ -119,39 +119,38 @@ export const columns: ColumnDef<Album>[] = [
   {
     accessorKey: "brideName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Bride Name" />
+      <DataTableColumnHeader column={column} title="Tên cô dâu" />
     ),
   },
   {
     accessorKey: "groomName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Groom Name" />
+      <DataTableColumnHeader column={column} title="Tên chú rể" />
     ),
   },
   {
     accessorKey: "location",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Location" />
+      <DataTableColumnHeader column={column} title="Địa điểm" />
     ),
   },
   {
     accessorKey: "photographer",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Photographer" />
+      <DataTableColumnHeader column={column} title="Nhiếp ảnh gia" />
     ),
   },
   {
     accessorKey: "isFeatured",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Public" />
+      <DataTableColumnHeader column={column} title="Nổi bật" />
     ),
-
     enableColumnFilter: true,
   },
   {
     id: "actions",
     accessorKey: "actions",
-    header: "Actions",
+    header: "Thao tác",
     cell: ({ row }) => {
       return <Actions row={row} />;
     },
@@ -160,7 +159,7 @@ export const columns: ColumnDef<Album>[] = [
     id: "createdDate",
     accessorKey: "createdDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data created" />
+      <DataTableColumnHeader column={column} title="Ngày tạo" />
     ),
     cell: ({ row }) => {
       if (!row.original.createdDate) return "-";
@@ -173,7 +172,14 @@ export const columns: ColumnDef<Album>[] = [
     cell: () => null,
     enableHiding: false,
   },
+  {
+    accessorKey: "id",
+    header: () => null,
+    cell: () => null,
+    enableHiding: false,
+  },
 ];
+
 interface ActionsProps {
   row: Row<Album>;
 }
@@ -186,10 +192,6 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
     router.push(`${pathName}/${model.id}`);
   };
 
-  const handleAlbumsClick = () => {
-    router.push(`${pathName}?q=${model.id}`);
-  };
-
   const [showDeleteTaskDialog, setShowDeleteTaskDialog] = useState(false);
 
   return (
@@ -197,25 +199,25 @@ const Actions: React.FC<ActionsProps> = ({ row }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(model.id!)}
           >
-            Copy model ID
+            Sao chép ID
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleAlbumsClick}>
-            View photos
-          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditClick}>
+            Chỉnh sửa
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
-            Delete
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            Xóa
+            {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

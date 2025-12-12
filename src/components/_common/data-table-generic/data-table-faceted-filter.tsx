@@ -125,7 +125,10 @@ export function DataTableFacetedFilter<TData, TValue>({
       </PopoverTrigger>
       <PopoverContent className="w-50 p-0" align="start">
         <Command>
-          <CommandInput className="border-none px-0 focus-visible:ring-0" placeholder={title} />
+          <CommandInput
+            className="border-none px-0 focus-visible:ring-0"
+            placeholder={title}
+          />
           <CommandList className="max-h-full">
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>

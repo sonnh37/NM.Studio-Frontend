@@ -338,7 +338,7 @@ export default function AlbumTable() {
                   className="text-primary-foreground sm:whitespace-nowrap"
                   href={`${pathname}/new`}
                 >
-                  <Button size={"sm"}>Add</Button>
+                  <Button size={"sm"}>+ Thêm</Button>
                 </Link>
               </DataTableToolbar>
             </DataTableComponent>

@@ -47,6 +47,7 @@ export function getCommonPinningStyles<TData>({
     backdropFilter: isPinned ? "blur(10px) saturate(180%)" : "none",
     WebkitBackdropFilter: isPinned ? "blur(10px) saturate(180%)" : "none",
     width: column.getSize(),
+
     zIndex: isPinned ? 1 : 0,
   };
 }
